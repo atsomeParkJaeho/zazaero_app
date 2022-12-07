@@ -1,54 +1,50 @@
-import React from 'react'
+import React, { useState } from "react";
 import {View,Text,StyleSheet,Image, TouchableOpacity, ScrollView, Switch} from 'react-native'
 import logo from "../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
 
-
+// 공통 CSS 추가
+import {container, bg_white,flex,flex_between} from '../common/style/AtStyle';
+import {sub_page} from '../common/style/SubStyle';
 
 export default function Setting({navigation,route}){
 
     let mypageList_name = "가나인테리어";
 
     const [isEnabled, setIsEnabled] = useState(false);
+    const [isEnabled2, setIsEnable2] = useState(false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    const toggleSwitch2 = () => setIsEnable2(previousState => !previousState);
 
     return(
-        <ScrollView style={styles.container}>
-
-            <View style={styles.top_inner}>
-                <View style={styles.top_innerone}>
-                    <Icon name="arrowleft" size={25} color="#000" />
-                </View>
-                <View style={styles.top_innerone}>
-                    <Text style={styles.toptitle}>설정</Text>
-                </View>
-                <View style={styles.top_innertwo}>
-                    <Icon name="home" size={25} color="#000" />
-                </View>
-            </View>
-
+        <ScrollView style={bg_white}>
             <View style={styles.mypageList}>
-                <View style={styles.mypageListItem}>
+                <View style={[flex,styles.mypageListItem]}>
                     <View style={styles.mypageListItemTitle}>
                         <Text style={styles.mypageList_name}>서비스 현황 알림</Text>
                     </View>
                     <View style={styles.mypageListItemIcon}>
                         <Switch
-                            trackColor={{false: '#767577', true: '#81b0ff'}}
-                            thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+                            trackColor={{ false: "#767577", true: "#4630eb" }}
+                            thumbColor={isEnabled ? "#fff" : "#f4f3f4"}
                             ios_backgroundColor="#3e3e3e"
                             onValueChange={toggleSwitch}
                             value={isEnabled}
                         />
                     </View>
                 </View>
-                <View style={styles.mypageListItem}>
+                <View style={[flex,styles.mypageListItem]}>
                     <View style={styles.mypageListItemTitle}>
                         <Text style={styles.mypageList_name}>혜택 정보 알림</Text>
                     </View>
                     <View style={styles.mypageListItemIcon}>
-                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                        <Text style={styles.mypageList_name}>  </Text>
+                        <Switch
+                            trackColor={{ false: "#767577", true: "#4630eb" }}
+                            thumbColor={isEnabled2 ? "#fff" : "#f4f3f4"}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={toggleSwitch2}
+                            value={isEnabled2}
+                        />
                     </View>
                 </View>
                 <View style={styles.mypageListItem}>
@@ -60,14 +56,19 @@ export default function Setting({navigation,route}){
                         <Text style={styles.mypageList_name}> > </Text>
                     </View>
                 </View>
+
                 <View style={styles.mypageListItem}>
-                    <View style={styles.mypageListItemTitle}>
-                        <Text style={styles.mypageList_name}>회원탈퇴</Text>
-                    </View>
-                    <View style={styles.mypageListItemIcon}>
-                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                        <Text style={styles.mypageList_name}> > </Text>
-                    </View>
+                    <TouchableOpacity style={styles.mypageListItem_link} onPress={()=>{navigation.navigate('회원탈퇴')}} >
+                        <View style={flex_between}>
+                            <View style={styles.mypageListItemTitle}>
+                                <Text style={styles.mypageList_name}>회원탈퇴</Text>
+                            </View>
+                            <View style={styles.mypageListItemIcon}>
+                                {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
+                                <Text style={styles.mypageList_name}> > </Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -185,5 +186,8 @@ const styles = StyleSheet.create({
     },
     mypageList_name:{
         fontSize:16,
-    }
+    },
+    mypageListItem_link:{
+        width:"100%",
+    },
 })

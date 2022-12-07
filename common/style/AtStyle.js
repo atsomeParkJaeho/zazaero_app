@@ -13,6 +13,7 @@ export const flex_between = {
     flexDirection:"row",
     alignItems:"center",
     justifyContent: "space-between",
+
 }
 
 //font-size
