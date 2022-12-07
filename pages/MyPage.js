@@ -15,17 +15,17 @@ export default function MyPage({navigation,route}){
     return(
         <ScrollView style={[bg_white]}>
 
-            <View style={styles.top_inner}>
-                <View style={styles.top_innerone}>
-                    <Icon name="arrowleft" size={25} color="#000" />
-                </View>
-                <View style={styles.top_innerone}>
-                    <Text style={styles.toptitle}>마이페이지</Text>
-                </View>
-                <View style={styles.top_innertwo}>
-                    <Icon name="home" size={25} color="#000" />
-                </View>
-            </View>
+            {/*<View style={styles.top_inner}>*/}
+            {/*    <View style={styles.top_innerone}>*/}
+            {/*        <Icon name="arrowleft" size={25} color="#000" />*/}
+            {/*    </View>*/}
+            {/*    <View style={styles.top_innerone}>*/}
+            {/*        <Text style={styles.toptitle}>마이페이지</Text>*/}
+            {/*    </View>*/}
+            {/*    <View style={styles.top_innertwo}>*/}
+            {/*        <Icon name="home" size={25} color="#000" />*/}
+            {/*    </View>*/}
+            {/*</View>*/}
             {/*상단영역*/}
 
             <View style={[styles.mypageinfo]}>
@@ -33,30 +33,39 @@ export default function MyPage({navigation,route}){
                     <Text style={styles.user_cmy_name}>가나인테리어</Text>
                     <Text style={styles.user_name}>홍길동 담당자 (01012345678)</Text>
                     <Text style={styles.user_point}>보유포인트:<Text style={styles.user_point_score}>5000P</Text></Text>
-                    <TouchableOpacity style={styles.user_point_link} onPress={()=>{navigation.navigate('설정')}} >
+                    <TouchableOpacity style={styles.user_point_link} onPress={()=>{navigation.navigate('포인트내역')}} >
                         <Text style={[styles.user_point_link_txt]}>나의 포인트 보유내역 확인하기</Text>
                     </TouchableOpacity>
                 </View>
             </View>
             <View style={styles.mypageList}>
                 <View style={styles.mypageListItem}>
-                    <View style={styles.mypageListItemTitle}>
-                        <Text style={styles.mypageList_name}>설정</Text>
-                    </View>
-                    <View style={styles.mypageListItemIcon}>
-                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                        <Text style={styles.mypageList_name}> > </Text>
-                    </View>
+                    <TouchableOpacity style={styles.mypageListItem_link} onPress={()=>{navigation.navigate('설정')}} >
+                        <View style={styles.flex}>
+                            <View style={styles.mypageListItemTitle}>
+                                <Text style={styles.mypageList_name}>설정</Text>
+                            </View>
+                            <View style={styles.mypageListItemIcon}>
+                                {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
+                                <Text style={styles.mypageList_name}> > </Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.mypageListItem}>
-                    <View style={styles.mypageListItemTitle}>
-                        <Text style={styles.mypageList_name}>회원정보변경</Text>
-                    </View>
-                    <View style={styles.mypageListItemIcon}>
-                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                        <Text style={styles.mypageList_name}> > </Text>
-                    </View>
+                    <TouchableOpacity style={styles.mypageListItem_link} onPress={()=>{navigation.navigate('회원정보수정')}} >
+                        <View style={styles.flex}>
+                            <View style={styles.mypageListItemTitle}>
+                                <Text style={styles.mypageList_name}>회원정보변경</Text>
+                            </View>
+                            <View style={styles.mypageListItemIcon}>
+                                {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
+                                <Text style={styles.mypageList_name}> > </Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
                 </View>
+
                 <View style={styles.mypageListItem}>
                     <View style={styles.mypageListItemTitle}>
                         <Text style={styles.mypageList_name}>취소, 반품내역</Text>
@@ -67,32 +76,45 @@ export default function MyPage({navigation,route}){
                     </View>
                 </View>
                 <View style={styles.mypageListItem}>
-                    <View style={styles.mypageListItemTitle}>
-                        <Text style={styles.mypageList_name}>공지사항</Text>
-                    </View>
-                    <View style={styles.mypageListItemIcon}>
-                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                        <Text style={styles.mypageList_name}> > </Text>
-                    </View>
+                    <TouchableOpacity style={styles.mypageListItem_link} onPress={()=>{navigation.navigate('공지사항')}} >
+                        <View style={styles.flex}>
+                            <View style={styles.mypageListItemTitle}>
+                                <Text style={styles.mypageList_name}>공지사항</Text>
+                            </View>
+                            <View style={styles.mypageListItemIcon}>
+                                {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
+                                <Text style={styles.mypageList_name}> > </Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.mypageListItem}>
-                    <View style={styles.mypageListItemTitle}>
-                        <Text style={styles.mypageList_name}>고객센터</Text>
-                    </View>
-                    <View style={styles.mypageListItemIcon}>
-                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                        <Text style={styles.mypageList_name}> > </Text>
-                    </View>
+                    <TouchableOpacity style={styles.mypageListItem_link} onPress={()=>{navigation.navigate('고객센터')}} >
+                        <View style={styles.flex}>
+                            <View style={styles.mypageListItemTitle}>
+                                <Text style={styles.mypageList_name}>고객센터</Text>
+                            </View>
+                            <View style={styles.mypageListItemIcon}>
+                                {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
+                                <Text style={styles.mypageList_name}> > </Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.mypageListItem}>
-                    <View style={styles.mypageListItemTitle}>
-                        <Text style={styles.mypageList_name}>약관 * 개인정보처리방침</Text>
-                    </View>
-                    <View style={styles.mypageListItemIcon}>
-                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                        <Text style={styles.mypageList_name}> > </Text>
-                    </View>
+                    <TouchableOpacity style={styles.mypageListItem_link} onPress={()=>{navigation.navigate('약관/개인정보처리방침')}} >
+                        <View style={styles.flex}>
+                            <View style={styles.mypageListItemTitle}>
+                                <Text style={styles.mypageList_name}>약관 * 개인정보처리방침</Text>
+                            </View>
+                            <View style={styles.mypageListItemIcon}>
+                                {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
+                                <Text style={styles.mypageList_name}> > </Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
                 </View>
+
             </View>
 
         </ScrollView>
@@ -207,9 +229,16 @@ const styles = StyleSheet.create({
         fontWeight:"700"
     },
     mypageListItem:{
+
+    },
+    mypageListItem_link:{
+        width:"100%",
+    },
+    flex:{
         flexDirection:"row",
         justifyContent:"space-between",
         alignItems:"center",
+
     },
     mypageList:{
 

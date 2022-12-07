@@ -61,12 +61,12 @@ export default function Login({navigation,route}) {
                     {/*로그인 버튼*/}
                     <View style={styles.link_idpw}>
                         <View style={styles.findId}>
-                            <TouchableOpacity style={styles.link_find_id} onPress={()=>{navigation.navigate('DetailPage',content)}} >
+                            <TouchableOpacity style={styles.link_find_id} onPress={()=>{navigation.navigate('아이디 찾기')}} >
                                 <Text style={[styles.link_find_txt,styles.br_1]}>아이디 찾기</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.findpw}>
-                            <TouchableOpacity style={styles.link_find_pw} onPress={()=>{navigation.navigate('DetailPage',content)}} >
+                            <TouchableOpacity style={styles.link_find_pw} onPress={()=>{navigation.navigate('비밀번호 찾기')}} >
                                 <Text style={styles.link_find_txt}>비밀번호 찾기</Text>
                             </TouchableOpacity>
                         </View>
