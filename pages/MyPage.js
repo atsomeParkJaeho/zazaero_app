@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {View,Text,StyleSheet,Image, TouchableOpacity, ScrollView} from 'react-native'
 import logo from "../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
@@ -6,27 +6,38 @@ import Icon from "react-native-vector-icons/AntDesign";
 // 공통 CSS 추가
 import {container, bg_white} from '../common/style/AtStyle';
 import {sub_page} from '../common/style/SubStyle';
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Footer from "./Footer";
 
 export default function MyPage({navigation,route}){
 
-    let mypageList_test = "가나인테리어";
-    let mypageList_test2 = "가나인테리어2";
+    const member = AsyncStorage.getItem('member');
 
+    console.log('test / '+member);
+
+    const [mem_info, set_mem_info] = useState([]);   // 회원정보 셋팅
+    useEffect(()=>{
+        axios.get('http://49.50.162.86:80/ajax/UTIL_mem_info.php',{
+            params:{
+                act_type:"my_page",
+
+            }
+        }).then((res)=>{
+            if(res) {
+                //const {result} = res.data;
+                set_mem_info(res.data);
+                console.log(res.data);
+            }
+        })
+    },[]);
+
+    console.log(mem_info.mem_id);
+
+    
     return(
-        <ScrollView style={[bg_white]}>
-
-            {/*<View style={styles.top_inner}>*/}
-            {/*    <View style={styles.top_innerone}>*/}
-            {/*        <Icon name="arrowleft" size={25} color="#000" />*/}
-            {/*    </View>*/}
-            {/*    <View style={styles.top_innerone}>*/}
-            {/*        <Text style={styles.toptitle}>마이페이지</Text>*/}
-            {/*    </View>*/}
-            {/*    <View style={styles.top_innertwo}>*/}
-            {/*        <Icon name="home" size={25} color="#000" />*/}
-            {/*    </View>*/}
-            {/*</View>*/}
-            {/*상단영역*/}
+        <>
+            <ScrollView style={[bg_white]}>
 
             <View style={[styles.mypageinfo]}>
                 <View style={[container]}>
@@ -116,8 +127,9 @@ export default function MyPage({navigation,route}){
                 </View>
 
             </View>
-
         </ScrollView>
+            <Footer navigation={navigation}/>
+        </>
     )
 }
 

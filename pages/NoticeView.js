@@ -7,7 +7,8 @@ import Icon from "react-native-vector-icons/AntDesign";
 
 export default function NoticeView(){
 
-    let mypageList_name = "가나인테리어";
+    console.log('공지사항');
+
     return(
         <ScrollView style={styles.container}>
 

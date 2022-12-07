@@ -10,53 +10,98 @@ import logo from '../../assets/img/m_logo.png';
 // 공통 CSS 추가
 import {container, bg_white, flex, txt14} from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
-
-
-
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Login({navigation,route}) {
-    //useState 사용법
-    //[state,setState] 에서 state는 이 컴포넌트에서 관리될 상태 데이터를 담고 있는 변수
-    //setState는 state를 변경시킬때 사용해야하는 함수
 
-    //모두 다 useState가 선물해줌
-    //useState()안에 전달되는 값은 state 초기값
-    const [state,setState] = useState([])
-    const [ready,setReady] = useState(true)
+
+
 
     const [isChecked, setChecked] = useState(false);
 
-    useEffect(()=>{
+    const [Login, setLogin] = useState({    // 로그인상태 셋팅
+        mem_id:"",
+        mem_pw:""
+    }); 
+    const [ready,setReady] = useState(true);    // 로딩 액션
+    
+    
+    // =================로그인 액션 설정=====================//
+    const goInput = (keyValue, e) => {
+        setLogin({
+            ...Login,
+            [keyValue]:e,
+        });
+    };
 
+    //==================로그인 하기=======================//
+    const goLogin =()=> {
+        const {mem_id, mem_pw} = Login;
+        if(!Login.mem_id) { alert('아이디를 입력해주세요.'); return;}
+        if(!Login.mem_pw) { alert('비밀번호를 입력해주세요.'); return;}
+
+        const data = {
+            act_type:'login',
+            mem_id:mem_id,
+            mem_pw:mem_pw,
+            login:'Y'
+        }
+        // 포스트시에 header 셋팅 할것
+        axios.post('http://49.50.162.86:80/ajax/UTIL_login.php', data,{
+            headers:{
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            if(res) {
+                const {result, mem_uid} = res.data;
+                if(result === 'OK') {
+                    alert('로그인 완료하였습니다.');
+                    AsyncStorage.setItem('member',mem_uid);
+                    console.log(mem_uid);
+                    navigation.replace("메인페이지");
+                }
+                if(result === 'NG_info') {
+                    alert('해당계정이 없습니다.');
+                    return;
+                }
+            }
+        }).catch((err)=> console.log(err));
+    }
+
+
+
+    // 로딩액션
+    useEffect(()=>{
         //뒤의 1000 숫자는 1초를 뜻함
         //1초 뒤에 실행되는 코드들이 담겨 있는 함수
         setTimeout(()=>{
             setReady(false)
         },1000)
 
+    },[]);
 
-    },[])
 
-    const [id, onChangeText] = React.useState("");
-    const [pw, onChangePW] = React.useState("");
-    const [number, onChangeNumber] = React.useState(null);
+    console.log('test / ');
+    //
 
     return ready ? <Loading/> :  (
 
             <View style={[styles.subPage,styles.login]}>
                 <View style={styles.container}>
+
                     <Image style={styles.loginLogo} source={logo}/>
                     {/*자재로 로고*/}
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>아이디</Text>
-                            <TextInput style={styles.input} onChangeText={onChangeText} placeholder="아이디를 입력해주세요" value={id}/>
+                            <TextInput style={styles.input} onChangeText={(mem_id)=>goInput("mem_id",mem_id)} value={Login.mem_id} placeholder="아이디를 입력해주세요" />
                         </View>
                     </View>
                     {/*아이디 입력창*/}
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>비밀번호</Text>
-                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={onChangePW}  placeholder="비밀번호를 입력해주세요." value={pw}/>
+                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={(mem_pw)=>goInput("mem_pw",mem_pw)} value={Login.mem_pw} placeholder="비밀번호를 입력해주세요." />
                         </View>
                     </View>
                     {/*비밀번호 입력창*/}
@@ -66,7 +111,7 @@ export default function Login({navigation,route}) {
                     </View>
                     {/*자동로그인*/}
 
-                    <TouchableOpacity style={styles.loginformbtn} onPress={()=>{navigation.navigate('메인페이지')}}>
+                    <TouchableOpacity style={styles.loginformbtn} onPress={goLogin}>
                         <Text style={styles.loginformbtntxt}>로그인</Text>
                     </TouchableOpacity>
                     {/*로그인 버튼*/}
