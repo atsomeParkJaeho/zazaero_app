@@ -1,12 +1,15 @@
 import React,{useState,useEffect} from 'react';
 import { StyleSheet, Text, TextInput, View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import Checkbox from 'expo-checkbox';
 
 //로딩화면
 import Loading from '../../components/Loading';
 //자재로로고이미지
 import logo from '../../assets/img/m_logo.png';
 
-
+// 공통 CSS 추가
+import {container, bg_white, flex, txt14} from '../../common/style/AtStyle';
+import {sub_page} from '../../common/style/SubStyle';
 
 
 
@@ -19,6 +22,8 @@ export default function Login({navigation,route}) {
     //useState()안에 전달되는 값은 state 초기값
     const [state,setState] = useState([])
     const [ready,setReady] = useState(true)
+
+    const [isChecked, setChecked] = useState(false);
 
     useEffect(()=>{
 
@@ -55,6 +60,12 @@ export default function Login({navigation,route}) {
                         </View>
                     </View>
                     {/*비밀번호 입력창*/}
+                    <View style={[flex,styles.pb_24]}>
+                        <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked}  color={"#4630eb"}  />
+                        <Text style={txt14}>자동로그인</Text>
+                    </View>
+                    {/*자동로그인*/}
+
                     <TouchableOpacity style={styles.loginformbtn} onPress={()=>{navigation.navigate('메인페이지')}}>
                         <Text style={styles.loginformbtntxt}>로그인</Text>
                     </TouchableOpacity>
@@ -163,5 +174,11 @@ const styles = StyleSheet.create({
     link_txt:{
         fontWeight:"500",
         textAlign:"center",
-    }
+    },
+    checkbox:{
+        marginRight:8,
+    },
+    pb_24:{
+        paddingBottom:24,
+    },
 });

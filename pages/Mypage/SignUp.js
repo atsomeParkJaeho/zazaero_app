@@ -1,11 +1,14 @@
 import React,{useState,useEffect} from 'react';
-import { StyleSheet, Button, CheckBox,  Text, TextInput, View, Image, TouchableOpacity, ScrollView} from 'react-native';
-
+import { StyleSheet, Button,   Text, TextInput, View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import Checkbox from 'expo-checkbox';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 //로딩화면
 import Loading from '../../components/Loading';
 
-
+// 공통 CSS 추가
+import {container, bg_white, flex} from '../../common/style/AtStyle';
+import {sub_page} from '../../common/style/SubStyle';
 
 export default function SignUp({navigation,route}) {
     //useState 사용법
@@ -16,6 +19,26 @@ export default function SignUp({navigation,route}) {
     //useState()안에 전달되는 값은 state 초기값
     const [state,setState] = useState([])
     const [ready,setReady] = useState(false)
+
+    const [isChecked, setChecked] = useState(false);
+    const [isChecked2, setChecked2] = useState(false);
+    const [isChecked3, setChecked3] = useState(false);
+    const [isChecked4, setChecked4] = useState(false);
+    const [isChecked5, setChecked5] = useState(false);
+    const [isChecked6, setChecked6] = useState(false);
+    //셀렉트박스
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState('서울특별시');
+    const [items, setItems] = useState([
+        {label: '서울특별시', value: '서울특별시'},
+        {label: '부산광역시', value: '부산광역시'},
+        {label: '울산광역시', value: '울산광역시'},
+        {label: '대구광역시', value: '대구광역시'},
+        {label: '인천광역시', value: '인천광역시'},
+        {label: '대전광역시', value: '대전광역시'},
+        {label: '광주광역시', value: '광주광역시'},
+    ]);
+
 
     useEffect(()=>{
 
@@ -42,6 +65,7 @@ export default function SignUp({navigation,route}) {
         <ScrollView >
             <View style={[styles.subPage,styles.signup]}>
                 <View style={styles.container}>
+
                     <View style={styles.formGroup}>
                         <Text style={styles.inputTopText}>아이디</Text>
                         <View style={styles.flex}>
@@ -70,11 +94,26 @@ export default function SignUp({navigation,route}) {
                         </View>
                     </View>
                     {/*비밀번호확인 입력창*/}
+
                 </View>
 
                 <View style={styles.gary_bar}/>
 
                 <View style={styles.container}>
+                    <View style={styles.formGroup}>
+                        <View style={styles.inputGroup}>
+                            <Text style={styles.inputTopText}>지역</Text>
+                            <DropDownPicker
+                                open={open}
+                                value={value}
+                                items={items}
+                                setOpen={setOpen}
+                                setValue={setValue}
+                                setItems={setItems}
+                                style={styles.select_box}
+                            />
+                        </View>
+                    </View>
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>업체명</Text>
@@ -138,13 +177,14 @@ export default function SignUp({navigation,route}) {
 
                 <View style={styles.container}>
                     <View style={styles.privacy_wrap}>
-                        <View style={styles.privacy_chek_all}>
-
-                            <Text style={styles.privacy_chek_all_txt}>전체 약관 동의</Text>
+                        <View style={[styles.privacy_chek_all,flex]}>
+                            <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked}  color={"#4630eb"}  />
+                            <Text style={styles.privacy_chek_all_txt} >전체 약관 동의</Text>
                         </View>
                         <View style={styles.privacy_list}>
                             <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
-                                <View style={styles.privacy_list_flex_item}>
+                                <View style={[styles.privacy_list_flex_item,flex]}>
+                                    <Checkbox style={styles.checkbox} value={isChecked2} onValueChange={setChecked2}  color={"#4630eb"}  />
                                     <Text style={styles.privacy_list_flex_item_txt}>서비스 이용약관 <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                 </View>
                                 <View style={styles.privacy_list_flex_item}>
@@ -155,7 +195,8 @@ export default function SignUp({navigation,route}) {
                             </View>
                             {/* 서비스 이용약관  */}
                             <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
-                                <View style={styles.privacy_list_flex_item}>
+                                <View style={[styles.privacy_list_flex_item,flex]}>
+                                    <Checkbox style={styles.checkbox} value={isChecked3} onValueChange={setChecked3}  color={"#4630eb"}  />
                                     <Text style={styles.privacy_list_flex_item_txt}>개인정보 처리방침 동의 <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                 </View>
                                 <View style={styles.privacy_list_flex_item}>
@@ -166,7 +207,8 @@ export default function SignUp({navigation,route}) {
                             </View>
                             {/* 개인정보 처리방침 동의 */}
                             <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
-                                <View style={styles.privacy_list_flex_item}>
+                                <View style={[styles.privacy_list_flex_item,flex]}>
+                                    <Checkbox style={styles.checkbox} value={isChecked4} onValueChange={setChecked4}  color={"#4630eb"}  />
                                     <Text style={styles.privacy_list_flex_item_txt}>전자금융거래 이용약관  <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                 </View>
                                 <View style={styles.privacy_list_flex_item}>
@@ -177,7 +219,8 @@ export default function SignUp({navigation,route}) {
                             </View>
                             {/* 전자금융거래 이용약관 */}
                             <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
-                                <View style={styles.privacy_list_flex_item}>
+                                <View style={[styles.privacy_list_flex_item,flex]}>
+                                    <Checkbox style={styles.checkbox} value={isChecked5} onValueChange={setChecked5}  color={"#4630eb"}  />
                                     <Text style={styles.privacy_list_flex_item_txt}>제3자 개인정보수집 동의  <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                 </View>
                                 <View style={styles.privacy_list_flex_item}>
@@ -188,7 +231,8 @@ export default function SignUp({navigation,route}) {
                             </View>
                             {/* 제3자 개인정보수집 동의 */}
                             <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
-                                <View style={styles.privacy_list_flex_item}>
+                                <View style={[styles.privacy_list_flex_item,flex]}>
+                                    <Checkbox style={styles.checkbox} value={isChecked6} onValueChange={setChecked6}  color={"#4630eb"}  />
                                     <Text style={styles.privacy_list_flex_item_txt}>홍보 및 마케팅 이용 동의 (선택) </Text>
                                 </View>
                                 <View style={styles.privacy_list_flex_item}>
@@ -202,6 +246,11 @@ export default function SignUp({navigation,route}) {
                     </View>
                 </View>
                 <View style={styles.gary_bar}/>
+                <View style={[styles.form_btn,styles.form_meminfo_btn]}>
+                    <TouchableOpacity style={[styles.form_btn_link,styles.form_btn_meminfo_link]} >
+                        <Text style={styles.form_btn_txt}>회원가입</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </ScrollView>
 
@@ -338,6 +387,25 @@ const styles = StyleSheet.create({
     privacy_btn_txt:{
         fontSize:12,
         color:"#b1b2c3",
-
+    },
+    form_btn:{
+        backgroundColor:"#B1B2C3",
+        paddingVertical:20,
+        marginTop:30,
+    },
+    form_btn_txt:{
+        textAlign:"center",
+        fontSize:17,
+        lineHeight:24,
+        color:"#fff",
+    },
+    checkbox: {
+      marginRight:8,
+    },
+    select_box:{
+        borderColor:"#EDEDF1",
+        borderRadius:0,
+        minHeight:36,
+        height:36,
     },
 });
