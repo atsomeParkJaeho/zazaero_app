@@ -5,13 +5,13 @@ import Icon from 'react-native-vector-icons/AntDesign';
 //이미지 슬라이드
 import {ImageSlider} from "react-native-image-slider-banner";
 
-// 이미지 추가
-import logo from '../assets/img/top_logo.png';
-import m_slider2 from '../assets/img/main_banner2.jpg';
-import m_slider3 from '../assets/img/main_banner3.jpg';
-
 // 공통 CSS 추가
 import {container, bg_white} from '../common/style/AtStyle';
+
+// 이미지 추가
+import logo from '../assets/img/top_logo.png';
+
+
 
 
 export default function MainPage(navigation, route) {
@@ -24,28 +24,31 @@ export default function MainPage(navigation, route) {
           return 구문 안에서는 {슬래시 + * 방식으로 주석
         */
         <ScrollView style={container,bg_white}>
-            <View style={styles.top_inner}>
-                <View style={styles.top_innerone}>
-                    <Image style={styles.logoimg} source={logo}/>
-                </View>
-                <View style={styles.top_innertwo}>
-                    <Icon name="search1" size={25} color="#000" style={styles.me_10}/>
-                    <Icon name="bells" size={25} color="#000"/>
-                </View>
-            </View>
-
+            {/*<View style={styles.top_inner}>*/}
+            {/*    <View style={styles.top_innerone}>*/}
+            {/*        <Image style={styles.logoimg} source={logo}/>*/}
+            {/*    </View>*/}
+            {/*    <View style={styles.top_innertwo}>*/}
+            {/*        <Icon name="search1" size={25} color="#000" style={styles.me_10}/>*/}
+            {/*        <Icon name="bells" size={25} color="#000"/>*/}
+            {/*    </View>*/}
+            {/*</View>*/}
 
             <ImageSlider
                 data={[
-                    {img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5a5uCP-n4teeW2SApcIqUrcQApev8ZVCJkA&usqp=CAU'},
-                    {img: '../assets/img/main_banner3.jpg'},
-                    {img: '../assets/img/main_banner3.jpg'}
+                    {img: require("../assets/img/main_banner2.jpg")},
+                    {img: require("../assets/img/main_banner3.jpg")},
                 ]}
-                autoPlay={false}
+                localImg={true}
+                previewImageStyle={false}
                 onItemChanged={(item) => console.log("item", item)}
-                closeIconColor="#fff"
-                style={styles.mainImage}
+
+                caroselImageStyle={{height: 200}}
+                indicatorContainerStyle={{top: -50}}
+                style={{height:500,}}
             />
+
+
             <View style={styles.main_footer}>
                 <View style={container}>
                     <View style={styles.main_footer_flex}>
