@@ -1,23 +1,63 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
-
+import { List } from 'react-native-paper';
 //이미지 슬라이드
 import {ImageSlider} from "react-native-image-slider-banner";
 
 // 공통 CSS 추가
-import {container, bg_white} from '../common/style/AtStyle';
+import {container, bg_white,flex} from '../common/style/AtStyle';
 
 // 이미지 추가
 import logo from '../assets/img/top_logo.png';
+import  col1 from '../assets/img/co1.png';
+import  col2 from '../assets/img/co2.png';
+import  col3 from '../assets/img/co3.png';
 
 
+export default function MainPage({navigation,route}) {
+
+    const [expanded, setExpanded] = React.useState(true);
+
+    const handlePress = () => setExpanded(!expanded);
 
 
-export default function MainPage(navigation, route) {
+    const cate_list = [ "바닥공사", "욕식공사", "도배공사"];
 
+    const Cate_List2 = [
 
+        {
+            "ct_count": "1",                   //카운트
+            "ct_img": col1,        //이미지
+            "ct_tit": "석고/보드류",        //카테고리명
+        },
+        {
+            "ct_count": "2",                   //카운트
+            "ct_img": col2,        //이미지
+            "ct_tit": "합판/MDF/OSB",        //카테고리명
+        },
+        {
+            "ct_count": "3",                   //카운트
+            "ct_img": col3,        //이미지
+            "ct_tit": "각재/구조재",        //카테고리명
+        },
+        {
+            "ct_count": "1",                   //카운트
+            "ct_img": col3,        //이미지
+            "ct_tit": "몰딩",        //카테고리명
+        },
+        {
+            "ct_count": "2",                   //카운트
+            "ct_img": col2,        //이미지
+            "ct_tit": "단열재",        //카테고리명
+        },
+        {
+            "ct_count": "3",                   //카운트
+            "ct_img": col1,        //이미지
+            "ct_tit": "도어/문틀",        //카테고리명
+        },
 
+    ];
 
     return (
         /*
@@ -47,7 +87,43 @@ export default function MainPage(navigation, route) {
                 indicatorContainerStyle={{top: -50}}
                 style={{height:500,}}
             />
+            <List.Section style={styles.Section}>
+                <List.Accordion style={styles.Accordion_tit} title="목/형틀공사"   expanded={expanded}  onPress={handlePress}>
+                    <View style={styles.Accordion_items}>
+                        <View style={[styles.Accordion_itemsflex]}>
 
+                        {Cate_List2.map(items =>
+
+                                <View style={styles.w3}>
+                                    <TouchableOpacity style="" onPress={()=>{navigation.navigate('상품목록')}}>
+                                    <Image style={styles.ct_img} source={items.ct_img}/>
+                                    <Text style={styles.Accordion_items_link_txt}>{items.ct_tit}</Text>
+                                    </TouchableOpacity>
+                                </View>
+
+                        )}
+
+                        </View>
+                    </View>
+                </List.Accordion>
+                {cate_list.map((items, index) =>
+                    <List.Accordion style={styles.Accordion_tit} title={items} key={index}  >
+                        <View style={styles.Accordion_items}>
+                            <View style={[styles.Accordion_itemsflex]}>
+                                {Cate_List2.map(items =>
+
+                                    <View style={styles.w3}>
+                                        <Image style={styles.ct_img} source={items.ct_img}/>
+                                        <Text style={styles.Accordion_items_link_txt}>{items.ct_tit}</Text>
+                                    </View>
+
+                                )}
+                            </View>
+                        </View>
+                    </List.Accordion>
+                )}
+
+            </List.Section>
 
             <View style={styles.main_footer}>
                 <View style={container}>
@@ -182,8 +258,6 @@ const styles = StyleSheet.create({
         //텍스트의 현재 위치에서의 정렬
         textAlign: "center"
     },
-
-
     main_footer: {
         backgroundColor: "#F9F9FB",
     },
@@ -212,5 +286,41 @@ const styles = StyleSheet.create({
         color: "#999",
         padding: 3,
     },
+    Section:{
+        marginBottom:0,
+    },
+    Accordion_tit:{
+        backgroundColor:"#fff",
+        borderBottomWidth:8,
+        borderColor:"#EDEDF1"
+    },
+    Accordion_items:{
+        padding:12,
+        borderBottomWidth:8,
+        borderColor:"#EDEDF1"
+    },
+    Accordion_itemsflex:{
+        flexDirection:"row",
+        flexWrap:"wrap",
+        alignItems:"center",
+    },
+    w3:{
+        width:"33.333%",
+        marginBottom:12,
+    },
+    ct_img:{
+        width:60,
+        height:60,
+        borderRadius:5,
+        marginLeft: 'auto',
+        marginRight: 'auto',
 
+    },
+    Accordion_items_link_txt:{
+        textAlign:"center",
+        fontSize:14,
+        lineHeight:24,
+        color:"#222",
+        letterSpacing:-1,
+    }
 });
