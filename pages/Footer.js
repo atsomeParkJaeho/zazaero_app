@@ -1,14 +1,10 @@
 import {Text, TouchableOpacity, View} from "react-native";
 import styleSheet from "react-native-web/dist/exports/StyleSheet";
-import {WithLocalSvg} from "react-native-svg";
-
-// 아이콘 불러오기
 import HomeLogo from '../icons/home_logo.svg';
-import WishList from '../icons/wish.svg';
+import Wish from '../icons/wish.svg';
 import Cart from '../icons/cart.svg';
-import orderList from '../icons/order_list.svg';
+import OrderList from '../icons/order_list.svg';
 import Mypage from '../icons/mypage.svg';
-
 
 const styles = styleSheet.create({
     FooterWrap : {
@@ -49,14 +45,16 @@ const styles = styleSheet.create({
 
 });
 
-function Footer({navigation}) {
+
+
+function Footer({navigation,pages}) {
     return(
         <>
             <View style={styles.FooterWrap}>
                 <View style={[styles.Tabs, styles.TextCenter]}>
                     <TouchableOpacity onPress={()=>{navigation.navigate('메인페이지')}}>
                         <View style={styles.SvgIcons}>
-                            <WithLocalSvg asset={HomeLogo}/>
+                            <HomeLogo width={22} height={18} />
                         </View>
                         <View>
                             <Text style={styles.TextCenter}>홈</Text>
@@ -66,7 +64,7 @@ function Footer({navigation}) {
                 <View style={[styles.Tabs,]}>
                     <TouchableOpacity onPress={()=>{navigation.navigate('즐겨찾기')}}>
                         <View style={styles.SvgIcons}>
-                            <WithLocalSvg asset={WishList}/>
+                            <Wish width={22} height={18}/>
                         </View>
                         <View>
                             <Text style={styles.TextCenter}>즐겨찾기</Text>
@@ -76,7 +74,7 @@ function Footer({navigation}) {
                 <View style={[styles.Tabs,]}>
                     <TouchableOpacity onPress={()=>{navigation.navigate('장바구니')}}>
                         <View style={styles.SvgIcons}>
-                            <WithLocalSvg asset={Cart}/>
+                            <Cart width={22} height={18}/>
                         </View>
                         <View>
                             <Text style={styles.TextCenter}>장바구니</Text>
@@ -86,7 +84,7 @@ function Footer({navigation}) {
                 <View style={[styles.Tabs,]}>
                     <TouchableOpacity onPress={()=>{navigation.navigate('발주내역')}}>
                         <View style={styles.SvgIcons}>
-                            <WithLocalSvg asset={orderList}/>
+                            <OrderList width={22} height={18}/>
                         </View>
                         <View>
                             <Text style={styles.TextCenter}>발주내역</Text>
@@ -96,7 +94,7 @@ function Footer({navigation}) {
                 <View style={[styles.Tabs,]}>
                     <TouchableOpacity onPress={()=>{navigation.navigate('마이페이지')}}>
                         <View style={styles.SvgIcons}>
-                            <WithLocalSvg asset={Mypage}/>
+                            <Mypage width={22} height={18}/>
                         </View>
                         <View>
                             <Text style={styles.TextCenter}>마이페이지</Text>

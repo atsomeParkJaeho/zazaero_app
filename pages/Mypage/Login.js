@@ -12,9 +12,10 @@ import {container, bg_white, flex, txt14} from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Update from "expo-updates";
+import {reloadAsync} from "expo-updates";
+
 export default function Login({navigation,route}) {
-
-
 
 
     const [isChecked, setChecked] = useState(false);
@@ -35,7 +36,7 @@ export default function Login({navigation,route}) {
     };
 
     //==================로그인 하기=======================//
-    const goLogin =()=> {
+    const goLogin = async ()=> {
         const {mem_id, mem_pw} = Login;
         if(!Login.mem_id) { alert('아이디를 입력해주세요.'); return;}
         if(!Login.mem_pw) { alert('비밀번호를 입력해주세요.'); return;}
@@ -55,10 +56,10 @@ export default function Login({navigation,route}) {
             if(res) {
                 const {result, mem_uid} = res.data;
                 if(result === 'OK') {
-                    alert('로그인 완료하였습니다.');
+                    alert('로그인');
                     AsyncStorage.setItem('member',mem_uid);
-                    console.log(mem_uid);
-                    navigation.replace("메인페이지");
+                    reloadAsync();
+                    navigation.replace('메인페이지');
                 }
                 if(result === 'NG_info') {
                     alert('해당계정이 없습니다.');
@@ -81,8 +82,6 @@ export default function Login({navigation,route}) {
     },[]);
 
 
-    console.log('test / ');
-    //
 
     return ready ? <Loading/> :  (
 

@@ -1,9 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import { StyleSheet, Button,   Text, TextInput, View, Image, TouchableOpacity, ScrollView} from 'react-native';
 import Checkbox from 'expo-checkbox';
-
-import {SelectList} from 'react-native-dropdown-select-list'
-//셀렉트박스
+import DropDownPicker from 'react-native-dropdown-picker';
 
 //로딩화면
 import Loading from '../../components/Loading';
@@ -11,62 +9,253 @@ import Loading from '../../components/Loading';
 // 공통 CSS 추가
 import {container, bg_white, flex} from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
+import axios from "axios";
 
 export default function SignUp({navigation,route}) {
-    //useState 사용법
-    //[state,setState] 에서 state는 이 컴포넌트에서 관리될 상태 데이터를 담고 있는 변수
-    //setState는 state를 변경시킬때 사용해야하는 함수
-
-    //모두 다 useState가 선물해줌
-    //useState()안에 전달되는 값은 state 초기값
-    const [state,setState] = useState([])
-    const [ready,setReady] = useState(false)
-
-    const [isChecked, setChecked] = useState(false);
-    const [isChecked2, setChecked2] = useState(false);
-    const [isChecked3, setChecked3] = useState(false);
-    const [isChecked4, setChecked4] = useState(false);
-    const [isChecked5, setChecked5] = useState(false);
-    const [isChecked6, setChecked6] = useState(false);
 
 
-
-    const [selected, setSelected] = React.useState("");
-    const data = [
-        {key: '1', value: '서울특별시',},
-        {key: '2', value: '부산광역시',},
-        {key: '3', value: '울산광역시',},
-        {key: '4', value: '대구광역시',},
-        {key: '5', value: '인천광역시',},
-        {key: '6', value: '대전광역시',},
-        {key: '7', value: '광주광역시',},
-        // {key:'4', value:'Computers', disabled:true},
-
-    ]
-    //배송지 불러오기 셀렉트박스
-
-    useEffect(()=>{
-
-        //뒤의 1000 숫자는 1초를 뜻함
-        //1초 뒤에 실행되는 코드들이 담겨 있는 함수
-        setTimeout(()=>{
-            setReady(false)
-        },1000)
+    // 회원가입폼 상태 루틴
+    const [SignUpContent, setSignUpContent] = useState({
+        mem_id          :"",  // 아이디
+        mem_id_chk      :"",  // 아이디 중복체크
+        mem_pw          :"",  // 패스워드
+        mem_pw_chk      :"",  // 패스워드 체크
+        addr_name       :"",  // 지역코드
+        com_name        :"",  // 업체명
+        com_biz_no      :"",  // 사업자번호        zonecode        :"",  // 우편번호
+        addr1           :"",  // 주소1
+        addr2           :"",  // 주소2 상세
+        zonecode        :"",  // 우편번호
+        mem_name        :"",  // 담당자 이름
+        mem_mobile      :"",  // 담당자 전화번호
+        privacy_1       :"N",  // 서비스 이용약관
+        privacy_2       :"N",  // 개인정보처리방침
+        privacy_3       :"N",  // 전자금율거래 이용약관
+        privacy_4       :"N",  // 제3자 개인정보수집 동의
+        privacy_5       :"N",  // 홍보 및 마케팅 이용 동의
+    });
 
 
-    },[])
+    // 1. 아이디 중복 체크
+    const IdChk = () => {
 
-    const [id, onChangeText] = React.useState("");
-    const [pw, onChangePW] = React.useState("");
-    const [pwch, onChangePWch] = React.useState("");
-    const [com_name, onChangecom_name] = React.useState("");
-    const [addr1, onChangeaddr1] = React.useState("");
-    const [addr2, onChangeaddr2] = React.useState("");
+        if(!regId.test(SignUpContent.mem_id)) {
+            alert('영문만 사용 가능합니다. 숫자만');
+            return;
+        }
+
+        if(Minlangth > SignUpContent.mem_id.length) {
+            alert('6자 이상 입력해주세요.');
+            return;
+        }
+
+        const data = {
+            act_type            : "chk_dup_id",
+            mem_info_act_type   : "INS",
+            mem_id              : SignUpContent.mem_id,
+        }
+        const req = new URLSearchParams(data);
+        axios.post('/ajax/UTIL_mem_reg.php',req).then((res)=>{
+            if(res) {
+                const {result} = res.data;
+                if(result == 'OK') {
+                    alert('사용가능합니다.');
+                    setSignUpContent({
+                        ...SignUpContent,
+                        mem_id_chk:"Y",
+                    });
+                    return;
+                }
+                if(result == 'NG_dup') {
+                    alert('사용불가능합니다.');
+                    return;
+                }
+                if(result == 'BLANK') {
+                    alert('아이디를 입력해주세요.');
+                    return;
+                }
+            }
+        });
+    }
+
+
+    // 2. 입력폼 체크루틴
+    const ChkInput = (keyValue, text) => {
+        // 기본 루틴
+        const {name, value, checked} = text.target;
+        setSignUpContent({
+            ...SignUpContent,
+            [name]:value,
+        });
+
+        // 개인정보 처리방침 체크 루틴
+        if(name == 'privacy_1' || name == 'privacy_2' || name == 'privacy_3' || name == 'privacy_4' || name == 'privacy_5') {
+            if(checked == true) {
+                setSignUpContent({
+                    ...SignUpContent,
+                    [name]:"Y",
+                });
+            } else {
+                setSignUpContent({
+                    ...SignUpContent,
+                    [name]:"N",
+                });
+            }
+        }
+
+    }
+
+    // 회원가입 신청
+    const goSignUp = () => {
+        const {
+            mem_id          ,
+            mem_id_chk     ,
+            mem_pw         ,
+            mem_pw_chk      ,
+            com_name       ,
+            com_biz_no     ,
+            addr1           ,
+            addr2          ,
+            zonecode       ,
+            mem_name      ,
+            mem_mobile    ,
+            privacy_1     ,
+            privacy_2      ,
+            privacy_3      ,
+            privacy_4     ,
+            privacy_5,
+        } = SignUpContent;
+
+        if(mem_id === '')                               { alert('아이디를 입력하세요.'); return;}
+        if(mem_id_chk === 'N' || mem_id_chk === '')     { alert('아이디 중복체크를 확인해주세요'); return;}
+        if(mem_pw === '')                               { alert('비밀번호를 입력하세요.'); return;}
+        if(mem_pw_chk === '')                           { alert('비밀번호를 입력하세요.'); return;}
+        if(regPW.test(mem_pw)) {
+            alert('특수문자 혼합해주세요');
+            return;
+        }
+        if(mem_pw !== mem_pw_chk) {
+            alert('비밀번호가 맞지 않습니다');
+            return;
+        }
+        if(com_biz_no === '')                           { alert('사업자번호를 입력해주세요.'); return;}
+        if(privacy_1  === 'N' || privacy_1 === '')      { alert('서비스 이용약관에 체크해주세요'); return;}
+        if(privacy_2  === 'N' || privacy_1 === '')      { alert('개인정보 처리방침에 체크해주세요'); return;}
+        if(privacy_3  === 'N' || privacy_1 === '')      { alert('전자금융거래 이용약관에 체크해주세요'); return;}
+        if(privacy_4  === 'N' || privacy_1 === '')      { alert('제3자 개인정보수집동의에 체크해주세요.'); return;}
+
+
+        if(!window.confirm('회원가입을 하시겠습니까?')) { alert('취소하였습니다'); return;}
+
+
+        const data = {
+            act_type        :"mem_reg",
+            mem_id          :mem_id,        //아이디
+            mem_pw          :mem_pw,        //패스워드
+            mem_name        :mem_name,      // 담당자이름
+            com_name        :com_name,      // 업체명
+            com_biz_no      :com_biz_no,      // 사업자번호
+            mem_mobile      :mem_mobile,    // 담당자 전화번호
+            addr1           :addr1,
+            addr2           :addr2,
+            zonecode        :zonecode
+        };
+        const req  = new URLSearchParams(data);
+
+        axios.post('/ajax/UTIL_mem_reg.php',req).then((res)=>{
+            if(res) {
+                const {result} = res.data;
+                if(result == 'OK') {
+                    alert('회원가입에 성공하였습니다.');
+                    window.location.href = '/';
+                    return;
+                }
+                else {
+                    alert('회원가입에 실패하였습니다.');
+                }
+
+            }
+        });
+
+    }
+
+    const [IsPostOpen, setIsPostOpen] = useState(false);
+    const onToggle = () => {
+        setIsPostOpen((prev) => !prev);
+    }
+    const handleComplete = (data) => {
+        setSignUpContent({
+            ...SignUpContent,
+            zonecode    : data.zonecode,
+            addr1       : data.address,
+        });
+        onToggle();
+    };
+
+    // 뒤로가기 설정
+    const history = useNavigate();
+    const historyBack = () => {
+        history(-1);
+    }
+    // 홈 리플래시
+    const goHome = () => {
+        history('/');
+        window.location.reload();
+    }
+    // 리셋
+    const reSet = () => {
+        setSignUpContent({
+            ...SignUpContent,
+            mem_id_chk:"",
+        });
+    }
+
+    // 전체 체크
+    const AllChk = (text) => {
+        const {checked} = text.target;
+
+        if(checked == true) {
+
+            setSignUpContent({
+                ...SignUpContent,
+                privacy_1: "Y",
+                privacy_2: "Y",
+                privacy_3: "Y",
+                privacy_4: "Y",
+                privacy_5: "Y",
+            });
+            return;
+        } else {
+            setSignUpContent({
+                ...SignUpContent,
+                privacy_1: "N",
+                privacy_2: "N",
+                privacy_3: "N",
+                privacy_4: "N",
+                privacy_5: "N",
+            });
+            return;
+        }
+    }
+
+
+    console.log(SignUpContent);
+    const chks = (
+        SignUpContent.mem_id == '' ||
+        SignUpContent.mem_pw == '' ||
+        SignUpContent.mem_pw_chk == '' ||
+        SignUpContent.mem_mobile == '' ||
+        SignUpContent.mem_name == '' ||
+        SignUpContent.com_biz_no == '' ||
+        SignUpContent.com_name == '' ||
+        SignUpContent.addr1 == '' ||
+        SignUpContent.addr2 == '' ||
+        SignUpContent.zonecode == ''
+    ) ? true : false;
 
 
 
-
-    return ready ? <Loading/> :  (
+    return (
         <ScrollView >
             <View style={[styles.subPage,styles.signup]}>
                 <View style={styles.container}>
@@ -75,7 +264,7 @@ export default function SignUp({navigation,route}) {
                         <Text style={styles.inputTopText}>아이디</Text>
                         <View style={styles.flex}>
                             <View style={[styles.inputGroup,styles.flexitem1]}>
-                                <TextInput style={[styles.input,styles.me_18]} onChangeText={onChangeText} placeholder="아이디를 입력해주세요" value={id}/>
+                                <TextInput style={[styles.input,styles.me_18]} onChangeText={(mem_id)=>ChkInput(mem_id,"mem_id")} placeholder="아이디를 입력해주세요" value={SignUpContent.mem_id}/>
                             </View>
                             <View style={[styles.flexitem2]}>
                                 <TouchableOpacity style={styles.find_id_btn}  >
@@ -88,14 +277,14 @@ export default function SignUp({navigation,route}) {
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>비밀번호</Text>
-                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={onChangePW}  placeholder="비밀번호를 입력해주세요." value={pw}/>
+                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={(mem_pw)=>ChkInput(mem_pw,"mem_pw")}  placeholder="비밀번호를 입력해주세요." value={SignUpContent.mem_pw}/>
                         </View>
                     </View>
                     {/*비밀번호 입력창*/}
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>비밀번호 확인</Text>
-                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={onChangePWch}  placeholder="비밀번호를 입력해주세요." value={pwch}/>
+                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={(mem_pw_chk)=>ChkInput(mem_pw_chk,"mem_pw_chk")}  placeholder="비밀번호를 입력해주세요." value={SignUpContent.mem_pw_chk}/>
                         </View>
                     </View>
                     {/*비밀번호확인 입력창*/}
@@ -108,28 +297,28 @@ export default function SignUp({navigation,route}) {
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>지역</Text>
-                            <SelectList
-                                setSelected={(val) => setSelected(val)}
-                                data={data}
-                                save="value"
-                                defaultOption={{key: '1', value: '서울특별시'}}
-                                boxStyles={{borderRadius: 0, borderColor: "#ededf1"}}
-                                inputStyles={{fontSize: 12, color: "#696A81"}}
-                                search={false}
-                            />
+                            {/*<DropDownPicker*/}
+                            {/*    open={open}*/}
+                            {/*    value={value}*/}
+                            {/*    items={items}*/}
+                            {/*    setOpen={setOpen}*/}
+                            {/*    setValue={setValue}*/}
+                            {/*    setItems={setItems}*/}
+                            {/*    style={styles.select_box}*/}
+                            {/*/>*/}
                         </View>
                     </View>
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>업체명</Text>
-                            <TextInput style={[styles.input]} onChangeText={onChangecom_name} placeholder="가나인테리어" value={com_name}/>
+                            <TextInput style={[styles.input]} onChangeText={(com_name)=>ChkInput(com_name,"com_name")} placeholder="가나인테리어" value={SignUpContent.com_name}/>
                         </View>
                     </View>
                     {/*업체명 입력창*/}
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>사업자 등록번호</Text>
-                            <TextInput style={[styles.input]} onChangeText={onChangecom_name} placeholder="12345-51-687891"   value={com_name}/>
+                            <TextInput style={[styles.input]} onChangeText={(com_biz_no)=>ChkInput(com_biz_no,"com_biz_no")} placeholder="12345-51-687891"   value={SignUpContent.com_biz_no}/>
                         </View>
                     </View>
                     {/*사업자 등록번호 입력창*/}
@@ -137,7 +326,7 @@ export default function SignUp({navigation,route}) {
                         <Text style={styles.inputTopText}>사업장 주소</Text>
                         <View style={styles.flex}>
                             <View style={[styles.inputGroup,styles.flexitem1]}>
-                                <TextInput style={[styles.input,styles.me_18,styles.zonecode]} editable={false} selectTextOnFocus={false}  value=""/>
+                                <TextInput style={[styles.input,styles.me_18,styles.zonecode]} onChangeText={(zonecode)=>ChkInput(zonecode,"zonecode")} editable={false} selectTextOnFocus={false}  value={SignUpContent.zonecode}/>
                             </View>
                             <View style={[styles.flexitem2]}>
                                 <TouchableOpacity style={styles.find_id_btn}  >
@@ -145,18 +334,20 @@ export default function SignUp({navigation,route}) {
                                 </TouchableOpacity>
                             </View>
                         </View>
+                        {/*=============주소 1==============*/}
                         <View style={[styles.inputGroup,styles.py_12]}>
-                            <TextInput style={[styles.input]} onChangeaddr1={onChangecom_name} placeholder=""   value={addr1}/>
+                            <TextInput style={[styles.input]} onChangeText={(addr1)=>ChkInput(addr1,"addr1")} placeholder=""   value={SignUpContent.addr1}/>
                         </View>
+                        {/*=============주소 2==============*/}
                         <View style={[styles.inputGroup]}>
-                            <TextInput style={[styles.input]} onChangeaddr2={onChangecom_name} placeholder=""   value={addr2}/>
+                            <TextInput style={[styles.input]} onChangeText={(addr2)=>ChkInput(addr2,"addr2")} placeholder=""   value={SignUpContent.addr2}/>
                         </View>
                     </View>
                     {/*사업장 주소 입력창*/}
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>담당자명</Text>
-                            <TextInput style={[styles.input]} onChangeText={onChangecom_name} placeholder=""   value={com_name}/>
+                            <TextInput style={[styles.input]} onChangeText={(mem_name)=>ChkInput(mem_name,"mem_name")} placeholder=""   value={SignUpContent.mem_name}/>
                         </View>
                     </View>
                     {/*담당자명 입력창*/}
@@ -164,13 +355,7 @@ export default function SignUp({navigation,route}) {
                         <Text style={styles.inputTopText}>담당자 연락처</Text>
                         <View style={styles.flex}>
                             <View style={[styles.inputGroup,styles.flexitem2]}>
-                                <TextInput style={[styles.input,styles.me_18]}   value=""/>
-                            </View>
-                            <View style={[styles.flexitem2]}>
-                                <TextInput style={[styles.input,styles.me_18]}   value=""/>
-                            </View>
-                            <View style={[styles.flexitem2]}>
-                                <TextInput style={[styles.input,styles.me_18]}  value=""/>
+                                <TextInput style={[styles.input,styles.me_18]} onChangeText={(mem_mobile)=>ChkInput(mem_mobile,"mem_mobile")}  value={SignUpContent.mem_mobile}/>
                             </View>
                         </View>
 

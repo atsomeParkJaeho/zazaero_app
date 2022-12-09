@@ -8,17 +8,21 @@ import { StatusBar } from 'expo-status-bar';
 //메인에 세팅할 네비게이션 도구들을 가져옵니다.
 import {NavigationContainer} from '@react-navigation/native';
 import StackNavigator from './navigation/StackNavigator'
-
+import 'react-native-gesture-handler';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
 
+    // 회원정보 가져오기
+
     console.disableYellowBox = true;
-
     return (
-        <NavigationContainer>
-            <StatusBar style="dark" />
-            <StackNavigator/>
-        </NavigationContainer>
-
+        <>
+            <NavigationContainer>
+                <StatusBar style="dark" />
+                <StackNavigator/>
+            </NavigationContainer>
+        </>
     );
+
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
+import { List } from 'react-native-paper';
 
 //이미지 슬라이드
 import {ImageSlider} from "react-native-image-slider-banner";
@@ -9,86 +10,153 @@ import {ImageSlider} from "react-native-image-slider-banner";
 import {container, bg_white} from '../common/style/AtStyle';
 
 // 이미지 추가
-import logo from '../assets/img/top_logo.png';
+// import logo from '../assets/img/top_logo.png';
+import Footer from "./Footer";
+import  col1 from '../assets/img/co1.png';
+import  col2 from '../assets/img/co2.png';
+import  col3 from '../assets/img/co3.png';
 
 
 
+export default function MainPage({navigation, route}) {
 
-export default function MainPage(navigation, route) {
+    const [expanded, setExpanded] = React.useState(true);
+    const handlePress = () => setExpanded(!expanded);
+    const cate_list = [ "바닥공사", "욕식공사", "도배공사"];
+    const Cate_List2 = [
+        {
+            "ct_count": "1",                   //카운트
+            "ct_img": col1,        //이미지
+            "ct_tit": "석고/보드류",        //카테고리명
+        },
+        {
+            "ct_count": "2",                   //카운트
+            "ct_img": col2,        //이미지
+            "ct_tit": "합판/MDF/OSB",        //카테고리명
+        },
+        {
+            "ct_count": "3",                   //카운트
+            "ct_img": col3,        //이미지
+            "ct_tit": "각재/구조재",        //카테고리명
+        },
+        {
+            "ct_count": "1",                   //카운트
+            "ct_img": col3,        //이미지
+            "ct_tit": "몰딩",        //카테고리명
+        },
+        {
+            "ct_count": "2",                   //카운트
+            "ct_img": col2,        //이미지
+            "ct_tit": "단열재",        //카테고리명
+        },
+        {
+            "ct_count": "3",                   //카운트
+            "ct_img": col1,        //이미지
+            "ct_tit": "도어/문틀",        //카테고리명
+        },
 
-
+    ];
 
 
     return (
         /*
           return 구문 안에서는 {슬래시 + * 방식으로 주석
         */
-        <ScrollView style={container,bg_white}>
-            {/*<View style={styles.top_inner}>*/}
-            {/*    <View style={styles.top_innerone}>*/}
-            {/*        <Image style={styles.logoimg} source={logo}/>*/}
-            {/*    </View>*/}
-            {/*    <View style={styles.top_innertwo}>*/}
-            {/*        <Icon name="search1" size={25} color="#000" style={styles.me_10}/>*/}
-            {/*        <Icon name="bells" size={25} color="#000"/>*/}
-            {/*    </View>*/}
-            {/*</View>*/}
+        <>
+            <ScrollView style={container,bg_white}>
+                <ImageSlider
+                    data={[
+                        {img: require("../assets/img/main_banner2.jpg")},
+                        {img: require("../assets/img/main_banner3.jpg")},
+                    ]}
+                    localImg={true}
+                    previewImageStyle={false}
+                    onItemChanged={(item) => console.log("item", item)}
 
-            <ImageSlider
-                data={[
-                    {img: require("../assets/img/main_banner2.jpg")},
-                    {img: require("../assets/img/main_banner3.jpg")},
-                ]}
-                localImg={true}
-                previewImageStyle={false}
-                onItemChanged={(item) => console.log("item", item)}
+                    caroselImageStyle={{height: 200}}
+                    indicatorContainerStyle={{top: -50}}
+                    style={{height:500,}}
+                />
+                <List.Section style={styles.Section}>
+                    <List.Accordion style={styles.Accordion_tit} title="목/형틀공사"   expanded={expanded}  onPress={handlePress}>
+                        <View style={styles.Accordion_items}>
+                            <View style={[styles.Accordion_itemsflex]}>
 
-                caroselImageStyle={{height: 200}}
-                indicatorContainerStyle={{top: -50}}
-                style={{height:500,}}
-            />
+                                {Cate_List2.map(items =>
 
+                                    <View style={styles.w3}>
+                                        <TouchableOpacity style="" onPress={()=>{navigation.navigate('상품목록')}}>
+                                            <Image style={styles.ct_img} source={items.ct_img}/>
+                                            <Text style={styles.Accordion_items_link_txt}>{items.ct_tit}</Text>
+                                        </TouchableOpacity>
+                                    </View>
 
-            <View style={styles.main_footer}>
-                <View style={container}>
-                    <View style={styles.main_footer_flex}>
-                        <View style={styles.main_footer_flex_item}>
-                            <TouchableOpacity style={styles.main_footer_link} onPress={() => {
-                                navigation.navigate('회원가입')
-                            }}>
-                                <Text style={styles.main_footer_link_txt}>서비스 이용약관</Text>
-                            </TouchableOpacity>
+                                )}
+
+                            </View>
                         </View>
-                        <View style={styles.main_footer_flex_item}>
-                            <TouchableOpacity style={styles.main_footer_link} onPress={() => {
-                                navigation.navigate('메인페이지')
-                            }}>
-                                <Text style={styles.main_footer_link_txt}>개인정보처리방침</Text>
-                            </TouchableOpacity>
+                    </List.Accordion>
+                    {cate_list.map((items, index) =>
+                        <List.Accordion style={styles.Accordion_tit} title={items} key={index}  >
+                            <View style={styles.Accordion_items}>
+                                <View style={[styles.Accordion_itemsflex]}>
+                                    {Cate_List2.map(items =>
+
+                                        <View style={styles.w3}>
+                                            <Image style={styles.ct_img} source={items.ct_img}/>
+                                            <Text style={styles.Accordion_items_link_txt}>{items.ct_tit}</Text>
+                                        </View>
+
+                                    )}
+                                </View>
+                            </View>
+                        </List.Accordion>
+                    )}
+
+                </List.Section>
+
+                <View style={styles.main_footer}>
+                    <View style={container}>
+                        <View style={styles.main_footer_flex}>
+                            <View style={styles.main_footer_flex_item}>
+                                <TouchableOpacity style={styles.main_footer_link} onPress={() => {
+                                    navigation.navigate('회원가입')
+                                }}>
+                                    <Text style={styles.main_footer_link_txt}>서비스 이용약관</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.main_footer_flex_item}>
+                                <TouchableOpacity style={styles.main_footer_link} onPress={() => {
+                                    navigation.navigate('메인페이지')
+                                }}>
+                                    <Text style={styles.main_footer_link_txt}>개인정보처리방침</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.main_footer_flex_item}>
+                                <TouchableOpacity style={styles.main_footer_link} onPress={() => {
+                                    navigation.navigate('메인페이지')
+                                }}>
+                                    <Text style={styles.main_footer_link_txt}>전자금융거래 이용약관</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                        <View style={styles.main_footer_flex_item}>
-                            <TouchableOpacity style={styles.main_footer_link} onPress={() => {
-                                navigation.navigate('메인페이지')
-                            }}>
-                                <Text style={styles.main_footer_link_txt}>전자금융거래 이용약관</Text>
-                            </TouchableOpacity>
+                        {/*  메인풋터 상단  */}
+                        <View style={styles.main_footer_disc}>
+                            <Text style={styles.main_footer_disc_txt}>상호명 : (주 스타키움)</Text>
+                            <Text style={styles.main_footer_disc_txt}>대표자명 : 이정환</Text>
+                            <Text style={styles.main_footer_disc_txt}>사업자 번호 : 899-87-01114</Text>
+                            <Text style={styles.main_footer_disc_txt}>고객센터 : 1666-7099</Text>
+                            <Text style={styles.main_footer_disc_txt}>이메일 : daengmo9@starchium.com</Text>
+                            <Text style={styles.main_footer_disc_txt}>사업장 주소 : 경기 성남시 수정구 대왕판교로 815 (시흥동) 7층 776호</Text>
                         </View>
+
                     </View>
-                    {/*  메인풋터 상단  */}
-                    <View style={styles.main_footer_disc}>
-                        <Text style={styles.main_footer_disc_txt}>상호명 : (주 스타키움)</Text>
-                        <Text style={styles.main_footer_disc_txt}>대표자명 : 이정환</Text>
-                        <Text style={styles.main_footer_disc_txt}>사업자 번호 : 899-87-01114</Text>
-                        <Text style={styles.main_footer_disc_txt}>고객센터 : 1666-7099</Text>
-                        <Text style={styles.main_footer_disc_txt}>이메일 : daengmo9@starchium.com</Text>
-                        <Text style={styles.main_footer_disc_txt}>사업장 주소 : 경기 성남시 수정구 대왕판교로 815 (시흥동) 7층 776호</Text>
-                    </View>
-
                 </View>
-            </View>
 
 
-        </ScrollView>
+            </ScrollView>
+            <Footer navigation={navigation}/>
+        </>
     );
 }
 
@@ -212,5 +280,42 @@ const styles = StyleSheet.create({
         color: "#999",
         padding: 3,
     },
+    Section:{
+        marginBottom:0,
+    },
+    Accordion_tit:{
+        backgroundColor:"#fff",
+        borderBottomWidth:8,
+        borderColor:"#EDEDF1"
+    },
+    Accordion_items:{
+        padding:12,
+        borderBottomWidth:8,
+        borderColor:"#EDEDF1"
+    },
+    Accordion_itemsflex:{
+        flexDirection:"row",
+        flexWrap:"wrap",
+        alignItems:"center",
+    },
+    w3:{
+        width:"33.333%",
+        marginBottom:12,
+    },
+    ct_img:{
+        width:60,
+        height:60,
+        borderRadius:5,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+
+    },
+    Accordion_items_link_txt:{
+        textAlign:"center",
+        fontSize:14,
+        lineHeight:24,
+        color:"#222",
+        letterSpacing:-1,
+    }
 
 });
