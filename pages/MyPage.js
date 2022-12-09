@@ -10,7 +10,7 @@ import {sub_page} from '../common/style/SubStyle';
 export default function MyPage({navigation,route}){
 
     let mypageList_test = "가나인테리어";
-    let mypageList_test2 = "가나인테리어2";
+
 
     return(
         <ScrollView style={[bg_white]}>
