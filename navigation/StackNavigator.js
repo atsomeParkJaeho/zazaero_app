@@ -13,6 +13,9 @@ import GoodsCateList from '../pages/goods/GoodsCateList';                   //�
 import DetailPage from '../pages/DetailPage';                                //상품목록
 import MainPage2 from '../pages/MainPage2';                                  //
 
+import Cart from '../pages/cart/Cart';                                  //장바구니
+import OrderForm from '../pages/order/OrderForm';                                  //배송정보등록
+
 import MyPage from '../pages/MyPage';                                        //마이페이지
 import MyPoint from '../pages/Mypage/MyPoint';                               //포인트 내역
 import Setting from '../pages/Setting';                                      //설정
@@ -22,7 +25,7 @@ import NoticeList from '../pages/NoticeList';                                //�
 import NoticeView from '../pages/NoticeView';                                //공지사항상세
 import Cscenter from '../pages/Cscenter';                                    //고객센터
 import inquiryWrite from '../pages/board/inquiry/Write';                     //1:1문의 작성
-import inquiryList from '../pages/board/inquiry/List';                     //1:1문의 목록
+import inquiryList from '../pages/board/inquiry/List';                       //1:1문의 목록
 import Provision from '../pages/Provision';                                  //개인정보처리방침
 
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
@@ -38,28 +41,38 @@ const StackNavigator = () =>{
         //위에서 선언한 const Stack = createStackNavigator(); Stack 변수에 들어있는 태그를 꺼내 사용합니다.
         //Stack.Navigator 태그 내부엔 페이지(화면)를 스타일링 할 수 있는 다양한 옵션들이 담겨 있습니다.
         <Stack.Navigator>
-
+                
             {/* 컴포넌트를 페이지로 만들어주는 엘리먼트에 끼워 넣습니다. 이 자체로 이제 페이지 기능을 합니다*/}
 {/*<Stack.Screen name="로딩" component={Loading}/>*/}
-            <Stack.Screen name="마이페이지" component={MyPage}/>
+                <Stack.Screen name="배송정보등록" component={OrderForm}/>
+                <Stack.Screen name="장바구니" component={Cart}/>
+
             <Stack.Screen name="로그인" component={Login}/>
+            <Stack.Screen name="회원가입" component={SignUp}/>
+            <Stack.Screen name="아이디 찾기" component={FindId}/>
+            <Stack.Screen name="비밀번호 찾기" component={FindPw}/>
+
+            <Stack.Screen name="마이페이지" component={MyPage}/>
             <Stack.Screen name="회원정보수정" component={MemInfo}/>
             <Stack.Screen name="회원탈퇴" component={MemOut}/>
             <Stack.Screen name="포인트내역" component={MyPoint}/>
             <Stack.Screen name="설정" component={Setting}/>
-            <Stack.Screen name="아이디 찾기" component={FindId}/>
-            <Stack.Screen name="비밀번호 찾기" component={FindPw}/>
-            <Stack.Screen name="회원가입" component={SignUp}/>
+
+
             <Stack.Screen name="메인페이지" component={MainPage}/>
-            <Stack.Screen name="MainPage" component={MainPage2}/>
+
             <Stack.Screen name="약관/개인정보처리방침" component={Provision}/>
             <Stack.Screen name="고객센터" component={Cscenter}/>
             <Stack.Screen name="1:1문의작성" component={inquiryWrite}/>
+            <Stack.Screen name="1:1문의목록" component={inquiryList}/>
             <Stack.Screen name="공지사항" component={NoticeList}/>
             <Stack.Screen name="공지사항상세" component={NoticeView}/>
             <Stack.Screen name="DetailPage" component={DetailPage}/>
 
             <Stack.Screen name="상품목록" component={GoodsCateList}/>
+
+
+
     </Stack.Navigator>
     )
 }
