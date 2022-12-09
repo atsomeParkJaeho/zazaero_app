@@ -10,12 +10,11 @@ import {container, bg_white} from '../common/style/AtStyle';
 
 // 이미지 추가
 import logo from '../assets/img/top_logo.png';
-import Footer from "./Footer";
 
 
 
 
-export default function MainPage({navigation, route}) {
+export default function MainPage(navigation, route) {
 
 
 
@@ -24,73 +23,72 @@ export default function MainPage({navigation, route}) {
         /*
           return 구문 안에서는 {슬래시 + * 방식으로 주석
         */
-        <>
-            <ScrollView style={container,bg_white}>
-                {/*<View style={styles.top_inner}>*/}
-                {/*    <View style={styles.top_innerone}>*/}
-                {/*        <Image style={styles.logoimg} source={logo}/>*/}
-                {/*    </View>*/}
-                {/*    <View style={styles.top_innertwo}>*/}
-                {/*        <Icon name="search1" size={25} color="#000" style={styles.me_10}/>*/}
-                {/*        <Icon name="bells" size={25} color="#000"/>*/}
-                {/*    </View>*/}
-                {/*</View>*/}
+        <ScrollView style={container,bg_white}>
+            {/*<View style={styles.top_inner}>*/}
+            {/*    <View style={styles.top_innerone}>*/}
+            {/*        <Image style={styles.logoimg} source={logo}/>*/}
+            {/*    </View>*/}
+            {/*    <View style={styles.top_innertwo}>*/}
+            {/*        <Icon name="search1" size={25} color="#000" style={styles.me_10}/>*/}
+            {/*        <Icon name="bells" size={25} color="#000"/>*/}
+            {/*    </View>*/}
+            {/*</View>*/}
 
-                <ImageSlider
-                    data={[
-                        {img: require("../assets/img/main_banner2.jpg")},
-                        {img: require("../assets/img/main_banner3.jpg")},
-                    ]}
-                    localImg={true}
-                    previewImageStyle={false}
-                    onItemChanged={(item) => console.log("item", item)}
+            <ImageSlider
+                data={[
+                    {img: require("../assets/img/main_banner2.jpg")},
+                    {img: require("../assets/img/main_banner3.jpg")},
+                ]}
+                localImg={true}
+                previewImageStyle={false}
+                onItemChanged={(item) => console.log("item", item)}
 
-                    caroselImageStyle={{height: 200}}
-                    indicatorContainerStyle={{top: -50}}
-                    style={{height:500,}}
-                />
+                caroselImageStyle={{height: 200}}
+                indicatorContainerStyle={{top: -50}}
+                style={{height:500,}}
+            />
 
 
-                <View style={styles.main_footer}>
-                    <View style={container}>
-                        <View style={styles.main_footer_flex}>
-                            <View style={styles.main_footer_flex_item}>
-                                <TouchableOpacity style={styles.main_footer_link} onPress={() => {
-                                    navigation.navigate('회원가입')
-                                }}>
-                                    <Text style={styles.main_footer_link_txt}>서비스 이용약관</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={styles.main_footer_flex_item}>
-                                <TouchableOpacity style={styles.main_footer_link} onPress={() => {
-                                    navigation.navigate('메인페이지')
-                                }}>
-                                    <Text style={styles.main_footer_link_txt}>개인정보처리방침</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={styles.main_footer_flex_item}>
-                                <TouchableOpacity style={styles.main_footer_link} onPress={() => {
-                                    navigation.navigate('메인페이지')
-                                }}>
-                                    <Text style={styles.main_footer_link_txt}>전자금융거래 이용약관</Text>
-                                </TouchableOpacity>
-                            </View>
+            <View style={styles.main_footer}>
+                <View style={container}>
+                    <View style={styles.main_footer_flex}>
+                        <View style={styles.main_footer_flex_item}>
+                            <TouchableOpacity style={styles.main_footer_link} onPress={() => {
+                                navigation.navigate('회원가입')
+                            }}>
+                                <Text style={styles.main_footer_link_txt}>서비스 이용약관</Text>
+                            </TouchableOpacity>
                         </View>
-                        {/*  메인풋터 상단  */}
-                        <View style={styles.main_footer_disc}>
-                            <Text style={styles.main_footer_disc_txt}>상호명 : (주 스타키움)</Text>
-                            <Text style={styles.main_footer_disc_txt}>대표자명 : 이정환</Text>
-                            <Text style={styles.main_footer_disc_txt}>사업자 번호 : 899-87-01114</Text>
-                            <Text style={styles.main_footer_disc_txt}>고객센터 : 1666-7099</Text>
-                            <Text style={styles.main_footer_disc_txt}>이메일 : daengmo9@starchium.com</Text>
-                            <Text style={styles.main_footer_disc_txt}>사업장 주소 : 경기 성남시 수정구 대왕판교로 815 (시흥동) 7층 776호</Text>
+                        <View style={styles.main_footer_flex_item}>
+                            <TouchableOpacity style={styles.main_footer_link} onPress={() => {
+                                navigation.navigate('메인페이지')
+                            }}>
+                                <Text style={styles.main_footer_link_txt}>개인정보처리방침</Text>
+                            </TouchableOpacity>
                         </View>
-
+                        <View style={styles.main_footer_flex_item}>
+                            <TouchableOpacity style={styles.main_footer_link} onPress={() => {
+                                navigation.navigate('메인페이지')
+                            }}>
+                                <Text style={styles.main_footer_link_txt}>전자금융거래 이용약관</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
+                    {/*  메인풋터 상단  */}
+                    <View style={styles.main_footer_disc}>
+                        <Text style={styles.main_footer_disc_txt}>상호명 : (주 스타키움)</Text>
+                        <Text style={styles.main_footer_disc_txt}>대표자명 : 이정환</Text>
+                        <Text style={styles.main_footer_disc_txt}>사업자 번호 : 899-87-01114</Text>
+                        <Text style={styles.main_footer_disc_txt}>고객센터 : 1666-7099</Text>
+                        <Text style={styles.main_footer_disc_txt}>이메일 : daengmo9@starchium.com</Text>
+                        <Text style={styles.main_footer_disc_txt}>사업장 주소 : 경기 성남시 수정구 대왕판교로 815 (시흥동) 7층 776호</Text>
+                    </View>
+
                 </View>
-            </ScrollView>
-            <Footer navigation={navigation}/>
-        </>
+            </View>
+
+
+        </ScrollView>
     );
 }
 
