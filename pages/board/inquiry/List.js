@@ -9,7 +9,7 @@ import {sub_page} from '../../../common/style/SubStyle';
 
 
 export default function InquiryList({navigation,route}) {
-
+    let mypageList_test = "가나인테리어";
 
 
     return (

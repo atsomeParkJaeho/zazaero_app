@@ -16,7 +16,7 @@ export default function InquiryWrite({navigation,route}) {
     //내용
 
 
-    let mypageList_test = "가나인테리어";
+
 
     return (
         <ScrollView style={[bg_white]}>
