@@ -1,7 +1,9 @@
 import React,{useState,useEffect} from 'react';
 import { StyleSheet, Button,   Text, TextInput, View, Image, TouchableOpacity, ScrollView} from 'react-native';
 import Checkbox from 'expo-checkbox';
-import DropDownPicker from 'react-native-dropdown-picker';
+
+import {SelectList} from 'react-native-dropdown-select-list'
+//셀렉트박스
 
 //로딩화면
 import Loading from '../../components/Loading';
@@ -26,19 +28,22 @@ export default function SignUp({navigation,route}) {
     const [isChecked4, setChecked4] = useState(false);
     const [isChecked5, setChecked5] = useState(false);
     const [isChecked6, setChecked6] = useState(false);
-    //셀렉트박스
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState('서울특별시');
-    const [items, setItems] = useState([
-        {label: '서울특별시', value: '서울특별시'},
-        {label: '부산광역시', value: '부산광역시'},
-        {label: '울산광역시', value: '울산광역시'},
-        {label: '대구광역시', value: '대구광역시'},
-        {label: '인천광역시', value: '인천광역시'},
-        {label: '대전광역시', value: '대전광역시'},
-        {label: '광주광역시', value: '광주광역시'},
-    ]);
 
+
+
+    const [selected, setSelected] = React.useState("");
+    const data = [
+        {key: '1', value: '서울특별시',},
+        {key: '2', value: '부산광역시',},
+        {key: '3', value: '울산광역시',},
+        {key: '4', value: '대구광역시',},
+        {key: '5', value: '인천광역시',},
+        {key: '6', value: '대전광역시',},
+        {key: '7', value: '광주광역시',},
+        // {key:'4', value:'Computers', disabled:true},
+
+    ]
+    //배송지 불러오기 셀렉트박스
 
     useEffect(()=>{
 
@@ -103,14 +108,14 @@ export default function SignUp({navigation,route}) {
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>지역</Text>
-                            <DropDownPicker
-                                open={open}
-                                value={value}
-                                items={items}
-                                setOpen={setOpen}
-                                setValue={setValue}
-                                setItems={setItems}
-                                style={styles.select_box}
+                            <SelectList
+                                setSelected={(val) => setSelected(val)}
+                                data={data}
+                                save="value"
+                                defaultOption={{key: '1', value: '서울특별시'}}
+                                boxStyles={{borderRadius: 0, borderColor: "#ededf1"}}
+                                inputStyles={{fontSize: 12, color: "#696A81"}}
+                                search={false}
                             />
                         </View>
                     </View>
