@@ -21,6 +21,7 @@ export default function Wishlist({navigation,route}) {
 
     const cate_list = [ "목/형틀공사","바닥공사", "욕식공사", "도배공사"];
 
+
     const Cate_List2 = [
 
         {
