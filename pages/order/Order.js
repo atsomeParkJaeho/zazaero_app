@@ -117,7 +117,6 @@ export default function Order({navigation, route}) {
         <>
             <View style={[bg_white]}>
                 <View style={[styles.Order]}>
-
                     <NavigationContainer independent={true}>
                         <MyTabs />
                     </NavigationContainer>
