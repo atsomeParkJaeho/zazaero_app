@@ -29,7 +29,6 @@ import inquiryList from '../pages/board/inquiry/List';                       //1
 import Provision from '../pages/Provision';                                  //개인정보처리방침
 
 
-
 import Loading from '../components/Loading';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Footer from "../pages/Footer";
@@ -56,7 +55,11 @@ const StackNavigator = () => {
         });
     }, []);
 
-    console.log('회원코드 / ',Member);
+    console.log('회원코드 / ', Member);
+
+    if(Member === undefined) {
+
+    }
 
     return (
         <>
@@ -75,46 +78,30 @@ const StackNavigator = () => {
                 }}
 
             >
-                {(Member === undefined) ? (
-                    <>
-                        <Stack.Screen name="로그인" component={Login}/>
-                        <Stack.Screen name="회원가입" component={SignUp}/>
-                    </>
-                ):(
-                    <>
-
-                        {/*==============메인페이지===============*/}
-                        <Stack.Screen name="배송정보등록" component={OrderForm}/>
-                        <Stack.Screen name="장바구니" component={Cart}/>
-
-                        <Stack.Screen name="로그인" component={Login}/>
-                        <Stack.Screen name="회원가입" component={SignUp}/>
-                        <Stack.Screen name="아이디 찾기" component={FindId}/>
-                        <Stack.Screen name="비밀번호 찾기" component={FindPw}/>
-
-                        <Stack.Screen name="마이페이지" component={MyPage}/>
-                        <Stack.Screen name="회원정보수정" component={MemInfo}/>
-                        <Stack.Screen name="회원탈퇴" component={MemOut}/>
-                        <Stack.Screen name="포인트내역" component={MyPoint}/>
-                        <Stack.Screen name="설정" component={Setting}/>
 
 
-                        <Stack.Screen name="메인페이지" component={MainPage}/>
-
-                        <Stack.Screen name="약관/개인정보처리방침" component={Provision}/>
-                        <Stack.Screen name="고객센터" component={Cscenter}/>
-                        <Stack.Screen name="1:1문의작성" component={inquiryWrite}/>
-                        <Stack.Screen name="1:1문의목록" component={inquiryList}/>
-                        <Stack.Screen name="공지사항" component={NoticeList}/>
-                        <Stack.Screen name="공지사항상세" component={NoticeView}/>
-                        <Stack.Screen name="DetailPage" component={DetailPage}/>
-
-                        <Stack.Screen name="상품목록" component={GoodsCateList}/>
-                        <Stack.Screen name="하단" component={Footer}/>
-                    </>
-                )}
-
-
+                {/*==============메인페이지===============*/}
+                <Stack.Screen name="로그인" component={Login}/>
+                <Stack.Screen name="회원가입" component={SignUp}/>
+                <Stack.Screen name="메인페이지" component={MainPage}/>
+                <Stack.Screen name="배송정보등록" component={OrderForm}/>
+                <Stack.Screen name="장바구니" component={Cart}/>
+                <Stack.Screen name="아이디 찾기" component={FindId}/>
+                <Stack.Screen name="비밀번호 찾기" component={FindPw}/>
+                <Stack.Screen name="마이페이지" component={MyPage}/>
+                <Stack.Screen name="회원정보수정" component={MemInfo}/>
+                <Stack.Screen name="회원탈퇴" component={MemOut}/>
+                <Stack.Screen name="포인트내역" component={MyPoint}/>
+                <Stack.Screen name="설정" component={Setting}/>
+                <Stack.Screen name="약관/개인정보처리방침" component={Provision}/>
+                <Stack.Screen name="고객센터" component={Cscenter}/>
+                <Stack.Screen name="1:1문의작성" component={inquiryWrite}/>
+                <Stack.Screen name="1:1문의목록" component={inquiryList}/>
+                <Stack.Screen name="공지사항" component={NoticeList}/>
+                <Stack.Screen name="공지사항상세" component={NoticeView}/>
+                <Stack.Screen name="DetailPage" component={DetailPage}/>
+                <Stack.Screen name="상품목록" component={GoodsCateList}/>
+                <Stack.Screen name="하단" component={Footer}/>
             </Stack.Navigator>
         </>
     );

@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView} from 'react-native';
+
 import Icon from 'react-native-vector-icons/AntDesign';
 import { List } from 'react-native-paper';
 
@@ -7,7 +8,7 @@ import { List } from 'react-native-paper';
 import {ImageSlider} from "react-native-image-slider-banner";
 
 // 공통 CSS 추가
-import {container, bg_white} from '../common/style/AtStyle';
+import {container, bg_white, content_wrap, min_height} from '../common/style/AtStyle';
 
 // 이미지 추가
 // import logo from '../assets/img/top_logo.png';
@@ -15,6 +16,7 @@ import Footer from "./Footer";
 import  col1 from '../assets/img/co1.png';
 import  col2 from '../assets/img/co2.png';
 import  col3 from '../assets/img/co3.png';
+
 
 
 
@@ -63,7 +65,7 @@ export default function MainPage({navigation, route}) {
           return 구문 안에서는 {슬래시 + * 방식으로 주석
         */
         <>
-            <ScrollView style={container,bg_white}>
+            <ScrollView style={container, bg_white}>
                 <ImageSlider
                     data={[
                         {img: require("../assets/img/main_banner2.jpg")},

@@ -12,21 +12,32 @@ import {container, bg_white, flex, txt14} from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Update from "expo-updates";
+//import * as Update from "expo-updates";
 import {reloadAsync} from "expo-updates";
 
 export default function Login({navigation,route}) {
 
 
-    const [isChecked, setChecked] = useState(false);
+    const [Member, setMember] = useState();
 
+    useEffect(() => {
+        AsyncStorage.getItem('member').then((value) => {
+            if (value) {
+                setMember(value);
+            }
+        });
+    }, []);
+
+    console.log('회원코드 / ', Member);
+
+
+
+    const [isChecked, setChecked] = useState(false);
     const [Login, setLogin] = useState({    // 로그인상태 셋팅
         mem_id:"",
         mem_pw:""
     }); 
     const [ready,setReady] = useState(true);    // 로딩 액션
-    
-    
     // =================로그인 액션 설정=====================//
     const goInput = (keyValue, e) => {
         setLogin({
@@ -34,7 +45,6 @@ export default function Login({navigation,route}) {
             [keyValue]:e,
         });
     };
-
     //==================로그인 하기=======================//
     const goLogin = async ()=> {
         const {mem_id, mem_pw} = Login;
@@ -58,8 +68,9 @@ export default function Login({navigation,route}) {
                 if(result === 'OK') {
                     alert('로그인');
                     AsyncStorage.setItem('member',mem_uid);
-                    reloadAsync();
+                    //reloadAsync();
                     navigation.replace('메인페이지');
+
                 }
                 if(result === 'NG_info') {
                     alert('해당계정이 없습니다.');
@@ -82,10 +93,11 @@ export default function Login({navigation,route}) {
     },[]);
 
 
+    if(Member === undefined) {
 
-    return ready ? <Loading/> :  (
+        return ready ? <Loading/> : (
 
-            <View style={[styles.subPage,styles.login]}>
+            <View style={[styles.subPage, styles.login]}>
                 <View style={styles.container}>
 
                     <Image style={styles.loginLogo} source={logo}/>
@@ -93,19 +105,23 @@ export default function Login({navigation,route}) {
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>아이디</Text>
-                            <TextInput style={styles.input} onChangeText={(mem_id)=>goInput("mem_id",mem_id)} value={Login.mem_id} placeholder="아이디를 입력해주세요" />
+                            <TextInput style={styles.input} onChangeText={(mem_id) => goInput("mem_id", mem_id)}
+                                       value={Login.mem_id} placeholder="아이디를 입력해주세요"/>
                         </View>
                     </View>
                     {/*아이디 입력창*/}
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>비밀번호</Text>
-                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={(mem_pw)=>goInput("mem_pw",mem_pw)} value={Login.mem_pw} placeholder="비밀번호를 입력해주세요." />
+                            <TextInput style={styles.input} secureTextEntry={true}
+                                       onChangeText={(mem_pw) => goInput("mem_pw", mem_pw)} value={Login.mem_pw}
+                                       placeholder="비밀번호를 입력해주세요."/>
                         </View>
                     </View>
                     {/*비밀번호 입력창*/}
-                    <View style={[flex,styles.pb_24]}>
-                        <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked}  color={"#4630eb"}  />
+                    <View style={[flex, styles.pb_24]}>
+                        <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked}
+                                  color={"#4630eb"}/>
                         <Text style={txt14}>자동로그인</Text>
                     </View>
                     {/*자동로그인*/}
@@ -116,12 +132,16 @@ export default function Login({navigation,route}) {
                     {/*로그인 버튼*/}
                     <View style={styles.link_idpw}>
                         <View style={styles.findId}>
-                            <TouchableOpacity style={styles.link_find_id} onPress={()=>{navigation.navigate('아이디 찾기')}} >
-                                <Text style={[styles.link_find_txt,styles.br_1]}>아이디 찾기</Text>
+                            <TouchableOpacity style={styles.link_find_id} onPress={() => {
+                                navigation.navigate('아이디 찾기')
+                            }}>
+                                <Text style={[styles.link_find_txt, styles.br_1]}>아이디 찾기</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.findpw}>
-                            <TouchableOpacity style={styles.link_find_pw} onPress={()=>{navigation.navigate('비밀번호 찾기')}} >
+                            <TouchableOpacity style={styles.link_find_pw} onPress={() => {
+                                navigation.navigate('비밀번호 찾기')
+                            }}>
                                 <Text style={styles.link_find_txt}>비밀번호 찾기</Text>
                             </TouchableOpacity>
                         </View>
@@ -131,14 +151,19 @@ export default function Login({navigation,route}) {
                         <Text style={styles.link_txt}>
                             회원이 아니신가요?
                         </Text>
-                        <TouchableOpacity style={styles.link_signUp} onPress={()=>{navigation.navigate('회원가입')}} >
+                        <TouchableOpacity style={styles.link_signUp} onPress={() => {
+                            navigation.navigate('회원가입')
+                        }}>
                             <Text style={styles.link_signUp_txt}>회원가입하기</Text>
                         </TouchableOpacity>
                     </View>
                     {/*회원가입*/}
                 </View>
             </View>
-    );
+        );
+    } else {
+        navigation.replace('메인페이지'); return ;
+    }
 }
 
 const styles = StyleSheet.create({

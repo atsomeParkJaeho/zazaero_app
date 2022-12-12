@@ -1,8 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import { StyleSheet, Button,   Text, TextInput, View, Image, TouchableOpacity, ScrollView} from 'react-native';
 import Checkbox from 'expo-checkbox';
-import DropDownPicker from 'react-native-dropdown-picker';
-
+import {SelectList} from "react-native-dropdown-select-list";
 //로딩화면
 import Loading from '../../components/Loading';
 
@@ -10,11 +9,14 @@ import Loading from '../../components/Loading';
 import {container, bg_white, flex} from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 import axios from "axios";
+import {AddrMatch, Minlangth, regId,regPW} from "../../util/util";
 
 export default function SignUp({navigation,route}) {
 
 
     // 회원가입폼 상태 루틴
+    const [selected, setSelected] = useState("");
+    const [IsPostOpen, setIsPostOpen] = useState(false);
     const [SignUpContent, setSignUpContent] = useState({
         mem_id          :"",  // 아이디
         mem_id_chk      :"",  // 아이디 중복체크
@@ -35,6 +37,19 @@ export default function SignUp({navigation,route}) {
         privacy_5       :"N",  // 홍보 및 마케팅 이용 동의
     });
 
+    // 다음api 주소 찾기
+
+    const DaumApi = () => {
+        setIsPostOpen((prev) => !prev);
+    };
+    const DaumPopup = (data) => {
+        setSignUpContent({
+            ...SignUpContent,
+            zonecode    : data.zonecode,
+            addr1       : data.address,
+        });
+        DaumApi();
+    };
 
     // 1. 아이디 중복 체크
     const IdChk = () => {
@@ -54,8 +69,12 @@ export default function SignUp({navigation,route}) {
             mem_info_act_type   : "INS",
             mem_id              : SignUpContent.mem_id,
         }
-        const req = new URLSearchParams(data);
-        axios.post('/ajax/UTIL_mem_reg.php',req).then((res)=>{
+
+        axios.post('http://49.50.162.86:80/ajax/UTIL_mem_reg.php',data,{
+            headers:{
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
             if(res) {
                 const {result} = res.data;
                 if(result == 'OK') {
@@ -82,26 +101,20 @@ export default function SignUp({navigation,route}) {
     // 2. 입력폼 체크루틴
     const ChkInput = (keyValue, text) => {
         // 기본 루틴
-        const {name, value, checked} = text.target;
         setSignUpContent({
             ...SignUpContent,
-            [name]:value,
+            [keyValue]:text,
         });
 
-        // 개인정보 처리방침 체크 루틴
-        if(name == 'privacy_1' || name == 'privacy_2' || name == 'privacy_3' || name == 'privacy_4' || name == 'privacy_5') {
-            if(checked == true) {
-                setSignUpContent({
-                    ...SignUpContent,
-                    [name]:"Y",
-                });
-            } else {
-                setSignUpContent({
-                    ...SignUpContent,
-                    [name]:"N",
-                });
-            }
-        }
+    }
+
+    const reSet = () => {
+        setSignUpContent({
+            ...SignUpContent,
+            mem_id_chk:"",
+            mem_id:"",
+        });
+
 
     }
 
@@ -179,36 +192,9 @@ export default function SignUp({navigation,route}) {
 
     }
 
-    const [IsPostOpen, setIsPostOpen] = useState(false);
-    const onToggle = () => {
-        setIsPostOpen((prev) => !prev);
-    }
-    const handleComplete = (data) => {
-        setSignUpContent({
-            ...SignUpContent,
-            zonecode    : data.zonecode,
-            addr1       : data.address,
-        });
-        onToggle();
-    };
 
-    // 뒤로가기 설정
-    const history = useNavigate();
-    const historyBack = () => {
-        history(-1);
-    }
-    // 홈 리플래시
-    const goHome = () => {
-        history('/');
-        window.location.reload();
-    }
-    // 리셋
-    const reSet = () => {
-        setSignUpContent({
-            ...SignUpContent,
-            mem_id_chk:"",
-        });
-    }
+
+
 
     // 전체 체크
     const AllChk = (text) => {
@@ -239,7 +225,7 @@ export default function SignUp({navigation,route}) {
     }
 
 
-    console.log(SignUpContent);
+
     const chks = (
         SignUpContent.mem_id == '' ||
         SignUpContent.mem_pw == '' ||
@@ -254,6 +240,8 @@ export default function SignUp({navigation,route}) {
     ) ? true : false;
 
 
+    console.log(SignUpContent);
+    console.log(selected);
 
     return (
         <ScrollView >
@@ -264,12 +252,23 @@ export default function SignUp({navigation,route}) {
                         <Text style={styles.inputTopText}>아이디</Text>
                         <View style={styles.flex}>
                             <View style={[styles.inputGroup,styles.flexitem1]}>
-                                <TextInput style={[styles.input,styles.me_18]} onChangeText={(mem_id)=>ChkInput(mem_id,"mem_id")} placeholder="아이디를 입력해주세요" value={SignUpContent.mem_id}/>
+                                <TextInput style={[styles.input,styles.me_18]}
+                                 onChangeText={(mem_id)=>ChkInput("mem_id",mem_id)}
+                                 value={SignUpContent.mem_id}
+                                 placeholder="아이디를 입력해주세요"
+                                 editable={(SignUpContent.mem_id_chk == 'Y') ? false : true}
+                                 value={SignUpContent.mem_id}/>
                             </View>
                             <View style={[styles.flexitem2]}>
-                                <TouchableOpacity style={styles.find_id_btn}  >
-                                    <Text style={[styles.find_id_btn_txt]}>아이디 중복확인</Text>
-                                </TouchableOpacity>
+                                {(SignUpContent.mem_id_chk == 'Y') ? (
+                                    <TouchableOpacity style={styles.find_id_btn} onPress={reSet} >
+                                        <Text style={[styles.find_id_btn_txt]}>아이디 변경하기</Text>
+                                    </TouchableOpacity>
+                                ):(
+                                    <TouchableOpacity style={styles.find_id_btn} onPress={IdChk} >
+                                        <Text style={[styles.find_id_btn_txt]}>아이디 중복확인</Text>
+                                    </TouchableOpacity>
+                                ) }
                             </View>
                         </View>
                     </View>
@@ -277,14 +276,14 @@ export default function SignUp({navigation,route}) {
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>비밀번호</Text>
-                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={(mem_pw)=>ChkInput(mem_pw,"mem_pw")}  placeholder="비밀번호를 입력해주세요." value={SignUpContent.mem_pw}/>
+                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={(mem_pw)=>ChkInput("mem_pw",mem_pw)}  placeholder="비밀번호를 입력해주세요." value={SignUpContent.mem_pw}/>
                         </View>
                     </View>
                     {/*비밀번호 입력창*/}
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>비밀번호 확인</Text>
-                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={(mem_pw_chk)=>ChkInput(mem_pw_chk,"mem_pw_chk")}  placeholder="비밀번호를 입력해주세요." value={SignUpContent.mem_pw_chk}/>
+                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={(mem_pw_chk)=>ChkInput("mem_pw_chk",mem_pw_chk)}  placeholder="비밀번호를 입력해주세요." value={SignUpContent.mem_pw_chk}/>
                         </View>
                     </View>
                     {/*비밀번호확인 입력창*/}
@@ -297,28 +296,28 @@ export default function SignUp({navigation,route}) {
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>지역</Text>
-                            {/*<DropDownPicker*/}
-                            {/*    open={open}*/}
-                            {/*    value={value}*/}
-                            {/*    items={items}*/}
-                            {/*    setOpen={setOpen}*/}
-                            {/*    setValue={setValue}*/}
-                            {/*    setItems={setItems}*/}
-                            {/*    style={styles.select_box}*/}
-                            {/*/>*/}
+                            <SelectList
+                                setSelected={(val) => setSelected(val)}
+                                data={AddrMatch}
+                                onSelect={(selected)=>ChkInput("addr_name",selected)}
+                                defaultOption={{key: '서울특별시', value: '서울'}}
+                                save="value"
+                            />
                         </View>
                     </View>
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>업체명</Text>
-                            <TextInput style={[styles.input]} onChangeText={(com_name)=>ChkInput(com_name,"com_name")} placeholder="가나인테리어" value={SignUpContent.com_name}/>
+                            <TextInput style={[styles.input]} onChangeText={(com_name)=>ChkInput("com_name",com_name)} placeholder="가나인테리어" value={SignUpContent.com_name}/>
                         </View>
                     </View>
                     {/*업체명 입력창*/}
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>사업자 등록번호</Text>
-                            <TextInput style={[styles.input]} onChangeText={(com_biz_no)=>ChkInput(com_biz_no,"com_biz_no")} placeholder="12345-51-687891"   value={SignUpContent.com_biz_no}/>
+                            <TextInput style={[styles.input]}
+                            keyboardType="number-pad"
+                            onChangeText={(com_biz_no)=>ChkInput("com_biz_no",com_biz_no)} placeholder="12345-51-687891"   value={SignUpContent.com_biz_no}/>
                         </View>
                     </View>
                     {/*사업자 등록번호 입력창*/}
@@ -326,39 +325,41 @@ export default function SignUp({navigation,route}) {
                         <Text style={styles.inputTopText}>사업장 주소</Text>
                         <View style={styles.flex}>
                             <View style={[styles.inputGroup,styles.flexitem1]}>
-                                <TextInput style={[styles.input,styles.me_18,styles.zonecode]} onChangeText={(zonecode)=>ChkInput(zonecode,"zonecode")} editable={false} selectTextOnFocus={false}  value={SignUpContent.zonecode}/>
+                                <TextInput style={[styles.input,styles.me_18,styles.zonecode]} onChangeText={(zonecode)=>ChkInput("zonecode",zonecode)} editable={false} selectTextOnFocus={false}  value={SignUpContent.zonecode}/>
                             </View>
                             <View style={[styles.flexitem2]}>
-                                <TouchableOpacity style={styles.find_id_btn}  >
+                                <TouchableOpacity style={styles.find_id_btn} onPress={DaumApi} >
                                     <Text style={[styles.find_id_btn_txt]}>주소찾기</Text>
                                 </TouchableOpacity>
                             </View>
+                            {IsPostOpen && (
+                                <View>
+                                    <DaumPostcode onComplete={DaumPopup} />
+                                </View>
+                            )}
                         </View>
                         {/*=============주소 1==============*/}
                         <View style={[styles.inputGroup,styles.py_12]}>
-                            <TextInput style={[styles.input]} onChangeText={(addr1)=>ChkInput(addr1,"addr1")} placeholder=""   value={SignUpContent.addr1}/>
+                            <TextInput style={[styles.input]} onChangeText={(addr1)=>ChkInput("addr1",addr1)} placeholder=""   value={SignUpContent.addr1}/>
                         </View>
                         {/*=============주소 2==============*/}
                         <View style={[styles.inputGroup]}>
-                            <TextInput style={[styles.input]} onChangeText={(addr2)=>ChkInput(addr2,"addr2")} placeholder=""   value={SignUpContent.addr2}/>
+                            <TextInput style={[styles.input]} onChangeText={(addr2)=>ChkInput("addr2",addr2)} placeholder=""   value={SignUpContent.addr2}/>
                         </View>
                     </View>
                     {/*사업장 주소 입력창*/}
                     <View style={styles.formGroup}>
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputTopText}>담당자명</Text>
-                            <TextInput style={[styles.input]} onChangeText={(mem_name)=>ChkInput(mem_name,"mem_name")} placeholder=""   value={SignUpContent.mem_name}/>
+                            <TextInput style={[styles.input]} onChangeText={(mem_name)=>ChkInput("mem_name",mem_name)} placeholder=""   value={SignUpContent.mem_name}/>
                         </View>
                     </View>
                     {/*담당자명 입력창*/}
                     <View style={styles.formGroup}>
-                        <Text style={styles.inputTopText}>담당자 연락처</Text>
-                        <View style={styles.flex}>
-                            <View style={[styles.inputGroup,styles.flexitem2]}>
-                                <TextInput style={[styles.input,styles.me_18]} onChangeText={(mem_mobile)=>ChkInput(mem_mobile,"mem_mobile")}  value={SignUpContent.mem_mobile}/>
-                            </View>
+                        <View style={styles.inputGroup}>
+                            <Text style={styles.inputTopText}>담당자 연락처</Text>
+                            <TextInput style={[styles.input]} onChangeText={(mem_mobile)=>ChkInput("mem_mobile",mem_mobile)} placeholder=""   value={SignUpContent.mem_mobile}/>
                         </View>
-
                     </View>
                     {/*사업장 주소 입력창*/}
                 </View>
@@ -368,13 +369,13 @@ export default function SignUp({navigation,route}) {
                 <View style={styles.container}>
                     <View style={styles.privacy_wrap}>
                         <View style={[styles.privacy_chek_all,flex]}>
-                            <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked}  color={"#4630eb"}  />
+                            <Checkbox style={styles.checkbox} color={"#4630eb"}  />
                             <Text style={styles.privacy_chek_all_txt} >전체 약관 동의</Text>
                         </View>
                         <View style={styles.privacy_list}>
                             <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
                                 <View style={[styles.privacy_list_flex_item,flex]}>
-                                    <Checkbox style={styles.checkbox} value={isChecked2} onValueChange={setChecked2}  color={"#4630eb"}  />
+                                    <Checkbox style={styles.checkbox} color={"#4630eb"}  />
                                     <Text style={styles.privacy_list_flex_item_txt}>서비스 이용약관 <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                 </View>
                                 <View style={styles.privacy_list_flex_item}>
@@ -386,7 +387,7 @@ export default function SignUp({navigation,route}) {
                             {/* 서비스 이용약관  */}
                             <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
                                 <View style={[styles.privacy_list_flex_item,flex]}>
-                                    <Checkbox style={styles.checkbox} value={isChecked3} onValueChange={setChecked3}  color={"#4630eb"}  />
+                                    <Checkbox style={styles.checkbox} color={"#4630eb"}  />
                                     <Text style={styles.privacy_list_flex_item_txt}>개인정보 처리방침 동의 <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                 </View>
                                 <View style={styles.privacy_list_flex_item}>
@@ -398,7 +399,7 @@ export default function SignUp({navigation,route}) {
                             {/* 개인정보 처리방침 동의 */}
                             <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
                                 <View style={[styles.privacy_list_flex_item,flex]}>
-                                    <Checkbox style={styles.checkbox} value={isChecked4} onValueChange={setChecked4}  color={"#4630eb"}  />
+                                    <Checkbox style={styles.checkbox} color={"#4630eb"}  />
                                     <Text style={styles.privacy_list_flex_item_txt}>전자금융거래 이용약관  <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                 </View>
                                 <View style={styles.privacy_list_flex_item}>
@@ -410,7 +411,7 @@ export default function SignUp({navigation,route}) {
                             {/* 전자금융거래 이용약관 */}
                             <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
                                 <View style={[styles.privacy_list_flex_item,flex]}>
-                                    <Checkbox style={styles.checkbox} value={isChecked5} onValueChange={setChecked5}  color={"#4630eb"}  />
+                                    <Checkbox style={styles.checkbox} color={"#4630eb"}  />
                                     <Text style={styles.privacy_list_flex_item_txt}>제3자 개인정보수집 동의  <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                 </View>
                                 <View style={styles.privacy_list_flex_item}>
@@ -422,7 +423,7 @@ export default function SignUp({navigation,route}) {
                             {/* 제3자 개인정보수집 동의 */}
                             <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
                                 <View style={[styles.privacy_list_flex_item,flex]}>
-                                    <Checkbox style={styles.checkbox} value={isChecked6} onValueChange={setChecked6}  color={"#4630eb"}  />
+                                    <Checkbox style={styles.checkbox} color={"#4630eb"}  />
                                     <Text style={styles.privacy_list_flex_item_txt}>홍보 및 마케팅 이용 동의 (선택) </Text>
                                 </View>
                                 <View style={styles.privacy_list_flex_item}>
@@ -437,7 +438,7 @@ export default function SignUp({navigation,route}) {
                 </View>
                 <View style={styles.gary_bar}/>
                 <View style={[styles.form_btn,styles.form_meminfo_btn]}>
-                    <TouchableOpacity style={[styles.form_btn_link,styles.form_btn_meminfo_link]} >
+                    <TouchableOpacity onPress={goSignUp} style={[styles.form_btn_link,styles.form_btn_meminfo_link]} >
                         <Text style={styles.form_btn_txt}>회원가입</Text>
                     </TouchableOpacity>
                 </View>

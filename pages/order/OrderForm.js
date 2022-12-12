@@ -63,132 +63,132 @@ export default function OrderForm({navigation, route}) {
     //분 입력
 
     return (
-        <ScrollView style={[bg_white]}>
-            <View style={[styles.OrderForm]}>
-                <View style={[container]}>
-                    <View style={styles.selectGroup}>
-                        <Text style={styles.selectGroup_txt}>배송지 불러오기</Text>
-                        <SelectList
-                            setSelected={(val) => setSelected(val)}
-                            data={data}
-                            save="value"
-                            defaultOption={{key: '1', value: '경기도 성남시 대왕판교로 452-2'}}
-                            boxStyles={{borderRadius: 0, borderColor: "#ededf1"}}
-                            inputStyles={{fontSize: 12, color: "#696A81"}}
-                        />
+        <>
+            <ScrollView style={[bg_white]}>
+                <View style={[styles.OrderForm]}>
+                    <View style={[container]}>
+                        <View style={styles.selectGroup}>
+                            <Text style={styles.selectGroup_txt}>배송지 불러오기</Text>
+                            <SelectList
+                                setSelected={(val) => setSelected(val)}
+                                data={data}
+                                save="value"
+                                defaultOption={{key: '1', value: '경기도 성남시 대왕판교로 452-2'}}
+                                boxStyles={{borderRadius: 0, borderColor: "#ededf1"}}
+                                inputStyles={{fontSize: 12, color: "#696A81"}}
+                            />
+                        </View>
+                        <View style={[styles.selectGroup, styles.mt_24]}>
+                            <Text style={styles.selectGroup_txt}>공사명 불러오기</Text>
+                            <SelectList
+                                setSelected={(val) => setSelected2(val)}
+                                data={data2}
+                                save="value"
+                                defaultOption={{key: '1', value: '직접입력'}}
+                                boxStyles={{borderRadius: 0, borderColor: "#ededf1"}}
+                                inputStyles={{fontSize: 12, color: "#696A81"}}
+                                search={false}
+                            />
+                            <TextInput style={[input, styles.mt_10]} onChangeText={onChangeConstructionName}
+                                       placeholder="ex)공사명 입력" value={ConstructionName}/>
+                        </View>
                     </View>
-                    <View style={[styles.selectGroup, styles.mt_24]}>
-                        <Text style={styles.selectGroup_txt}>공사명 불러오기</Text>
-                        <SelectList
-                            setSelected={(val) => setSelected2(val)}
-                            data={data2}
-                            save="value"
-                            defaultOption={{key: '1', value: '직접입력'}}
-                            boxStyles={{borderRadius: 0, borderColor: "#ededf1"}}
-                            inputStyles={{fontSize: 12, color: "#696A81"}}
-                            search={false}
-                        />
-                        <TextInput style={[input, styles.mt_10]} onChangeText={onChangeConstructionName}
-                                   placeholder="ex)공사명 입력" value={ConstructionName}/>
-                    </View>
-                </View>
-                <View style={gary_bar}/>
-                <View style={[container]}>
-                    <View style={styles.selectGroup}>
-                        <Text style={styles.selectGroup_txt}>배송지</Text>
-                        <View style={[flex]}>
-                            <View style={styles.w_70}>
-                                <TextInput style={[input, styles.me_18]} onChangeText={onChangeaddr}
-                                           placeholder="ex)상세주소입력" value={addr}/>
-                            </View>
-                            <View style={[styles.w_30, styles.pl_2]}>
-                                <TouchableOpacity style={styles.addr_btn}>
-                                    <View style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        right: 0,
-                                        bottom: 0,
-                                        justifyContent: 'center',
-                                        alignItems: 'center'
-                                    }}>
-                                        <Text style={styles.addr_btn_txt}>주소찾기</Text>
-                                    </View>
-                                </TouchableOpacity>
+                    <View style={gary_bar}/>
+                    <View style={[container]}>
+                        <View style={styles.selectGroup}>
+                            <Text style={styles.selectGroup_txt}>배송지</Text>
+                            <View style={[flex]}>
+                                <View style={styles.w_70}>
+                                    <TextInput style={[input, styles.me_18]} onChangeText={onChangeaddr}
+                                               placeholder="ex)상세주소입력" value={addr}/>
+                                </View>
+                                <View style={[styles.w_30, styles.pl_2]}>
+                                    <TouchableOpacity style={styles.addr_btn}>
+                                        <View style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            right: 0,
+                                            bottom: 0,
+                                            justifyContent: 'center',
+                                            alignItems: 'center'
+                                        }}>
+                                            <Text style={styles.addr_btn_txt}>주소찾기</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
-
-                    </View>
-                    <View style={[styles.selectGroup, styles.mt_24]}>
-                        <Text style={styles.selectGroup_txt}>상세주소</Text>
-                        <TextInput style={[input, styles.me_18]} onChangeText={onChangeaddr} placeholder="ex)상세주소입력" value={addr}/>
-                    </View>
-                </View>
-                <View style={gary_bar}/>
-                <View style={{ overflow: 'hidden' }}>
-                    <View style={[flex_between, styles.border_b_dotted,styles.p_16]}>
-                        <View style="">
-                            <Text style={styles.DateofArrival_txt}>도착일</Text>
+                        <View style={[styles.selectGroup, styles.mt_24]}>
+                            <Text style={styles.selectGroup_txt}>상세주소</Text>
+                            <TextInput style={[input, styles.me_18]} onChangeText={onChangeaddr} placeholder="ex)상세주소입력" value={addr}/>
                         </View>
-                        <View style="">
+                    </View>
+                    <View style={gary_bar}/>
+                    <View style={{ overflow: 'hidden' }}>
+                        <View style={[flex_between, styles.border_b_dotted,styles.p_16]}>
+                            <View style="">
+                                <Text style={styles.DateofArrival_txt}>도착일</Text>
+                            </View>
+                            <View style="">
+                                <Text style={styles.DateofArrival_txt}>10월 4일</Text>
+                            </View>
+                        </View>
+                        <View style={[container]}>
                             <Text style={styles.DateofArrival_txt}>10월 4일</Text>
                         </View>
                     </View>
-                    <View style={[container]}>
-                        <Text style={styles.DateofArrival_txt}>10월 4일</Text>
-                    </View>
-                </View>
-                <View style={gary_bar}/>
-                <View style={{ overflow: 'hidden' }}>
-                    <View style={[flex_between, styles.border_b_dotted,styles.p_16]}>
-                        <View style="">
-                            <Text style={styles.DateofArrival_txt}>도착시간</Text>
-                        </View>
-                        <View style="">
-                            <Text style={styles.DateofArrival_txt}>오전 10시 04분</Text>
-                        </View>
-                    </View>
-                    <View style={[container]}>
-                        <View style={[flex_top]}>
+                    <View style={gary_bar}/>
+                    <View style={{ overflow: 'hidden' }}>
+                        <View style={[flex_between, styles.border_b_dotted,styles.p_16]}>
                             <View style="">
-                                <SelectList
-                                    setSelected={(val) => setSelected3(val)}
-                                    data={data3}
-                                    save="value"
-                                    defaultOption={{key: '1', value: '오전'}}
-                                    boxStyles={{borderRadius: 0, borderColor: "#ededf1"}}
-                                    inputStyles={{fontSize: 12, color: "#696A81"}}
-                                    search={false}
-                                />
+                                <Text style={styles.DateofArrival_txt}>도착시간</Text>
                             </View>
                             <View style="">
-                                <TextInput style={[input, styles.me_18]} onChangeText={onChangehour} placeholder="00" value={hour}/>
-                            </View>
-                            <View style="">
-                                <Text style={styles.DateofArrival_txt}>:</Text>
-                            </View>
-                            <View style="">
-                                <TextInput style={[input, styles.me_18]} onChangeText={onChangeminute} placeholder="00" value={minute}/>
+                                <Text style={styles.DateofArrival_txt}>오전 10시 04분</Text>
                             </View>
                         </View>
+                        <View style={[container]}>
+                            <View style={[flex_top]}>
+                                <View style="">
+                                    <SelectList
+                                        setSelected={(val) => setSelected3(val)}
+                                        data={data3}
+                                        save="value"
+                                        defaultOption={{key: '1', value: '오전'}}
+                                        boxStyles={{borderRadius: 0, borderColor: "#ededf1"}}
+                                        inputStyles={{fontSize: 12, color: "#696A81"}}
+                                        search={false}
+                                    />
+                                </View>
+                                <View style="">
+                                    <TextInput style={[input, styles.me_18]} onChangeText={onChangehour} placeholder="00" value={hour}/>
+                                </View>
+                                <View style="">
+                                    <Text style={styles.DateofArrival_txt}>:</Text>
+                                </View>
+                                <View style="">
+                                    <TextInput style={[input, styles.me_18]} onChangeText={onChangeminute} placeholder="00" value={minute}/>
+                                </View>
+                            </View>
 
+                        </View>
                     </View>
+                    <View style={gary_bar}/>
+                    <View style={[container]}>
+                        <View style={styles.selectGroup}>
+                            <Text style={styles.selectGroup_txt}>현장 인도자 연락처</Text>
+                            <TextInput style={[input, styles.mt_10]} onChangeText={onChangeManagerPhone} placeholder="" value={ManagerPhone}/>
+                        </View>
+                        <View style={[styles.selectGroup, styles.mt_24]}>
+                            <Text style={styles.selectGroup_txt}>배송 요청 사항</Text>
+                            <TextInput style={[input, styles.mt_10]} onChangeText={onChangeDeliMemo} placeholder="" value={DeliMemo}/>
+                        </View>
+                    </View>
+                    <View style={gary_bar}/>
                 </View>
-                <View style={gary_bar}/>
-                <View style={[container]}>
-                    <View style={styles.selectGroup}>
-                        <Text style={styles.selectGroup_txt}>현장 인도자 연락처</Text>
-                        <TextInput style={[input, styles.mt_10]} onChangeText={onChangeManagerPhone} placeholder="" value={ManagerPhone}/>
-                    </View>
-                    <View style={[styles.selectGroup, styles.mt_24]}>
-                        <Text style={styles.selectGroup_txt}>배송 요청 사항</Text>
-                        <TextInput style={[input, styles.mt_10]} onChangeText={onChangeDeliMemo} placeholder="" value={DeliMemo}/>
-                    </View>
-                </View>
-                <View style={gary_bar}/>
-            </View>
-        </ScrollView>
-
+            </ScrollView>
+        </>
     );
 }
 
