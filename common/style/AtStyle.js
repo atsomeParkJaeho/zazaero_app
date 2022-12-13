@@ -3,6 +3,10 @@ import {StyleSheet} from "react-native";
 export const styles = StyleSheet.create({});
 
 
+export const padding_bottom = {
+    paddingBottom: 100,
+}
+
 export const sub_page = {      // 하단 간격 설정
     height:"100%",
     marginBottom:100,
@@ -10,7 +14,7 @@ export const sub_page = {      // 하단 간격 설정
 
 export const container = {      // 하단 간격 설정
     padding:16,
-    paddingBottom: 100,
+    //paddingBottom: 100,
 }
 
 export const min_height = {

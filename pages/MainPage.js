@@ -8,7 +8,7 @@ import { List } from 'react-native-paper';
 import {ImageSlider} from "react-native-image-slider-banner";
 
 // 공통 CSS 추가
-import {container, bg_white, content_wrap, min_height} from '../common/style/AtStyle';
+import {container, bg_white, content_wrap, min_height, padding_bottom} from '../common/style/AtStyle';
 
 // 이미지 추가
 // import logo from '../assets/img/top_logo.png';
@@ -65,7 +65,7 @@ export default function MainPage({navigation, route}) {
           return 구문 안에서는 {슬래시 + * 방식으로 주석
         */
         <>
-            <ScrollView style={container, bg_white}>
+            <ScrollView style={styles.main_wrap}>
                 <ImageSlider
                     data={[
                         {img: require("../assets/img/main_banner2.jpg")},
@@ -163,6 +163,12 @@ export default function MainPage({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
+
+    main_wrap : {
+        paddingBottom:200,
+        marginBottom:100,
+        backgroundColor:"#fff",
+    },
 
     top_inner: {
         marginTop: 50,

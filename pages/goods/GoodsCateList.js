@@ -10,7 +10,22 @@ import Chk from "../../icons/chk.svg";
 import goods_img_1 from '../../assets/img/goods_img_1.png';
 import goods_like from '../../assets/img/ico_heart.png';
 import Footer from "../Footer";
-import {align_items_center, bg_danger, bg_gray, bg_light, bg_primary, btn_circle, container, d_flex, h18, justify_content_center, min_height, sub_page, text_light} from "../../common/style/AtStyle";
+import {
+    align_items_center,
+    bg_danger,
+    bg_gray,
+    bg_light,
+    bg_primary,
+    bg_white,
+    btn_circle,
+    container,
+    d_flex,
+    h18,
+    justify_content_center,
+    min_height,
+    sub_page,
+    text_light
+} from "../../common/style/AtStyle";
 import {goodsList} from "../../util/util";
 import {CheckBox} from "react-native-web";
 
@@ -175,17 +190,21 @@ export default function GoodsCateList({navigation}) {
                         </View>
                     </View>
                 ))}
-
             </ScrollView>
 
-            <Footer navigation={navigation}/>
             {/*========상품체크시 노출=========*/}
             {(goForm.length > 0) ? (
                 <>
-                    <TouchableOpacity onPress={() => navigation.navigate("배송정보등록")}>
-                        <View style={[goForm, bg_primary, {paddingBottom: 36, paddingTop: 7,}]}>
+                    <View style={[styles.go_cart, bg_primary, {paddingBottom: 36, paddingTop: 7,}]}>
+                        <TouchableOpacity onPress={() => navigation.navigate("배송정보등록")}>
                             <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
-                                <View style={{width: 20, height: 20, borderRadius: "50%", marginRight: 10, backgroundColor: "#fff"}}>
+                                <View style={{
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: "50%",
+                                    marginRight: 10,
+                                    backgroundColor: "#fff"
+                                }}>
                                     <Text style={{textAlign: "center", color: "#333",}}>{goForm.length}</Text>
                                 </View>
                                 <Text style={text_light}>장바구니 가기</Text>
@@ -193,13 +212,13 @@ export default function GoodsCateList({navigation}) {
                             <Text style={[{textAlign: "center", color: "#FFF", fontSize: 18,}, text_light]}>
                                 수량 및 추가정보 입력
                             </Text>
-                        </View>
-                    </TouchableOpacity>
+                        </TouchableOpacity>
+                    </View>
                 </>
             ) : (
                 <></>
             )}
-
+            <Footer navigation={navigation}/>
 
         </>
     );

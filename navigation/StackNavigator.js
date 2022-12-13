@@ -32,6 +32,8 @@ import Provision from '../pages/Provision';                                  //�
 import Loading from '../components/Loading';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Footer from "../pages/Footer";
+import Wishlist from "../pages/goods/Wishlist";
+import Order from "../pages/order/Order";
 
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
 //그래서 이렇게 항상 상단에 선언하고 시작하는게 규칙입니다!
@@ -57,9 +59,6 @@ const StackNavigator = () => {
 
     console.log('회원코드 / ', Member);
 
-    if(Member === undefined) {
-
-    }
 
     return (
         <>
@@ -86,6 +85,7 @@ const StackNavigator = () => {
                 <Stack.Screen name="메인페이지" component={MainPage}/>
                 <Stack.Screen name="배송정보등록" component={OrderForm}/>
                 <Stack.Screen name="장바구니" component={Cart}/>
+                <Stack.Screen name="즐겨찾기" component={Wishlist}/>
                 <Stack.Screen name="아이디 찾기" component={FindId}/>
                 <Stack.Screen name="비밀번호 찾기" component={FindPw}/>
                 <Stack.Screen name="마이페이지" component={MyPage}/>
@@ -94,13 +94,16 @@ const StackNavigator = () => {
                 <Stack.Screen name="포인트내역" component={MyPoint}/>
                 <Stack.Screen name="설정" component={Setting}/>
                 <Stack.Screen name="약관/개인정보처리방침" component={Provision}/>
+
+                <Stack.Screen name="상품목록" component={GoodsCateList}/>
+                <Stack.Screen name="발주내역" component={Order}/>
+                <Stack.Screen name="DetailPage" component={DetailPage}/>
+
                 <Stack.Screen name="고객센터" component={Cscenter}/>
                 <Stack.Screen name="1:1문의작성" component={inquiryWrite}/>
                 <Stack.Screen name="1:1문의목록" component={inquiryList}/>
                 <Stack.Screen name="공지사항" component={NoticeList}/>
                 <Stack.Screen name="공지사항상세" component={NoticeView}/>
-                <Stack.Screen name="DetailPage" component={DetailPage}/>
-                <Stack.Screen name="상품목록" component={GoodsCateList}/>
                 <Stack.Screen name="하단" component={Footer}/>
             </Stack.Navigator>
         </>
