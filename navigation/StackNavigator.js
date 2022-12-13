@@ -79,20 +79,24 @@ const StackNavigator = () => {
             >
 
 
-                {/*==============메인페이지===============*/}
+                {/*==============비회원===============*/}
                 <Stack.Screen name="로그인" component={Login}/>
                 <Stack.Screen name="회원가입" component={SignUp}/>
+                {/*==============메인페이지===============*/}
                 <Stack.Screen name="메인페이지" component={MainPage}/>
+                {/*==============마이페이지===============*/}
+                <Stack.Screen name="회원탈퇴" component={MemOut}/>
+                <Stack.Screen name="마이페이지" component={MyPage}/>
+                <Stack.Screen name="회원정보수정" component={MemInfo}/>
+                <Stack.Screen name="포인트내역" component={MyPoint}/>
+                <Stack.Screen name="설정" component={Setting}/>
+
+
                 <Stack.Screen name="배송정보등록" component={OrderForm}/>
                 <Stack.Screen name="장바구니" component={Cart}/>
                 <Stack.Screen name="즐겨찾기" component={Wishlist}/>
                 <Stack.Screen name="아이디 찾기" component={FindId}/>
                 <Stack.Screen name="비밀번호 찾기" component={FindPw}/>
-                <Stack.Screen name="마이페이지" component={MyPage}/>
-                <Stack.Screen name="회원정보수정" component={MemInfo}/>
-                <Stack.Screen name="회원탈퇴" component={MemOut}/>
-                <Stack.Screen name="포인트내역" component={MyPoint}/>
-                <Stack.Screen name="설정" component={Setting}/>
                 <Stack.Screen name="약관/개인정보처리방침" component={Provision}/>
 
                 <Stack.Screen name="상품목록" component={GoodsCateList}/>
