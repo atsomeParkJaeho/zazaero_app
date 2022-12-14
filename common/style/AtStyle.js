@@ -26,22 +26,162 @@ export const min_height = {
 //     height:"100%",
 // }
 
+export const text_center = {textAlign:"center",}
+
+
 // 폰트사이즈 설정
-export const h14 = {fontSize:14, lineHeight: 1.5,}
-export const h15 = {fontSize:15, lineHeight: 1.5,}
-export const h16 = {fontSize:16, lineHeight: 1.5,}
-export const h17 = {fontSize:17, lineHeight: 1.5,}
-export const h18 = {fontSize:18, lineHeight: 1.5,}
-export const h19 = {fontSize:19, lineHeight: 1.5,}
-export const h20 = {fontSize:20, lineHeight: 1.5,}
-export const h21 = {fontSize:21, lineHeight: 1.5,}
-export const h22 = {fontSize:22, lineHeight: 1.5,}
+export const h14 = {fontSize:14, lineHeight: 21,}
+export const h15 = {fontSize:15, lineHeight: 22,}
+export const h16 = {fontSize:16, lineHeight: 24,}
+export const h17 = {fontSize:17, lineHeight: 25,}
+export const h18 = {fontSize:18, lineHeight: 27,}
+export const h19 = {fontSize:19, lineHeight: 28,}
+export const h20 = {fontSize:20, lineHeight: 30,}
+export const h21 = {fontSize:21, lineHeight: 31,}
+export const h22 = {fontSize:22, lineHeight: 33,}
+export const h23 = {fontSize:23, lineHeight: 34,}
+export const h24 = {fontSize:24, lineHeight: 36,}
+export const h25 = {fontSize:25, lineHeight: 37,}
+export const h26 = {fontSize:26, lineHeight: 39,}
+export const h27 = {fontSize:27, lineHeight: 40,}
+export const h28 = {fontSize:28, lineHeight: 42,}
+export const h29 = {fontSize:29, lineHeight: 43,}
+export const h30 = {fontSize:30, lineHeight: 45,}
+
+// 폰트두계 설정
+export const fw100 = {fontWeight:"100"}
+export const fw200 = {fontWeight:"200"}
+export const fw300 = {fontWeight:"300"}
+export const fw400 = {fontWeight:"400"}
+export const fw500 = {fontWeight:"500"}
+export const fw600 = {fontWeight:"600"}
+export const fw700 = {fontWeight:"700"}
+export const fw800 = {fontWeight:"800"}
+export const fw900 = {fontWeight:"900"}
+
+// margin 설정
+export const m1 = {margin:10}
+export const m2 = {margin:20}
+export const m3 = {margin:30}
+export const m4 = {margin:40}
+export const m5 = {margin:50}
+export const m6 = {margin:60}
+export const m7 = {margin:70}
+export const m8 = {margin:80}
+export const m9 = {margin:90}
+export const m10 = {margin:100}
+//
+export const mt1 = {marginTop:10}
+export const mt2 = {marginTop:20}
+export const mt3 = {marginTop:30}
+export const mt4 = {marginTop:40}
+export const mt5 = {marginTop:50}
+export const mt6 = {marginTop:60}
+export const mt7 = {marginTop:70}
+export const mt8 = {marginTop:80}
+export const mt9 = {marginTop:90}
+export const mt10 = {marginTop:100}
+//
+export const mb1 = {marginBottom:10}
+export const mb2 = {marginBottom:20}
+export const mb3 = {marginBottom:30}
+export const mb4 = {marginBottom:40}
+export const mb5 = {marginBottom:50}
+export const mb6 = {marginBottom:60}
+export const mb7 = {marginBottom:70}
+export const mb8 = {marginBottom:80}
+export const mb9 = {marginBottom:90}
+export const mb10 = {marginBottom:100}
+//
+export const ms1 = {marginLeft:10}
+export const ms2 = {marginLeft:20}
+export const ms3 = {marginLeft:30}
+export const ms4 = {marginLeft:40}
+export const ms5 = {marginLeft:50}
+export const ms6 = {marginLeft:60}
+export const ms7 = {marginLeft:70}
+export const ms8 = {marginLeft:80}
+export const ms9 = {marginLeft:90}
+export const ms10 = {marginLeft:100}
+//
+export const me1 = {marginRight:10}
+export const me2 = {marginRight:20}
+export const me3 = {marginRight:30}
+export const me4 = {marginRight:40}
+export const me5 = {marginRight:50}
+export const me6 = {marginRight:60}
+export const me7 = {marginRight:70}
+export const me8 = {marginRight:80}
+export const me9 = {marginRight:90}
+export const me10 = {marginRight:100}
+
+// padding 설정
+export const p1 = {padding:10}
+export const p2 = {padding:20}
+export const p3 = {padding:30}
+export const p4 = {padding:40}
+export const p5 = {padding:50}
+export const p6 = {padding:60}
+export const p7 = {padding:70}
+export const p8 = {padding:80}
+export const p9 = {padding:90}
+export const p10 = {padding:100}
+//
+export const pt1 = {paddingTop:10}
+export const pt2 = {paddingTop:20}
+export const pt3 = {paddingTop:30}
+export const pt4 = {paddingTop:40}
+export const pt5 = {paddingTop:50}
+export const pt6 = {paddingTop:60}
+export const pt7 = {paddingTop:70}
+export const pt8 = {paddingTop:80}
+export const pt9 = {paddingTop:90}
+export const pt10 = {paddingTop:100}
+//
+export const pb1 = {paddingBottom:10}
+export const pb2 = {paddingBottom:20}
+export const pb3 = {paddingBottom:30}
+export const pb4 = {paddingBottom:40}
+export const pb5 = {paddingBottom:50}
+export const pb6 = {paddingBottom:60}
+export const pb7 = {paddingBottom:70}
+export const pb8 = {paddingBottom:80}
+export const pb9 = {paddingBottom:90}
+export const pb10 = {paddingBottom:100}
+//
+export const ps1 = {paddingLeft:10}
+export const ps2 = {paddingLeft:20}
+export const ps3 = {paddingLeft:30}
+export const ps4 = {paddingLeft:40}
+export const ps5 = {paddingLeft:50}
+export const ps6 = {paddingLeft:60}
+export const ps7 = {paddingLeft:70}
+export const ps8 = {paddingLeft:80}
+export const ps9 = {paddingLeft:90}
+export const ps10 = {paddingLeft:100}
+//
+export const pe1 = {paddingRight:10}
+export const pe2 = {paddingRight:20}
+export const pe3 = {paddingRight:30}
+export const pe4 = {paddingRight:40}
+export const pe5 = {paddingRight:50}
+export const pe6 = {paddingRight:60}
+export const pe7 = {paddingRight:70}
+export const pe8 = {paddingRight:80}
+export const pe9 = {paddingRight:90}
+export const pe10 = {paddingRight:100}
+
+
+
+
+
 
 // 폼 이동 버튼 설정
 export const btn_box  = {position:"absolute", left:0, bottom:0, width:"100%", backgroundColor: "#B1B2C3"}
 
 // 가로 세로 설정
 
+export const d_none = {display:"none",}
 export const d_flex = {flexDirection:"row",}
 export const justify_content_center = {justifyContent: "center"}
 export const justify_content_between = {justifyContent: "between"}
@@ -76,7 +216,7 @@ export const bg_success = {backgroundColor:"#5cc9a7",}
 export const bg_info = {backgroundColor:"#50b5ff",}
 export const bg_warning = {backgroundColor:"#FFBE3D",}
 export const bg_danger = {backgroundColor:"#F24A64",}
-export const bg_white = {backgroundColor:"#fff",}
+export const bg_white = {backgroundColor:"#fff", }
 export const bg_dark = {backgroundColor:"#08052f",}
 export const bg_black = {backgroundColor:"#000",}
 export const bg_gray = {backgroundColor:"#B1B2C3",}
@@ -112,6 +252,11 @@ export const flex = {
     flexDirection:"row",
     alignItems:"center",
 }
+export const flex_end = {
+    flexDirection:"row",
+    alignItems:"center",
+    justifyContent:"flex-end",
+}
 export const flex_top = {
     flexDirection:"row",
     alignItems:"flex-start",
@@ -120,7 +265,11 @@ export const flex_between = {
     flexDirection:"row",
     alignItems:"center",
     justifyContent: "space-between",
-
+}
+export const flex_between_top = {
+    flexDirection:"row",
+    alignItems:"flex-start",
+    justifyContent: "space-between",
 }
 export const input = {
     width:"100%",
@@ -145,8 +294,4 @@ export const textarea = {
     fontSize:12,
     color:"#000",
 }
-//font-size
-export const txt14 = {
-    fontSize:14,
-    lineHeight:22,
-}
+
