@@ -11,7 +11,9 @@ import {sub_page, gary_bar} from '../../common/style/SubStyle';
 import {order_List} from "../../util/util";
 import axios from "axios";
 
-export default function Order({navigation, route}) {
+
+function OrderStatus({navigation, route}) {
+
 
     const [OrderList, setOrderList] = useState(order_List);     // 발주내역 출력
     useEffect(()=>{
@@ -41,19 +43,20 @@ export default function Order({navigation, route}) {
     // 2. 결제상태
     /*
     * order_status에서 done이고 pay_status는 ready 경우 출력
-    * 
+    *
     * */
-    
+
 
 
     // 3. 배송상태
     /*
-    * order_status에서 done이고 
-    * pay_status에서 done이면 
+    * order_status에서 done이고
+    * pay_status에서 done이면
     * 배송상태 출력
-    * 
+    *
     * */
     console.log(OrderList);
+
 
 
 
@@ -79,10 +82,10 @@ export default function Order({navigation, route}) {
                 <ScrollView>
                     <View style={[styles.bt, styles.bb]}>
                         <View>
-                            {OrderList.map(val=>(
+                            {OrderList.map(val => (
                                 (val.order_status === 'ready' || val.order_status === 'doing' || val.order_status === 'done') && (
                                     <>
-                                        <View style={[styles.order_list_items]} >
+                                        <View style={[styles.order_list_items]}>
                                             <View style={[container]}>
                                                 <View style={[flex, styles.mb_5]}>
                                                     <View style={[styles.wt3]}>
@@ -96,7 +99,8 @@ export default function Order({navigation, route}) {
                                                 {/*발주번호*/}
                                                 <View style={[flex, styles.mb_5]}>
                                                     <View style={[styles.wt3]}>
-                                                        <Text style={[styles.Construction_name, styles.ft_14]}> 공사명 :</Text>
+                                                        <Text style={[styles.Construction_name, styles.ft_14]}> 공사명
+                                                            :</Text>
                                                     </View>
                                                     <View style={[styles.wt7]}>
                                                         <Text
@@ -106,20 +110,25 @@ export default function Order({navigation, route}) {
                                                 {/*공사명*/}
                                                 <View style={[flex, styles.mb_5]}>
                                                     <View style={[styles.wt3]}>
-                                                        <Text style={[styles.Desired_Delivery_Date_name, styles.ft_14]}> 희망배송일 :</Text>
+                                                        <Text
+                                                            style={[styles.Desired_Delivery_Date_name, styles.ft_14]}> 희망배송일
+                                                            :</Text>
                                                     </View>
                                                     <View style={[styles.wt7]}>
-                                                        <Text style={[styles.Desired_Delivery_Date_val, styles.ft_14]}>{val.Desired_Delivery_Date} 도착예정</Text>
+                                                        <Text
+                                                            style={[styles.Desired_Delivery_Date_val, styles.ft_14]}>{val.Desired_Delivery_Date} 도착예정</Text>
                                                     </View>
                                                 </View>
                                                 {/*희망배송일*/}
                                                 <View style={[flex]}>
                                                     <View style={[styles.wt3]}>
                                                         <Text
-                                                            style={[styles.Delivery_destination_name, styles.ft_14, val.text_gray]}> 배송지 :</Text>
+                                                            style={[styles.Delivery_destination_name, styles.ft_14, val.text_gray]}> 배송지
+                                                            :</Text>
                                                     </View>
                                                     <View style={[styles.wt7]}>
-                                                        <Text style={[styles.Delivery_destination_name_val, styles.ft_14, styles.text_gray]}>{val.Delivery_destination_name}</Text>
+                                                        <Text
+                                                            style={[styles.Delivery_destination_name_val, styles.ft_14, styles.text_gray]}>{val.Delivery_destination_name}</Text>
                                                     </View>
                                                 </View>
                                                 {/*배송지*/}
@@ -135,9 +144,11 @@ export default function Order({navigation, route}) {
                                                     <View style={[flex]}>
                                                         <Text style={[styles.ft_14]}>발주상태</Text>
                                                         {(val.order_type == 'ready') ? (
-                                                            <Text style={[styles.order_type,styles.text_danger]}>신청</Text>
-                                                        ):(
-                                                            <Text style={[styles.order_type,styles.text_primary ]}>검수중</Text>
+                                                            <Text
+                                                                style={[styles.order_type, styles.text_danger]}>신청</Text>
+                                                        ) : (
+                                                            <Text
+                                                                style={[styles.order_type, styles.text_primary]}>검수중</Text>
                                                         )}
 
                                                     </View>
@@ -153,17 +164,16 @@ export default function Order({navigation, route}) {
                     <View style={gary_bar}/>
                 </ScrollView>
             </View>
-
-
         </>
-
-
     );
 }
 
+export default OrderStatus;
+
+
 const styles = StyleSheet.create({
     wt_3: {
-        flex:0.5,
+        flex: 0.5,
         //width: "33.333%",
         borderBottomWidth: 1,
         borderColor: "#ddd",
@@ -218,16 +228,16 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
     },
     order_type: {
-        fontSize:16,
+        fontSize: 16,
         lineHeight: 24,
         marginLeft: 10,
-        fontWeight:"500",
+        fontWeight: "500",
     },
-    text_danger:{
-        color:"#f25767"
+    text_danger: {
+        color: "#f25767"
     },
-    text_primary:{
-        color:"#4549e0"
+    text_primary: {
+        color: "#4549e0"
     },
     text_gray: {
         color: "#a0aec0",

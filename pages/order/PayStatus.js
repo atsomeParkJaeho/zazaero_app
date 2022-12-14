@@ -11,7 +11,8 @@ import {sub_page, gary_bar} from '../../common/style/SubStyle';
 import {order_List} from "../../util/util";
 import axios from "axios";
 
-export default function Order({navigation, route}) {
+function PayStatus({navigation, route}) {
+
 
     const [OrderList, setOrderList] = useState(order_List);     // 발주내역 출력
     useEffect(()=>{
@@ -41,23 +42,21 @@ export default function Order({navigation, route}) {
     // 2. 결제상태
     /*
     * order_status에서 done이고 pay_status는 ready 경우 출력
-    * 
+    *
     * */
-    
+
 
 
     // 3. 배송상태
     /*
-    * order_status에서 done이고 
-    * pay_status에서 done이면 
+    * order_status에서 done이고
+    * pay_status에서 done이면
     * 배송상태 출력
-    * 
+    *
     * */
     console.log(OrderList);
 
-
-
-    return (
+    return(
         <>
             <View style={[bg_white]}>
                 <View style={[styles.Order]}>
@@ -133,7 +132,7 @@ export default function Order({navigation, route}) {
                                                         </TouchableOpacity>
                                                     </View>
                                                     <View style={[flex]}>
-                                                        <Text style={[styles.ft_14]}>발주상태</Text>
+                                                        <Text style={[styles.ft_14]}>배송상태</Text>
                                                         {(val.order_type == 'ready') ? (
                                                             <Text style={[styles.order_type,styles.text_danger]}>신청</Text>
                                                         ):(
@@ -153,13 +152,10 @@ export default function Order({navigation, route}) {
                     <View style={gary_bar}/>
                 </ScrollView>
             </View>
-
-
         </>
-
-
     );
-}
+} export default PayStatus;
+
 
 const styles = StyleSheet.create({
     wt_3: {

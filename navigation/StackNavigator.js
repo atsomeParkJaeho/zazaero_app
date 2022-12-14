@@ -32,7 +32,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Footer from "../pages/Footer";
 import Wishlist from "../pages/goods/Wishlist";
 import Order from "../pages/order/Order";
-import FaqList from "../pages/board/faq/FaqList";
+import OrderStatus from "../pages/order/OrderStatus";
+import PayStatus from "../pages/order/PayStatus";
+import DeliStatus from "../pages/order/DeliStatus";
+// import FaqList from "../pages/board/faq/FaqList";
 
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
 //그래서 이렇게 항상 상단에 선언하고 시작하는게 규칙입니다!
@@ -102,21 +105,20 @@ const StackNavigator = () => {
                 <Stack.Screen name="아이디 찾기" component={FindId}/>
                 <Stack.Screen name="비밀번호 찾기" component={FindPw}/>
                 <Stack.Screen name="약관/개인정보처리방침" component={Provision}/>
-
                 <Stack.Screen name="상품목록" component={GoodsCateList}/>
                 <Stack.Screen name="발주내역" component={Order}/>
+                {/*================발주내역 상태 변경===================*/}
+                <Stack.Screen name="발주상태" options={{title:'발주내역'}} component={OrderStatus}/>
+                <Stack.Screen name="결제상태" options={{title:'발주내역'}} component={PayStatus}/>
+                <Stack.Screen name="배송상태" options={{title:'발주내역'}} component={DeliStatus}/>
                 <Stack.Screen name="DetailPage" component={DetailPage}/>
                 {/*=================게시판===============*/}
                 <Stack.Screen name="고객센터" component={Cscenter}/>
-                <Stack.Screen name="자주묻는질문" component={FaqList}/>
-
+                {/*<Stack.Screen name="자주묻는질문" component={FaqList}/>*/}
                 <Stack.Screen name="1:1문의작성" component={inquiryWrite}/>
                 <Stack.Screen name="1:1문의목록" component={inquiryList}/>
-
                 <Stack.Screen name="공지사항" component={NoticeList}/>
                 <Stack.Screen name="공지사항상세" component={NoticeView}/>
-
-
                 <Stack.Screen name="하단" component={Footer}/>
             </Stack.Navigator>
         </>
