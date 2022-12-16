@@ -62,7 +62,7 @@ export const order_List = [
         order_type: "request",                                     //발주상태
         order_status  :"done",      // 발주상태
         pay_status    :"ready",      // 결제상태
-        deli_status   :"raedy",      // 배송상태
+        deli_status   :"doing",      // 배송상태
     },
     {
         user_id: "1",                                                 //아이디값
@@ -88,6 +88,92 @@ export const order_List = [
     },
 
 ];
+
+//취소/반품내역
+export const cancel_List = [
+
+    {
+        user_id: "1",                                                 //아이디값
+        goods_num: "A_123451231",                                     //발주번호
+        Construction_name: "호반베르디움 102동 604호 아파트리모델링",                //공사명
+        Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
+        Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
+        cancel_type: "doing",                                               //취소상태
+
+
+    },
+    {
+        user_id: "1",                                                 //아이디값
+        goods_num: "B_123451231",                                     //발주번호
+        Construction_name: "스타리우빌딩 3층 상가리모델링",       //공사명
+        Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
+        Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
+        cancel_type: "done",                                            //취소상태
+    },
+    {
+        user_id: "1",                                                 //아이디값
+        goods_num: "C_123451231",                                     //발주번호
+        Construction_name: "석촌호수공원 분수대 옆 호반베르디움 102동 604호 아파트리모델링",       //공사명
+        Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
+        Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
+        cancel_type: "doing",                                               //취소상태
+    },
+    {
+        user_id: "1",                                                 //아이디값
+        goods_num: "A_123451231",                                     //발주번호
+        Construction_name: "스타리우빌딩 3층 상가리모델링",       //공사명
+        Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
+        Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
+        cancel_type: "done",                                            //취소상태
+    },
+
+];
+
+//취소상세
+export const cancel_d_List = [
+
+    {
+        user_id: "1",                                                   //아이디값
+        goods_num: "165196846",                                         //상품번호
+        title: "일반석고보드 9.5T X 900 X 1800",                          //상품명
+        goods_thum: "../../assets/img/goods_thum1.jpg",             //상품이미지
+        count: "15",                                                    //수량
+
+        price: "3,5000",                                                //판매가
+        total_price: "350,000",                                         //총금액
+
+
+    },
+    {
+        user_id: "1",                                                   //아이디값
+        goods_num: "165196846",                                         //상품번호
+        title: "방부목 2×4×12",                          //상품명
+        count: "15",                                                    //수량
+
+        price: "3,5000",                                                //판매가
+        total_price: "350,000",                                         //총금액
+    },
+    {
+        user_id: "1",                                                   //아이디값
+        goods_num: "165196846",                                         //상품번호
+        title: "원목루바 레드파인",                          //상품명
+        count: "15",                                                    //수량
+
+        price: "3,5000",                                                //판매가
+        total_price: "350,000",                                         //총금액
+    },
+    {
+        user_id: "1",                                                   //아이디값
+        goods_num: "165196846",                                         //상품번호
+        title: "오비스기수직사이딩 17*140*3600",                          //상품명
+        count: "15",                                                    //수량
+
+        price: "3,5000",                                                //판매가
+        total_price: "350,000",                                         //총금액
+    },
+
+];
+
 
 
 
