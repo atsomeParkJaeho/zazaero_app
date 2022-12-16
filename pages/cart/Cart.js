@@ -5,7 +5,17 @@ import { List } from 'react-native-paper';
 import Checkbox from 'expo-checkbox';
 
 // 공통 CSS 추가
-import {container, bg_white, flex, flex_between, textarea} from '../../common/style/AtStyle';
+import {
+    container,
+    bg_white,
+    flex,
+    flex_between,
+    textarea,
+    count_btn,
+    pos_center,
+    switch_bar,
+    count_btn_txt, countinput
+} from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 
 //이미지 추가
@@ -18,7 +28,6 @@ import col3 from "../../assets/img/co3.png";
 export default function Cart({navigation,route}) {
 
     const cate_list = [ "목/형틀공사","바닥공사", "욕식공사", "도배공사"];
-
     const Cate_List2 = [
 
         {
@@ -51,10 +60,7 @@ export default function Cart({navigation,route}) {
     const [state,setState] = useState(Cate_List2);
     const [ready,setReady] = useState(true)
 
-    const [count, onChangecount] = React.useState("");
-    //수량
-    const [Disc, onChangeDisc] = React.useState("");
-    //내용
+
 
     const [isChecked, setChecked] = useState(false);
 
@@ -88,14 +94,12 @@ export default function Cart({navigation,route}) {
     }
 
 
-
-
     // setState(Cate_List2);
      console.log(state);
 
     return (
 
-        <ScrollView style={container,bg_white}>
+        <ScrollView style={[container,bg_white]}>
             <View style={[styles.Cart]}>
                 <View style={[container]}>
                     <View style={[flex_between]}>
@@ -147,15 +151,19 @@ export default function Cart({navigation,route}) {
                                                             </View>
                                                         </View>
                                                         <View style={flex}>
-                                                            <TouchableWithoutFeedback onPress={onPress}>
-                                                                <View style={styles.button}>
-                                                                    <Text style={styles.button_txt}>＋</Text>
+                                                            <TouchableWithoutFeedback >
+                                                                <View style={[count_btn]}>
+                                                                    <View style={[pos_center]}>
+                                                                        <Text style={[count_btn_txt]}>－</Text>
+                                                                    </View>
                                                                 </View>
                                                             </TouchableWithoutFeedback>
-                                                            <TextInput style={[styles.input]} onChangeText={onChangecount} editable={false} selectTextOnFocus={false}  value={cart_items.ct_count} />
-                                                            <TouchableWithoutFeedback onPress={onPress}>
-                                                                <View style={styles.button}>
-                                                                    <Text style={styles.button_txt}>－</Text>
+                                                            <TextInput style={[countinput,]}   value="1" />
+                                                            <TouchableWithoutFeedback >
+                                                                <View style={[count_btn]}>
+                                                                    <View style={[pos_center]}>
+                                                                        <Text style={[count_btn_txt]}>＋</Text>
+                                                                    </View>
                                                                 </View>
                                                             </TouchableWithoutFeedback>
                                                         </View>
@@ -169,9 +177,10 @@ export default function Cart({navigation,route}) {
                                                         ios_backgroundColor="#3e3e3e"
                                                         onValueChange={toggleSwitch}
                                                         value={isEnabled}
+                                                        style={[switch_bar]}
                                                     />
                                                 </View>
-                                                <TextInput style={textarea}   multiline={true} numberOfLines={4}  onChangeText={onChangeDisc}  placeholder="" value={Disc}/>
+                                                <TextInput style={textarea}   multiline={true} numberOfLines={4}    placeholder="" value=""/>
                                                 {/**/}
                                             </View>
                                         )}
