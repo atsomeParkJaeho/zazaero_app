@@ -99,7 +99,7 @@ export default function Cart({navigation,route}) {
 
     return (
 
-        <ScrollView style={[container,bg_white]}>
+        <ScrollView style={[bg_white]}>
             <View style={[styles.Cart]}>
                 <View style={[container]}>
                     <View style={[flex_between]}>
@@ -119,10 +119,13 @@ export default function Cart({navigation,route}) {
                         {cate_list.map((items, index) =>
 
                             <List.Accordion
-                                style={styles.Accordion_tit}
+                                style={[container,styles.Accordion_tit]}
                                 title={[items]}
                                 key={index}
-                                left={ props =>  <Checkbox style={styles.all_check} value={isChecked} onValueChange={setChecked}  color={"#4630eb"}  />}
+                                left={ props =>  <Checkbox style={[styles.all_check]}
+                                value={isChecked}
+                                onValueChange={setChecked}
+                                color={"#4630eb"}  />}
                             >
                                 <View style={styles.Accordion_items}>
                                     <View style={[styles.Accordion_itemsflex]}>
@@ -150,7 +153,7 @@ export default function Cart({navigation,route}) {
                                                                 <Text style={styles.goods_price}>{cart_items.ct_price}원 </Text>
                                                             </View>
                                                         </View>
-                                                        <View style={flex}>
+                                                        <View style={[flex]}>
                                                             <TouchableWithoutFeedback >
                                                                 <View style={[count_btn]}>
                                                                     <View style={[pos_center]}>
@@ -169,7 +172,7 @@ export default function Cart({navigation,route}) {
                                                         </View>
                                                     </View>
                                                 </View>
-                                                <View style={flex}>
+                                                <View style={flex_between}>
                                                     <Text style={styles.Request_txt}>이 자재에 모델명, 제작관련 등 요청사항이 있으신가요?</Text>
                                                     <Switch
                                                         trackColor={{ false: "#767577", true: "#4630eb" }}
