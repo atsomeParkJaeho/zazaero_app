@@ -28,8 +28,40 @@ export const min_height = {
 
 export const text_center = {textAlign:"center",}
 
+export const pos_center = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+}
+
+
+//active 상태
+export const active_link = { borderBottomWidth:5, borderColor:"#3D40E0"}
+export const active_txt = { color:"#3D40E0",}
+
+//switch 상태
+export const switch_bar = { transform: Platform.OS === 'ios' ? [{ scaleX: .7 }, { scaleY: .7 }] : [{ scaleX: 1 }, { scaleY: 1 }] ,}
+
+//count_button 상태
+export const count_btn = {
+    alignItems: "center",
+    borderColor:"#EDEDF1",
+    height:36,
+    borderWidth:1,
+    width:30,
+}
+export const count_btn_txt = {
+    fontSize:  Platform.OS === 'ios' ? 18 : 14,
+    fontWeight:"500",
+}
 
 // 폰트사이즈 설정
+export const h12 = {fontSize:12, lineHeight: 21,}
+export const h13 = {fontSize:13, lineHeight: 21,}
 export const h14 = {fontSize:14, lineHeight: 21,}
 export const h15 = {fontSize:15, lineHeight: 22,}
 export const h16 = {fontSize:16, lineHeight: 24,}
@@ -171,9 +203,17 @@ export const pe8 = {paddingRight:80}
 export const pe9 = {paddingRight:90}
 export const pe10 = {paddingRight:100}
 
-
-
-
+// width 설정
+export const wt1 = {width:"10%"}
+export const wt2 = {width:"20%"}
+export const wt3 = {width:"30%"}
+export const wt4 = {width:"40%"}
+export const wt5 = {width:"50%"}
+export const wt6 = {width:"60%"}
+export const wt7 = {width:"70%"}
+export const wt8 = {width:"80%"}
+export const wt9 = {width:"90%"}
+export const wt10 = {width:"100%"}
 
 
 // 폼 이동 버튼 설정
@@ -186,6 +226,8 @@ export const d_flex = {flexDirection:"row",}
 export const justify_content_center = {justifyContent: "center"}
 export const justify_content_between = {justifyContent: "between"}
 export const justify_content_around = {justifyContent: "around"}
+export const justify_content_end = {justifyContent:"flex-end"}
+
 
 export const align_items_center = {alignItems:"center",}
 
@@ -254,8 +296,7 @@ export const flex = {
 }
 export const flex_end = {
     flexDirection:"row",
-    alignItems:"center",
-    justifyContent:"flex-end",
+    alignItems:"flex-end",
 }
 export const flex_top = {
     flexDirection:"row",
@@ -266,11 +307,22 @@ export const flex_between = {
     alignItems:"center",
     justifyContent: "space-between",
 }
+export const flex_between_bottom = {
+    flexDirection:"row",
+    alignItems:"flex-end",
+    justifyContent: "space-between",
+}
 export const flex_between_top = {
     flexDirection:"row",
     alignItems:"flex-start",
     justifyContent: "space-between",
 }
+export const flex_around = {
+    flexDirection:"row",
+    alignItems:"center",
+    justifyContent: "space-around",
+}
+
 export const input = {
     width:"100%",
     height: 36,
@@ -281,6 +333,19 @@ export const input = {
     borderColor:"#ededf1",
     fontSize:12,
     color:"#000",
+    borderRadius: 5,
+}
+export const countinput = {
+    width:50,
+    height: 36,
+    margin: 0,
+    borderWidth: 1,
+    paddingVertical:7,
+    paddingHorizontal: 18,
+    borderColor:"#ededf1",
+    fontSize:12,
+    color:"#000",
+    text_center:'center',
 }
 export const textarea = {
     width:"100%",
