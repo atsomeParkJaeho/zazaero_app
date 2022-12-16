@@ -137,7 +137,7 @@ export default function GoodsCateList({navigation}) {
                                 <View style={[styles.flex_item, styles.flex_item2]}>
                                     <View style={styles.flex_top}>
                                         <View style={styles.flex}>
-                                            <TouchableOpacity style="">
+                                            <TouchableOpacity style="" onPress={() => {navigation.navigate('상품상세')}}>
                                                 {/*========상품명========*/}
                                                 <Text style={styles.cate_2st_btn_txt}>{val.goods_name}</Text>
                                             </TouchableOpacity>
@@ -179,7 +179,7 @@ export default function GoodsCateList({navigation}) {
                                     </View>
                                     <View style={styles.flex_bottom}>
                                         <View style="">
-                                            <Text style={styles.cate_list_disc}>당일출고</Text>
+                                            <Text style={styles.cate_list_disc}>당일출고111</Text>
                                         </View>
                                         <View style="">
                                             <Text style={styles.cate_list_price}>{val.goods_price}원</Text>

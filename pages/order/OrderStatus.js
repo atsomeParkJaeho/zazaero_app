@@ -12,7 +12,7 @@ import {
     flex,
     flex_top,
     active_link,
-    active_txt, padding_bottom
+    active_txt, padding_bottom, text_danger, text_primary, btn_outline_danger, btn_outline_primary, p2, p1, ps1,pe1
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
@@ -148,13 +148,13 @@ function OrderStatus({navigation, route}) {
                                                         </TouchableOpacity>
                                                     </View>
                                                     <View style={[flex]}>
-                                                        {/*<Text style={[styles.ft_14]}>발주상태</Text>*/}
+                                                        <Text style={[styles.ft_14]}>발주상태</Text>
                                                         {(val.order_type == 'ready') ? (
                                                             <Text
-                                                                style={[styles.order_type, styles.text_danger]}>신청</Text>
+                                                                style={[styles.order_type, text_danger,btn_outline_danger,ps1,pe1]}>신청</Text>
                                                         ) : (
                                                             <Text
-                                                                style={[styles.order_type, styles.text_primary]}>검수중</Text>
+                                                                style={[styles.order_type, text_primary,btn_outline_primary,ps1,pe1]}>검수중</Text>
                                                         )}
 
                                                     </View>

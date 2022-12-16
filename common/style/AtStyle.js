@@ -360,3 +360,8 @@ export const textarea = {
     color:"#000",
 }
 
+export const zonecode = {
+    backgroundColor:"#eaecf3",
+    // borderRadius:5,
+}
+

@@ -48,6 +48,7 @@ export default function Setting({navigation,route}){
                                 ios_backgroundColor="#3e3e3e"
                                 onValueChange={toggleSwitch}
                                 value={isEnabled}
+                                style={styles.switch}
                             />
                         </View>
                     </View>
@@ -62,6 +63,7 @@ export default function Setting({navigation,route}){
                                 ios_backgroundColor="#3e3e3e"
                                 onValueChange={toggleSwitch2}
                                 value={isEnabled2}
+                                style={styles.switch}
                             />
                         </View>
                     </View>
@@ -105,6 +107,9 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor:"#fff",
     },
+    switch:{
+        transform: Platform.OS === 'ios' ? [{ scaleX: .7 }, { scaleY: .7 }] : [{ scaleX: 1.2 }, { scaleY: 1.2 }] ,
+    },
     top_inner:{
         marginTop:50,
         paddingLeft:12,
@@ -134,7 +139,7 @@ const styles = StyleSheet.create({
 
     },
     mypageList_name:{
-        fontSize:20,
+        fontSize:16,
         color:"#08052f",
         fontFamily: "Amatic-Bold",
         fontWeight:"700",
@@ -190,17 +195,14 @@ const styles = StyleSheet.create({
         fontSize:15,
         fontWeight:"700"
     },
-    mypageListItem:{
-        flexDirection:"row",
-        justifyContent:"space-between",
-        alignItems:"center",
-    },
+
     mypageList:{
         marginTop:30,
     },
     mypageListItem:{
         flexDirection:"row",
         justifyContent:"space-between",
+        alignItems:"center",
         paddingTop:16,
         paddingBottom:16,
         paddingLeft:20,
@@ -208,9 +210,7 @@ const styles = StyleSheet.create({
         borderBottomWidth:1,
         borderColor:'#ededf1',
     },
-    mypageList_name:{
-        fontSize:16,
-    },
+
     mypageListItem_link:{
         width:"100%",
     },

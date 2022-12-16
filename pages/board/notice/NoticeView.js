@@ -1,46 +1,52 @@
-import React from 'react'
-import {View,Text,StyleSheet,Image, TouchableOpacity, ScrollView} from 'react-native'
-import logo from "../assets/img/top_logo.png";
+import React, {useEffect, useState} from 'react'
+import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, useWindowDimensions} from 'react-native'
+import logo from "../../../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
+import axios from "axios";
+import RenderHTML from "react-native-render-html";
 
+export default function NoticeView({route, navigation}){
+    console.log('상세내용');
+    const {bd_uid} = route.params;
+    const [NoticeView, setNoticeView] = useState([]);
+    useEffect(()=>{
+        let data = {
+            act_type    :'get_info',
+            bd_uid      :bd_uid,
+        }
+        axios.post('http://49.50.162.86:80/ajax/UTIL_bd.php',data,{
+            headers: {
+                'Content-type': 'multipart/form-data',
+            }
+        }).then((res)=>{
+            if(res) {
+                const {bd_data} = res.data;
+                setNoticeView(bd_data);
+            }
+        });
+    },[]);
 
+    console.log(NoticeView);
 
-export default function NoticeList(){
-
-    let mypageList_name = "가나인테리어";
     return(
         <ScrollView style={styles.container}>
-
-            <View style={styles.top_inner}>
-                <View style={styles.top_innerone}>
-                    <Icon name="arrowleft" size={25} color="#000" />
-                </View>
-                <View style={styles.top_innerone}>
-                    <Text style={styles.toptitle}>공지사항</Text>
-                </View>
-                <View style={styles.top_innertwo}>
-                    <Icon name="home" size={25} color="#000" />
-                </View>
-            </View>
-
-            <View style={styles.mypageList}>
-
-                <View style={styles.mypageListItem}>
-                    <View style={styles.mypageListItemTitle}>
-                        <Text style={styles.mypageList_name}>[긴급점검]서비스 안정화를 위한 점검 안</Text>
+            <View style={styles.NoticeView}>
+                {/*================글제목====================*/}
+                <View style={styles.NoticeView_title_box}>
+                    <View style={styles.NoticeView_title_in}>
+                        <Text style={styles.NoticeView_title}>{NoticeView.bd_title}</Text>
                     </View>
-                    <View style={styles.mypageListItemIcon}>
+                    <View style={styles.NoticeView_date_in}>
                         {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                        <Text style={styles.mypageList_name2}> 2022-11-18 </Text>
+                        <Text style={styles.NoticeView_date}>{NoticeView.reg_date} </Text>
                     </View>
                 </View>
-                <View style={styles.mypageListItem}>
-                    <View style={styles.mypageListItemTitle}>
-                        <Text style={styles.mypageList_name}>[긴급점검]서비스 안정화를 위한 점검 안2</Text>
-                    </View>
-                    <View style={styles.mypageListItemIcon}>
-                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                        <Text style={styles.mypageList_name2}> 2022-11-17 </Text>
+                {/*=============상세내용===============*/}
+                <View style={styles.NoticeView_disc}>
+                    <View style={styles.NoticeView_disc_in}>
+                        <Text style={styles.NoticeView_disc}>
+                            <RenderHTML source={{html:`${NoticeView.bd_contents}`}}/>
+                        </Text>
                     </View>
                 </View>
             </View>
@@ -144,11 +150,25 @@ const styles = StyleSheet.create({
         justifyContent:"space-between",
         alignItems:"center",
     },
-    mypageList:{
+    NoticeView:{
         marginTop:30,
+        paddingLeft:16,
+        paddingRight:16,
+    },
+    NoticeView_title:{
+        fontSize:18,
+        paddingBottom:23,
+    },
+    NoticeView_date_in:{
+        paddingBottom:23,
+        borderBottomWidth:1,
+        borderColor:'#ededf1',
+    },
+    NoticeView_date:{
+        fontSize:12,
+        color:'#b1b2c3',
     },
     mypageListItem:{
-
         paddingTop:16,
         paddingBottom:16,
         paddingLeft:20,
@@ -156,12 +176,12 @@ const styles = StyleSheet.create({
         borderBottomWidth:1,
         borderColor:'#ededf1',
     },
-    mypageList_name:{
-        fontSize:16,
-        paddingBottom:12,
+    NoticeView_disc_in:{
+        marginTop:20,
     },
-    mypageList_name2:{
+    NoticeView_disc:{
         fontSize:12,
-        color:'#b1b2c3',
+        lineHeight:20,
+        fontWeight:300,
     },
 })

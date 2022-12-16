@@ -22,7 +22,7 @@ export default function InquiryList({navigation,route}) {
                         </TouchableOpacity>
                     </View>
                     <View style={[styles.InquiryTab_item]}>
-                        <TouchableOpacity style={styles.InquiryTab_link,styles.active_link} onPress={()=>{navigation.navigate('1:1문의목록')}} >
+                        <TouchableOpacity style={[styles.InquiryTab_link,styles.active_link]} onPress={()=>{navigation.navigate('1:1문의목록')}} >
                             <Text style={[styles.InquiryTab_txt,styles.active_txt]}>나의 문의 내역</Text>
                         </TouchableOpacity>
                     </View>

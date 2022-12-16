@@ -4,7 +4,6 @@ import logo from "../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
 import ProvisionDisc from "../ProvisionDisc.json";
 import ProvisionTap from "../components/ProvisionTap";
-import Loading from "../components/Loading";
 
 
 export default function Provision(){
@@ -44,20 +43,10 @@ export default function Provision(){
 
     //let Provisiontest = Provision.disc;
 
-    return ready ? <Loading/> :  (
+    return  (
         <ScrollView style={styles.container}>
 
-            <View style={styles.top_inner}>
-                <View style={styles.top_innerone}>
-                    <Icon name="arrowleft" size={25} color="#000" />
-                </View>
-                <View style={styles.top_innerone}>
-                    <Text style={styles.toptitle}>약관 * 개인정보처리방침</Text>
-                </View>
-                <View style={styles.top_innertwo}>
-                    <Icon name="home" size={25} color="#000" />
-                </View>
-            </View>
+
 
             <View style={styles.Provision_tap}>
                <View style={styles.Provision_tap_item}>

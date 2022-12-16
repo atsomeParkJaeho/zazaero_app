@@ -113,6 +113,11 @@ const StackNavigator = () => {
                     component={MainPage}
                     options={{headerTitle:'',headerStatusBarHeight:0,}}
                 />
+                {/*==============상단===============*/}
+                <Stack.Screen name="알림" component={NotificationList}/>
+                <Stack.Screen name="검색" component={GoodsSearch}/>
+                <Stack.Screen name="검색상품" component={GoodsSearchList}/>
+
                 {/*==============마이페이지===============*/}
                 <Stack.Screen name="회원탈퇴" component={MemOut}/>
                 <Stack.Screen name="마이페이지" component={MyPage}/>

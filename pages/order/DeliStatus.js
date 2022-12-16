@@ -12,7 +12,16 @@ import {
     flex,
     flex_top,
     active_link,
-    active_txt, padding_bottom, text_danger, text_primary, text_gray
+    active_txt,
+    padding_bottom,
+    text_danger,
+    text_primary,
+    text_gray,
+    btn_outline_primary,
+    ps1,
+    pe1,
+    btn_outline_danger,
+    btn_outline_gray
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
@@ -148,17 +157,17 @@ let test = 1;
                                                         </TouchableOpacity>
                                                     </View>
                                                     <View style={[flex]}>
-                                                        {/*<Text style={[styles.ft_14]}>발주상태</Text>*/}
+                                                        <Text style={[styles.ft_14]}>배송상태</Text>
                                                         {(val.deli_status === 'done') ? (
                                                             <Text
-                                                                style={[styles.order_type, text_primary]}>완료</Text>
+                                                                style={[styles.order_type, text_primary,btn_outline_primary,ps1,pe1]}>완료</Text>
 
                                                         ) : (val.deli_status === 'doing') ? (
                                                             <Text
-                                                                style={[styles.order_type, text_danger]}>진행</Text>
+                                                                style={[styles.order_type, text_danger,btn_outline_danger,ps1,pe1]}>진행</Text>
                                                         ):(
                                                             <Text
-                                                                style={[styles.order_type, text_gray]}>대기</Text>
+                                                                style={[styles.order_type, text_gray,btn_outline_gray,ps1,pe1]}>대기</Text>
                                                         )}
 
                                                     </View>

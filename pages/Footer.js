@@ -13,20 +13,20 @@ const styles = styleSheet.create({
         left:0,
         bottom:0,
         backgroundColor:"#fff",
-        ...Platform.select({
-            ios: {
-                shadowColor: "#000",
-                shadowOffset: {
-                    width: 10,
-                    height: 10,
-                },
-                shadowOpacity: 0.5,
-                shadowRadius: 10,
-            },
-            android: {
-                elevation: 20,
-            },
-        }),
+        // ...Platform.select({
+        //     ios: {
+        //         shadowColor: "#000",
+        //         shadowOffset: {
+        //             width: 10,
+        //             height: 10,
+        //         },
+        //         shadowOpacity: 0.5,
+        //         shadowRadius: 10,
+        //     },
+        //     android: {
+        //         elevation: 20,
+        //     },
+        // }),
     },
     Tabs:{
         paddingTop:11,
@@ -82,7 +82,7 @@ function Footer({navigation,pages}) {
                     </TouchableOpacity>
                 </View>
                 <View style={[styles.Tabs,]}>
-                    <TouchableOpacity onPress={()=>{navigation.navigate('발주내역')}}>
+                    <TouchableOpacity onPress={()=>{navigation.navigate('발주상태')}}>
                         <View style={styles.SvgIcons}>
                             <OrderList width={22} height={18}/>
                         </View>

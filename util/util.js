@@ -188,6 +188,8 @@ export const OnlyEng = (text) => {
     val.replace(/[^A-Za-z]/ig, '');
 }
 
+export const bankAccount = ["자재로(이정완)_국민은행 1234-23-5968714"];
+
 export const AddrMatch = [
     {
         key          :"서울특별시",

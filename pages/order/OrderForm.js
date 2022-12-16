@@ -8,234 +8,173 @@ import {SelectList} from 'react-native-dropdown-select-list'
 //다음주소 api
 
 // 공통 CSS 추가
-import {container, bg_white, flex_between, input, flex,flex_top} from '../../common/style/AtStyle';
+import {
+    container,
+    bg_white,
+    flex_between,
+    input,
+    flex,
+    flex_top,
+    bg_primary,
+    d_flex,
+    justify_content_center, align_items_center, text_light, text_dark, bg_gray, justify_content_between
+} from '../../common/style/AtStyle';
 import {sub_page, gary_bar} from '../../common/style/SubStyle';
+import axios from "axios";
+import {FormStyle} from "./FormStyle";
 
 
 export default function OrderForm({navigation, route}) {
 
-    const [selected, setSelected] = React.useState("");
+    // 1. 주문정보 상태 설정
+    const [OrderData, setOrderDate] = useState({
+        mem_name:'', // 담당자 이름
+        mem_uid:'', // 회원 uid
+        mem_mobile:'',  // 담당자 전화번호
+        addr1:'',       // 주소1
+        addr2:'',       // 주소2
+        zonecode:'',    // 다음 api 우편번호
+        project_title:'',   // 공사명
+        hope_deli_date:'',  // 희망배송일
+        hope_deli_time:'',  // 희망배송시간
+        recv_name:'',       // 현장인도자 이름
+        recv_phone:'',      // 현장인도자 전화번호
+        order_memo:'',      // 배송시 요청사항 메모
+    });
 
-    const data = [
-        {key: '1', value: '경기도 성남시 대왕판교로 452-2',},
-        {key: '2', value: '경기도 성남시 화정로 452-2 스타우드빌딩 2층'},
-        {key: '3', value: '경기도 성남시 분당구'},
-        {key: '4', value: '광주 북구 서하로233번길 32'},
-        // {key:'4', value:'Computers', disabled:true},
+    // 2. 주문정보 입력상태 설정
+    const goInput = (keyValue, e) => {
+        setOrderDate({
+            ...OrderData,
+            [keyValue]:e,
+        });
+    }
 
-    ]
-    //배송지 불러오기 셀렉트박스
-    const [selected2, setSelected2] = React.useState("");
+    // 3. 발주신청
+    const goForm = () => {
+        axios.post('',data,{
+            headers:{
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            if(res) {
+                alert('발주신청이 완료되었습니다.');
+                navigation.navigate('발주내역');
+            } else {
+                alert('주문실패');
+            }
+        });
+    }
 
-    const data2 = [
-        {key: '1', value: '힐스테이트 103동 1206호 리모델링',},
-        {key: '2', value: '스타우드빌딩 2층 208호 리모델링'},
-        {key: '3', value: '분당구 로데오 빌딩 608호 리모델링'},
-
-        // {key:'4', value:'Computers', disabled:true},
-
-    ]
-    //공사명 불러오기 셀렉트박스
-
-    const [selected3, setSelected3] = React.useState("");
-
-    const data3 = [
-        {key: '1', value: '오전',},
-        {key: '2', value: '오후'},
-
-
-        // {key:'4', value:'Computers', disabled:true},
-
-    ]
-    //공사명 불러오기 셀렉트박스
-
-    const [ConstructionName, onChangeConstructionName] = React.useState("");
-    //공사명 입력
-    const [addr, onChangeaddr] = React.useState("");
-    //상세주소 입력
-    const [hour, onChangehour] = React.useState("");
-    //시간 입력
-    const [minute, onChangeminute] = React.useState("");
-    //분 입력
-    const [ManagerPhone, onChangeManagerPhone] = React.useState("");
-    //시간 입력
-    const [DeliMemo, onChangeDeliMemo] = React.useState("");
-    //분 입력
+    console.log(OrderData);
 
     return (
         <>
             <ScrollView style={[bg_white]}>
-                <View style={[styles.OrderForm]}>
-                    <View style={[container]}>
-                        <View style={styles.selectGroup}>
-                            <Text style={styles.selectGroup_txt}>배송지 불러오기</Text>
-                            <SelectList
-                                setSelected={(val) => setSelected(val)}
-                                data={data}
-                                save="value"
-                                defaultOption={{key: '1', value: '경기도 성남시 대왕판교로 452-2'}}
-                                boxStyles={{borderRadius: 0, borderColor: "#ededf1"}}
-                                inputStyles={{fontSize: 12, color: "#696A81"}}
-                            />
-                        </View>
-                        <View style={[styles.selectGroup, styles.mt_24]}>
-                            <Text style={styles.selectGroup_txt}>공사명 불러오기</Text>
-                            <SelectList
-                                setSelected={(val) => setSelected2(val)}
-                                data={data2}
-                                save="value"
-                                defaultOption={{key: '1', value: '직접입력'}}
-                                boxStyles={{borderRadius: 0, borderColor: "#ededf1"}}
-                                inputStyles={{fontSize: 12, color: "#696A81"}}
-                                search={false}
-                            />
-                            <TextInput style={[input, styles.mt_10]} onChangeText={onChangeConstructionName}
-                                       placeholder="ex)공사명 입력" value={ConstructionName}/>
+                <View>
+                    {/*==============최근배송지 불러오기==============*/}
+                    <View style={[FormStyle.FormGroup]}>
+                        <View>
+                            {/*체크박스*/}
+                            <Text style={[FormStyle.FormTitle]}>최근 배송지 불러오기</Text>
+                            {/*셀렉트박스*/}
                         </View>
                     </View>
-                    <View style={gary_bar}/>
-                    <View style={[container]}>
-                        <View style={styles.selectGroup}>
-                            <Text style={styles.selectGroup_txt}>배송지</Text>
-                            <View style={[flex]}>
-                                <View style={styles.w_70}>
-                                    <TextInput style={[input, styles.me_18]} onChangeText={onChangeaddr}
-                                               placeholder="ex)상세주소입력" value={addr}/>
-                                </View>
-                                <View style={[styles.w_30, styles.pl_2]}>
-                                    <TouchableOpacity style={styles.addr_btn}>
-                                        <View style={{
-                                            position: 'absolute',
-                                            top: 0,
-                                            left: 0,
-                                            right: 0,
-                                            bottom: 0,
-                                            justifyContent: 'center',
-                                            alignItems: 'center'
-                                        }}>
-                                            <Text style={styles.addr_btn_txt}>주소찾기</Text>
+                    {/*==============신규배송지 입력==============*/}
+                    <View style={[FormStyle.FormGroup]}>
+                        {/*==============제목==============*/}
+                        <View>
+                            {/*체크박스*/}
+                            <Text style={[FormStyle.FormTitle]}>신규 배송지 입력</Text>
+                        </View>
+                        {/*==============배송지 입력==============*/}
+                        <View>
+                            <View style={[FormStyle.FormGroupItems]}>
+                                <Text style={[FormStyle.FormLabel]}>공사명</Text>
+                                <TextInput style={[FormStyle.InputStyle]} placeholder="ex)공사명 입력"/>
+                            </View>
+                            <View style={[FormStyle.FormGroupItems]}>
+                                <Text style={[FormStyle.FormLabel]}>배송지</Text>
+                                <View style={[d_flex,align_items_center]}>
+                                    <TextInput style={[FormStyle.InputStyle,{flex:1,marginRight:16,}]} placeholder="배송지"/>
+                                    <TouchableOpacity>
+                                        <View style={[bg_primary,{padding:10,}]}>
+                                            <Text style={[text_light]}>주소찾기</Text>
                                         </View>
                                     </TouchableOpacity>
                                 </View>
                             </View>
                         </View>
-                        <View style={[styles.selectGroup, styles.mt_24]}>
-                            <Text style={styles.selectGroup_txt}>상세주소</Text>
-                            <TextInput style={[input, styles.me_18]} onChangeText={onChangeaddr} placeholder="ex)상세주소입력" value={addr}/>
-                        </View>
                     </View>
-                    <View style={gary_bar}/>
-                    <View style={{ overflow: 'hidden' }}>
-                        <View style={[flex_between, styles.border_b_dotted,styles.p_16]}>
-                            <View style="">
-                                <Text style={styles.DateofArrival_txt}>도착일</Text>
-                            </View>
-                            <View style="">
-                                <Text style={styles.DateofArrival_txt}>10월 4일</Text>
-                            </View>
+                    {/*==============희망배송일==============*/}
+                    <View>
+                        {/*==============제목==============*/}
+                        <View style={[d_flex, align_items_center, FormStyle.FormDate, {justifyContent:"space-between"}]}>
+                            {/*체크박스*/}
+                            <Text style={[FormStyle.FormDateLabel]}>도착일</Text>
+                            <Text style={[FormStyle.FormDateLabel]}>2022-12-12</Text>
                         </View>
-                        <View style={[container]}>
-                            <Text style={styles.DateofArrival_txt}>10월 4일</Text>
-                        </View>
-                    </View>
-                    <View style={gary_bar}/>
-                    <View style={{ overflow: 'hidden' }}>
-                        <View style={[flex_between, styles.border_b_dotted,styles.p_16]}>
-                            <View style="">
-                                <Text style={styles.DateofArrival_txt}>도착시간</Text>
-                            </View>
-                            <View style="">
-                                <Text style={styles.DateofArrival_txt}>오전 10시 04분</Text>
-                            </View>
-                        </View>
-                        <View style={[container]}>
-                            <View style={[flex_top]}>
-                                <View style="">
-                                    <SelectList
-                                        setSelected={(val) => setSelected3(val)}
-                                        data={data3}
-                                        save="value"
-                                        defaultOption={{key: '1', value: '오전'}}
-                                        boxStyles={{borderRadius: 0, borderColor: "#ededf1"}}
-                                        inputStyles={{fontSize: 12, color: "#696A81"}}
-                                        search={false}
-                                    />
-                                </View>
-                                <View style="">
-                                    <TextInput style={[input, styles.me_18]} onChangeText={onChangehour} placeholder="00" value={hour}/>
-                                </View>
-                                <View style="">
-                                    <Text style={styles.DateofArrival_txt}>:</Text>
-                                </View>
-                                <View style="">
-                                    <TextInput style={[input, styles.me_18]} onChangeText={onChangeminute} placeholder="00" value={minute}/>
-                                </View>
-                            </View>
+                        {/*==============캘린더==============*/}
+                        <View style={[FormStyle.FormGroup]}>
 
                         </View>
+
                     </View>
-                    <View style={gary_bar}/>
-                    <View style={[container]}>
-                        <View style={styles.selectGroup}>
-                            <Text style={styles.selectGroup_txt}>현장 인도자 연락처</Text>
-                            <TextInput style={[input, styles.mt_10]} onChangeText={onChangeManagerPhone} placeholder="" value={ManagerPhone}/>
+                    {/*==============희망배송시간==============*/}
+                    <View>
+                        {/*==============제목==============*/}
+                        <View style={[d_flex, align_items_center, FormStyle.FormDate, {justifyContent:"space-between"}]}>
+                            {/*체크박스*/}
+                            <Text style={[FormStyle.FormDateLabel]}>도착시간</Text>
+                            <Text style={[FormStyle.FormDateLabel]}>2022-12-12</Text>
                         </View>
-                        <View style={[styles.selectGroup, styles.mt_24]}>
-                            <Text style={styles.selectGroup_txt}>배송 요청 사항</Text>
-                            <TextInput style={[input, styles.mt_10]} onChangeText={onChangeDeliMemo} placeholder="" value={DeliMemo}/>
+                        {/*==============시간입력==============*/}
+                        <View style={[FormStyle.FormGroup]}>
+                            <View style={[d_flex, justify_content_center]}>
+                                {/*오전, 오후*/}
+                                <View></View>
+                                {/*시*/}
+                                <TextInput style={[FormStyle.InputStyle,{flex:1,marginRight:16,}]}/>
+                                {/*분*/}
+                                <TextInput style={[FormStyle.InputStyle,{flex:1}]}/>
+                            </View>
                         </View>
                     </View>
-                    <View style={gary_bar}/>
+                    {/*==============현장인도자 연락처==============*/}
+                    <View style={[FormStyle.FormGroup]}>
+                        {/*==============현장인도자 연락처==============*/}
+                        <View style={[FormStyle.FormGroupItems]}>
+                            <View>
+                                <Text style={[FormStyle.FormLabel]}>현장인도자 연락처</Text>
+                                <TextInput style={[FormStyle.InputStyle,{flex:1}]} placeholder="ex)공사명 입력"/>
+                            </View>
+                        </View>
+                        {/*==============배송 요청 사항==============*/}
+                        <View style={[FormStyle.FormGroupItems]}>
+                            <View>
+                                <Text style={[FormStyle.FormLabel]}>배송 요청 사항</Text>
+                                <TextInput style={[FormStyle.InputStyle,{flex:1}]} placeholder="ex)공사명 입력"/>
+                            </View>
+                        </View>
+                    </View>
                 </View>
             </ScrollView>
+            {/*============배송정보 입력시 활성화=============*/}
+            <View style={
+                [bg_gray,
+                    {paddingTop:6, paddingBottom:38,}
+                ]
+            }
+            >
+                <TouchableOpacity onPress={() => navigation.navigate("배송정보등록")}>
+                    <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
+                        <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
+                    </View>
+                    <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
+                        발주요청
+                    </Text>
+                </TouchableOpacity>
+            </View>
         </>
     );
 }
-
-const styles = StyleSheet.create({
-    selectGroup_txt: {
-        fontSize: 16,
-        lineHeight: 24,
-        paddingBottom: 14,
-    },
-    mt_24: {
-        marginTop: 24,
-    },
-    mt_10: {
-        marginTop: 10,
-    },
-    select: {
-        borderRadius: 0,
-    },
-    w_30: {
-        width: "30%",
-
-    },
-    w_70: {
-        width: "70%",
-    },
-    pl_2: {
-        paddingLeft: 10,
-    },
-    addr_btn: {
-        backgroundColor: "#4549e0",
-        height: 34,
-    },
-    addr_btn_txt: {
-        color: "#fff",
-        textAlign: "center",
-        fontSize: 14,
-    },
-    DateofArrival_txt: {
-        fontSize: 14,
-    },
-    border_b_dotted: {
-        borderStyle: 'dashed',
-        borderWidth: 1,
-
-        margin: -2,
-    },
-    p_16:{
-        padding:16,
-    }
-});

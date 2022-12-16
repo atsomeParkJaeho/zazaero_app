@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 // 공통 CSS 추가
-import {container, bg_white, flex_between, input, flex, flex_top} from '../../common/style/AtStyle';
+import {container, bg_white, flex_between, input, flex, flex_top, padding_bottom} from '../../common/style/AtStyle';
 import {sub_page, gary_bar} from '../../common/style/SubStyle';
 
 // 샘플데이터
@@ -41,17 +41,17 @@ export default function Order({navigation, route}) {
     // 2. 결제상태
     /*
     * order_status에서 done이고 pay_status는 ready 경우 출력
-    * 
+    *
     * */
-    
+
 
 
     // 3. 배송상태
     /*
-    * order_status에서 done이고 
-    * pay_status에서 done이면 
+    * order_status에서 done이고
+    * pay_status에서 done이면
     * 배송상태 출력
-    * 
+    *
     * */
     console.log(OrderList);
 
@@ -66,7 +66,7 @@ export default function Order({navigation, route}) {
                     </NavigationContainer>
                     <View style={[flex]}>
                         <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('발주상태')}>
-                            <Text style={styles.tab_txt}>발주상태</Text>
+                            <Text style={[styles.tab_txt,styles.active,]}>발주상태</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('결제상태')}>
                             <Text style={styles.tab_txt}>결제상태</Text>
@@ -78,11 +78,11 @@ export default function Order({navigation, route}) {
                 </View>
                 <ScrollView>
                     <View style={[styles.bt, styles.bb]}>
-                        <View>
-                            {OrderList.map(val=>(
+                        <View style={[styles.order_list]}>
+                            {OrderList.map((val,i)=>(
                                 (val.order_status === 'ready' || val.order_status === 'doing' || val.order_status === 'done') && (
                                     <>
-                                        <View style={[styles.order_list_items]} >
+                                        <View style={[styles.order_list_items]} key={i}>
                                             <View style={[container]}>
                                                 <View style={[flex, styles.mb_5]}>
                                                     <View style={[styles.wt3]}>
@@ -150,7 +150,7 @@ export default function Order({navigation, route}) {
                             ))}
                         </View>
                     </View>
-                    <View style={gary_bar}/>
+                    <View style={padding_bottom}/>
                 </ScrollView>
             </View>
 
@@ -176,10 +176,10 @@ const styles = StyleSheet.create({
         textAlign: "center",
         paddingVertical: 16,
     },
-    bt: {
-        borderTopWidth: 1,
-        borderColor: "#ddd",
-    },
+    // bt: {
+    //     borderTopWidth: 1,
+    //     borderColor: "#ddd",
+    // },
     bb: {
         borderBottomWidthWidth: 1,
         borderColor: "#ddd",

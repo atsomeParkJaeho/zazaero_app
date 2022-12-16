@@ -62,10 +62,9 @@ export default function GoodsSearch({navigation, route}) {
     const [state,setState] = useState(Recent_search);
 
 
-    const [SearchVal, onChangeSearchVal] = React.useState("");
-    //내용
 
-    console.log(SearchVal);
+
+
 
     return (
 
@@ -77,7 +76,7 @@ export default function GoodsSearch({navigation, route}) {
                             <BackArrow width={22} height={18} style={[styles.center]} />
                         </View>
                         <View style={[styles.search_input]}>
-                            <TextInput style={[input,styles.input_wt]} onChangeText={onChangeSearchVal}  placeholder="검색어"  value={SearchVal} />
+                            <TextInput style={[input,styles.input_wt]}   placeholder="검색어"  value="" />
                         </View>
                         <View style={[styles.search_icon]}>
                             <TouchableOpacity style="" onPress={()=>{navigation.navigate('검색상품')}}>

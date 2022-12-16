@@ -12,7 +12,7 @@ import {
     flex,
     flex_top,
     active_link,
-    active_txt, padding_bottom, text_danger, text_primary
+    active_txt, padding_bottom, text_danger, text_primary, btn_outline_danger, ps1, pe1, btn_outline_primary
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
@@ -148,13 +148,13 @@ function PayStatus({navigation, route}) {
                                                         </TouchableOpacity>
                                                     </View>
                                                     <View style={[flex]}>
-                                                        {/*<Text style={[styles.ft_14]}>발주상태</Text>*/}
+                                                        <Text style={[styles.ft_14]}>결제상태</Text>
                                                         {(val.order_type == 'ready') ? (
                                                             <Text
-                                                                style={[styles.order_type, text_danger]}>대기</Text>
+                                                                style={[styles.order_type, text_danger,btn_outline_danger,ps1,pe1]}>대기</Text>
                                                         ) : (
                                                             <Text
-                                                                style={[styles.order_type, text_primary]}>완료</Text>
+                                                                style={[styles.order_type, text_primary,btn_outline_primary,ps1,pe1]}>완료</Text>
                                                         )}
 
                                                     </View>

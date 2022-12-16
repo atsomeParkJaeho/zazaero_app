@@ -1,52 +1,38 @@
 import React from 'react'
-import {View,Text,StyleSheet,Image, TouchableOpacity, ScrollView, Linking} from 'react-native'
-import logo from "../assets/img/top_logo.png";
+import {View,Text,StyleSheet,Image, TouchableOpacity, ScrollView} from 'react-native'
+import logo from "../../../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
 
-// 공통 CSS 추가
-import {container, bg_white,flex,flex_between} from '../common/style/AtStyle';
-import {sub_page} from '../common/style/SubStyle';
 
-export default function Cscenter({navigation,route}){
 
-    let phoneNumber = "1600-7099";
+export default function NoticeList({navigation,route}){
+
+    let mypageList_name = "가나인테리어";
     return(
         <ScrollView style={styles.container}>
 
 
 
             <View style={styles.mypageList}>
+
                 <View style={styles.mypageListItem}>
                     <View style={styles.mypageListItemTitle}>
-                        <Text style={styles.mypageList_name}>자주묻는질문</Text>
+                        <TouchableOpacity style={styles.user_point_link} onPress={()=>{navigation.navigate('공지사항상세')}} >
+                            <Text style={styles.mypageList_name}>[긴급점검]서비스 안정화를 위한 점검 안</Text>
+                        </TouchableOpacity>
                     </View>
                     <View style={styles.mypageListItemIcon}>
                         {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                        <Text style={styles.mypageList_name}> > </Text>
+                        <Text style={styles.mypageList_name2}> 2022-11-18 </Text>
                     </View>
-                </View>
-                <View style={styles.mypageListItem}>
-                    <TouchableOpacity style={styles.mypageListItem_link} onPress={()=>{navigation.navigate('1:1문의작성')}} >
-                        <View style={flex_between}>
-                            <View style={styles.mypageListItemTitle}>
-                                <Text style={styles.mypageList_name}>1:1문의</Text>
-                            </View>
-                            <View style={styles.mypageListItemIcon}>
-                                {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                                <Text style={styles.mypageList_name}> > </Text>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
                 </View>
                 <View style={styles.mypageListItem}>
                     <View style={styles.mypageListItemTitle}>
-                        <Text style={styles.mypageList_name}>자재로 고객센터</Text>
+                        <Text style={styles.mypageList_name}>[긴급점검]서비스 안정화를 위한 점검 안2</Text>
                     </View>
                     <View style={styles.mypageListItemIcon}>
-                        {/*<TouchableOpacity style="" onPress={{Linking.openURL(`tel:01012341234`}} >*/}
-                        {/*    <Text style={styles.csphone}> 1666-7099 </Text>*/}
-                        {/*</TouchableOpacity>*/}
-                        <Text style={styles.csphone}> 1666-7099 </Text>
+                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
+                        <Text style={styles.mypageList_name2}> 2022-11-17 </Text>
                     </View>
                 </View>
             </View>
@@ -89,7 +75,7 @@ const styles = StyleSheet.create({
 
     },
     mypageList_name:{
-        fontSize:16,
+        fontSize:20,
         color:"#08052f",
         fontFamily: "Amatic-Bold",
         fontWeight:"700",
@@ -109,6 +95,7 @@ const styles = StyleSheet.create({
         paddingRight:30
     },
     textContainer: {
+
         backgroundColor:"#fff",
         marginTop:12,
         borderRadius:30,
@@ -144,13 +131,16 @@ const styles = StyleSheet.create({
         fontSize:15,
         fontWeight:"700"
     },
-    mypageList:{
-        marginTop:30,
-    },
     mypageListItem:{
         flexDirection:"row",
         justifyContent:"space-between",
         alignItems:"center",
+    },
+    mypageList:{
+        marginTop:30,
+    },
+    mypageListItem:{
+
         paddingTop:16,
         paddingBottom:16,
         paddingLeft:20,
@@ -158,11 +148,12 @@ const styles = StyleSheet.create({
         borderBottomWidth:1,
         borderColor:'#ededf1',
     },
-    csphone:{
-        fontSize:14,
-        color:'#3d40e0',
+    mypageList_name:{
+        fontSize:16,
+        paddingBottom:12,
     },
-    mypageListItem_link:{
-        width:"100%",
+    mypageList_name2:{
+        fontSize:12,
+        color:'#b1b2c3',
     },
 })
