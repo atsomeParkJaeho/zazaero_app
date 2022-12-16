@@ -4,12 +4,22 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 // 공통 CSS 추가
-import {container, bg_white, flex_between, input, flex, flex_top} from '../../common/style/AtStyle';
-import {sub_page, gary_bar} from '../../common/style/SubStyle';
+import {
+    container,
+    bg_white,
+    flex_between,
+    input,
+    flex,
+    flex_top,
+    active_link,
+    active_txt, padding_bottom, text_danger, text_primary
+} from '../../common/style/AtStyle';
+import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
 // 샘플데이터
 import {order_List} from "../../util/util";
 import axios from "axios";
+
 
 function PayStatus({navigation, route}) {
 
@@ -56,19 +66,19 @@ function PayStatus({navigation, route}) {
     * */
     console.log(OrderList);
 
-    return(
+
+    let test = 1;
+
+    return (
         <>
             <View style={[bg_white]}>
                 <View style={[styles.Order]}>
-                    <NavigationContainer independent={true}>
-                        {/*<MyTabs />*/}
-                    </NavigationContainer>
                     <View style={[flex]}>
                         <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('발주상태')}>
-                            <Text style={styles.tab_txt}>발주상태</Text>
+                            <Text style={[styles.tab_txt]}>발주상태</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('결제상태')}>
-                            <Text style={styles.tab_txt}>결제상태</Text>
+                        <TouchableOpacity style={[styles.wt_3, active_link]} onPress={()=>navigation.navigate('결제상태')}>
+                            <Text style={[styles.tab_txt,active_txt]}>결제상태</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('배송상태')}>
                             <Text style={[styles.tab_txt]}>배송상태</Text>
@@ -78,10 +88,10 @@ function PayStatus({navigation, route}) {
                 <ScrollView>
                     <View style={[styles.bt, styles.bb]}>
                         <View>
-                            {OrderList.map(val=>(
+                            {OrderList.map(val => (
                                 (val.order_status === 'ready' || val.order_status === 'doing' || val.order_status === 'done') && (
                                     <>
-                                        <View style={[styles.order_list_items]} >
+                                        <View style={[styles.order_list_items]}>
                                             <View style={[container]}>
                                                 <View style={[flex, styles.mb_5]}>
                                                     <View style={[styles.wt3]}>
@@ -95,7 +105,8 @@ function PayStatus({navigation, route}) {
                                                 {/*발주번호*/}
                                                 <View style={[flex, styles.mb_5]}>
                                                     <View style={[styles.wt3]}>
-                                                        <Text style={[styles.Construction_name, styles.ft_14]}> 공사명 :</Text>
+                                                        <Text style={[styles.Construction_name, styles.ft_14]}> 공사명
+                                                            :</Text>
                                                     </View>
                                                     <View style={[styles.wt7]}>
                                                         <Text
@@ -105,20 +116,25 @@ function PayStatus({navigation, route}) {
                                                 {/*공사명*/}
                                                 <View style={[flex, styles.mb_5]}>
                                                     <View style={[styles.wt3]}>
-                                                        <Text style={[styles.Desired_Delivery_Date_name, styles.ft_14]}> 희망배송일 :</Text>
+                                                        <Text
+                                                            style={[styles.Desired_Delivery_Date_name, styles.ft_14]}> 희망배송일
+                                                            :</Text>
                                                     </View>
                                                     <View style={[styles.wt7]}>
-                                                        <Text style={[styles.Desired_Delivery_Date_val, styles.ft_14]}>{val.Desired_Delivery_Date} 도착예정</Text>
+                                                        <Text
+                                                            style={[styles.Desired_Delivery_Date_val, styles.ft_14]}>{val.Desired_Delivery_Date} 도착예정</Text>
                                                     </View>
                                                 </View>
                                                 {/*희망배송일*/}
                                                 <View style={[flex]}>
                                                     <View style={[styles.wt3]}>
                                                         <Text
-                                                            style={[styles.Delivery_destination_name, styles.ft_14, val.text_gray]}> 배송지 :</Text>
+                                                            style={[styles.Delivery_destination_name, styles.ft_14, val.text_gray]}> 배송지
+                                                            :</Text>
                                                     </View>
                                                     <View style={[styles.wt7]}>
-                                                        <Text style={[styles.Delivery_destination_name_val, styles.ft_14, styles.text_gray]}>{val.Delivery_destination_name}</Text>
+                                                        <Text
+                                                            style={[styles.Delivery_destination_name_val, styles.ft_14, styles.text_gray]}>{val.Delivery_destination_name}</Text>
                                                     </View>
                                                 </View>
                                                 {/*배송지*/}
@@ -127,40 +143,43 @@ function PayStatus({navigation, route}) {
                                             <View style={[container]}>
                                                 <View style={[flex_between]}>
                                                     <View style="">
-                                                        <TouchableOpacity style={styles.border} onPress="">
+                                                        <TouchableOpacity style={styles.border} onPress={()=>navigation.navigate('결제상세')}>
                                                             <Text style={styles.middleButtonText}>상세내역 / 정보변경</Text>
                                                         </TouchableOpacity>
                                                     </View>
                                                     <View style={[flex]}>
-                                                        <Text style={[styles.ft_14]}>배송상태</Text>
+                                                        {/*<Text style={[styles.ft_14]}>발주상태</Text>*/}
                                                         {(val.order_type == 'ready') ? (
-                                                            <Text style={[styles.order_type,styles.text_danger]}>신청</Text>
-                                                        ):(
-                                                            <Text style={[styles.order_type,styles.text_primary ]}>검수중</Text>
+                                                            <Text
+                                                                style={[styles.order_type, text_danger]}>대기</Text>
+                                                        ) : (
+                                                            <Text
+                                                                style={[styles.order_type, text_primary]}>완료</Text>
                                                         )}
 
                                                     </View>
                                                 </View>
                                             </View>
-                                            <View style={gary_bar}/>
+                                            <View style={gray_bar}/>
                                         </View>
                                     </>
                                 )
                             ))}
                         </View>
                     </View>
-                    <View style={gary_bar}/>
+                    <View style={[padding_bottom]} />
                 </ScrollView>
             </View>
         </>
     );
-} export default PayStatus;
+}
+
+export default PayStatus;
 
 
 const styles = StyleSheet.create({
     wt_3: {
-        flex:0.5,
-        //width: "33.333%",
+        flex: 0.5,
         borderBottomWidth: 1,
         borderColor: "#ddd",
     },
@@ -171,10 +190,6 @@ const styles = StyleSheet.create({
     tab_txt: {
         textAlign: "center",
         paddingVertical: 16,
-    },
-    bt: {
-        borderTopWidth: 1,
-        borderColor: "#ddd",
     },
     bb: {
         borderBottomWidthWidth: 1,
@@ -214,16 +229,16 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
     },
     order_type: {
-        fontSize:16,
+        fontSize: 16,
         lineHeight: 24,
         marginLeft: 10,
-        fontWeight:"500",
+        fontWeight: "500",
     },
-    text_danger:{
-        color:"#f25767"
+    text_danger: {
+        color: "#f25767"
     },
-    text_primary:{
-        color:"#4549e0"
+    text_primary: {
+        color: "#4549e0"
     },
     text_gray: {
         color: "#a0aec0",

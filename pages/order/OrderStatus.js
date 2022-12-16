@@ -4,8 +4,17 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 // 공통 CSS 추가
-import {container, bg_white, flex_between, input, flex, flex_top} from '../../common/style/AtStyle';
-import {sub_page, gary_bar} from '../../common/style/SubStyle';
+import {
+    container,
+    bg_white,
+    flex_between,
+    input,
+    flex,
+    flex_top,
+    active_link,
+    active_txt, padding_bottom
+} from '../../common/style/AtStyle';
+import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
 // 샘플데이터
 import {order_List} from "../../util/util";
@@ -57,19 +66,16 @@ function OrderStatus({navigation, route}) {
     * */
     console.log(OrderList);
 
-
+    let test = 1;
 
 
     return (
         <>
             <View style={[bg_white]}>
                 <View style={[styles.Order]}>
-                    <NavigationContainer independent={true}>
-                        {/*<MyTabs />*/}
-                    </NavigationContainer>
                     <View style={[flex]}>
-                        <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('발주상태')}>
-                            <Text style={styles.tab_txt}>발주상태</Text>
+                        <TouchableOpacity style={[styles.wt_3, active_link]} onPress={()=>navigation.navigate('발주상태')}>
+                            <Text style={[styles.tab_txt,active_txt]}>발주상태</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('결제상태')}>
                             <Text style={styles.tab_txt}>결제상태</Text>
@@ -137,12 +143,12 @@ function OrderStatus({navigation, route}) {
                                             <View style={[container]}>
                                                 <View style={[flex_between]}>
                                                     <View style="">
-                                                        <TouchableOpacity style={styles.border} onPress="">
+                                                        <TouchableOpacity style={styles.border} onPress={()=>navigation.navigate('발주상세')}>
                                                             <Text style={styles.middleButtonText}>상세내역 / 정보변경</Text>
                                                         </TouchableOpacity>
                                                     </View>
                                                     <View style={[flex]}>
-                                                        <Text style={[styles.ft_14]}>발주상태</Text>
+                                                        {/*<Text style={[styles.ft_14]}>발주상태</Text>*/}
                                                         {(val.order_type == 'ready') ? (
                                                             <Text
                                                                 style={[styles.order_type, styles.text_danger]}>신청</Text>
@@ -154,14 +160,14 @@ function OrderStatus({navigation, route}) {
                                                     </View>
                                                 </View>
                                             </View>
-                                            <View style={gary_bar}/>
+                                            <View style={gray_bar}/>
                                         </View>
                                     </>
                                 )
                             ))}
                         </View>
                     </View>
-                    <View style={gary_bar}/>
+                    <View style={[padding_bottom]} />
                 </ScrollView>
             </View>
         </>
@@ -174,7 +180,6 @@ export default OrderStatus;
 const styles = StyleSheet.create({
     wt_3: {
         flex: 0.5,
-        //width: "33.333%",
         borderBottomWidth: 1,
         borderColor: "#ddd",
     },
@@ -185,10 +190,6 @@ const styles = StyleSheet.create({
     tab_txt: {
         textAlign: "center",
         paddingVertical: 16,
-    },
-    bt: {
-        borderTopWidth: 1,
-        borderColor: "#ddd",
     },
     bb: {
         borderBottomWidthWidth: 1,

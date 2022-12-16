@@ -8,14 +8,21 @@ import { List } from 'react-native-paper';
 import {ImageSlider} from "react-native-image-slider-banner";
 
 // 공통 CSS 추가
-import {container, bg_white, content_wrap, min_height, padding_bottom} from '../common/style/AtStyle';
+import {container, bg_white, content_wrap, min_height, padding_bottom, ms1, flex, flex_between} from '../common/style/AtStyle';
 
 // 이미지 추가
-// import logo from '../assets/img/top_logo.png';
-import Footer from "./Footer";
+import Search from '../icons/search.svg';
+import NotificationIcon from "../icons/Notification_icon.svg";
+import Main_logo from '../icons/main_logo.svg';
 import  col1 from '../assets/img/co1.png';
 import  col2 from '../assets/img/co2.png';
 import  col3 from '../assets/img/co3.png';
+
+
+//풋터추가
+import Footer from "./Footer";
+
+
 
 
 
@@ -24,6 +31,7 @@ export default function MainPage({navigation, route}) {
 
     const [expanded, setExpanded] = React.useState(true);
     const handlePress = () => setExpanded(!expanded);
+
     const cate_list = [ "바닥공사", "욕식공사", "도배공사"];
     const Cate_List2 = [
         {
@@ -60,33 +68,50 @@ export default function MainPage({navigation, route}) {
     ];
 
 
+
     return (
-        /*
-          return 구문 안에서는 {슬래시 + * 방식으로 주석
-        */
+
         <>
+            <View style={styles.top_inner}>
+                <View style={[flex_between]}>
+                    <View style="">
+                        <Main_logo width={65} height={20} />
+                    </View>
+                    <View style={flex}>
+                        <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
+                            <Search width={25} height={18} style={[styles.icon]} />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('알림')}}>
+                            <NotificationIcon width={25} height={18} style={[styles.icon,ms1]} />
+                        </TouchableOpacity>
+
+                    </View>
+                </View>
+            </View>
             <ScrollView style={styles.main_wrap}>
                 <ImageSlider
                     data={[
+                        {img: require("../assets/img/main_banner1.jpg")},
                         {img: require("../assets/img/main_banner2.jpg")},
                         {img: require("../assets/img/main_banner3.jpg")},
                     ]}
                     localImg={true}
                     previewImageStyle={false}
-                    onItemChanged={(item) => console.log("item", item)}
+                    // onItemChanged={(item) => console.log("item", item)}
+                    caroselImageStyle={{ resizeMode: 'contain', height:180, }}
+                    preview={false}
+                    autoPlay={true}
+                    timer={3000}
 
-                    caroselImageStyle={{height: 200}}
-                    indicatorContainerStyle={{top: -50}}
-                    style={{height:500,}}
                 />
                 <List.Section style={styles.Section}>
                     <List.Accordion style={styles.Accordion_tit} title="목/형틀공사"   expanded={expanded}  onPress={handlePress}>
                         <View style={styles.Accordion_items}>
                             <View style={[styles.Accordion_itemsflex]}>
 
-                                {Cate_List2.map(items =>
+                                {Cate_List2.map((items,i) =>
 
-                                    <View style={styles.w3}>
+                                    <View style={styles.w3} key={i}>
                                         <TouchableOpacity style="" onPress={()=>{navigation.navigate('상품목록')}}>
                                             <Image style={styles.ct_img} source={items.ct_img}/>
                                             <Text style={styles.Accordion_items_link_txt}>{items.ct_tit}</Text>
@@ -102,9 +127,9 @@ export default function MainPage({navigation, route}) {
                         <List.Accordion style={styles.Accordion_tit} title={items} key={index}  >
                             <View style={styles.Accordion_items}>
                                 <View style={[styles.Accordion_itemsflex]}>
-                                    {Cate_List2.map(items =>
+                                    {Cate_List2.map((items,i) =>
 
-                                        <View style={styles.w3}>
+                                        <View style={styles.w3} key={i}>
                                             <Image style={styles.ct_img} source={items.ct_img}/>
                                             <Text style={styles.Accordion_items_link_txt}>{items.ct_tit}</Text>
                                         </View>
@@ -164,20 +189,21 @@ export default function MainPage({navigation, route}) {
 
 const styles = StyleSheet.create({
 
-    main_wrap : {
+        main_wrap : {
         paddingBottom:200,
         marginBottom:100,
         backgroundColor:"#fff",
     },
 
     top_inner: {
-        marginTop: 50,
-        paddingLeft: 12,
-        paddingRight: 12,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
+        paddingVertical:20,
+        paddingHorizontal:16,
 
+        backgroundColor:"#fff",
+    },
+    main_logo:{
+        width:65,
+        height:20,
     },
     me_10: {
         marginRight: 8,
