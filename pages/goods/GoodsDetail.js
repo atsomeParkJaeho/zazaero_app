@@ -14,7 +14,23 @@ import Icon from "react-native-vector-icons/AntDesign";
 
 
 // 공통 CSS 추가
-import {container, bg_white, flex_between, flex_between_top,input, flex, flex_top,h18,fw600,text_primary,mb1,mt3,mt5} from '../../common/style/AtStyle';
+import {
+    container,
+    bg_white,
+    flex_between,
+    flex_between_top,
+    input,
+    flex,
+    flex_top,
+    h18,
+    fw600,
+    text_primary,
+    mb1,
+    mt3,
+    btn_primary,
+    mt5,
+    countinput, flex_around, btn_outline_primary, btn_outline_danger, btn_black, count_btn, pos_center, count_btn_txt
+} from '../../common/style/AtStyle';
 import {sub_page, gary_bar, sub_container} from '../../common/style/SubStyle';
 
 import goods_image from "../../assets/img/goods_image.jpg";
@@ -78,15 +94,19 @@ export default function GoodsDetail({navigation}) {
                                 <View style="">
                                     <Text style={[styles.GoodsDetail_info_txt]}>수량</Text>
                                     <View style={[flex]}>
-                                        <TouchableWithoutFeedback onPress={onPress}>
-                                            <View style={styles.button}>
-                                                <Text style={styles.button_txt}>＋</Text>
+                                        <TouchableWithoutFeedback >
+                                            <View style={[count_btn]}>
+                                                <View style={[pos_center]}>
+                                                    <Text style={[count_btn_txt]}>－</Text>
+                                                </View>
                                             </View>
                                         </TouchableWithoutFeedback>
-                                        <TextInput style={[input,styles.input_wt]} editable={false} selectTextOnFocus={false}  value={goods_cnt_test} />
-                                        <TouchableWithoutFeedback onPress={onPress}>
-                                            <View style={styles.button}>
-                                                <Text style={styles.button_txt}>－</Text>
+                                        <TextInput style={[countinput,]}   value="1" />
+                                        <TouchableWithoutFeedback >
+                                            <View style={[count_btn]}>
+                                                <View style={[pos_center]}>
+                                                    <Text style={[count_btn_txt]}>＋</Text>
+                                                </View>
                                             </View>
                                         </TouchableWithoutFeedback>
                                     </View>
@@ -99,6 +119,7 @@ export default function GoodsDetail({navigation}) {
                                 </View>
                             </View>
                             {/*수량*/}
+
                         </View>
                         {/*상품정보*/}
                         <View style={[styles.GoodsDetail_more_image,mt5]}>
@@ -109,6 +130,17 @@ export default function GoodsDetail({navigation}) {
                     </View>
                 </View>
             </ScrollView>
+            <View style={[]}>
+                <View style={[flex_around]}>
+                    <TouchableOpacity style={styles.btn} >
+                        <Text style={[btn_primary,styles.center]}>장바구니</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.btn}>
+                        <Text style={[btn_black,styles.center]}>구매하기</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            {/*장바구니/구매*/}
           
         </>
     );
@@ -173,7 +205,7 @@ const styles = StyleSheet.create({
         textAlign:"center",
     },
     GoodsDetail_total_price:{
-        fontSize:18,
+        fontSize:24,
         lineHeight:27,
         fontWeight:"500",
         color:"#3D40E0",
@@ -185,8 +217,30 @@ const styles = StyleSheet.create({
     },
     goods_image_more:{
         width: "100%",
-
-
+    },
+    button: {
+        alignItems: "center",
+        backgroundColor: "#eee",
+        padding: 8,
+        borderWidth:1,
+        borderTopLeftRadius:100,
+        borderTopRightRadius:100,
+        borderBottomLeftRadius:100,
+        borderBottomRightRadius:100,
+        borderColor:"#eee",
 
     },
+    button_txt:{
+        fontSize:14,
+        fontWeight:"500",
+    },
+    btn:{
+        width:"50%",
+    },
+    center:{
+        fontSize:15,
+        textAlign:"center",
+        paddingVertical:20,
+
+    }
 });
