@@ -19,6 +19,7 @@ import {sub_page, gray_bar} from '../../common/style/SubStyle';
 // 샘플데이터
 import {order_List} from "../../util/util";
 import axios from "axios";
+import Footer from "../Footer";
 
 
 function OrderStatus({navigation, route}) {
@@ -170,6 +171,7 @@ function OrderStatus({navigation, route}) {
                     <View style={[padding_bottom]} />
                 </ScrollView>
             </View>
+            <Footer navigation={navigation}/>
         </>
     );
 }

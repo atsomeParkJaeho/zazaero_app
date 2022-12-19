@@ -2,6 +2,11 @@ export const regPW = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
 export const regId = /^[a-z0-9_]{4,20}$/;
 export const Minlangth = 6;
 
+// 경로
+
+export const At_db = 'http://49.50.162.86:80';
+
+
 // 자재목록
 export const goodsList = [
     {

@@ -10,37 +10,131 @@ import Chk from "../../icons/chk.svg";
 import goods_img_1 from '../../assets/img/goods_img_1.png';
 import goods_like from '../../assets/img/ico_heart.png';
 import Footer from "../Footer";
-import {
-    align_items_center,
-    bg_danger,
-    bg_gray,
-    bg_light,
-    bg_primary,
-    bg_white,
-    btn_circle,
-    container,
-    d_flex,
-    h18,
-    justify_content_center,
-    min_height,
-    sub_page,
-    text_light
-} from "../../common/style/AtStyle";
+import {align_items_center, bg_danger, bg_gray, bg_light, bg_primary, bg_white, btn_circle, container, d_flex, h18, justify_content_center, min_height, sub_page, text_light} from "../../common/style/AtStyle";
 import {goodsList} from "../../util/util";
 import {CheckBox} from "react-native-web";
+import axios from "axios";
 
 
-export default function GoodsCateList({navigation}) {
 
 
+// ================2차 카테고리 이벤트===========================
+function Cate2nd ({Cate1st, Cate2nd}) {
+    console.log('1차 카테고리 uid / ',Cate1st);
+    console.log('2차 카테고리 uid / ',Cate2nd);
+    const [Cate2List, setCate2List] = useState([]);
+    useEffect(() => {
+        let data = {
+            act_type: "goods_cate",
+            ind_cfg_uid: Cate1st,
+        };
+        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php', data, {
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res) => {
+            if (res) {
+                const {result, A_cate_2nd} = res.data;
+                if (result === 'OK') {
+                    console.log(A_cate_2nd);
+                    setCate2List(A_cate_2nd);
+                } else {
+                    console.log(result);
+                    console.log('실패');
+                }
+            }
+        });
+    }, []);
+    //console.log(Cate2List);
+    if(Cate2List !== null) {
+        return (
+            <>
+                {Cate2List.map(val=>(
+                    <>
+                        <TouchableOpacity style={styles.cate_1st_btn} onPress={() => goCate2nd(val.ind_cfg_uid)}>
+                            <Text style={[styles.cate_1st_btn_txt]}>
+                                {val.cfg_val1}
+                            </Text>
+                        </TouchableOpacity>
+                    </>
+                ))}
+            </>
+        );
+    }
+
+}
+
+// 3차 카테고리 이벤트
+function Cate3th () {
+    return(
+        <>
+        </>
+    );
+}
+
+
+
+
+export default function GoodsCateList({route,navigation}) {
+    let {Cate1stUid, Cate2ndUid} = route.params; // 카테고리 uid
+    console.log(Cate1stUid);
+    console.log(Cate2ndUid);
+
+    console.log('아이디값');
+    // console.log(uid);
+    console.log('test / '+navigation);
+
+    // 1. ===============상태값 정의==================
     const [GoodsList, setGoodsList] = useState([]);  // 자재리스트 설정
 
-
+    // 2. ================최초 db 출력값 담기===================
     useEffect(() => {
-        setGoodsList(goodsList);
+        let data = {
+            act_type : 'find_goods',
+            cate_2nd : Cate2ndUid
+        };
+        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php',data,{
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            if(res) {
+                const {result, A_goods} = res.data;
+                if(result === 'OK') {
+                    setGoodsList(A_goods);
+                } else {
+                    console.log('실패');
+                }
+            }
+        })
     }, []);
 
-    // 상품체크시 상태변경
+    // ==============3. 카테고리 클릭시 상품 상태 변경(2차)=================
+    const goCate2nd = () => {
+        let data = {
+
+        };
+        axios.post('',data,{
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            if(res) {
+                const {result, A_goods_info} = res.data;
+                if(result === 'OK') {
+
+                } else {
+                    console.log('실패');
+                }
+            }
+        });
+    }
+    // ===============4. 카테고리 클릭시 상품 상태 변경(3차)===============
+    const goCate3th = () => {
+
+    }
+
+    // 4. ================상품체크시 상태변경=======================
     const goChk = (uid) => {
         let temp = GoodsList.map((val) => {
             if (uid === val.goods_uid) {
@@ -51,8 +145,15 @@ export default function GoodsCateList({navigation}) {
         setGoodsList(temp);
     }
 
-    // 찜하기 액션
-    const goWish = () => {
+    // 5. 찜하기 액션
+    const goWish = (uid) => {
+        let temp = GoodsList.map((val)=>{
+            if(uid === val.goods_uid) {
+                return {...val, goods_wish_chk:!val.goods_wish_chk}
+            }
+            return val;
+        })
+        setGoodsList(temp);
         alert('즐겨찾기에 추가 하였습니다.');
     }
     console.log(GoodsList);
@@ -60,7 +161,7 @@ export default function GoodsCateList({navigation}) {
     // 체크한 상품 버튼 생성
     let goForm = GoodsList.filter((val) => val.goods_cart_chk);
 
-    console.log(goForm);
+
 
     return (
         /*
@@ -68,25 +169,9 @@ export default function GoodsCateList({navigation}) {
         */
         <>
             <ScrollView style={[styles.GoodsCateList, sub_page, min_height]}>
+                {/*==================2차 카테고리 설정=================*/}
                 <ScrollView style={styles.cate_1st_list} horizontal indicatorStyle={"black"}>
-                    <TouchableOpacity style={styles.cate_1st_btn} onPress={() => {
-                        category1('석고/보드류')
-                    }}><Text style={styles.cate_1st_btn_txt}>석고/보드류</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.cate_1st_btn} onPress={() => {
-                        category1('합판/MDF/OSB')
-                    }}><Text style={styles.cate_1st_btn_txt}>합판/MDF/OSB</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.cate_1st_btn} onPress={() => {
-                        category1('각재/구조재')
-                    }}><Text style={styles.cate_1st_btn_txt}>각재/구조재</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.cate_1st_btn} onPress={() => {
-                        category1('몰딩')
-                    }}><Text style={styles.cate_1st_btn_txt}>몰딩</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.cate_1st_btn} onPress={() => {
-                        category1('단열재')
-                    }}><Text style={styles.cate_1st_btn_txt}>단열재</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.cate_1st_btn} onPress={() => {
-                        category1('도어/문틀')
-                    }}><Text style={styles.cate_1st_btn_txt}>도어/문틀</Text></TouchableOpacity>
+                    <Cate2nd Cate1st={Cate1stUid} Cate2nd={Cate2ndUid}/>
                 </ScrollView>
                 {/*1차카테고리 메뉴 선택*/}
                 <View style={styles.cate_2st_list}>
@@ -129,9 +214,12 @@ export default function GoodsCateList({navigation}) {
                         <View style={styles.cate_goods_list_item}>
                             <View style={styles.flex}>
                                 <View style={[styles.flex_item, styles.flex_item1]}>
-                                    <Image style={styles.cate_list_Thumbnail} source={goods_img_1}/>
+                                    <Image style={styles.cate_list_Thumbnail} source={val.list_img_url}/>
                                     <View style={styles.goods_like}>
-                                        <Image style={styles.goods_like_icon} source={goods_like}/>
+                                        {/*=============찜하기=================*/}
+                                        <TouchableOpacity onPress={()=>goWish(val.goods_uid)}>
+                                            <Image style={styles.goods_like_icon} source={goods_like}/>
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
                                 <View style={[styles.flex_item, styles.flex_item2]}>
@@ -139,7 +227,8 @@ export default function GoodsCateList({navigation}) {
                                         <View style={styles.flex}>
                                             <TouchableOpacity style="" onPress={() => {navigation.navigate('상품상세')}}>
                                                 {/*========상품명========*/}
-                                                <Text style={styles.cate_2st_btn_txt}>{val.goods_name}</Text>
+
+                                                <Text style={[styles.cate_2st_btn_txt,(val.goods_wish_chk) ? {color:"red"}:{color:"#000"}]}>{val.goods_name}</Text>
                                             </TouchableOpacity>
                                         </View>
                                         <View>
@@ -182,7 +271,7 @@ export default function GoodsCateList({navigation}) {
                                             <Text style={styles.cate_list_disc}>당일출고111</Text>
                                         </View>
                                         <View style="">
-                                            <Text style={styles.cate_list_price}>{val.goods_price}원</Text>
+                                            <Text style={styles.cate_list_price}>{val.price}원</Text>
                                         </View>
                                     </View>
                                 </View>

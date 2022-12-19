@@ -1,68 +1,64 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView} from 'react-native';
 
 import Icon from 'react-native-vector-icons/AntDesign';
-import {List} from 'react-native-paper';
+import { List } from 'react-native-paper';
 
 //이미지 슬라이드
 import {ImageSlider} from "react-native-image-slider-banner";
 
 // 공통 CSS 추가
-import {
-    container,
-    bg_white,
-    content_wrap,
-    min_height,
-    padding_bottom,
-    ms1,
-    flex,
-    flex_between, d_flex, justify_content_center
-} from '../common/style/AtStyle';
+import {container, bg_white, content_wrap, min_height, padding_bottom, ms1, flex, flex_between} from '../common/style/AtStyle';
 
 // 이미지 추가
 // import logo from '../assets/img/top_logo.png';
 import Footer from "./Footer";
-import col1 from '../assets/img/co1.png';
-import col2 from '../assets/img/co2.png';
-import col3 from '../assets/img/co3.png';
+import  col1 from '../assets/img/co1.png';
+import  col2 from '../assets/img/co2.png';
+import  col3 from '../assets/img/co3.png';
 import Search from '../icons/search.svg';
 import NotificationIcon from "../icons/Notification_icon.svg";
 import Main_logo from '../icons/main_logo.svg';
-import axios from "axios";
-import {At_db} from "../util/util";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-//import main1 from '../assets/img/main_1.png'
 
 export default function MainPage({navigation, route}) {
-    // 1. 1차 카테고리 추출
-    const [expanded, setExpanded] = React.useState(false);
+
+    const [expanded, setExpanded] = React.useState(true);
     const handlePress = () => setExpanded(!expanded);
-    const [Cate1st, setCate1st] = useState([]);   // 1차 카테고리 설정
-    useEffect(() => {
-        const data = {
-            act_type: "goods_cate",
-        }
-        // 포스트시에 header 셋팅 할것
-        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php', data, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
-            if (res) {
-                const {result, A_cate_1st} = res.data;
-                if (result === 'OK') {
-                    // 1. 1차 카테고리를 담는다
-                    setCate1st(A_cate_1st);
+    const cate_list = [ "바닥공사", "욕식공사", "도배공사"];
+    const Cate_List2 = [
+        {
+            "ct_count": "1",                   //카운트
+            "ct_img": col1,        //이미지
+            "ct_tit": "석고/보드류",        //카테고리명
+        },
+        {
+            "ct_count": "2",                   //카운트
+            "ct_img": col2,        //이미지
+            "ct_tit": "합판/MDF/OSB",        //카테고리명
+        },
+        {
+            "ct_count": "3",                   //카운트
+            "ct_img": col3,        //이미지
+            "ct_tit": "각재/구조재",        //카테고리명
+        },
+        {
+            "ct_count": "1",                   //카운트
+            "ct_img": col3,        //이미지
+            "ct_tit": "몰딩",        //카테고리명
+        },
+        {
+            "ct_count": "2",                   //카운트
+            "ct_img": col2,        //이미지
+            "ct_tit": "단열재",        //카테고리명
+        },
+        {
+            "ct_count": "3",                   //카운트
+            "ct_img": col1,        //이미지
+            "ct_tit": "도어/문틀",        //카테고리명
+        },
 
-                } else {
-                    console.log('실패');
-                }
-            }
-        }).catch((err) => console.log(err));
-    }, []);
+    ];
 
-    //console.log('1차 카테고리', Cate1st);
 
     return (
         /*
@@ -72,18 +68,14 @@ export default function MainPage({navigation, route}) {
             <View style={styles.top_inner}>
                 <View style={[flex_between]}>
                     <View style="">
-                        <Main_logo width={65} height={20}/>
+                        <Main_logo width={65} height={20} />
                     </View>
                     <View style={flex}>
-                        <TouchableOpacity style={styles.link_signUp} onPress={() => {
-                            navigation.navigate('검색')
-                        }}>
-                            <Search width={25} height={18} style={[styles.icon]}/>
+                        <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
+                            <Search width={25} height={18} style={[styles.icon]} />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.link_signUp} onPress={() => {
-                            navigation.navigate('알림')
-                        }}>
-                            <NotificationIcon width={25} height={18} style={[styles.icon, ms1]}/>
+                        <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('알림')}}>
+                            <NotificationIcon width={25} height={18} style={[styles.icon,ms1]} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -97,27 +89,43 @@ export default function MainPage({navigation, route}) {
                     ]}
                     localImg={true}
                     previewImageStyle={false}
-                    caroselImageStyle={{ resizeMode: 'cover', height:180, }}
+                    caroselImageStyle={{ resizeMode: 'contain', height:180, }}
                     preview={false}
                     autoPlay={true}
                     timer={3000}
                 />
-
                 <List.Section style={styles.Section}>
-                    {/*=================1차 카테고리===============*/}
-                    {Cate1st.map((val, idx) => (
-                        <>
-                            <List.Accordion style={[styles.Accordion_tit]} title={val.cfg_val1} key={val.ind_cfg_uid}>
-                                {/*=================2차 카테고리===============*/}
-                                <View style={[styles.w3,d_flex,{flexWrap:"wrap"}]}>
-                                    <Cate2nd
-                                        navigation={navigation}
-                                        uid={val.ind_cfg_uid}
-                                    />
+                    <List.Accordion style={styles.Accordion_tit} title="목/형틀공사"   expanded={expanded}  onPress={handlePress}>
+                        <View style={styles.Accordion_items}>
+                            <View style={[styles.Accordion_itemsflex]}>
+
+                                {Cate_List2.map((items,i) =>
+                                    <View style={styles.w3} key={i}>
+                                        <TouchableOpacity style="" onPress={()=>{navigation.navigate('상품목록')}}>
+                                            <Image style={styles.ct_img} source={items.ct_img}/>
+                                            <Text style={styles.Accordion_items_link_txt}>{items.ct_tit}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                )}
+                            </View>
+                        </View>
+                    </List.Accordion>
+                    {cate_list.map((items, index) =>
+                        <List.Accordion style={styles.Accordion_tit} title={items} key={index}  >
+                            <View style={styles.Accordion_items}>
+                                <View style={[styles.Accordion_itemsflex]}>
+                                    {Cate_List2.map(items =>
+
+                                        <View style={styles.w3}>
+                                            <Image style={styles.ct_img} source={items.ct_img}/>
+                                            <Text style={styles.Accordion_items_link_txt}>{items.ct_tit}</Text>
+                                        </View>
+
+                                    )}
                                 </View>
-                            </List.Accordion>
-                        </>
-                    ))}
+                            </View>
+                        </List.Accordion>
+                    )}
 
                 </List.Section>
 
@@ -166,67 +174,23 @@ export default function MainPage({navigation, route}) {
     );
 }
 
-function Cate2nd({uid,navigation}) {
-    console.log(uid);
-    const [Cate2nd, setCate2nd] = useState([]);
-    useEffect(() => {
-        let data = {
-            act_type: "goods_cate",
-            ind_cfg_uid: uid,
-        };
-        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php', data, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
-            if (res) {
-                const {result, A_cate_2nd} = res.data;
-                if (result === 'OK') {
-                    setCate2nd(A_cate_2nd);
-                } else {
-                    console.log(result);
-                    console.log('실패');
-                }
-            }
-        });
-    }, []);
-    //console.log(Cate2nd);
-    if(Cate2nd !== null) {
-        return (
-            <>
-                {Cate2nd.map((val, idx) => (
-                    <>
-                        <View style={{width:"33%", paddingTop:20,}}>
-                            <TouchableOpacity onPress={() => {navigation.navigate('상품목록',{Cate1stUid:uid, Cate2ndUid:val.ind_cfg_uid})}}>
-                                <Image style={styles.ct_img} source={require(`../assets/img/main_0.png`)}/>
-                                <Text style={styles.Accordion_items_link_txt}>{val.cfg_val1}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </>
-                ))}
-            </>
-        );
-    }
-}
-
-
 const styles = StyleSheet.create({
 
-    main_wrap: {
-        paddingBottom: 200,
-        marginBottom: 100,
-        backgroundColor: "#fff",
+    main_wrap : {
+        paddingBottom:200,
+        marginBottom:100,
+        backgroundColor:"#fff",
     },
 
     top_inner: {
-        paddingVertical: 20,
-        paddingHorizontal: 16,
+        paddingVertical:20,
+        paddingHorizontal:16,
 
-        backgroundColor: "#fff",
+        backgroundColor:"#fff",
     },
-    main_logo: {
-        width: 65,
-        height: 20,
+    main_logo:{
+        width:65,
+        height:20,
     },
     me_10: {
         marginRight: 8,
@@ -337,42 +301,42 @@ const styles = StyleSheet.create({
         color: "#999",
         padding: 3,
     },
-    Section: {
-        marginBottom: 0,
+    Section:{
+        marginBottom:0,
     },
-    Accordion_tit: {
-        backgroundColor: "#fff",
-        borderBottomWidth: 8,
-        borderColor: "#EDEDF1"
+    Accordion_tit:{
+        backgroundColor:"#fff",
+        borderBottomWidth:8,
+        borderColor:"#EDEDF1"
     },
-    Accordion_items: {
-        padding: 12,
-        borderBottomWidth: 8,
-        borderColor: "#EDEDF1"
+    Accordion_items:{
+        padding:12,
+        borderBottomWidth:8,
+        borderColor:"#EDEDF1"
     },
-    Accordion_itemsflex: {
-        flexDirection: "row",
-        flexWrap: "wrap",
-        alignItems: "center",
+    Accordion_itemsflex:{
+        flexDirection:"row",
+        flexWrap:"wrap",
+        alignItems:"center",
     },
-    w3: {
-        flex:1,
-        marginBottom: 12,
+    w3:{
+        width:"33.333%",
+        marginBottom:12,
     },
-    ct_img: {
-        width: 60,
-        height: 60,
-        borderRadius: 5,
+    ct_img:{
+        width:60,
+        height:60,
+        borderRadius:5,
         marginLeft: 'auto',
         marginRight: 'auto',
 
     },
-    Accordion_items_link_txt: {
-        textAlign: "center",
-        fontSize: 14,
-        lineHeight: 24,
-        color: "#222",
-        letterSpacing: -1,
+    Accordion_items_link_txt:{
+        textAlign:"center",
+        fontSize:14,
+        lineHeight:24,
+        color:"#222",
+        letterSpacing:-1,
     }
 
 });
