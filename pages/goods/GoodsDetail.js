@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
     StyleSheet,
     Text,
@@ -7,7 +7,7 @@ import {
     TouchableOpacity,
     ScrollView,
     TextInput,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback, Alert
 } from 'react-native';
 import logo from "../../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
@@ -33,11 +33,20 @@ import {
 } from '../../common/style/AtStyle';
 import {sub_page, gary_bar, sub_container} from '../../common/style/SubStyle';
 
+//더미데이터
+ import {goodsDetail} from "../../util/util";
+
 import goods_image from "../../assets/img/goods_image.jpg";
 import goods_image_more from "../../assets/img/goods_image_more.jpg";
 
 
 export default function GoodsDetail({navigation}) {
+
+    const [GoodsDetail,setGoodsDetail] = useState(goodsDetail);
+    //자재 상세데이터
+
+
+
 
     let goods_price_test = 14000;
     let goods_price =  (new String(goods_price_test)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -50,14 +59,41 @@ export default function GoodsDetail({navigation}) {
 
     let goods_cnt_test = "1";
     //수량
-
-
     const onPress = () => {
         setNumber(countr + 1);
     };
     const onDecrease = () => {
         setNumber(number - 1);
+    };
+
+    const Cart = () =>{
+        Alert.alert(
+            '장바구니에 담으시겠습니까?',
+            '',
+            [
+                {text: '취소', onPress: () => {}, style: 'destructive'},
+                {
+                    text: '확인 ',
+                    onPress: () => {
+                        onDelete(id);
+                    },
+                    style: 'cancel',
+                },
+            ],
+            {
+                cancelable: true,
+                onDismiss: () => {},
+            },
+        );
     }
+    //장바구니 알림창
+
+    const GoBuy = () =>{
+
+        {navigation.navigate('장바구니')}
+    }
+
+
 
     return (
       
@@ -70,7 +106,7 @@ export default function GoodsDetail({navigation}) {
                         </View>
                         {/*상품이미지*/}
                         <View style={[styles.GoodsDetail_info]}>
-                            <Text style={styles.GoodsDetail_title}>일반석고보드 9.5T X 900 X 1800 </Text>
+                            <Text style={styles.GoodsDetail_title}>{GoodsDetail.goods_name} </Text>
                             {/*상품명*/}
                             <View style={[flex]}>
                                 <View style={[styles.wt25]}>
@@ -86,7 +122,7 @@ export default function GoodsDetail({navigation}) {
                                     <Text style={[styles.GoodsDetail_info_txt]}>자재안내</Text>
                                 </View>
                                 <View style={[styles.wt75]}>
-                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>{goods_guide}</Text>
+                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>{goods_guide} </Text>
                                 </View>
                             </View>
                             {/*자재안내*/}
@@ -101,7 +137,9 @@ export default function GoodsDetail({navigation}) {
                                                 </View>
                                             </View>
                                         </TouchableWithoutFeedback>
-                                        <TextInput style={[countinput,]}   value="1" />
+                                        <TextInput style={[countinput,]}
+                                                   value="1"
+                                                   keyboardType="number-pad"/>
                                         <TouchableWithoutFeedback >
                                             <View style={[count_btn]}>
                                                 <View style={[pos_center]}>
@@ -115,7 +153,7 @@ export default function GoodsDetail({navigation}) {
                                 </View>
                                 <View style="">
                                     <Text style={[styles.GoodsDetail_info_txt]}>총금액</Text>
-                                    <Text style={[styles.GoodsDetail_total_price]}>{goods_total_price}</Text>
+                                    <Text style={[styles.GoodsDetail_total_price]}>{goods_total_price} 원</Text>
                                 </View>
                             </View>
                             {/*수량*/}
@@ -132,10 +170,10 @@ export default function GoodsDetail({navigation}) {
             </ScrollView>
             <View style={[]}>
                 <View style={[flex_around]}>
-                    <TouchableOpacity style={styles.btn} >
+                    <TouchableOpacity style={styles.btn} onPress={() => Cart()}>
                         <Text style={[btn_primary,styles.center]}>장바구니</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.btn}>
+                    <TouchableOpacity style={styles.btn} onPress={() => GoBuy(val)}>
                         <Text style={[btn_black,styles.center]}>구매하기</Text>
                     </TouchableOpacity>
                 </View>

@@ -1,4 +1,4 @@
-import {StyleSheet} from "react-native";
+import {Platform, StyleSheet} from "react-native";
 
 export const styles = StyleSheet.create({});
 
@@ -14,7 +14,7 @@ export const sub_page = {      // 하단 간격 설정
 
 export const container = {      // 하단 간격 설정
     padding:16,
-    //paddingBottom: 100,
+    width:"100%",
 }
 
 export const min_height = {
@@ -223,13 +223,18 @@ export const btn_box  = {position:"absolute", left:0, bottom:0, width:"100%", ba
 
 export const d_none = {display:"none",}
 export const d_flex = {flexDirection:"row",}
+export const justify_content_start = { justifyContent:"flex-start" }
+export const justify_content_end = {justifyContent:"flex-end"}
 export const justify_content_center = {justifyContent: "center"}
 export const justify_content_between = {justifyContent: "between"}
 export const justify_content_around = {justifyContent: "around"}
-export const justify_content_end = {justifyContent:"flex-end"}
+export const justify_content_evenly = {justifyContent: "space-evenly"}
 
-
-export const align_items_center = {alignItems:"center",}
+export const align_items_start = {alignItems: "flex-start"}
+export const align_items_end = {alignItems: "flex-end"}
+export const align_items_center = {alignItems: "center"}
+export const align_items_baseline = {alignItems: "baseline"}
+export const align_items_stretch = {alignItems: "stretch"}
 
 
 // 원모양 만들기
@@ -290,6 +295,8 @@ export const btn_outline_gray = {borderColor:"#B1B2C3", borderWidth:1, color:"#B
 export const btn_outline_light = {borderColor:"#F9F9FB", borderWidth:1, color:"#F9F9FB",}
 
 
+
+
 export const flex = {
     flexDirection:"row",
     alignItems:"center",
@@ -297,6 +304,7 @@ export const flex = {
 export const flex_end = {
     flexDirection:"row",
     alignItems:"flex-end",
+
 }
 export const flex_top = {
     flexDirection:"row",

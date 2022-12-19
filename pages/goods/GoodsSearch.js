@@ -3,8 +3,22 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, TextInput,
 
 
 // 공통 CSS 추가
-import {container, bg_white, flex_between, input, flex,flex_end,d_none,h14,h16,mt3,mt2,ms2} from '../../common/style/AtStyle';
-
+import {
+    container,
+    bg_white,
+    flex_between,
+    input,
+    flex,
+    flex_end,
+    d_none,
+    h14,
+    h16,
+    mt3,
+    mt2,
+    ms2,
+    wt7, wt3, justify_content_end
+} from '../../common/style/AtStyle';
+import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
 
 import BackArrow from '../../icons/back_arrow.svg';
@@ -69,11 +83,14 @@ export default function GoodsSearch({navigation, route}) {
     return (
 
         <>
-            <View style={bg_white}>
+            <View style={[bg_white,sub_page]}>
                 <View style={container}>
                     <View style={[flex,styles.flex_center]}>
                         <View style={[styles.back]}>
-                            <BackArrow width={22} height={18} style={[styles.center]} />
+                            <TouchableOpacity style="" onPress={() => navigation.pop()} >
+                                <BackArrow width={22} height={18} style={[styles.center]} />
+                            </TouchableOpacity>
+
                         </View>
                         <View style={[styles.search_input]}>
                             <TextInput style={[input,styles.input_wt]}   placeholder="검색어"  value="" />
@@ -89,20 +106,20 @@ export default function GoodsSearch({navigation, route}) {
                     <View style={mt3}>
                         {/*=====================================검색어가 있을때======================================*/}
                         <View style={flex_between}>
-                            <Text style={h16}>최근 검색어11</Text>
+                            <Text style={h16}>최근 검색어</Text>
                             <TouchableOpacity style="" >
                                 <Text style={[h14,styles.txt_color]}>전체삭제</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={[styles.Recent_search_list,mt2]}>
                             {state.map((itmes,i) =>
-                            <View style={styles.Recent_search_list_item}>
+                            <View style={styles.Recent_search_list_item} key={i}>
                                 <View style={flex_between}>
-                                    <View style={styles.wt75}>
+                                    <View style={[wt7]}>
                                         <Text style={[h14,styles.txt_color2]}>{itmes.Recent_search_tit}</Text>
                                     </View>
-                                    <View style={styles.wt25}>
-                                        <View style={flex_end}>
+                                    <View style={[wt3]}>
+                                        <View style={[flex,justify_content_end]}>
                                             <Text style={[h14,styles.txt_color]}>{itmes.Recent_search_date}</Text>
                                             <TouchableOpacity style={ms2} >
                                                 <Text style={[h14,styles.txt_color]}>X</Text>
@@ -139,7 +156,6 @@ const styles = StyleSheet.create({
     center:{
         marginLeft:"auto",
         marginRight:"auto",
-
     },
     back:{
         width:"10%",
@@ -156,17 +172,10 @@ const styles = StyleSheet.create({
     Recent_search_list_item:{
         paddingBottom:7,
     },
-    wt75:{
-        width:"75%",
-    },
-    wt25:{
-        width:"25%",
-    },
     txt_color2:{
         color:"#222",
     },
     flex_page:{
-
         justifyContent:"center",
         alignItems:"center",
     },

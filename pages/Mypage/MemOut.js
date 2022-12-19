@@ -74,10 +74,6 @@ const styles = StyleSheet.create({
         padding:16,
         width:"100%",
     },
-    gary_bar:{
-        borderBottomWidth:1,
-        borderColor:"#ededf1",
-    },
     flex:{
         flexDirection:"row",
         alignItems:"center",

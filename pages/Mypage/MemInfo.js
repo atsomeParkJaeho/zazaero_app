@@ -4,7 +4,7 @@ import { StyleSheet, Button, CheckBox,  Text, TextInput, View, Image, TouchableO
 
 // 공통 CSS 추가
 import {container, bg_white, flex_between, flex, input} from '../../common/style/AtStyle';
-import {sub_page} from '../../common/style/SubStyle';
+import {gray_bar, sub_page} from '../../common/style/SubStyle';
 import DropDownPicker from "react-native-dropdown-picker";
 
 
@@ -81,7 +81,7 @@ export default function MemInfo({navigation,route}) {
                     {/*비밀번호확인 입력창*/}
                 </View>
 
-                <View style={styles.gary_bar}/>
+                <View style={[gray_bar]}/>
 
                 <View style={styles.container}>
                     <Text style={styles.MemInfo_txt}>필수정보 변경</Text>
@@ -108,7 +108,7 @@ export default function MemInfo({navigation,route}) {
                     {/*담당자명 입력창*/}
                 </View>
 
-                <View style={styles.gary_bar}/>
+                <View style={[gray_bar]}/>
                 <View style={styles.container}>
                     <Text style={styles.MemInfo_txt}>선택정보 입력/변경</Text>
                     <View style={styles.formGroup}>
@@ -272,10 +272,6 @@ const styles = StyleSheet.create({
     container:{
         padding:16,
         width:"100%",
-    },
-    gary_bar:{
-        borderBottomWidth:1,
-        borderColor:"#ededf1",
     },
     flex:{
         flexDirection:"row",

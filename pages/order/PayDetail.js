@@ -18,7 +18,8 @@ import {
 import {SelectList} from 'react-native-dropdown-select-list'
 //셀렉트박스
 
-
+import { RadioButton } from 'react-native-paper';
+//라디오 버튼
 
 //다음주소 api
 
@@ -58,7 +59,21 @@ import {
     btn_outline_primary,
     btn_outline_danger,
     count_btn,
-    count_btn_txt, pos_center, switch_bar, pt3, pb3, zonecode, wt7, wt3, ps1, h18, mb2, btn_outline_black,
+    count_btn_txt,
+    pos_center,
+    switch_bar,
+    pt3,
+    pb3,
+    zonecode,
+    wt7,
+    wt3,
+    ps1,
+    h18,
+    mb2,
+    btn_outline_black,
+    h14,
+    h15,
+    wt8,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 import Main_logo from "../../icons/main_logo.svg";
@@ -143,10 +158,8 @@ export default function OrderDetail({navigation, route}) {
     let order_num = "A_123451231";
 
 
-    var radio_props = [
-        {label: 'param1', value: 0 },
-        {label: 'param2', value: 1 }
-    ];
+
+    const [isRadiochecked, setadiochecked] = React.useState('first');
 
     const cardCheck = (order_num) => {
         Alert.alert(
@@ -380,7 +393,7 @@ export default function OrderDetail({navigation, route}) {
                         </View>
                         <View style={[container]}>
                             <View style={[flex_around]}>
-                                <TouchableOpacity style="" >
+                                <TouchableOpacity style="" onPress={() => {navigation.navigate('즐겨찾기')}}>
                                     <Text style={[styles.btn,btn_outline_primary]}>자재추가</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style="" >
@@ -391,29 +404,37 @@ export default function OrderDetail({navigation, route}) {
                         <View style={[gray_bar]} />
                         <View style={container}>
                             <Text style={[h18,mb2]}>결제유형</Text>
+                            <View style={flex}>
+                                <View style="">
 
-                            <View style={[flex_around]}>
-                                <TouchableOpacity style="" >
-                                    <Text style={[styles.btn,btn_outline_black]}>무통장 입금</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style="" onPress={() => cardCheck(order_num)}>
-                                    <Text style={[styles.btn,btn_outline_black]}>카드 결제</Text>
-                                </TouchableOpacity>
+                                    <Text style={[h15]}>무통장 입금</Text>
+                                </View>
+                                <View style={[ms1]}>
+                                    <Text style={[h15]}>카드결제</Text>
+                                </View>
                             </View>
-                            <View style={[]}>
+
+                            <View style={[styles.payment_bankbook,mt2]}>
                                 <SelectList
                                     setSelected={(val) => setSelected(val)}
                                     data={bankAccount}
                                     onSelect={(selected)=>ChkInput("addr_name",selected)}
                                     defaultOption={{key: '입금계좌를 선택해주세요', value: '입금계좌를 선택해주세요'}}
                                     save="value"
+
                                 />
-                                <TextInput style={[input]}
+                                <TextInput style={[input,mt2]}
                                            onChangeText={(bankSender)=>ChkInput("bankSender",bankSender)}
                                            value={OrderDetail.bankSender}
                                            placeholder="입금자명 입력"/>
                             </View>
                         </View>
+                        {/*<View style={[styles.payment_cardCheck,mt2, flex, justify_content_center]}>*/}
+                        {/*    <TouchableOpacity style="" onPress="">*/}
+                        {/*        <Text style={[styles.btn,btn_outline_primary,text_center]}>카드결제</Text>*/}
+                        {/*    </TouchableOpacity>*/}
+                        {/*</View>*/}
+                        {/*카드결제 버튼*/}
                         <View style={[padding_bottom]} />
                     </View>
                 </View>
@@ -423,10 +444,7 @@ export default function OrderDetail({navigation, route}) {
                 <TouchableOpacity >
                     <Text style={[{textAlign: "center", color: "#fff", fontSize: 20,}]}>수정하기</Text>
                 </TouchableOpacity>
-
             </View>
-
-
             {/*    */}
         </>
     );

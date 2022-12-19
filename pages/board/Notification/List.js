@@ -73,12 +73,12 @@ export default function NotificationList({navigation,route}){
 
     return(
         <>
-            <ScrollView  style={[bg_white]}>
+            <ScrollView  style={[bg_white,sub_page]}>
                 <View style={[styles.Notification]}>
                     <View style="">
                         <View style={styles.NotificationList}>
                             {state.map((items,i)=>
-                                <View style={styles.NotificationListItem}>
+                                <View style={styles.NotificationListItem} key={i}>
                                     <View style={[flex_between,mb2]}>
                                         <View style={flex}>
                                             <NotificationIcon width={16} height={18} style={[styles.icon]} />
