@@ -10,15 +10,15 @@ export const goodsList = [
         goods_price:"3,410",
         goods_wish_chk:"N",
         goods_cart_chk:false,
-        goods_guid_link:"당일출고 가능합니다.",
+        goods_guid_link:"발주일로부터 5일 소요",
     },
     {
         goods_uid:"115",
-        goods_name:"로하스",
+        goods_name:"라이트 브라운 테라조 포쉐린 타일[300*300]",
         goods_price:"3,410",
         goods_wish_chk:"N",
         goods_cart_chk:false,
-        goods_guid_link:"당일출고 가능합니다.",
+        goods_guid_link:"발주일로부터 3일 소요",
     },
     {
         goods_uid:"119",
@@ -26,7 +26,24 @@ export const goodsList = [
         goods_price:"3,410",
         goods_wish_chk:"N",
         goods_cart_chk:false,
-        goods_guid_link:"당일출고 가능합니다.",
+        goods_guid_link:"즉시 발주가능",
+    },
+];
+
+//발주상세
+// 자재목록
+export const goodsDetail = [
+    {
+
+        goods_uid:"306",                                        //상품번호
+        goods_1thct:"목/형틀공사",                                    //1차카테고리
+        goods_2thct:"석고/보드류",                                    //2차카테고리
+        goods_3thct:"E보드",                                          //3차카테고리
+        goods_name:"일반석고보드 9.5T X 900 X 1800",                  //상품명
+        goods_price:"8000",                                         //판매가
+        goods_wish_chk:"N",                                         //즐겨찾기 상태
+        goods_cart_chk:false,                                       //장바구니 상태
+        goods_guid_link:"당일출고 가능합니다.",                         //가이드 멘트
     },
 ];
 
