@@ -62,7 +62,7 @@ export default function MainPage({navigation, route}) {
         }).catch((err) => console.log(err));
     }, []);
 
-    //console.log('1차 카테고리', Cate1st);
+    console.log('1차 카테고리', Cate1st);
 
     return (
         /*
@@ -103,11 +103,11 @@ export default function MainPage({navigation, route}) {
                     timer={3000}
                 />
 
-                <List.Section style={styles.Section}>
+                <List.AccordionGroup style={styles.Section}>
                     {/*=================1차 카테고리===============*/}
                     {Cate1st.map((val, idx) => (
                         <>
-                            <List.Accordion style={[styles.Accordion_tit]} title={val.cfg_val1} key={val.ind_cfg_uid}>
+                            <List.Accordion style={[styles.Accordion_tit]} title={[val.cfg_val1]} id={idx+1} key={val.ind_cfg_uid} >
                                 {/*=================2차 카테고리===============*/}
                                 <View style={[styles.w3,d_flex,{flexWrap:"wrap"}]}>
                                     <Cate2nd
@@ -119,7 +119,8 @@ export default function MainPage({navigation, route}) {
                         </>
                     ))}
 
-                </List.Section>
+                </List.AccordionGroup>
+
 
                 <View style={styles.main_footer}>
                     <View style={container}>
@@ -196,7 +197,7 @@ function Cate2nd({uid,navigation}) {
             <>
                 {Cate2nd.map((val, idx) => (
                     <>
-                        <View style={{width:"33%", paddingTop:20,}}>
+                        <View style={{width:"33%", paddingTop:20,}} key={idx}>
                             <TouchableOpacity onPress={() => {navigation.navigate('상품목록',{Cate1stUid:uid, Cate2ndUid:val.ind_cfg_uid})}}>
                                 <Image style={styles.ct_img} source={require(`../assets/img/main_0.png`)}/>
                                 <Text style={styles.Accordion_items_link_txt}>{val.cfg_val1}</Text>
@@ -357,7 +358,9 @@ const styles = StyleSheet.create({
     },
     w3: {
         flex:1,
-        marginBottom: 12,
+        paddingBottom: 12,
+        borderBottomWidth:1,
+        borderColor:"#eee",
     },
     ct_img: {
         width: 60,
