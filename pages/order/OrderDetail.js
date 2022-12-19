@@ -9,7 +9,7 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    TouchableWithoutFeedback, Switch
+    TouchableWithoutFeedback, Switch, Alert
 } from 'react-native';
 
 import {SelectList} from 'react-native-dropdown-select-list'
@@ -54,7 +54,7 @@ import {
     btn_outline_primary,
     btn_outline_danger,
     count_btn,
-    count_btn_txt, pos_center, switch_bar, pt3, pb3, zonecode, wt7, wt3, ps1,
+    count_btn_txt, pos_center, switch_bar, pt3, pb3, zonecode, wt7, wt3, ps1, h22, h20,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 import Main_logo from "../../icons/main_logo.svg";
@@ -97,6 +97,7 @@ export default function OrderDetail({navigation, route}) {
 
         {
             "ct_user_id": "1",                                  //아이디값
+            "order_num": "A_123451231",                                  //발주번호
             "ct_tit": "일반석고보드 9.5T X 900 X 1800",           //상품명
             "ct_img": col1,                                  //이미지
             "ct_price": "13,000",                                //판매가
@@ -106,6 +107,7 @@ export default function OrderDetail({navigation, route}) {
         },
         {
             "ct_user_id": "1",                                  //아이디값
+            "order_num": "A_123451231",                                  //발주번호
             "ct_tit": "도배장판",           //상품명
             "ct_img": col2,                                  //이미지
             "ct_price": "50,000",                                //상품가격
@@ -115,6 +117,7 @@ export default function OrderDetail({navigation, route}) {
         },
         {
             "ct_user_id": "1",                                  //아이디값
+            "order_num": "A_123451231",                                  //발주번호
             "ct_tit": "롤하스롤 벽지",           //상품명
             "ct_img": col3,                                  //이미지
             "ct_price": "9,500",                                //상품가격
@@ -129,6 +132,51 @@ export default function OrderDetail({navigation, route}) {
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     //스위치
+
+
+    const goDel= (order_num) => {
+        Alert.alert(
+            '전체취소',
+            '발주번호 : A_123451231',
+            [
+                {text: '취소', onPress: () => {}, style: 'cancel'},
+                {
+                    text: '삭제',
+                    onPress: () => {
+                        Alert.alert("취소완료 되었습니다.");
+                    },
+                    style: 'destructive',
+                },
+            ],
+            {
+                cancelable: true,
+                onDismiss: () => {},
+            },
+        );
+    };
+    //전체취소
+
+    const goCheck= (order_num) => {
+        Alert.alert(
+            '변경하신 내용으로 수정발주 요청하시겠습니까?',
+            '',
+            [
+                {text: '취소', onPress: () => {}, style: 'cancel'},
+                {
+                    text: '확인',
+                    onPress: () => {
+                        Alert.alert("수정발주 되었습니다.");
+                    },
+                    style: 'destructive',
+                },
+            ],
+            {
+                cancelable: true,
+                onDismiss: () => {},
+            },
+        );
+    };
+    //수정발주요청
 
     return (
         <>
@@ -155,6 +203,9 @@ export default function OrderDetail({navigation, route}) {
                     <View style={[FormStyle.FormGroup]}>
                         <View style={[container]}>
                             <Text style={[styles.OrderDetail_txt,h16,text_center]}>발주 내역을 확인하고 있습니다. </Text>
+                            {/*발주 신청중 문구*/}
+                            {/*<Text style={[styles.OrderDetail_txt,h16,text_center]}>발주 <Text style={[text_primary,h20]}>검수중 </Text> 입니다. </Text>*/}
+                            {/*발주 검수중 문구*/}
                         </View>
                     </View>
                     {/*==============발주 내역을 확인==============*/}
@@ -341,10 +392,10 @@ export default function OrderDetail({navigation, route}) {
                         </View>
                         <View style={[container]}>
                             <View style={[flex_around]}>
-                                <TouchableOpacity style="" >
+                                <TouchableOpacity style=""  onPress={()=> {navigation.navigate('즐겨찾기')}}>
                                     <Text style={[styles.btn,btn_outline_primary]}>자재추가</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style="" >
+                                <TouchableOpacity style="" onPress={()=>goDel()}>
                                     <Text style={[styles.btn,btn_outline_danger]}>전체취소</Text>
                                 </TouchableOpacity>
                             </View>
@@ -355,7 +406,7 @@ export default function OrderDetail({navigation, route}) {
 
             </ScrollView>
             <View style={[bg_gray,pt3,pb3]}>
-                <TouchableOpacity >
+                <TouchableOpacity style={[]} onPress={()=> goCheck()}>
                     <Text style={[{textAlign: "center", color: "#fff", fontSize: 20,}]}>수정하기</Text>
                 </TouchableOpacity>
             </View>

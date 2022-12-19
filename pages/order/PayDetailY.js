@@ -91,7 +91,7 @@ import {bankAccount} from "../../util/util";
 
 
 
-export default function PayDetail({navigation, route}) {
+export default function PayDetailY({navigation, route}) {
 
     //1.
     const [selected, setSelected] = useState("");
@@ -228,7 +228,7 @@ export default function PayDetail({navigation, route}) {
                     {/*==============서브 탑 영역==============*/}
                     <View style={[FormStyle.FormGroup]}>
                         <View style={[container]}>
-                            <Text style={[styles.OrderDetail_txt,h16,text_center]}>결제 대기중 입니다. </Text>
+                            <Text style={[styles.OrderDetail_txt,h16,text_center]}> <Text style={[h16,text_primary]}> 결제완료</Text> 입니다. </Text>
                         </View>
                     </View>
                     {/*==============발주 내역을 확인==============*/}
@@ -431,11 +431,16 @@ export default function PayDetail({navigation, route}) {
                                 <View style={[d_flex,justify_content_end,pe1]}>
                                     <View style="">
                                         <View style={[flex,justify_content_end,mb1]}>
-                                            <Text style={[h14,styles.color1,me2]}>결제요청일</Text>
-                                            <Text style={[h14]}>2022.09.20</Text>
+                                            <Text style={[h14,styles.color1,me2]}>결제유형</Text>
+                                            <Text style={[h14]}>카드결제</Text>
+                                        </View>
+                                        {/*결제유형*/}
+                                        <View style={[flex,justify_content_end,mb1]}>
+                                            <Text style={[h14,styles.color1,me2]}>결제일</Text>
+                                            <Text style={[h14]}>2022.09.22</Text>
                                         </View>
                                         {/*결제일*/}
-                                       
+
                                         <View style={[flex,justify_content_end,mb1]}>
                                             <Text style={[h14,styles.color1,me2]}>자재 가격</Text>
                                             <Text style={[h14]}>535,900 원</Text>
@@ -462,33 +467,7 @@ export default function PayDetail({navigation, route}) {
                         </View>
                         {/*결제정보*/}
                         <View style={[gray_bar]} />
-                        <View style={container}>
-                            <Text style={[h18,mb2]}>결제유형</Text>
-                            <View style={flex}>
-                                <View style="">
-
-                                    <Text style={[h15]}>무통장 입금</Text>
-                                </View>
-                                <View style={[ms1]}>
-                                    <Text style={[h15]}>카드결제</Text>
-                                </View>
-                            </View>
-
-                            <View style={[styles.payment_bankbook,mt2]}>
-                                <SelectList
-                                    setSelected={(val) => setSelected(val)}
-                                    data={bankAccount}
-                                    onSelect={(selected)=>ChkInput("addr_name",selected)}
-                                    defaultOption={{key: '입금계좌를 선택해주세요', value: '입금계좌를 선택해주세요'}}
-                                    save="value"
-
-                                />
-                                <TextInput style={[input,mt2]}
-                                           onChangeText={(bankSender)=>ChkInput("bankSender",bankSender)}
-                                           value={OrderDetail.bankSender}
-                                           placeholder="입금자명 입력"/>
-                            </View>
-                        </View>
+                       
                         {/*<View style={[styles.payment_cardCheck,mt2, flex, justify_content_center]}>*/}
                         {/*    <TouchableOpacity style="" onPress="">*/}
                         {/*        <Text style={[styles.btn,btn_outline_primary,text_center]}>카드결제</Text>*/}

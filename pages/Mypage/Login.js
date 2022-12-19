@@ -7,22 +7,23 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    KeyboardAvoidingView,
+    KeyboardAvoidingView, Alert,
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 //로딩화면
 import Loading from '../../components/Loading';
 //자재로로고이미지
-import logo from '../../assets/img/m_logo.png';
+import Logo from '../../icons/login_logo.svg';
 
 // 공통 CSS 추가
-import {container, bg_white, flex, h14,} from '../../common/style/AtStyle';
+import {container, bg_white, flex, h14, justify_content_center, mb2, mb4, mb5,} from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 //import * as Update from "expo-updates";
 import {reloadAsync} from "expo-updates";
+import HomeLogo from "../../icons/home_logo.svg";
 
 export default function Login({navigation, route}) {
 
@@ -59,11 +60,15 @@ export default function Login({navigation, route}) {
     const goLogin = async () => {
         const {mem_id, mem_pw} = Login;
         if (!Login.mem_id) {
-            alert('아이디를 입력해주세요.');
+            Alert.alert(
+                '아이디를 입력하세요.',
+
+
+            );
             return;
         }
         if (!Login.mem_pw) {
-            alert('비밀번호를 입력해주세요.');
+            Alert.alert('비밀번호를 입력해주세요.');
             return;
         }
 
@@ -115,7 +120,10 @@ export default function Login({navigation, route}) {
                 <KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding'})}>
                     <View style={[sub_page, styles.login]}>
                         <View style={[container]}>
-                            <Image style={styles.loginLogo} source={logo}/>
+                            <View style={[flex,justify_content_center,mb5]}>
+                                <Logo width={191} height={51} />
+                            </View>
+
                             {/*자재로 로고*/}
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>

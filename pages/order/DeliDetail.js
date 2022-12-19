@@ -9,7 +9,7 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    TouchableWithoutFeedback, Switch
+    TouchableWithoutFeedback, Switch, Alert
 } from 'react-native';
 
 import {SelectList} from 'react-native-dropdown-select-list'
@@ -107,6 +107,29 @@ export default function DeliDetail({navigation, route}) {
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     //스위치
 
+
+    const goDel= (order_num) => {
+        Alert.alert(
+            '전체취소',
+            '발주번호 : A_123451231',
+            [
+                {text: '취소', onPress: () => {}, style: 'cancel'},
+                {
+                    text: '삭제',
+                    onPress: () => {
+                        Alert.alert("취소완료 되었습니다.");
+                    },
+                    style: 'destructive',
+                },
+            ],
+            {
+                cancelable: true,
+                onDismiss: () => {},
+            },
+        );
+    };
+    //전체취소
+
     return (
         <>
 
@@ -131,7 +154,7 @@ export default function DeliDetail({navigation, route}) {
                     {/*==============서브 탑 영역==============*/}
                     <View style={[FormStyle.FormGroup]}>
                         <View style={[container]}>
-                            {/*<Text style={[styles.OrderDetail_txt,h16,text_center]}>발주 내역을 확인하고 있습니다. </Text>*/}
+                            <Text style={[styles.OrderDetail_txt,h16,text_center]}>배송 대기중 입니다. </Text>
                         </View>
                     </View>
                     {/*==============발주 내역을 확인==============*/}
@@ -300,8 +323,8 @@ export default function DeliDetail({navigation, route}) {
                                 <TouchableOpacity style="" >
                                     <Text style={[styles.btn,btn_outline_primary]}>자재추가</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style="" onPress={()=>navigation.navigate('반품요청')}>
-                                    <Text style={[styles.btn,btn_outline_danger]}>반품요청</Text>
+                                <TouchableOpacity style="" onPress={()=>goDel()}>
+                                    <Text style={[styles.btn,btn_outline_danger]}>전체취소</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>

@@ -12,7 +12,17 @@ import {
     flex,
     flex_top,
     active_link,
-    active_txt, padding_bottom, text_danger, text_primary, btn_outline_danger, btn_outline_primary, p2, p1, ps1,pe1
+    active_txt,
+    padding_bottom,
+    text_danger,
+    text_primary,
+    btn_outline_danger,
+    btn_outline_primary,
+    p2,
+    p1,
+    ps1,
+    pe1,
+    btn_primary, text_light, text_info
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
@@ -144,12 +154,12 @@ function OrderStatus({navigation, route}) {
                                             <View style={[container]}>
                                                 <View style={[flex_between]}>
                                                     <View style="">
-                                                        <TouchableOpacity style={styles.border} onPress={()=>navigation.navigate('발주상세')}>
-                                                            <Text style={styles.middleButtonText}>상세내역 / 정보변경</Text>
+                                                        <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('발주상세')}>
+                                                            <Text style={[text_light]}>상세내역 / 정보변경</Text>
                                                         </TouchableOpacity>
                                                     </View>
                                                     <View style={[flex]}>
-                                                        <Text style={[styles.ft_14]}>발주상태</Text>
+                                                        {/*<Text style={[styles.ft_14]}>발주상태</Text>*/}
                                                         {(val.order_type == 'ready') ? (
                                                             <Text
                                                                 style={[styles.order_type, text_danger,btn_outline_danger,ps1,pe1]}>신청</Text>

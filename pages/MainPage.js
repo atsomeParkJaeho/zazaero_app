@@ -75,15 +75,13 @@ export default function MainPage({navigation, route}) {
                         <Main_logo width={65} height={20}/>
                     </View>
                     <View style={flex}>
-                        <TouchableOpacity style={styles.link_signUp} onPress={() => {
-                            navigation.navigate('검색')
-                        }}>
-                            <Search width={25} height={18} style={[styles.icon]}/>
+                        <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
+                            <Search width={30} height={21} style={[styles.icon]}/>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.link_signUp} onPress={() => {
                             navigation.navigate('알림')
                         }}>
-                            <NotificationIcon width={25} height={18} style={[styles.icon, ms1]}/>
+                            <NotificationIcon width={30} height={21} style={[styles.icon, ms1]}/>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -107,7 +105,11 @@ export default function MainPage({navigation, route}) {
                     {/*=================1차 카테고리===============*/}
                     {Cate1st.map((val, idx) => (
                         <>
-                            <List.Accordion style={[styles.Accordion_tit]} title={[val.cfg_val1]} id={idx+1} key={val.ind_cfg_uid} >
+                            <List.Accordion style={[styles.Accordion_tit]}
+                                            title={[val.cfg_val1]}
+                                            id={idx+1}
+                                            expanded={expanded}
+                                            key={val.ind_cfg_uid} >
                                 {/*=================2차 카테고리===============*/}
                                 <View style={[styles.w3,d_flex,{flexWrap:"wrap"}]}>
                                     <Cate2nd
@@ -359,8 +361,9 @@ const styles = StyleSheet.create({
     w3: {
         flex:1,
         paddingBottom: 12,
-        borderBottomWidth:1,
-        borderColor:"#eee",
+        borderBottomWidth: 8,
+        borderColor: "#EDEDF1"
+
     },
     ct_img: {
         width: 60,

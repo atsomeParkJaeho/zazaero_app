@@ -21,7 +21,7 @@ import {
     ps1,
     pe1,
     btn_outline_danger,
-    btn_outline_gray
+    btn_outline_gray, btn_primary, p1, text_light
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
@@ -152,12 +152,24 @@ let test = 1;
                                             <View style={[container]}>
                                                 <View style={[flex_between]}>
                                                     <View style="">
-                                                        <TouchableOpacity style={styles.border} onPress={()=>navigation.navigate('결제상세')}>
-                                                            <Text style={styles.middleButtonText}>상세내역 / 정보변경</Text>
-                                                        </TouchableOpacity>
+                                                        {(val.deli_status === 'done') ? (
+                                                            <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('배송상세_완료')}>
+                                                                <Text style={[text_light]}>상세내역 / 정보변경</Text>
+                                                            </TouchableOpacity>
+
+                                                        ) : (val.deli_status === 'doing') ? (
+                                                            <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('배송상세_진행')}>
+                                                                <Text style={[text_light]}>상세내역 / 정보변경</Text>
+                                                            </TouchableOpacity>
+                                                        ):(
+                                                            <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('배송상세')}>
+                                                                <Text style={[text_light]}>상세내역 / 정보변경</Text>
+                                                            </TouchableOpacity>
+                                                        )}
+
                                                     </View>
                                                     <View style={[flex]}>
-                                                        <Text style={[styles.ft_14]}>배송상태</Text>
+                                                        {/*<Text style={[styles.ft_14]}>배송상태</Text>*/}
                                                         {(val.deli_status === 'done') ? (
                                                             <Text
                                                                 style={[styles.order_type, text_primary,btn_outline_primary,ps1,pe1]}>완료</Text>

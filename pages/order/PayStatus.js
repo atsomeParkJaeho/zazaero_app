@@ -12,7 +12,15 @@ import {
     flex,
     flex_top,
     active_link,
-    active_txt, padding_bottom, text_danger, text_primary, btn_outline_danger, ps1, pe1, btn_outline_primary
+    active_txt,
+    padding_bottom,
+    text_danger,
+    text_primary,
+    btn_outline_danger,
+    ps1,
+    pe1,
+    btn_outline_primary,
+    btn_primary, p1, text_light
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
@@ -143,13 +151,20 @@ function PayStatus({navigation, route}) {
                                             <View style={[container]}>
                                                 <View style={[flex_between]}>
                                                     <View style="">
-                                                        <TouchableOpacity style={styles.border} onPress={()=>navigation.navigate('결제상세')}>
-                                                            <Text style={styles.middleButtonText}>상세내역 / 정보변경</Text>
-                                                        </TouchableOpacity>
+                                                        {(val.pay_status == 'ready') ? (
+                                                            <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('결제상세')}>
+                                                                <Text style={[text_light]}>상세내역 / 정보변경</Text>
+                                                            </TouchableOpacity>
+                                                        ) : (
+                                                            <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('결제상세_완')}>
+                                                                <Text style={[text_light]}>상세내역 / 정보변경</Text>
+                                                            </TouchableOpacity>
+                                                        )}
+
                                                     </View>
                                                     <View style={[flex]}>
-                                                        <Text style={[styles.ft_14]}>결제상태</Text>
-                                                        {(val.order_type == 'ready') ? (
+                                                        {/*<Text style={[styles.ft_14]}>결제상태</Text>*/}
+                                                        {(val.pay_status == 'ready') ? (
                                                             <Text
                                                                 style={[styles.order_type, text_danger,btn_outline_danger,ps1,pe1]}>대기</Text>
                                                         ) : (
