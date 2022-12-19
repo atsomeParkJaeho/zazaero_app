@@ -41,8 +41,6 @@ export default function Login({navigation, route}) {
 
 
     const [isChecked, setChecked] = useState(false);
-
-    // 1. data로 넘길 status 셋팅
     const [Login, setLogin] = useState({    // 로그인상태 셋팅
         mem_id: "",
         mem_pw: ""

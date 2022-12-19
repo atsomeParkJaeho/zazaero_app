@@ -41,7 +41,7 @@ import Order from "../pages/order/Order";                                   //�
 import OrderDetail from "../pages/order/OrderDetail";                       //발주상세
 import Cancel from "../pages/order/Cancel";                                 //취소내역
 import Return from "../pages/order/Return";                                 //반품내역
-import FaqList from "../pages/board/faq/FaqList";                              //자주묻는 질문
+import FaqList from "../pages/board/faq/List";                              //자주묻는 질문
 import OrderStatus from "../pages/order/OrderStatus";
 import PayStatus from "../pages/order/PayStatus";
 import DeliStatus from "../pages/order/DeliStatus";
@@ -114,8 +114,9 @@ const StackNavigator = () => {
                     options={{headerTitle:'',headerStatusBarHeight:0,}}
                 />
                 {/*==============상단===============*/}
-                {/*<Stack.Screen name="검색" component={GoodsSearch}/>*/}
-                {/*<Stack.Screen name="검색상품" component={GoodsSearchList}/>*/}
+                <Stack.Screen name="알림" component={NotificationList}/>
+                <Stack.Screen name="검색" component={GoodsSearch}/>
+                <Stack.Screen name="검색상품" component={GoodsSearchList}/>
 
                 {/*==============마이페이지===============*/}
                 <Stack.Screen name="회원탈퇴" component={MemOut}/>
@@ -150,13 +151,14 @@ const StackNavigator = () => {
                 {/*=================게시판===============*/}
                 <Stack.Screen name="고객센터" component={Cscenter}/>
                 <Stack.Screen name="자주묻는질문" component={FaqList}/>
-                <Stack.Screen name="알림" component={NotificationList}/>
-                <Stack.Screen name="검색" component={GoodsSearch}/>
-                <Stack.Screen name="검색상품리스트" component={GoodsSearchList}/>
+
                 <Stack.Screen name="1:1문의작성" component={inquiryWrite}/>
                 <Stack.Screen name="1:1문의목록" component={inquiryList}/>
+
                 <Stack.Screen name="공지사항" component={NoticeList}/>
                 <Stack.Screen name="공지사항상세" component={NoticeView}/>
+
+
                 <Stack.Screen name="하단" component={Footer}/>
             </Stack.Navigator>
         </>

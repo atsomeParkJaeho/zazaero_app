@@ -17,8 +17,6 @@ export default function SignUp({navigation,route}) {
     // 회원가입폼 상태 루틴
     const [selected, setSelected] = useState("");
     const [IsPostOpen, setIsPostOpen] = useState(false);
-    
-    // 1. data로 넘길 status 셋팅
     const [SignUpContent, setSignUpContent] = useState({
         mem_id          :"",  // 아이디
         mem_id_chk      :"",  // 아이디 중복체크
@@ -102,20 +100,11 @@ export default function SignUp({navigation,route}) {
 
     // 2. 입력폼 체크루틴
     const ChkInput = (keyValue, text) => {
-        if(keyValue === 'mem_birtday') {
-            setSignUpContent({
-                ...SignUpContent,
-                "mem_birtday":text.replace(''),
-            });
-        }
-
         // 기본 루틴
         setSignUpContent({
             ...SignUpContent,
             [keyValue]:text,
         });
-
-
 
     }
 
@@ -265,6 +254,7 @@ export default function SignUp({navigation,route}) {
                             <View style={[styles.inputGroup,styles.flexitem1]}>
                                 <TextInput style={[styles.input,styles.me_18]}
                                  onChangeText={(mem_id)=>ChkInput("mem_id",mem_id)}
+                                 value={SignUpContent.mem_id}
                                  placeholder="아이디를 입력해주세요"
                                  editable={(SignUpContent.mem_id_chk == 'Y') ? false : true}
                                  value={SignUpContent.mem_id}/>

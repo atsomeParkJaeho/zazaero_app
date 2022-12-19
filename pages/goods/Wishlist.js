@@ -14,7 +14,6 @@ import col2 from "../../assets/img/co2.png";
 import col3 from "../../assets/img/co3.png";
 import goods_img_1 from "../../assets/img/goods_img_1.png";
 import goods_like from "../../assets/img/ico_heart.png";
-import Footer from "../Footer";
 
 
 
@@ -91,70 +90,72 @@ export default function Wishlist({navigation,route}) {
         setNumber(number - 1);
     }
 
+
+
+
+    // setState(Cate_List2);
     console.log(state);
 
     return (
-        <>
-            <ScrollView style={[bg_white]}>
-                <View style={[styles.Cart]}>
-                    <View style={[container]}>
 
-                    </View>
-                    <View style={[styles.cartList]}>
-                        <List.Section style={styles.Section}>
+        <ScrollView style={container,bg_white}>
+            <View style={[styles.Cart]}>
+                <View style={[container]}>
 
-                            {cate_list.map((items, index) =>
+                </View>
+                <View style={[styles.cartList]}>
+                    <List.Section style={styles.Section}>
 
-                                <List.Accordion
-                                    style={styles.Accordion_tit}
-                                    title={[items]}
-                                    key={index}
-                                    left={ props =>  <Checkbox style={styles.all_check} value={isChecked} onValueChange={setChecked}  color={"#4630eb"}  />}
-                                >
-                                    <View style={styles.Accordion_items}>
-                                        <View style={styles.cate_goods_list_item}>
-                                            <View style={styles.flex}>
-                                                <View style={[styles.flex_item,styles.flex_item1]}>
-                                                    <Image style={styles.cate_list_Thumbnail} source={goods_img_1}/>
-                                                    <View style={styles.goods_like}>
-                                                        <Image style={styles.goods_like_icon} source={goods_like}/>
+                        {cate_list.map((items, index) =>
+
+                            <List.Accordion
+                                style={styles.Accordion_tit}
+                                title={[items]}
+                                key={index}
+                                left={ props =>  <Checkbox style={styles.all_check} value={isChecked} onValueChange={setChecked}  color={"#4630eb"}  />}
+                            >
+                                <View style={styles.Accordion_items}>
+                                    <View style={styles.cate_goods_list_item}>
+                                        <View style={styles.flex}>
+                                            <View style={[styles.flex_item,styles.flex_item1]}>
+                                                <Image style={styles.cate_list_Thumbnail} source={goods_img_1}/>
+                                                <View style={styles.goods_like}>
+                                                    <Image style={styles.goods_like_icon} source={goods_like}/>
+                                                </View>
+                                            </View>
+                                            <View style={[styles.flex_item,styles.flex_item2]}>
+                                                <View style={styles.flex_top}>
+                                                    <View style={styles.flex}>
+                                                        <TouchableOpacity style="" >
+                                                            <Text style={styles.cate_2st_btn_txt}>일반석고보드 9.5T X 900 X 1800 </Text>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                    <View style={styles.flex}>
+                                                        <TouchableOpacity style={styles.cart_btn} >
+                                                            <Icon name="shoppingcart" size={30} color="#3143e8" />
+                                                        </TouchableOpacity>
                                                     </View>
                                                 </View>
-                                                <View style={[styles.flex_item,styles.flex_item2]}>
-                                                    <View style={styles.flex_top}>
-                                                        <View style={styles.flex}>
-                                                            <TouchableOpacity style="" >
-                                                                <Text style={styles.cate_2st_btn_txt}>일반석고보드 9.5T X 900 X 1800 </Text>
-                                                            </TouchableOpacity>
-                                                        </View>
-                                                        <View style={styles.flex}>
-                                                            <TouchableOpacity style={styles.cart_btn} >
-                                                                <Icon name="shoppingcart" size={30} color="#3143e8" />
-                                                            </TouchableOpacity>
-                                                        </View>
+                                                <View style={styles.flex_bottom}>
+                                                    <View style="">
+                                                        <Text style={styles.cate_list_disc}>당일출고</Text>
                                                     </View>
-                                                    <View style={styles.flex_bottom}>
-                                                        <View style="">
-                                                            <Text style={styles.cate_list_disc}>당일출고</Text>
-                                                        </View>
-                                                        <View style="">
-                                                            <Text style={styles.cate_list_price}>3,410원</Text>
-                                                        </View>
+                                                    <View style="">
+                                                        <Text style={styles.cate_list_price}>3,410원</Text>
                                                     </View>
                                                 </View>
                                             </View>
                                         </View>
-                                        {/*    */}
                                     </View>
-                                </List.Accordion>
-                            )}
+                                    {/*    */}
+                                </View>
+                            </List.Accordion>
+                        )}
 
-                        </List.Section>
-                    </View>
+                    </List.Section>
                 </View>
-            </ScrollView>
-            <Footer navigation={navigation}/>
-        </>
+            </View>
+        </ScrollView>
     );
 }
 

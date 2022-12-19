@@ -22,35 +22,38 @@ export default function MemOut({navigation,route}) {
 
 
     return (
-        <>
-            <ScrollView style={[bg_white]}>
-                <View style={[styles.subPage,styles.MemInfo]}>
-                    <View style={styles.container}>
-                        <View style={styles.formGroup}>
-                            <View style={styles.inputGroup}>
-                                <Text style={styles.inputTopText}>비밀번호</Text>
-                                <TextInput style={styles.input} secureTextEntry={true} onChangeText={onChangePW}  placeholder="비밀번호를 입력해주세요." value={pw}/>
-                            </View>
+        <ScrollView style={[bg_white]}>
+            <View style={[styles.subPage,styles.MemInfo]}>
+                <View style={styles.container}>
+                   
+                    <View style={styles.formGroup}>
+                        <View style={styles.inputGroup}>
+                            <Text style={styles.inputTopText}>비밀번호</Text>
+                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={onChangePW}  placeholder="비밀번호를 입력해주세요." value={pw}/>
                         </View>
-                        {/*비밀번호 입력창*/}
-                        <View style={styles.formGroup}>
-                            <View style={styles.inputGroup}>
-                                <Text style={styles.inputTopText}>비밀번호 입력확인</Text>
-                                <TextInput style={styles.input} secureTextEntry={true} onChangeText={onChangePWch}  placeholder="비밀번호를 입력해주세요." value={pwch}/>
-                            </View>
-                        </View>
-                        {/*비밀번호확인 입력창*/}
                     </View>
-                    <View style={styles.gary_bar}/>
+                    {/*비밀번호 입력창*/}
+                    <View style={styles.formGroup}>
+                        <View style={styles.inputGroup}>
+                            <Text style={styles.inputTopText}>비밀번호 입력확인</Text>
+                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={onChangePWch}  placeholder="비밀번호를 입력해주세요." value={pwch}/>
+                        </View>
+                    </View>
+                    {/*비밀번호확인 입력창*/}
                 </View>
-            </ScrollView>
-            <View style={[styles.form_btn,styles.form_meminfo_btn]}>
-                <TouchableOpacity style={[styles.form_btn_link,styles.form_btn_meminfo_link]} >
-                    <Text style={styles.form_btn_txt}>회원탈퇴</Text>
-                </TouchableOpacity>
-            </View>
-        </>
 
+                <View style={styles.gary_bar}/>
+
+             
+
+                <View style={[styles.form_btn,styles.form_meminfo_btn]}>
+                    <TouchableOpacity style={[styles.form_btn_link,styles.form_btn_meminfo_link]} >
+                        <Text style={styles.form_btn_txt}>회원탈퇴</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+        </ScrollView>
 
     );
 }

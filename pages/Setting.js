@@ -5,8 +5,10 @@ import Icon from "react-native-vector-icons/AntDesign";
 
 // 공통 CSS 추가
 import {container, bg_white,flex,flex_between} from '../common/style/AtStyle';
+import {sub_page} from '../common/style/SubStyle';
 import Footer from "./Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Update from "expo-updates";
 import {reloadAsync} from "expo-updates";
 
 export default function Setting({navigation,route}){
@@ -74,6 +76,7 @@ export default function Setting({navigation,route}){
                             </TouchableOpacity>
                         </View>
                         <View style={styles.mypageListItemIcon}>
+                            {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
                             <Text style={styles.mypageList_name}> > </Text>
                         </View>
                     </View>
@@ -85,6 +88,7 @@ export default function Setting({navigation,route}){
                                     <Text style={styles.mypageList_name}>회원탈퇴</Text>
                                 </View>
                                 <View style={styles.mypageListItemIcon}>
+                                    {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
                                     <Text style={styles.mypageList_name}> > </Text>
                                 </View>
                             </View>

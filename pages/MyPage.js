@@ -1,48 +1,34 @@
 import React, {useEffect, useState} from 'react'
 import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView} from 'react-native'
+
 import logo from "../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
 
 // 공통 CSS 추가
 import {container, bg_white} from '../common/style/AtStyle';
-import {sub_page} from '../common/style/SubStyle';
+
+
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Footer from "./Footer";
 
 export default function MyPage({navigation, route}) {
 
-
-    const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    })
     console.log('마이페이지');
-    console.log('회원코드 / ' + Member);
-
+    const member = AsyncStorage.getItem('member');
     const [mem_info, set_mem_info] = useState([]);   // 회원정보 셋팅
     useEffect(() => {
         axios.get('http://49.50.162.86:80/ajax/UTIL_mem_info.php', {
             params: {
                 act_type: "my_page",
-                mem_uid: Member,
             }
         }).then((res) => {
-            if(res) {
-                const {result, test, mem_info} = res.data;
-                if(result === 'OK') {
-                    console.log('정상');
-                    set_mem_info(mem_info);
-                }
-                if(result === 'NG') {
-                    console.log('비정상');
-                }
+            if (res) {
+                //const {result} = res.data;
+                set_mem_info(res.data);
             }
-        });
-
-    }, [Member]);
-
-    //console.log(mem_info);
+        })
+    }, []);
 
     return (
         <>
@@ -80,9 +66,7 @@ export default function MyPage({navigation, route}) {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.mypageListItem}>
-                        <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
-                            navigation.navigate('회원정보수정')
-                        }}>
+                        <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {navigation.navigate('회원정보수정')}}>
                             <View style={styles.flex}>
                                 <View style={styles.mypageListItemTitle}>
                                     <Text style={styles.mypageList_name}>회원정보변경</Text>
@@ -96,9 +80,7 @@ export default function MyPage({navigation, route}) {
                     </View>
 
                     <View style={styles.mypageListItem}>
-                        <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
-                            navigation.navigate('취소내역')
-                        }}>
+                        <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {navigation.navigate('취소내역')}}>
                             <View style={styles.flex}>
                                 <View style={styles.mypageListItemTitle}>
                                     <Text style={styles.mypageList_name}>취소,반품내역</Text>
@@ -141,9 +123,7 @@ export default function MyPage({navigation, route}) {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.mypageListItem}>
-                        <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
-                            navigation.navigate('약관/개인정보처리방침')
-                        }}>
+                        <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {navigation.navigate('약관/개인정보처리방침') }}>
                             <View style={styles.flex}>
                                 <View style={styles.mypageListItemTitle}>
                                     <Text style={styles.mypageList_name}>약관 * 개인정보처리방침</Text>
@@ -158,7 +138,7 @@ export default function MyPage({navigation, route}) {
 
                 </View>
             </ScrollView>
-            <Footer navigation={navigation} pages={`메인페이지`}/>
+            {/*<Footer navigation={navigation} pages={`메인페이지`}/>*/}
         </>
     )
 }
@@ -190,10 +170,9 @@ const styles = StyleSheet.create({
         borderColor: '#ededf1',
     },
     mypageList_name: {
-        fontSize: 20,
+        fontSize: 16,
         color: "#08052f",
-        fontFamily: "Amatic-Bold",
-        fontWeight: "700",
+        fontWeight: "400",
     },
     user_cmy_name: {
         fontSize: 20,
@@ -270,7 +249,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "700"
     },
-    mypageListItem: {},
+
     mypageListItem_link: {
         width: "100%",
     },
@@ -280,7 +259,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
 
     },
-    mypageList: {},
+
     mypageListItem: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -291,7 +270,5 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: '#ededf1',
     },
-    mypageList_name: {
-        fontSize: 16,
-    }
+
 })

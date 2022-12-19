@@ -22,7 +22,6 @@ import {sub_page} from '../../common/style/SubStyle';
 import col1 from "../../assets/img/co1.png";
 import col2 from "../../assets/img/co2.png";
 import col3 from "../../assets/img/co3.png";
-import Footer from "../Footer";
 
 
 
@@ -96,111 +95,108 @@ export default function Cart({navigation,route}) {
 
 
     // setState(Cate_List2);
-    console.log(state);
+     console.log(state);
 
     return (
-        <>
-            <ScrollView style={[bg_white]}>
-                <View style={[styles.Cart]}>
-                    <View style={[container]}>
-                        <View style={[flex_between]}>
-                            <View style={[flex]}>
-                                <Checkbox style={styles.all_check} value={isChecked} onValueChange={setChecked}  color={"#4630eb"}  />
-                                <Text style={styles.all_check_txt}>전체선택(0/2)</Text>
-                            </View>
-                            <View style="">
-                                <Text style={styles.goods_cart_del_btn}>상품삭제</Text>
-                            </View>
+
+        <ScrollView style={[bg_white]}>
+            <View style={[styles.Cart]}>
+                <View style={[container]}>
+                    <View style={[flex_between]}>
+                        <View style={[flex]}>
+                            <Checkbox style={styles.all_check} value={isChecked} onValueChange={setChecked}  color={"#4630eb"}  />
+                            <Text style={styles.all_check_txt}>전체선택(0/2)</Text>
                         </View>
-                        {/* 전체선택 체크박스 영역*/}
+                        <View style="">
+                            <Text style={styles.goods_cart_del_btn}>상품삭제</Text>
+                        </View>
                     </View>
-                    <View style={[styles.cartList]}>
-                        <List.Section style={styles.Section}>
-
-                            {cate_list.map((items, index) =>
-
-                                <List.Accordion
-                                    style={[container,styles.Accordion_tit]}
-                                    title={[items]}
-                                    key={index}
-                                    left={ props =>  <Checkbox style={[styles.all_check]}
-                                                               value={isChecked}
-                                                               onValueChange={setChecked}
-                                                               color={"#4630eb"}  />}
-                                >
-                                    <View style={styles.Accordion_items}>
-                                        <View style={[styles.Accordion_itemsflex]}>
-                                            {state.map((cart_items,i)=>
-                                                <View style={styles.pb_2}>
-                                                    <View style={[flex_between,styles.pd_18]}>
-                                                        <View style={[flex]}>
-                                                            <Checkbox style={styles.all_check} value={isChecked} onValueChange={setChecked}  color={"#4630eb"}  />
-                                                            <Text style={styles.all_check_txt}>{cart_items.ct_tit} </Text>
-                                                        </View>
-                                                        <View style="">
-                                                            <Icon name="close" size={25} color="#000"/>
-                                                        </View>
-                                                    </View>
-                                                    <View style={[flex]}>
-                                                        <View style={[styles.flex_items,styles.flex_items1]}>
-                                                            <Image style={styles.cart_goods_img} source={cart_items.ct_img}/>
-                                                        </View>
-                                                        <View style={[styles.flex_items,styles.flex_items2]}>
-                                                            <View style={[flex_between,styles.pd_20]}>
-                                                                <View style="">
-                                                                    <Text style={styles.goods_disc}>{cart_items.ct_disc} </Text>
-                                                                </View>
-                                                                <View style="">
-                                                                    <Text style={styles.goods_price}>{cart_items.ct_price}원 </Text>
-                                                                </View>
-                                                            </View>
-                                                            <View style={[flex]}>
-                                                                <TouchableWithoutFeedback >
-                                                                    <View style={[count_btn]}>
-                                                                        <View style={[pos_center]}>
-                                                                            <Text style={[count_btn_txt]}>－</Text>
-                                                                        </View>
-                                                                    </View>
-                                                                </TouchableWithoutFeedback>
-                                                                <TextInput style={[countinput,]}   value="1" />
-                                                                <TouchableWithoutFeedback >
-                                                                    <View style={[count_btn]}>
-                                                                        <View style={[pos_center]}>
-                                                                            <Text style={[count_btn_txt]}>＋</Text>
-                                                                        </View>
-                                                                    </View>
-                                                                </TouchableWithoutFeedback>
-                                                            </View>
-                                                        </View>
-                                                    </View>
-                                                    <View style={flex_between}>
-                                                        <Text style={styles.Request_txt}>이 자재에 모델명, 제작관련 등 요청사항이 있으신가요?</Text>
-                                                        <Switch
-                                                            trackColor={{ false: "#767577", true: "#4630eb" }}
-                                                            thumbColor={isEnabled ? "#fff" : "#f4f3f4"}
-                                                            ios_backgroundColor="#3e3e3e"
-                                                            onValueChange={toggleSwitch}
-                                                            value={isEnabled}
-                                                            style={[switch_bar]}
-                                                        />
-                                                    </View>
-                                                    <TextInput style={textarea}   multiline={true} numberOfLines={4}    placeholder="" value=""/>
-                                                    {/**/}
-                                                </View>
-                                            )}
-
-                                        </View>
-                                    </View>
-                                </List.Accordion>
-                            )}
-
-                        </List.Section>
-                    </View>
+                    {/* 전체선택 체크박스 영역*/}
                 </View>
-            </ScrollView>
-            <Footer navigation={navigation}/>
-        </>
+                <View style={[styles.cartList]}>
+                    <List.Section style={styles.Section}>
 
+                        {cate_list.map((items, index) =>
+
+                            <List.Accordion
+                                style={[container,styles.Accordion_tit]}
+                                title={[items]}
+                                key={index}
+                                left={ props =>  <Checkbox style={[styles.all_check]}
+                                value={isChecked}
+                                onValueChange={setChecked}
+                                color={"#4630eb"}  />}
+                            >
+                                <View style={styles.Accordion_items}>
+                                    <View style={[styles.Accordion_itemsflex]}>
+                                        {state.map((cart_items,i)=>
+                                            <View style={styles.pb_2}>
+                                                <View style={[flex_between,styles.pd_18]}>
+                                                    <View style={[flex]}>
+                                                        <Checkbox style={styles.all_check} value={isChecked} onValueChange={setChecked}  color={"#4630eb"}  />
+                                                        <Text style={styles.all_check_txt}>{cart_items.ct_tit} </Text>
+                                                    </View>
+                                                    <View style="">
+                                                        <Icon name="close" size={25} color="#000"/>
+                                                    </View>
+                                                </View>
+                                                <View style={[flex]}>
+                                                    <View style={[styles.flex_items,styles.flex_items1]}>
+                                                        <Image style={styles.cart_goods_img} source={cart_items.ct_img}/>
+                                                    </View>
+                                                    <View style={[styles.flex_items,styles.flex_items2]}>
+                                                        <View style={[flex_between,styles.pd_20]}>
+                                                            <View style="">
+                                                                <Text style={styles.goods_disc}>{cart_items.ct_disc} </Text>
+                                                            </View>
+                                                            <View style="">
+                                                                <Text style={styles.goods_price}>{cart_items.ct_price}원 </Text>
+                                                            </View>
+                                                        </View>
+                                                        <View style={[flex]}>
+                                                            <TouchableWithoutFeedback >
+                                                                <View style={[count_btn]}>
+                                                                    <View style={[pos_center]}>
+                                                                        <Text style={[count_btn_txt]}>－</Text>
+                                                                    </View>
+                                                                </View>
+                                                            </TouchableWithoutFeedback>
+                                                            <TextInput style={[countinput,]}   value="1" />
+                                                            <TouchableWithoutFeedback >
+                                                                <View style={[count_btn]}>
+                                                                    <View style={[pos_center]}>
+                                                                        <Text style={[count_btn_txt]}>＋</Text>
+                                                                    </View>
+                                                                </View>
+                                                            </TouchableWithoutFeedback>
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                                <View style={flex_between}>
+                                                    <Text style={styles.Request_txt}>이 자재에 모델명, 제작관련 등 요청사항이 있으신가요?</Text>
+                                                    <Switch
+                                                        trackColor={{ false: "#767577", true: "#4630eb" }}
+                                                        thumbColor={isEnabled ? "#fff" : "#f4f3f4"}
+                                                        ios_backgroundColor="#3e3e3e"
+                                                        onValueChange={toggleSwitch}
+                                                        value={isEnabled}
+                                                        style={[switch_bar]}
+                                                    />
+                                                </View>
+                                                <TextInput style={textarea}   multiline={true} numberOfLines={4}    placeholder="" value=""/>
+                                                {/**/}
+                                            </View>
+                                        )}
+
+                                    </View>
+                                </View>
+                            </List.Accordion>
+                        )}
+
+                    </List.Section>
+                </View>
+            </View>
+        </ScrollView>
     );
 }
 
