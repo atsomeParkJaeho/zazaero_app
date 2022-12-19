@@ -98,7 +98,7 @@ export default function MainPage({navigation, route}) {
                     localImg={true}
                     previewImageStyle={false}
                     // onItemChanged={(item) => console.log("item", item)}
-                    caroselImageStyle={{ resizeMode: 'contain', height:180, }}
+                    caroselImageStyle={{ resizeMode: 'cover', height:180, }}
                     preview={false}
                     autoPlay={true}
                     timer={3000}
