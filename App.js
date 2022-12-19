@@ -16,10 +16,23 @@ export default function App() {
     // 회원정보 가져오기
 
     console.disableYellowBox = true;
+
+
+    // 안드로이드 설정
+
+
+    // ios 설정
+
+
+
+
     return (
         <>
             <NavigationContainer>
-                <StatusBar style="dark" />
+                <StatusBar
+                    backgroundColor="#fff"
+                    barStyle="dark-content"
+                />
                 <StackNavigator/>
             </NavigationContainer>
         </>
