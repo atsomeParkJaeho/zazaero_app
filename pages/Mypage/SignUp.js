@@ -7,7 +7,7 @@ import Loading from '../../components/Loading';
 
 // 공통 CSS 추가
 import {container, bg_white, flex} from '../../common/style/AtStyle';
-import {sub_page} from '../../common/style/SubStyle';
+import {gray_bar, sub_page} from '../../common/style/SubStyle';
 import axios from "axios";
 import {AddrMatch, Minlangth, regId,regPW} from "../../util/util";
 
@@ -255,9 +255,9 @@ export default function SignUp({navigation,route}) {
     console.log(selected);
 
     return (
-        <ScrollView >
-            <View style={[styles.subPage,styles.signup]}>
-                <View style={styles.container}>
+        <ScrollView style={[bg_white]}>
+            <View style={[sub_page,styles.signup]}>
+                <View style={[container]}>
 
                     <View style={styles.formGroup}>
                         <Text style={styles.inputTopText}>아이디</Text>
@@ -300,7 +300,7 @@ export default function SignUp({navigation,route}) {
 
                 </View>
 
-                <View style={styles.gary_bar}/>
+                <View style={[gray_bar]}/>
 
                 <View style={styles.container}>
                     <View style={styles.formGroup}>
@@ -374,7 +374,7 @@ export default function SignUp({navigation,route}) {
                     {/*사업장 주소 입력창*/}
                 </View>
 
-                <View style={styles.gary_bar}/>
+                <View style={[gray_bar]}/>
 
                 <View style={styles.container}>
                     <View style={styles.privacy_wrap}>
@@ -446,7 +446,7 @@ export default function SignUp({navigation,route}) {
                         </View>
                     </View>
                 </View>
-                <View style={styles.gary_bar}/>
+                <View style={[gray_bar]}/>
                 <View style={[styles.form_btn,styles.form_meminfo_btn]}>
                     <TouchableOpacity onPress={goSignUp} style={[styles.form_btn_link,styles.form_btn_meminfo_link]} >
                         <Text style={styles.form_btn_txt}>회원가입</Text>
@@ -467,10 +467,7 @@ const styles = StyleSheet.create({
         padding:16,
         width:"100%",
     },
-    gary_bar:{
-      borderBottomWidth:8,
-      borderColor:"#ededf1",
-    },
+
     flex:{
       flexDirection:"row",
       alignItems:"center",

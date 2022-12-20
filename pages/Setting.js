@@ -4,7 +4,7 @@ import logo from "../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
 
 // 공통 CSS 추가
-import {container, bg_white,flex,flex_between} from '../common/style/AtStyle';
+import {container, bg_white, flex, flex_between, switch_bar} from '../common/style/AtStyle';
 import Footer from "./Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {reloadAsync} from "expo-updates";
@@ -46,7 +46,7 @@ export default function Setting({navigation,route}){
                                 ios_backgroundColor="#3e3e3e"
                                 onValueChange={toggleSwitch}
                                 value={isEnabled}
-                                style={styles.switch}
+                                style={[switch_bar]}
                             />
                         </View>
                     </View>
@@ -61,7 +61,7 @@ export default function Setting({navigation,route}){
                                 ios_backgroundColor="#3e3e3e"
                                 onValueChange={toggleSwitch2}
                                 value={isEnabled2}
-                                style={styles.switch}
+                                style={[switch_bar]}
                             />
                         </View>
                     </View>
@@ -102,9 +102,6 @@ export default function Setting({navigation,route}){
 const styles = StyleSheet.create({
     container: {
         backgroundColor:"#fff",
-    },
-    switch:{
-        transform: Platform.OS === 'ios' ? [{ scaleX: .7 }, { scaleY: .7 }] : [{ scaleX: 1.2 }, { scaleY: 1.2 }] ,
     },
     top_inner:{
         marginTop:50,

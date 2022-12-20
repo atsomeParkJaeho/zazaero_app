@@ -117,7 +117,7 @@ export default function Login({navigation, route}) {
 
         return ready ? <Loading/> : (
             <>
-                <KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding'})}>
+                <KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding',android:'padding'})}>
                     <View style={[sub_page, styles.login]}>
                         <View style={[container]}>
                             <View style={[flex,justify_content_center,mb5]}>
@@ -157,17 +157,13 @@ export default function Login({navigation, route}) {
                             </TouchableOpacity>
                             {/*로그인 버튼*/}
                             <View style={styles.link_idpw}>
-                                <View style={styles.findId}>
-                                    <TouchableOpacity style={styles.link_find_id} onPress={() => {
-                                        navigation.navigate('아이디 찾기')
-                                    }}>
-                                        <Text style={[styles.link_find_txt, styles.br_1]}>아이디 찾기</Text>
+                                <View style={[styles.findId, styles.br_1]}>
+                                    <TouchableOpacity style={styles.link_find_id} onPress={() => {navigation.navigate('아이디 찾기')}}>
+                                        <Text style={[styles.link_find_txt, ]}>아이디 찾기</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.findpw}>
-                                    <TouchableOpacity style={styles.link_find_pw} onPress={() => {
-                                        navigation.navigate('비밀번호 찾기')
-                                    }}>
+                                    <TouchableOpacity style={styles.link_find_pw} onPress={() => {navigation.navigate('비밀번호 찾기')}}>
                                         <Text style={styles.link_find_txt}>비밀번호 찾기</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -259,6 +255,7 @@ const styles = StyleSheet.create({
     br_1: {
         borderRightWidth: 1,
         borderColor: "#b1b2c3",
+        overflow:"hidden",
     },
     signUpbox: {
         flexDirection: "row",

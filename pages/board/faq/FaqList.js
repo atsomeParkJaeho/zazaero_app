@@ -8,7 +8,7 @@ import {bg_gray, bg_light, bg_white, btn_black, text_dark, text_white} from "../
 
 import RenderHTML from "react-native-render-html";
 
-function faq({navigation}) {
+function FaqList({navigation}) {
     console.log('자주묻는질문');
     const [FaqList, setFaqList] = useState([]);  // 자주묻는질문 불러오기
     useEffect(() => {
@@ -53,6 +53,6 @@ function faq({navigation}) {
     );
 }
 
-export default faq;
+export default FaqList;
 
 

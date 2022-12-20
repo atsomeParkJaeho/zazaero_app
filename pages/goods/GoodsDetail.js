@@ -42,34 +42,11 @@ import goods_image_more from "../../assets/img/goods_image_more.jpg";
 
 export default function GoodsDetail({navigation}) {
 
-    // 수량 데이터 상태 임시
-    const [GoodsCnt, setGoodsCnt] = useState({
-        Cnt:0,
-    });
-    const CntUp = (type,cnt) => {
-
-        if(type == 'plus') {
-            setGoodsCnt({
-                ...GoodsCnt,
-                Cnt:GoodsCnt.Cnt += 1,
-            });
-        }
-        if(type == 'minus') {
-            setGoodsCnt({
-                ...GoodsCnt,
-                Cnt:GoodsCnt.Cnt -= 1,
-            });
-        }
-        if(type == 'GoodsCnt') {
-            setGoodsCnt({
-                Cnt:cnt,
-            });
-        }
-
-    }
-
     const [GoodsDetail,setGoodsDetail] = useState(goodsDetail);
     //자재 상세데이터
+
+
+
 
     let goods_price_test = 14000;
     let goods_price =  (new String(goods_price_test)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -98,8 +75,7 @@ export default function GoodsDetail({navigation}) {
                 {
                     text: '확인 ',
                     onPress: () => {
-                        // onDelete(id);
-                        alert('추가 완료하였습니다.');
+                        onDelete(id);
                     },
                     style: 'cancel',
                 },
@@ -113,6 +89,7 @@ export default function GoodsDetail({navigation}) {
     //장바구니 알림창
 
     const GoBuy = () =>{
+
         {navigation.navigate('장바구니')}
     }
 
@@ -133,7 +110,7 @@ export default function GoodsDetail({navigation}) {
                             {/*상품명*/}
                             <View style={[flex]}>
                                 <View style={[styles.wt25]}>
-                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>판매가</Text>
+                                    <Text style={[styles.GoodsDetail_info_txt]}>판매가</Text>
                                 </View>
                                 <View style={[styles.wt75]}>
                                     <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>{goods_price} 원</Text>
@@ -142,7 +119,7 @@ export default function GoodsDetail({navigation}) {
                             {/*판매가*/}
                             <View style={[flex,styles.border_b]}>
                                 <View style={[styles.wt25]}>
-                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재안내</Text>
+                                    <Text style={[styles.GoodsDetail_info_txt]}>자재안내</Text>
                                 </View>
                                 <View style={[styles.wt75]}>
                                     <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>{goods_guide} </Text>
@@ -151,26 +128,19 @@ export default function GoodsDetail({navigation}) {
                             {/*자재안내*/}
                             <View style={[flex_between_top,mt3]}>
                                 <View style="">
-                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>수량</Text>
+                                    <Text style={[styles.GoodsDetail_info_txt]}>수량</Text>
                                     <View style={[flex]}>
-                                        {/*===============마이너스 수량==================*/}
-                                        <TouchableWithoutFeedback onPress={()=>CntUp('minus')}>
+                                        <TouchableWithoutFeedback >
                                             <View style={[count_btn]}>
                                                 <View style={[pos_center]}>
                                                     <Text style={[count_btn_txt]}>－</Text>
                                                 </View>
                                             </View>
                                         </TouchableWithoutFeedback>
-                                        {/*============수량 입력==============*/}
-                                        <TextInput style={[countinput]}
-                                           // onTextInput={(cnt)=>CntUp('GoodsCnt',cnt)}
-                                           onChangeText={(Cnt)=>CntUp('Cnt',Cnt)}
-                                           value={`${GoodsCnt.Cnt}`}
-                                           defaultValue="1"
-                                           keyboardType="number-pad"
-                                        />
-                                        {/*===============플러스 수량==================*/}
-                                        <TouchableWithoutFeedback onPress={()=>CntUp('plus')}>
+                                        <TextInput style={[countinput,]}
+                                                   value="1"
+                                                   keyboardType="number-pad"/>
+                                        <TouchableWithoutFeedback >
                                             <View style={[count_btn]}>
                                                 <View style={[pos_center]}>
                                                     <Text style={[count_btn_txt]}>＋</Text>
@@ -203,7 +173,7 @@ export default function GoodsDetail({navigation}) {
                     <TouchableOpacity style={styles.btn} onPress={() => Cart()}>
                         <Text style={[btn_primary,styles.center]}>장바구니</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('장바구니')}>
+                    <TouchableOpacity style={styles.btn} onPress={() => GoBuy(val)}>
                         <Text style={[btn_black,styles.center]}>구매하기</Text>
                     </TouchableOpacity>
                 </View>
@@ -257,7 +227,6 @@ const styles = StyleSheet.create({
         fontSize:14,
         color:"#333",
         lineHeight:24,
-        textAlign:"right",
     },
     GoodsDetail_info_txt_val:{
         fontSize:15,

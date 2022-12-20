@@ -5,7 +5,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 
 // 공통 CSS 추가
 import {container, bg_white, flex_between, input, flex, flex_top, padding_bottom} from '../../common/style/AtStyle';
-import {sub_page, gary_bar} from '../../common/style/SubStyle';
+import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
 // 샘플데이터
 import {order_List} from "../../util/util";
@@ -143,7 +143,7 @@ export default function Order({navigation, route}) {
                                                     </View>
                                                 </View>
                                             </View>
-                                            <View style={gary_bar}/>
+                                            <View style={[gray_bar]}/>
                                         </View>
                                     </>
                                 )

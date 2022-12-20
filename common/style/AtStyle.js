@@ -26,7 +26,9 @@ export const min_height = {
 //     height:"100%",
 // }
 
-export const text_center = {textAlign:"center",}
+export const text_center = {textAlign:"center"}
+export const text_left = {textAlign:"left"}
+export const text_right = {textAlign:"right"}
 
 export const pos_center = {
     position: "absolute",
@@ -357,7 +359,7 @@ export const countinput = {
 }
 export const textarea = {
     width:"100%",
-    height: 100,
+    height: 60,
     margin: 0,
     textAlignVertical: 'top',
     borderWidth: 1,

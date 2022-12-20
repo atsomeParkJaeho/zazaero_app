@@ -49,9 +49,12 @@ import DeliStatus from "../pages/order/DeliStatus";
 import DetailPage from '../pages/DetailPage';
 import CancelDetail from "../pages/order/CancelDetail";                     //취소상세내역
 import ReturnDetail from "../pages/order/ReturnDetail";
-import PayDetail from "../pages/order/PayDetail";                     //반품상세내역
+import PayDetail from "../pages/order/PayDetail";                     //결제상세내역_대기
+import PayDetailY from "../pages/order/PayDetailY";                     //결제상세내역_완료
 import DeliDetail from "../pages/order/DeliDetail";
-import RequestReturn from "../pages/order/RequestReturn";                     //반품상세내역
+import RequestReturn from "../pages/order/RequestReturn";
+import DeliDetailIng from "../pages/order/DeliDetailIng";
+import DeliDetailDone from "../pages/order/DeliDetailDone";                     //반품상세내역
 
 
 
@@ -105,7 +108,7 @@ const StackNavigator = () => {
                   options={{headerTitle:'',headerStatusBarHeight:0,}}
                 />
                 <Stack.Screen name="회원가입"
-                  component={SignUp}
+                              component={SignUp}
                 />
                 {/*==============메인페이지===============*/}
                 <Stack.Screen
@@ -138,8 +141,11 @@ const StackNavigator = () => {
                 <Stack.Screen name="결제상태" options={{title:'발주내역'}} component={PayStatus}/>
                 <Stack.Screen name="발주상태" options={{title:'발주내역'}} component={OrderStatus}/>
                 <Stack.Screen name="결제상세" options={{title:'상세내역'}} component={PayDetail}/>
+                <Stack.Screen name="결제상세_완" options={{title:'상세내역'}} component={PayDetailY}/>
                 <Stack.Screen name="배송상태" options={{title:'발주내역'}} component={DeliStatus}/>
                 <Stack.Screen name="배송상세" options={{title:'상세내역'}} component={DeliDetail}/>
+                <Stack.Screen name="배송상세_진행" options={{title:'상세내역'}} component={DeliDetailIng}/>
+                <Stack.Screen name="배송상세_완료" options={{title:'상세내역'}} component={DeliDetailDone}/>
                 <Stack.Screen name="DetailPage" component={DetailPage}/>
                 {/*================취소/반품===================*/}
                 <Stack.Screen name="취소내역" options={{title:'취소,반품내역'}} component={Cancel}/>

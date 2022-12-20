@@ -189,7 +189,7 @@ export default function GoodsCateList({navigation}) {
                                 <View style={{
                                     width: 20,
                                     height: 20,
-                                    borderRadius: "50%",
+                                    borderRadius: 50,
                                     marginRight: 10,
                                     backgroundColor: "#fff"
                                 }}>

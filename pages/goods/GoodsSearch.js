@@ -32,6 +32,22 @@ import goods_image from "../../assets/img/goods_image.jpg";
 
 export default function GoodsSearch({navigation, route}) {
 
+    //1.
+    const [GoodsSearch, setGoodsSearch]  = useState({
+        input_val                  :"",    //검색입력값
+    })
+
+    //2. 입력폼 체크루틴
+    const ChkInput = (keyValue, text)   =>{
+        //기본 루틴
+        setGoodsSearch({
+            ...GoodsSearch,
+            [keyValue]:text,
+        })
+    }
+
+    console.log(GoodsSearch);
+
     const Recent_search = [
 
         {
@@ -78,26 +94,28 @@ export default function GoodsSearch({navigation, route}) {
 
 
 
-
-
     return (
 
         <>
             <View style={[bg_white,sub_page]}>
                 <View style={container}>
                     <View style={[flex,styles.flex_center]}>
-                        <View style={[styles.back]}>
-                            <TouchableOpacity style="" onPress={() => navigation.pop()} >
-                                <BackArrow width={22} height={18} style={[styles.center]} />
-                            </TouchableOpacity>
+                        {/*<View style={[styles.back]}>*/}
+                        {/*    <TouchableOpacity style="" onPress={() => navigation.pop()} >*/}
+                        {/*        <BackArrow width={22} height={18} style={[styles.center]} />*/}
+                        {/*    </TouchableOpacity>*/}
 
-                        </View>
+                        {/*</View>*/}
                         <View style={[styles.search_input]}>
-                            <TextInput style={[input,styles.input_wt]}   placeholder="검색어"  value="" />
+                            <TextInput style={[input,styles.input_wt]}
+                                       onChangeText={(input_val)=>ChkInput("input_val",input_val)}
+                                       value={GoodsSearch.input_val}
+                                       placeholder="검색어를 입력하세요."/>
+
                         </View>
                         <View style={[styles.search_icon]}>
                             <TouchableOpacity style="" onPress={()=>{navigation.navigate('검색상품')}}>
-                                <Search width={22} height={18} style={[styles.center]} />
+                                <Search width={30} height={21} style={[styles.center]} />
                             </TouchableOpacity>
 
                         </View>
@@ -161,16 +179,16 @@ const styles = StyleSheet.create({
         width:"10%",
     },
     search_input:{
-        width:"80%",
+        width:"85%",
     },
     search_icon:{
-        width:"10%",
+        width:"15%",
     },
     txt_color:{
         color:"#B1B2C3",
     },
     Recent_search_list_item:{
-        paddingBottom:7,
+        paddingBottom:12,
     },
     txt_color2:{
         color:"#222",

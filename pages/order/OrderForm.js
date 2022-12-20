@@ -17,7 +17,7 @@ import {
     flex_top,
     bg_primary,
     d_flex,
-    justify_content_center, align_items_center, text_light, text_dark, bg_gray, justify_content_between
+    justify_content_center, align_items_center, text_light, text_dark, bg_gray, justify_content_between, ms1, ms2
 } from '../../common/style/AtStyle';
 import {sub_page, gary_bar} from '../../common/style/SubStyle';
 import axios from "axios";
@@ -75,9 +75,18 @@ export default function OrderForm({navigation, route}) {
                     {/*==============최근배송지 불러오기==============*/}
                     <View style={[FormStyle.FormGroup]}>
                         <View>
-                            {/*체크박스*/}
-                            <Text style={[FormStyle.FormTitle]}>최근 배송지 불러오기</Text>
-                            {/*셀렉트박스*/}
+                            <View style={[flex]}>
+                                <View style={[]}>
+                                    <Text style={[FormStyle.FormTitle]}>최근 배송지 불러오기</Text>
+                                    {/*최근배송지 라디오 박스*/}
+                                </View>
+                                <View style={[ms2]}>
+                                    <Text style={[FormStyle.FormTitle]}>신규 배송지 추가</Text>
+                                    {/*신규배송지 라디오 박스*/}
+                                </View>
+                            </View>
+
+
                         </View>
                     </View>
                     {/*==============신규배송지 입력==============*/}
@@ -91,12 +100,19 @@ export default function OrderForm({navigation, route}) {
                         <View>
                             <View style={[FormStyle.FormGroupItems]}>
                                 <Text style={[FormStyle.FormLabel]}>공사명</Text>
-                                <TextInput style={[FormStyle.InputStyle]} placeholder="ex)공사명 입력"/>
+                                <TextInput style={[FormStyle.InputStyle]}
+                                           onChangeText={(project_title)=>goInput("project_title",project_title)}
+                                           placeholder="ex)공사명 입력"
+                                           value={OrderData.project_title}/>
+
                             </View>
                             <View style={[FormStyle.FormGroupItems]}>
                                 <Text style={[FormStyle.FormLabel]}>배송지</Text>
                                 <View style={[d_flex,align_items_center]}>
-                                    <TextInput style={[FormStyle.InputStyle,{flex:1,marginRight:16,}]} placeholder="배송지"/>
+                                   <TextInput style={[FormStyle.InputStyle,{flex:1,marginRight:16,}]}
+                                               onChangeText={(addr1)=>goInput("addr1",addr1)}
+                                               placeholder="배송지"
+                                               value={OrderData.addr1}/>
                                     <TouchableOpacity>
                                         <View style={[bg_primary,{padding:10,}]}>
                                             <Text style={[text_light]}>주소찾기</Text>
@@ -146,14 +162,21 @@ export default function OrderForm({navigation, route}) {
                         <View style={[FormStyle.FormGroupItems]}>
                             <View>
                                 <Text style={[FormStyle.FormLabel]}>현장인도자 연락처</Text>
-                                <TextInput style={[FormStyle.InputStyle,{flex:1}]} placeholder="ex)공사명 입력"/>
+                                <TextInput style={[FormStyle.InputStyle,{flex:1}]}
+                                           onChangeText={(recv_name)=>goInput("recv_name",recv_name)}
+                                           placeholder="ex)홍길동"
+                                           value={OrderData.recv_name}/>
                             </View>
                         </View>
                         {/*==============배송 요청 사항==============*/}
                         <View style={[FormStyle.FormGroupItems]}>
                             <View>
                                 <Text style={[FormStyle.FormLabel]}>배송 요청 사항</Text>
-                                <TextInput style={[FormStyle.InputStyle,{flex:1}]} placeholder="ex)공사명 입력"/>
+
+                                <TextInput style={[FormStyle.InputStyle,{flex:1}]}
+                                           onChangeText={(order_memo)=>goInput("order_memo",order_memo)}
+                                           placeholder="배송요청사항"
+                                           value={OrderData.order_memo}/>
                             </View>
                         </View>
                     </View>
