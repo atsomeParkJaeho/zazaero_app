@@ -94,6 +94,7 @@ function Cate3th () {
 
 
 export default function GoodsCateList({route,navigation}) {
+    let test = 'er';
     let {Cate1stUid, Cate2ndUid} = route.params; // 카테고리 uid
     console.log(Cate1stUid);
     console.log(Cate2ndUid);
