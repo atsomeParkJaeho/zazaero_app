@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     StyleSheet,
     Text,
@@ -9,9 +9,8 @@ import {
     TextInput,
     TouchableWithoutFeedback, Alert
 } from 'react-native';
-import logo from "../../assets/img/top_logo.png";
-import Icon from "react-native-vector-icons/AntDesign";
 
+import RenderHtml from 'react-native-render-html';
 
 // 공통 CSS 추가
 import {
@@ -34,37 +33,82 @@ import {
 import {sub_page, gary_bar, sub_container} from '../../common/style/SubStyle';
 
 //더미데이터
- import {goodsDetail} from "../../util/util";
+import {goodsDetail} from "../../util/util";
 
 import goods_image from "../../assets/img/goods_image.jpg";
 import goods_image_more from "../../assets/img/goods_image_more.jpg";
+import axios from "axios";
 
 
-export default function GoodsDetail({navigation}) {
 
-    const [GoodsDetail,setGoodsDetail] = useState(goodsDetail);
+
+
+export default function GoodsDetail({route,navigation}) {
+    let {uid} = route.params;
+    console.log(uid);
+    // 수량 데이터 상태 임시
+
+    // ===========1. 상품상세정보 상태 정의======
+    const [GoodsDetail,setGoodsDetail] = useState({
+        goods_cnt : 0       // 상품수량
+    });
+
+    // ============2. 상품출력===============
+    useEffect(()=>{
+        let data = {
+            act_type    :"get_relation_goods",
+            goods_uid   :uid,
+        }
+        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php',data,{
+            headers: {
+                'Content-type': 'multipart/form-data',
+            }
+        }).then((res)=>{
+            if(res) {
+                const {result, goods_info} = res.data;
+                if(result === 'OK') {
+                    console.log(goods_info);
+                    setGoodsDetail(goods_info);
+                } else {
+                    console.log('실패');
+                }
+            }
+        });
+    },[]);
+
+
+    const CntUp = (type,cnt) => {
+
+        if(type == 'plus') {
+            setGoodsCnt({
+                ...GoodsCnt,
+                Cnt:GoodsCnt.Cnt += 1,
+            });
+        }
+        if(type == 'minus') {
+            setGoodsCnt({
+                ...GoodsCnt,
+                Cnt:GoodsCnt.Cnt -= 1,
+            });
+        }
+        if(type == 'GoodsCnt') {
+            setGoodsCnt({
+                Cnt:cnt,
+            });
+        }
+
+    }
+
+
     //자재 상세데이터
 
 
-
-
-    let goods_price_test = 14000;
-    let goods_price =  (new String(goods_price_test)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    //판매가
     let goods_guide = "발주일로부터 평균 4일 소요";
 
-    let goods_total_price_test = 140000;
-    let goods_total_price =  (new String(goods_total_price_test)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    //총금액
+    const source = {
+        html: GoodsDetail.summary_contents
+    };
 
-    let goods_cnt_test = "1";
-    //수량
-    const onPress = () => {
-        setNumber(countr + 1);
-    };
-    const onDecrease = () => {
-        setNumber(number - 1);
-    };
 
     const Cart = () =>{
         Alert.alert(
@@ -75,7 +119,8 @@ export default function GoodsDetail({navigation}) {
                 {
                     text: '확인 ',
                     onPress: () => {
-                        onDelete(id);
+                        // onDelete(id);
+                        alert('추가 완료하였습니다.');
                     },
                     style: 'cancel',
                 },
@@ -89,20 +134,19 @@ export default function GoodsDetail({navigation}) {
     //장바구니 알림창
 
     const GoBuy = () =>{
-
         {navigation.navigate('장바구니')}
     }
 
-
+    console.log('상품정보',GoodsDetail);
 
     return (
-      
+
         <>
             <ScrollView style={[bg_white]}>
                 <View style={[styles.mypageinfo]}>
                     <View style={[container]}>
                         <View style={[styles.goods_iamge_box]}>
-                            <Image style={styles.goods_image} source={goods_image}/>
+                            <Image style={styles.goods_image} source={{uri:"http://www.zazaero.com"+GoodsDetail.list_img_url}}/>
                         </View>
                         {/*상품이미지*/}
                         <View style={[styles.GoodsDetail_info]}>
@@ -110,16 +154,18 @@ export default function GoodsDetail({navigation}) {
                             {/*상품명*/}
                             <View style={[flex]}>
                                 <View style={[styles.wt25]}>
-                                    <Text style={[styles.GoodsDetail_info_txt]}>판매가</Text>
+                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>판매가</Text>
                                 </View>
                                 <View style={[styles.wt75]}>
-                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>{goods_price} 원</Text>
+                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                        {(new String(GoodsDetail.price)).replace(/\B(?=(\d{3})+(?!\d))/g, ",")} 원
+                                    </Text>
                                 </View>
                             </View>
                             {/*판매가*/}
                             <View style={[flex,styles.border_b]}>
                                 <View style={[styles.wt25]}>
-                                    <Text style={[styles.GoodsDetail_info_txt]}>자재안내</Text>
+                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재안내</Text>
                                 </View>
                                 <View style={[styles.wt75]}>
                                     <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>{goods_guide} </Text>
@@ -128,19 +174,26 @@ export default function GoodsDetail({navigation}) {
                             {/*자재안내*/}
                             <View style={[flex_between_top,mt3]}>
                                 <View style="">
-                                    <Text style={[styles.GoodsDetail_info_txt]}>수량</Text>
+                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>수량</Text>
                                     <View style={[flex]}>
-                                        <TouchableWithoutFeedback >
+                                        {/*===============마이너스 수량==================*/}
+                                        <TouchableWithoutFeedback onPress={()=>CntUp('minus')}>
                                             <View style={[count_btn]}>
                                                 <View style={[pos_center]}>
                                                     <Text style={[count_btn_txt]}>－</Text>
                                                 </View>
                                             </View>
                                         </TouchableWithoutFeedback>
-                                        <TextInput style={[countinput,]}
-                                                   value="1"
-                                                   keyboardType="number-pad"/>
-                                        <TouchableWithoutFeedback >
+                                        {/*============수량 입력==============*/}
+                                        {/*<TextInput style={[countinput]}*/}
+                                        {/*   // onTextInput={(cnt)=>CntUp('GoodsCnt',cnt)}*/}
+                                        {/*   onChangeText={(Cnt)=>CntUp('Cnt',Cnt)}*/}
+                                        {/*   value={`${GoodsCnt.Cnt}`}*/}
+                                        {/*   defaultValue="1"*/}
+                                        {/*   keyboardType="number-pad"*/}
+                                        {/*/>*/}
+                                        {/*===============플러스 수량==================*/}
+                                        <TouchableWithoutFeedback onPress={()=>CntUp('plus')}>
                                             <View style={[count_btn]}>
                                                 <View style={[pos_center]}>
                                                     <Text style={[count_btn_txt]}>＋</Text>
@@ -153,7 +206,9 @@ export default function GoodsDetail({navigation}) {
                                 </View>
                                 <View style="">
                                     <Text style={[styles.GoodsDetail_info_txt]}>총금액</Text>
-                                    <Text style={[styles.GoodsDetail_total_price]}>{goods_total_price} 원</Text>
+                                    <Text style={[styles.GoodsDetail_total_price]}>
+                                        {(new String(GoodsDetail.price)).replace(/\B(?=(\d{3})+(?!\d))/g, ",")} 원
+                                    </Text>
                                 </View>
                             </View>
                             {/*수량*/}
@@ -162,7 +217,7 @@ export default function GoodsDetail({navigation}) {
                         {/*상품정보*/}
                         <View style={[styles.GoodsDetail_more_image,mt5]}>
                             <Text style={[styles.GoodsDetail_more_image_txt]}>추가 이미지</Text>
-                            <Image style={styles.goods_image_more} source={goods_image_more}  resizeMode="stretch"/>
+                            <RenderHtml source={source}/>
                         </View>
                         {/*추가 이미지*/}
                     </View>
@@ -173,13 +228,13 @@ export default function GoodsDetail({navigation}) {
                     <TouchableOpacity style={styles.btn} onPress={() => Cart()}>
                         <Text style={[btn_primary,styles.center]}>장바구니</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.btn} onPress={() => GoBuy(val)}>
+                    <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('장바구니')}>
                         <Text style={[btn_black,styles.center]}>구매하기</Text>
                     </TouchableOpacity>
                 </View>
             </View>
             {/*장바구니/구매*/}
-          
+
         </>
     );
 }
@@ -227,6 +282,7 @@ const styles = StyleSheet.create({
         fontSize:14,
         color:"#333",
         lineHeight:24,
+        textAlign:"right",
     },
     GoodsDetail_info_txt_val:{
         fontSize:15,
