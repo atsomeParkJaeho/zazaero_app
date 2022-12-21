@@ -10,7 +10,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 
 
 export default function MemInfo({navigation,route}) {
-    let mypageList_test2 = "가나인테리어2";
+    console.log('회원정보')
 
 
 
