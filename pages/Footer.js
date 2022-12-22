@@ -5,6 +5,8 @@ import Wish from '../icons/wish.svg';
 import Cart from '../icons/cart.svg';
 import OrderList from '../icons/order_list.svg';
 import Mypage from '../icons/mypage.svg';
+import {useState} from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const styles = styleSheet.create({
     FooterWrap : {
@@ -48,6 +50,14 @@ const styles = styleSheet.create({
 
 
 function Footer({navigation,pages}) {
+
+    const [Member, setMember] = useState();
+    const mem_uid = AsyncStorage.getItem("member").then((value) => {
+        setMember(value);
+    })
+    console.log('푸터');
+    console.log('회원코드 / ' + Member);
+
     return(
         <>
             <View style={styles.FooterWrap}>
@@ -72,7 +82,7 @@ function Footer({navigation,pages}) {
                     </TouchableOpacity>
                 </View>
                 <View style={[styles.Tabs,]}>
-                    <TouchableOpacity onPress={()=>{navigation.navigate('장바구니')}}>
+                    <TouchableOpacity onPress={()=>{navigation.navigate('장바구니',{mem_uid:Member})}}>
                         <View style={styles.SvgIcons}>
                             <Cart width={22} height={18}/>
                         </View>

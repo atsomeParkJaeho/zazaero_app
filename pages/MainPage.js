@@ -85,7 +85,6 @@ function Cate2nd({uid,navigation,name}) {
 // 상품출력 페이지
 export default function MainPage({navigation, route}) {
 
-
     // 1. 1차 카테고리 추출
     const [Cate1st, setCate1st] = useState([]);   // 1차 카테고리 설정
     useEffect(() => {

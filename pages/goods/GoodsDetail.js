@@ -185,13 +185,13 @@ export default function GoodsDetail({route,navigation}) {
                                             </View>
                                         </TouchableWithoutFeedback>
                                         {/*============수량 입력==============*/}
-                                        {/*<TextInput style={[countinput]}*/}
-                                        {/*   // onTextInput={(cnt)=>CntUp('GoodsCnt',cnt)}*/}
-                                        {/*   onChangeText={(Cnt)=>CntUp('Cnt',Cnt)}*/}
-                                        {/*   value={`${GoodsCnt.Cnt}`}*/}
-                                        {/*   defaultValue="1"*/}
-                                        {/*   keyboardType="number-pad"*/}
-                                        {/*/>*/}
+                                        <TextInput style={[countinput]}
+                                           // onTextInput={(cnt)=>CntUp('GoodsCnt',cnt)}
+                                           onChangeText={(Cnt)=>CntUp('Cnt',Cnt)}
+                                           // value={`${GoodsCnt.Cnt}`}
+                                           defaultValue="1"
+                                           keyboardType="number-pad"
+                                        />
                                         {/*===============플러스 수량==================*/}
                                         <TouchableWithoutFeedback onPress={()=>CntUp('plus')}>
                                             <View style={[count_btn]}>
