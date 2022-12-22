@@ -42,7 +42,7 @@ export default function MyPage({navigation, route}) {
 
     }, [Member]);
 
-    //console.log(mem_info);
+    console.log(mem_info);
 
     return (
         <>
@@ -80,9 +80,7 @@ export default function MyPage({navigation, route}) {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.mypageListItem}>
-                        <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
-                            navigation.navigate('회원정보수정')
-                        }}>
+                        <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {navigation.navigate('회원정보수정',{uid:mem_info.mem_uid})}}>
                             <View style={styles.flex}>
                                 <View style={styles.mypageListItemTitle}>
                                     <Text style={styles.mypageList_name}>회원정보변경</Text>
