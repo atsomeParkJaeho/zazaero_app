@@ -34,10 +34,59 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //import main1 from '../assets/img/main_1.png'
 
+
+
+// 2차 카테고리 설정
+function Cate2nd({uid,navigation,name}) {
+    console.log('카테고리 uid ',uid);
+    console.log('제목 ',name);
+    const [Cate2nd, setCate2nd] = useState([]);
+    useEffect(() => {
+        let data = {
+            act_type: "goods_cate",
+            ind_cfg_uid: uid,
+        };
+        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php', data, {
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res) => {
+            if (res) {
+                const {result, A_cate_2nd} = res.data;
+                if (result === 'OK') {
+                    setCate2nd(A_cate_2nd);
+                } else {
+                    console.log(result);
+                    console.log('실패');
+                }
+            }
+        });
+    }, []);
+    //console.log(Cate2nd);
+    if(Cate2nd !== null) {
+        return (
+            <>
+                {Cate2nd.map((val, idx) => (
+                    <>
+                        <View style={{width:"33%", paddingTop:20,}} key={idx}>
+                            <TouchableOpacity onPress={() => {navigation.navigate('상품목록',{Cate1stUid:uid, Cate2ndUid:val.ind_cfg_uid,name:name})}}>
+                                <Image style={styles.ct_img} source={require(`../assets/img/main_0.png`)}/>
+                                <Text style={styles.Accordion_items_link_txt}>{val.cfg_val1}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </>
+                ))}
+            </>
+        );
+    }
+}
+
+
+// 상품출력 페이지
 export default function MainPage({navigation, route}) {
+
+
     // 1. 1차 카테고리 추출
-    const [expanded, setExpanded] = React.useState(false);
-    const handlePress = () => setExpanded(!expanded);
     const [Cate1st, setCate1st] = useState([]);   // 1차 카테고리 설정
     useEffect(() => {
         const data = {
@@ -106,14 +155,15 @@ export default function MainPage({navigation, route}) {
                     {Cate1st.map((val, idx) => (
                         <>
                             <List.Accordion style={[styles.Accordion_tit]}
-                                            title={[val.cfg_val1]}
-                                            id={idx+1}
-                                            expanded={expanded}
-                                            key={val.ind_cfg_uid} >
+                            id={`${idx+1}`}
+                            title={[val.cfg_val1]}
+                            key={val.ind_cfg_uid}
+                            >
                                 {/*=================2차 카테고리===============*/}
                                 <View style={[styles.w3,d_flex,{flexWrap:"wrap"}]}>
                                     <Cate2nd
                                         navigation={navigation}
+                                        name={val.cfg_val1}
                                         uid={val.ind_cfg_uid}
                                     />
                                 </View>
@@ -158,58 +208,12 @@ export default function MainPage({navigation, route}) {
                             <Text style={styles.main_footer_disc_txt}>이메일 : daengmo9@starchium.com</Text>
                             <Text style={styles.main_footer_disc_txt}>사업장 주소 : 경기 성남시 수정구 대왕판교로 815 (시흥동) 7층 776호</Text>
                         </View>
-
                     </View>
                 </View>
-
-
             </ScrollView>
             <Footer navigation={navigation}/>
         </>
     );
-}
-
-function Cate2nd({uid,navigation}) {
-    console.log(uid);
-    const [Cate2nd, setCate2nd] = useState([]);
-    useEffect(() => {
-        let data = {
-            act_type: "goods_cate",
-            ind_cfg_uid: uid,
-        };
-        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php', data, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
-            if (res) {
-                const {result, A_cate_2nd} = res.data;
-                if (result === 'OK') {
-                    setCate2nd(A_cate_2nd);
-                } else {
-                    console.log(result);
-                    console.log('실패');
-                }
-            }
-        });
-    }, []);
-    //console.log(Cate2nd);
-    if(Cate2nd !== null) {
-        return (
-            <>
-                {Cate2nd.map((val, idx) => (
-                    <>
-                        <View style={{width:"33%", paddingTop:20,}} key={idx}>
-                            <TouchableOpacity onPress={() => {navigation.navigate('상품목록',{Cate1stUid:uid, Cate2ndUid:val.ind_cfg_uid})}}>
-                                <Image style={styles.ct_img} source={require(`../assets/img/main_0.png`)}/>
-                                <Text style={styles.Accordion_items_link_txt}>{val.cfg_val1}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </>
-                ))}
-            </>
-        );
-    }
 }
 
 

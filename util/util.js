@@ -1,9 +1,36 @@
+import {LocaleConfig} from "react-native-calendars/src/index";
+
 export const regPW = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
 export const regId = /^[a-z0-9_]{4,20}$/;
 export const Minlangth = 6;
 
-// 경로
 
+
+// 리액트 네이티브 캘린더 한글화
+LocaleConfig.locales['fr'] = {
+    monthNames: [
+        '1월',
+        '2월',
+        '3월',
+        '4월',
+        '5월',
+        '6월',
+        '7월',
+        '8월',
+        '9월',
+        '10월',
+        '11월',
+        '12월'
+    ],
+    monthNamesShort: ['1월.', '2월.', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+    dayNames: ['월', '화', '수', '목', '금', '토', '일'],
+    dayNamesShort: ['월', '화', '수', '목', '금', '토', '일'],
+    today: "오늘"
+};
+export const CalKR = LocaleConfig.defaultLocale = 'fr';
+
+
+// 경로
 export const At_db = 'http://49.50.162.86:80';
 
 

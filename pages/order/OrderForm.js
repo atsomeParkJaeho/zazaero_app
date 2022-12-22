@@ -1,12 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Button, CheckBox, Text, TextInput, View, Image, TouchableOpacity, ScrollView} from 'react-native';
-
 import {SelectList} from 'react-native-dropdown-select-list'
-//셀렉트박스
-
-
-//다음주소 api
-
 // 공통 CSS 추가
 import {
     container,
@@ -23,8 +17,10 @@ import {sub_page, gary_bar} from '../../common/style/SubStyle';
 import axios from "axios";
 import {FormStyle} from "./FormStyle";
 
+import { Calendar, CalendarList } from 'react-native-calendars';
+import {CalKR} from "../../util/util";
 
-export default function OrderForm({navigation, route}) {
+export default function OrderForm({route,navigation}) {
 
     // 1. 주문정보 상태 설정
     const [OrderData, setOrderDate] = useState({
@@ -71,6 +67,7 @@ export default function OrderForm({navigation, route}) {
     return (
         <>
             <ScrollView style={[bg_white]}>
+
                 <View>
                     {/*==============최근배송지 불러오기==============*/}
                     <View style={[FormStyle.FormGroup]}>
@@ -128,11 +125,17 @@ export default function OrderForm({navigation, route}) {
                         <View style={[d_flex, align_items_center, FormStyle.FormDate, {justifyContent:"space-between"}]}>
                             {/*체크박스*/}
                             <Text style={[FormStyle.FormDateLabel]}>도착일</Text>
-                            <Text style={[FormStyle.FormDateLabel]}>2022-12-12</Text>
+                            <Text style={[FormStyle.FormDateLabel]}>{OrderData.hope_deli_date}</Text>
                         </View>
                         {/*==============캘린더==============*/}
                         <View style={[FormStyle.FormGroup]}>
-
+                            <Calendar
+                                horizontal={true}
+                                week
+                                onDayPress={({dateString})=>{goInput('hope_deli_date',dateString)}}
+                                initialDate={OrderData.hope_deli_date}  // 선택한 날짜를 추출합니다.
+                                enableSwipeMonths={true}
+                            />
                         </View>
 
                     </View>

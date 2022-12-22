@@ -68,10 +68,7 @@ const StackNavigator = () => {
 
     // 회원접속상태 확인
     console.log('네비게이션');
-
-
     const [Member, setMember] = useState();
-
     useEffect(() => {
         AsyncStorage.getItem('member').then((value) => {
             if (value) {
