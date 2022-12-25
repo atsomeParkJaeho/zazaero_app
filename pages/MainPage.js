@@ -145,8 +145,8 @@ export default function MainPage({navigation, route}) {
                     previewImageStyle={false}
                     caroselImageStyle={{ resizeMode: 'cover', height:180, }}
                     preview={false}
-                    autoPlay={true}
-                    timer={3000}
+                    autoPlay={false}
+                    timer={1000}
                 />
 
                 <List.AccordionGroup style={styles.Section}>

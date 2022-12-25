@@ -30,6 +30,9 @@ LocaleConfig.locales['fr'] = {
 export const CalKR = LocaleConfig.defaultLocale = 'fr';
 
 
+
+
+
 // 경로
 export const At_db = 'http://49.50.162.86:80';
 
@@ -270,6 +273,11 @@ export const cancel_d_List = [
 
 ];
 
+
+// =================가격표 설정=====================//
+export const Price = (text) => {
+    return String(text).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 
 

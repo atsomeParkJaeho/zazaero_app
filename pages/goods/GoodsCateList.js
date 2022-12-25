@@ -36,8 +36,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
-
-
 export default function GoodsCateList({route,navigation}) {
 
 
@@ -57,7 +55,6 @@ export default function GoodsCateList({route,navigation}) {
     const [Cate2List, setCate2List] =       useState([]);     // 2차 카테고리 담기
     const [Cate3th, setCate3th] =           useState([]);     // 3차 카테고리 담기
     const [CateActive, setCateActive] =     useState(``);     // 현재 페이지 상태
-    const [CartItems, setCartItems] =       useState([]);     // 장바구니 담은 상품
     // 2. ================최초 db 출력값 담기===================
     useEffect(() => {
         setCateActive(Cate2ndUid); // 카테고리 값 설정
@@ -76,8 +73,6 @@ export default function GoodsCateList({route,navigation}) {
                 const {result, A_goods, query} = res.data;
                 if(result === 'OK') {
                     setGoodsList(A_goods);
-                    console.log(query);
-                    console.log(A_goods);
                 } else {
                     console.log('실패');
                 }
@@ -103,8 +98,29 @@ export default function GoodsCateList({route,navigation}) {
                 }
             }
         });
-    }, []);
 
+        // 즐겨찾기 상품리스트 가져오기
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
+            act_type        : "get_my_zzim_list",
+            login_status    : "Y",
+            mem_uid         : Member,
+        },{
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            if(res) {
+                const {result, A_data} = res.data;
+                if(result === 'OK') {
+                    console.log('즐겨찾기에 등록한 상품 / ', A_data);
+                    setWishGoods(A_data);
+                } else {
+                    console.log('실패');
+                }
+            }
+        });
+
+    }, [Member]);
 
     // ===============4. 카테고리 클릭시 상품 상태 변경(2차)===============
     const goCate2nd = (uid) => {
@@ -144,16 +160,40 @@ export default function GoodsCateList({route,navigation}) {
         setGoodsList(temp);
     }
 
-    // 5. 찜하기 액션
+    // 5. 즐겨찾기 액션
     const goWish = (uid) => {
-        let temp = GoodsList.map((val)=>{
-            if(uid === val.goods_uid) {
-                return {...val, goods_wish_chk:!val.goods_wish_chk}
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
+            act_type        :"set_my_zzim",
+            login_status    :"Y",
+            mem_uid         :Member,
+            link_uid        :uid,
+        },{
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            console.log(res.data);
+            if(res) {
+                const {result} = res.data;
+                if(result === 'OK') {
+                    console.log(result);
+                    alert('즐겨찾기에 추가 하였습니다.');
+                }
+            } else {
+                const {result} = res.data;
+                console.log(result);
+            }
+        }).catch((error)=>{console.log(error)});
+
+        // 내 즐겨찾기에 등록된 상품 필터링하기
+        let temp = GoodsList.map((val) => {
+            if (uid === val.goods_uid) {
+                return {...val, goods_wish_chk: !val.goods_wish_chk,};
             }
             return val;
-        })
+        });
         setGoodsList(temp);
-        alert('즐겨찾기에 추가 하였습니다.');
+
     }
 
     // 6. 장바구니 추가 이벤트
@@ -195,7 +235,11 @@ export default function GoodsCateList({route,navigation}) {
     let goForm = GoodsList.filter((val) => val.goods_cart_chk);
 
 
-    //console.log(GoodsList);
+
+
+
+    // console.log('상품리스트 출력 / ',GoodsList[0].goods_wish_chk);
+    //console.log('즐겨찾기 상품리스트 출력 / ',WishGoods);
     return (
         /*
           return 구문 안에서는 {슬래시 + * 방식으로 주석
@@ -228,13 +272,15 @@ export default function GoodsCateList({route,navigation}) {
                             <View style={[flex_top]}>
                                 <View style={[styles.flex_item, styles.flex_item1]}>
                                     <View style={[styles.cate_list_Thumbnail_box]}>
-
                                         <Image style={styles.cate_list_Thumbnail} source={{uri:'http://www.zazaero.com'+val.list_img_url}}/>
                                         <View style={styles.goods_like}>
                                             {/*=============찜하기=================*/}
                                             <TouchableOpacity onPress={()=>goWish(val.goods_uid)}>
+                                                {/*<Text>찜하기</Text>*/}
                                                 {(val.goods_wish_chk) ? (
-                                                    <Wishlist width={35} height={24} color={'blue'}  />
+                                                    <>
+                                                        <Wishlist width={35} height={24} color={'blue'}  />
+                                                    </>
                                                 ) :(
                                                     <WishlistNon width={35} height={24} color={'blue'}  />
 
@@ -242,7 +288,6 @@ export default function GoodsCateList({route,navigation}) {
                                             </TouchableOpacity>
                                         </View>
                                     </View>
-
                                 </View>
                                 <View style={[styles.flex_item,styles.flex_item2]}>
                                     <View style={[flex_between,align_items_center,pb2]}>

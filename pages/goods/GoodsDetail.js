@@ -33,7 +33,7 @@ import {
 import {sub_page, gary_bar, sub_container} from '../../common/style/SubStyle';
 
 //더미데이터
-import {goodsDetail} from "../../util/util";
+import {goodsDetail, Price} from "../../util/util";
 
 import goods_image from "../../assets/img/goods_image.jpg";
 import goods_image_more from "../../assets/img/goods_image_more.jpg";
@@ -49,9 +49,7 @@ export default function GoodsDetail({route,navigation}) {
     // 수량 데이터 상태 임시
 
     // ===========1. 상품상세정보 상태 정의======
-    const [GoodsDetail,setGoodsDetail] = useState({
-        goods_cnt : 0       // 상품수량
-    });
+    const [GoodsDetail,setGoodsDetail] = useState([]);
 
     // ============2. 상품출력===============
     useEffect(()=>{
@@ -76,40 +74,45 @@ export default function GoodsDetail({route,navigation}) {
         });
     },[]);
 
+    // ====================4. 수량증가 설정==================
+    const goodsCnt = (type, value) => {
 
-    const CntUp = (type,cnt) => {
+        let test = setGoodsDetail({
+            ...GoodsDetail,
+            goods_cnt:1,
+        });
 
-        if(type == 'plus') {
-            setGoodsCnt({
-                ...GoodsCnt,
-                Cnt:GoodsCnt.Cnt += 1,
-            });
-        }
-        if(type == 'minus') {
-            setGoodsCnt({
-                ...GoodsCnt,
-                Cnt:GoodsCnt.Cnt -= 1,
-            });
-        }
-        if(type == 'GoodsCnt') {
-            setGoodsCnt({
-                Cnt:cnt,
+        if(type === 'minus') {
+            console.log('마이너스');
+            setGoodsDetail({
+                ...GoodsDetail,
+                goods_cnt:Number((GoodsDetail.goods_cnt < 1) ? (GoodsDetail.goods_cnt):(GoodsDetail.goods_cnt -=1)),
             });
         }
 
+        if(type === 'plus') {
+            console.log('플러스');
+            setGoodsDetail({
+                ...GoodsDetail,
+                goods_cnt:Number(GoodsDetail.goods_cnt+=1),
+            });
+        }
+
+        if(type === 'goods_cnt') {
+            console.log('직접입력');
+            setGoodsDetail({
+                ...GoodsDetail,
+                goods_cnt:Number(value),
+            });
+        }
     }
-
 
     //자재 상세데이터
 
 
     let goods_guide = "발주일로부터 평균 4일 소요";
 
-    const source = {
-        html: GoodsDetail.summary_contents
-    };
-
-
+    //
     const Cart = () =>{
         Alert.alert(
             '장바구니에 담으시겠습니까?',
@@ -131,13 +134,18 @@ export default function GoodsDetail({route,navigation}) {
             },
         );
     }
-    //장바구니 알림창
+    // 장바구니 알림창
 
     const GoBuy = () =>{
         {navigation.navigate('장바구니')}
     }
+    //
+    const source = {
+        html: GoodsDetail.summary_contents
+    };
 
-    console.log('상품정보',GoodsDetail);
+    console.log('상품정보 / ',GoodsDetail);
+
 
     return (
 
@@ -158,7 +166,7 @@ export default function GoodsDetail({route,navigation}) {
                                 </View>
                                 <View style={[styles.wt75]}>
                                     <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                        {(new String(GoodsDetail.price)).replace(/\B(?=(\d{3})+(?!\d))/g, ",")} 원
+                                        {Price(GoodsDetail.price)} 원
                                     </Text>
                                 </View>
                             </View>
@@ -168,7 +176,7 @@ export default function GoodsDetail({route,navigation}) {
                                     <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재안내</Text>
                                 </View>
                                 <View style={[styles.wt75]}>
-                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>{goods_guide} </Text>
+                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>4일 이상 소요 </Text>
                                 </View>
                             </View>
                             {/*자재안내*/}
@@ -177,26 +185,29 @@ export default function GoodsDetail({route,navigation}) {
                                     <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>수량</Text>
                                     <View style={[flex]}>
                                         {/*===============마이너스 수량==================*/}
-                                        <TouchableWithoutFeedback onPress={()=>CntUp('minus')}>
+                                        {/*=============마이너스 버튼==========*/}
+                                        <TouchableWithoutFeedback
+                                            onPress={() => goodsCnt('minus')}>
                                             <View style={[count_btn]}>
                                                 <View style={[pos_center]}>
-                                                    <Text style={[count_btn_txt]}>－</Text>
+                                                    <Text
+                                                        style={[count_btn_txt]}>－</Text>
                                                 </View>
                                             </View>
                                         </TouchableWithoutFeedback>
-                                        {/*============수량 입력==============*/}
-                                        <TextInput style={[countinput]}
-                                           // onTextInput={(cnt)=>CntUp('GoodsCnt',cnt)}
-                                           onChangeText={(Cnt)=>CntUp('Cnt',Cnt)}
-                                           // value={`${GoodsCnt.Cnt}`}
-                                           defaultValue="1"
-                                           keyboardType="number-pad"
+                                        {/*============수량=================*/}
+                                        <TextInput style={[countinput,]}
+                                                   keyboardType="number-pad"
+                                                   onChangeText={(goods_cnt) => goodsCnt('goods_cnt',goods_cnt)}
+                                                   value={`${GoodsDetail.goods_cnt+1}`}
                                         />
-                                        {/*===============플러스 수량==================*/}
-                                        <TouchableWithoutFeedback onPress={()=>CntUp('plus')}>
+                                        {/*=============플러스 버튼============*/}
+                                        <TouchableWithoutFeedback
+                                            onPress={() => goodsCnt('plus')}>
                                             <View style={[count_btn]}>
                                                 <View style={[pos_center]}>
-                                                    <Text style={[count_btn_txt]}>＋</Text>
+                                                    <Text
+                                                        style={[count_btn_txt]}>＋</Text>
                                                 </View>
                                             </View>
                                         </TouchableWithoutFeedback>
@@ -207,7 +218,7 @@ export default function GoodsDetail({route,navigation}) {
                                 <View style="">
                                     <Text style={[styles.GoodsDetail_info_txt]}>총금액</Text>
                                     <Text style={[styles.GoodsDetail_total_price]}>
-                                        {(new String(GoodsDetail.price)).replace(/\B(?=(\d{3})+(?!\d))/g, ",")} 원
+                                        {Price(GoodsDetail.price)} 원
                                     </Text>
                                 </View>
                             </View>

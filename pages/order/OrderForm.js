@@ -22,6 +22,8 @@ import {CalKR} from "../../util/util";
 
 export default function OrderForm({route,navigation}) {
 
+    console.log(route.params);
+
     // 1. 주문정보 상태 설정
     const [OrderData, setOrderDate] = useState({
         mem_name:'', // 담당자 이름
