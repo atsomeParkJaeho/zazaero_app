@@ -142,14 +142,14 @@ export default function Login({navigation, route}) {
                                 </View>
                             </View>
                             {/*비밀번호 입력창*/}
-                            <View style={[flex, styles.pb_24]}>
-                                <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked}
-                                          color={"#4630eb"}/>
-                                <TouchableOpacity style={[]} onValueChange={setChecked}>
-                                    <Text style={[h14]}>자동로그인</Text>
-                                </TouchableOpacity>
+                            {/*<View style={[flex, styles.pb_24]}>*/}
+                            {/*    <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked}*/}
+                            {/*              color={"#4630eb"}/>*/}
+                            {/*    <TouchableOpacity style={[]} onValueChange={setChecked}>*/}
+                            {/*        <Text style={[h14]}>자동로그인</Text>*/}
+                            {/*    </TouchableOpacity>*/}
 
-                            </View>
+                            {/*</View>*/}
                             {/*자동로그인*/}
 
                             <TouchableOpacity style={styles.loginformbtn} onPress={goLogin}>

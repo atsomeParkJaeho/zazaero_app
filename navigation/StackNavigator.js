@@ -54,7 +54,9 @@ import PayDetailY from "../pages/order/PayDetailY";                     //결제
 import DeliDetail from "../pages/order/DeliDetail";
 import RequestReturn from "../pages/order/RequestReturn";
 import DeliDetailIng from "../pages/order/DeliDetailIng";
-import DeliDetailDone from "../pages/order/DeliDetailDone";                     //반품상세내역
+import DeliDetailDone from "../pages/order/DeliDetailDone";
+import Postcode from "@actbase/react-daum-postcode/lib/app.native";
+import DaumPostCode from "../util/DaumPostCode";                     //반품상세내역
 
 
 
@@ -161,6 +163,9 @@ const StackNavigator = () => {
                 <Stack.Screen name="공지사항" component={NoticeList}/>
                 <Stack.Screen name="공지사항상세" component={NoticeView}/>
                 <Stack.Screen name="하단" component={Footer}/>
+                {/*다음 주소 api 추가*/}
+                <Stack.Screen name="주소검색" component={DaumPostCode}/>
+
             </Stack.Navigator>
         </>
     );

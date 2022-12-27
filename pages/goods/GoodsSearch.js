@@ -1,5 +1,15 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, TextInput, TouchableWithoutFeedback } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    TextInput,
+    TouchableWithoutFeedback,
+    Alert
+} from 'react-native';
 
 
 // 공통 CSS 추가
@@ -27,72 +37,59 @@ import search_none from "../../assets/img/search_none.png";
 import col2 from "../../assets/img/co2.png";
 import col3 from "../../assets/img/co3.png";
 import goods_image from "../../assets/img/goods_image.jpg";
+import axios from "axios";
 
 
 
-export default function GoodsSearch({navigation, route}) {
+export default function GoodsSearch({route,navigation}) {
 
-    //1.
-    const [GoodsSearch, setGoodsSearch]  = useState({
-        input_val                  :"",    //검색입력값
-    })
+    // 1. 상태정의
+    const [GoodsSearch, setGoodsSearch] = useState({    // 검색어 확인
+        search:'',
+    });
 
-    //2. 입력폼 체크루틴
-    const ChkInput = (keyValue, text)   =>{
-        //기본 루틴
+    const [SearchLog, setSearchLog] = useState([]);     // 최근검색어
+
+
+
+    // 입력하기
+
+    const ChkInput = (key, value) => {
         setGoodsSearch({
             ...GoodsSearch,
-            [keyValue]:text,
-        })
+            [key]:value
+        });
     }
 
-    console.log(GoodsSearch);
 
-    const Recent_search = [
+    // 2. 검색상품 불러오기
+    const goSearch = (search) => {
+        console.log(search);
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
+            act_type        : "get_goods_list",
+            f_goods_name    :search,
+        }, {
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res) => {
+            if (res) {
+                const {result, A_goods, que} = res.data;
+                console.log(que);
+                if (result === 'OK') {
+                    if(A_goods.length === 0) {
+                        Alert.alert('','검색하신 상품이 없습니다');
+                    } else {
+                        navigation.navigate('검색상품리스트',{search:search});
+                    }
+                } else {
+                    console.log('실패');
+                }
+            }
+        });
+    }
 
-        {
-            "Recent_search_id": "1",                                    //검색번호
-            "Recent_search_tit": "일반석고보드 9.5T X 900 X 1800",           //상품명
-            "Recent_search_date": "10.17",                                //검색날짜
-        },
-        {
-            "Recent_search_id": "2",                                    //검색번호
-            "Recent_search_tit": "도어표시락 실린더",           //상품명
-            "Recent_search_date": "10.05",                                //검색날짜
-        },
-        {
-            "Recent_search_id": "3",                                    //검색번호
-            "Recent_search_tit": "PF보드 ( 고단열 / 준불연 폼보드 )",           //상품명
-            "Recent_search_date": "10.17",                                //검색날짜
-        },
-        {
-            "Recent_search_id": "4",                                    //검색번호
-            "Recent_search_tit": "우레탄GCS단열보드",           //상품명
-            "Recent_search_date": "10.17",                                //검색날짜
-        },
-        {
-            "Recent_search_id": "5",                                    //검색번호
-            "Recent_search_tit": "미네랄울 보온단열재 BOX당 10매 50T*450*1000 (1박스=4.5헤배)",           //상품명
-            "Recent_search_date": "10.17",                                //검색날짜
-        },
-        {
-            "Recent_search_id": "1",                                    //검색번호
-            "Recent_search_tit": "일반석고보드 9.5T X 900 X 1800",           //상품명
-            "Recent_search_date": "10.17",                                //검색날짜
-        },
-        {
-            "Recent_search_id": "2",                                    //검색번호
-            "Recent_search_tit": "도어표시락 실린더",           //상품명
-            "Recent_search_date": "10.05",                                //검색날짜
-        },
-
-
-    ];
-
-    const [state,setState] = useState(Recent_search);
-
-
-
+    console.log('검색어 / ',GoodsSearch);
 
     return (
 
@@ -100,59 +97,61 @@ export default function GoodsSearch({navigation, route}) {
             <View style={[bg_white,sub_page]}>
                 <View style={container}>
                     <View style={[flex,styles.flex_center]}>
-                        {/*<View style={[styles.back]}>*/}
-                        {/*    <TouchableOpacity style="" onPress={() => navigation.pop()} >*/}
-                        {/*        <BackArrow width={22} height={18} style={[styles.center]} />*/}
-                        {/*    </TouchableOpacity>*/}
-
-                        {/*</View>*/}
                         <View style={[styles.search_input]}>
                             <TextInput style={[input,styles.input_wt]}
-                                       onChangeText={(input_val)=>ChkInput("input_val",input_val)}
-                                       value={GoodsSearch.input_val}
-                                       placeholder="검색어를 입력하세요."/>
+                                       onSubmitEditing={()=>goSearch(GoodsSearch.search)}
+                                       returnKeyType="done"
+                                       onChangeText={(search)=>ChkInput("search",search)}
+                                       value={GoodsSearch.search}
+                                       placeholder="검색어를 입력하세요."
+                            />
 
                         </View>
                         <View style={[styles.search_icon]}>
-                            <TouchableOpacity style="" onPress={()=>{navigation.navigate('검색상품')}}>
+                            <TouchableOpacity style="" onPress={()=>goSearch(GoodsSearch.search)}>
                                 <Search width={30} height={21} style={[styles.center]} />
                             </TouchableOpacity>
-
                         </View>
                     </View>
                     {/*검색상단*/}
                     <View style={mt3}>
                         {/*=====================================검색어가 있을때======================================*/}
-                        <View style={flex_between}>
-                            <Text style={h16}>최근 검색어</Text>
-                            <TouchableOpacity style="" >
-                                <Text style={[h14,styles.txt_color]}>전체삭제</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={[styles.Recent_search_list,mt2]}>
-                            {state.map((itmes,i) =>
-                            <View style={styles.Recent_search_list_item} key={i}>
+                        {(SearchLog.length > 0) ? (
+                            <>
                                 <View style={flex_between}>
-                                    <View style={[wt7]}>
-                                        <Text style={[h14,styles.txt_color2]}>{itmes.Recent_search_tit}</Text>
-                                    </View>
-                                    <View style={[wt3]}>
-                                        <View style={[flex,justify_content_end]}>
-                                            <Text style={[h14,styles.txt_color]}>{itmes.Recent_search_date}</Text>
-                                            <TouchableOpacity style={ms2} >
-                                                <Text style={[h14,styles.txt_color]}>X</Text>
-                                            </TouchableOpacity>
+                                    <Text style={h16}>최근 검색어</Text>
+                                    <TouchableOpacity style="" >
+                                        <Text style={[h14,styles.txt_color]}>전체삭제</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={[styles.Recent_search_list,mt2]}>
+                                    <View style={styles.Recent_search_list_item}>
+                                        <View style={flex_between}>
+                                            <View style={[wt7]}>
+                                                <Text style={[h14,styles.txt_color2]}></Text>
+                                            </View>
+                                            <View style={[wt3]}>
+                                                <View style={[flex,justify_content_end]}>
+                                                    <Text style={[h14,styles.txt_color]}></Text>
+                                                    <TouchableOpacity style={ms2} >
+                                                        <Text style={[h14,styles.txt_color]}>X</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
                                         </View>
                                     </View>
+
                                 </View>
-                            </View>
-                            )}
-                        </View>
-                        {/*=====================================검색어가 없을때======================================*/}
-                        <View style={[d_none,mt3,styles.flex_page]}>
-                            <Image style={styles.goods_image} source={search_none}/>
-                            <Text style={[mt2,h14,styles.txt_color]}>최근 검색어가 없습니다.</Text>
-                        </View>
+                            </>
+                        ):(
+                            <>
+                                {/*=====================================검색어가 없을때======================================*/}
+                                <View style={[d_none,mt3,styles.flex_page]}>
+                                    <Image style={styles.goods_image} source={search_none}/>
+                                    <Text style={[mt2,h14,styles.txt_color]}>최근 검색어가 없습니다.</Text>
+                                </View>
+                            </>
+                        )}
 
                     </View>
                 </View>

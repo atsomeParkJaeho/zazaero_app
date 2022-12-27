@@ -241,11 +241,7 @@ export default function Wishlist({route,navigation}) {
                             {/*=============1차 카테고리 항목==============*/}
                             {Cate1st.map((val,idx)=>(
                                 <>
-                                    <List.Accordion
-                                        title={val.cfg_val1}
-                                        style={[container, styles.Accordion_tit]}
-                                        left={props => <Checkbox style={[styles.all_check]} color={"#4630eb"}/>}
-                                    >
+                                    <List.Accordion title={val.cfg_val1} style={[container, styles.Accordion_tit]}>
                                         {/*=================즐겨찾기 리스트 출력-================*/}
                                         {WishList.map((val)=>(
                                             <>

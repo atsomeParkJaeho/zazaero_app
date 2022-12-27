@@ -16,29 +16,41 @@ import {
 import {sub_page, gary_bar} from '../../common/style/SubStyle';
 import axios from "axios";
 import {FormStyle} from "./FormStyle";
+import CalendarStrip from 'react-native-calendar-strip';
+import { Calendar, CalendarList ,Agenda } from 'react-native-calendars';
+import * as PropTypes from "prop-types";
+import 'moment';
+import 'moment/locale/ko';
+import {RadioButton} from "react-native-paper";  // language must match config
+import Postcode from '@actbase/react-daum-postcode';
 
-import { Calendar, CalendarList } from 'react-native-calendars';
-import {CalKR} from "../../util/util";
+
 
 export default function OrderForm({route,navigation}) {
 
-    console.log(route.params);
+    console.log('전달 값 / ',route.params);
+
+    const {order_uid} = route.params;
+
+
+    console.log(route.params.zonecode);
 
     // 1. 주문정보 상태 설정
     const [OrderData, setOrderDate] = useState({
-        mem_name:'', // 담당자 이름
-        mem_uid:'', // 회원 uid
-        mem_mobile:'',  // 담당자 전화번호
-        addr1:'',       // 주소1
-        addr2:'',       // 주소2
-        zonecode:'',    // 다음 api 우편번호
-        project_title:'',   // 공사명
-        hope_deli_date:'',  // 희망배송일
-        hope_deli_time:'',  // 희망배송시간
-        recv_name:'',       // 현장인도자 이름
-        recv_phone:'',      // 현장인도자 전화번호
-        order_memo:'',      // 배송시 요청사항 메모
+        mem_name:'',                    // 담당자 이름
+        mem_uid:'',                     // 회원 uid
+        mem_mobile:'',                  // 담당자 전화번호
+        addr1:'',                       // 주소1
+        addr2:'',                       // 주소2
+        zonecode:'',                    // 다음 api 우편번호
+        project_title:'',               // 공사명
+        hope_deli_date:'',              // 희망배송일
+        hope_deli_time:'',              // 희망배송시간
+        recv_name:'',                   // 현장인도자 이름
+        recv_phone:'',                  // 현장인도자 전화번호
+        order_memo:'',                  // 배송시 요청사항 메모
     });
+    const [modAddr, setmodAddr] = useState('mod');  // 최근배송지, 신규배송지 상태정의
 
     // 2. 주문정보 입력상태 설정
     const goInput = (keyValue, e) => {
@@ -48,9 +60,12 @@ export default function OrderForm({route,navigation}) {
         });
     }
 
-    // 3. 발주신청
+
+    // 6. 발주신청
     const goForm = () => {
-        axios.post('',data,{
+        axios.post('', {
+
+        },{
             headers:{
                 'Content-type': 'multipart/form-data'
             }
@@ -64,7 +79,12 @@ export default function OrderForm({route,navigation}) {
         });
     }
 
+
+    console.log()
+
+
     console.log(OrderData);
+    console.log(modAddr);
 
     return (
         <>
@@ -75,17 +95,35 @@ export default function OrderForm({route,navigation}) {
                     <View style={[FormStyle.FormGroup]}>
                         <View>
                             <View style={[flex]}>
-                                <View style={[]}>
-                                    <Text style={[FormStyle.FormTitle]}>최근 배송지 불러오기</Text>
-                                    {/*최근배송지 라디오 박스*/}
+                                <View style={[flex]}>
+                                    <View style={[styles.border]}>
+                                        <TouchableOpacity onPress={()=>setmodAddr('mod')}>
+                                            <View style={[flex]}>
+                                                <RadioButton
+                                                    status={modAddr === 'mod' ? 'checked':'unchecked'}
+                                                    value="mod"
+                                                    onPress={()=>setmodAddr('mod')}
+                                                />
+                                                <Text>최근 배송지 불러오기</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
-                                <View style={[ms2]}>
-                                    <Text style={[FormStyle.FormTitle]}>신규 배송지 추가</Text>
-                                    {/*신규배송지 라디오 박스*/}
+                                <View style={[flex]}>
+                                    <View style={[styles.border]}>
+                                        <TouchableOpacity onPress={()=>setmodAddr('add')}>
+                                            <View style={[flex]}>
+                                                <RadioButton
+                                                    status={modAddr === 'add' ? 'checked':'unchecked'}
+                                                    value="add"
+                                                    onPress={()=>setmodAddr('add')}
+                                                />
+                                                <Text>신규 배송지 입력</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
-
-
                         </View>
                     </View>
                     {/*==============신규배송지 입력==============*/}
@@ -97,6 +135,7 @@ export default function OrderForm({route,navigation}) {
                         </View>
                         {/*==============배송지 입력==============*/}
                         <View>
+                            {/*공사명*/}
                             <View style={[FormStyle.FormGroupItems]}>
                                 <Text style={[FormStyle.FormLabel]}>공사명</Text>
                                 <TextInput style={[FormStyle.InputStyle]}
@@ -105,20 +144,40 @@ export default function OrderForm({route,navigation}) {
                                            value={OrderData.project_title}/>
 
                             </View>
+                            {/*==============배송지 주소===============*/}
                             <View style={[FormStyle.FormGroupItems]}>
                                 <Text style={[FormStyle.FormLabel]}>배송지</Text>
                                 <View style={[d_flex,align_items_center]}>
-                                   <TextInput style={[FormStyle.InputStyle,{flex:1,marginRight:16,}]}
-                                               onChangeText={(addr1)=>goInput("addr1",addr1)}
+                                    <TextInput style={[FormStyle.InputStyle,{flex:1,marginRight:16,}]}
+                                               onChangeText={(zonecode)=>goInput("zonecode",zonecode)}
                                                placeholder="배송지"
-                                               value={OrderData.addr1}/>
-                                    <TouchableOpacity>
+                                               value={OrderData.zonecode}/>
+                                    <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{order_uid:order_uid})}>
                                         <View style={[bg_primary,{padding:10,}]}>
                                             <Text style={[text_light]}>주소찾기</Text>
                                         </View>
                                     </TouchableOpacity>
                                 </View>
                             </View>
+                            {/*================주소============*/}
+                            <View style={{paddingBottom:15,}}>
+                                <TextInput style={[FormStyle.InputStyle,{flex:1}]} onChangeText={(addr1)=>goInput("addr1",addr1)} placeholder="주소" value={OrderData.addr1}/>
+                            </View>
+                            {/*============상세주소=================*/}
+                            <View>
+                                <TextInput style={[FormStyle.InputStyle,{flex:1}]} onChangeText={(addr2)=>goInput("addr2",addr2)} placeholder="상세주소" value={OrderData.addr2}/>
+                            </View>
+                            {/*다음 api 주소 팝업*/}
+
+                            <View>
+                                <Postcode
+                                    style={{ flex: 1, width: '100%', zIndex: 999 }}
+                                    jsOptions={{ animation: true }}
+                                    onSelected={data => getAddressData(data)}
+                                    onError={(error)=>console.log(error)}
+                                />
+                            </View>
+
                         </View>
                     </View>
                     {/*==============희망배송일==============*/}
@@ -131,12 +190,23 @@ export default function OrderForm({route,navigation}) {
                         </View>
                         {/*==============캘린더==============*/}
                         <View style={[FormStyle.FormGroup]}>
-                            <Calendar
-                                horizontal={true}
-                                week
-                                onDayPress={({dateString})=>{goInput('hope_deli_date',dateString)}}
-                                initialDate={OrderData.hope_deli_date}  // 선택한 날짜를 추출합니다.
-                                enableSwipeMonths={true}
+                            <CalendarStrip
+                                scrollable
+                                onDateSelected={(Date)=>
+                                    setOrderDate({
+                                        ...OrderData,
+                                        hope_deli_date: String(Date.format('M'+'월'+'D'+'일')),
+                                    })
+                                }
+                                minDate={`2020-12-31`}
+                                maxDate={`2024-12-31`}
+                                style={{height:150, paddingTop: 20, paddingBottom: 10}}
+                                daySelectionAnimation={{
+                                    type:"background",
+                                    highlightColor:"#3D40E0",
+                                }}
+                                highlightDateNumberStyle={{color:"#fff"}}
+                                highlightDateNameStyle={{color:"#fff"}}
                             />
                         </View>
 
@@ -206,3 +276,19 @@ export default function OrderForm({route,navigation}) {
         </>
     );
 }
+const styles = StyleSheet.create({
+    border_Circle:{
+        width:20,
+        height:20,
+        borderWidth:1,
+        borderColor:"#999",
+        borderRadius:50,
+    },
+    border_Circle_active:{
+        width:13,
+        height:13,
+        borderRadius:50,
+        backgroundColor:"#3D40E0",
+    },
+
+});

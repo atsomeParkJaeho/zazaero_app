@@ -423,8 +423,8 @@ const styles = StyleSheet.create({
     },
     goods_like: {
         position: "absolute",
-        right: "10%",
-        bottom: 10,
+        right: "5%",
+        bottom: 5,
     },
     cate_1st_btn: {
         padding: 12,

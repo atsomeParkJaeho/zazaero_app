@@ -38,12 +38,20 @@ import {goodsDetail, Price} from "../../util/util";
 import goods_image from "../../assets/img/goods_image.jpg";
 import goods_image_more from "../../assets/img/goods_image_more.jpg";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
 
 
 export default function GoodsDetail({route,navigation}) {
+
+    const [Member, setMember] = useState();
+    const mem_uid = AsyncStorage.getItem("member").then((value) => {
+        setMember(value);
+    })
+
+
     let {uid} = route.params;
     console.log(uid);
     // 수량 데이터 상태 임시
@@ -109,37 +117,83 @@ export default function GoodsDetail({route,navigation}) {
 
     //자재 상세데이터
 
+    let goForm = (type,uid) => {
+        if(type === 'cart') {
+            Alert.alert(
+                '장바구니에 담으시겠습니까?',
+                '',
+                [
+                    {text: '취소', onPress: () => {}, style: 'destructive'},
+                    {
+                        text: '확인 ',
+                        onPress: () => {
+                            axios.post('http://49.50.162.86:80/ajax/UTIL_cart.php',{
+                                act_type            : 'save_cart',
+                                goods_uid           : uid,           // 상품 uid
+                                mem_uid             : Member,                    // 회원 uid
+                                ord_cnt             :  '1'
+                            },{
+                                headers: {
+                                    'Content-type': 'multipart/form-data'
+                                }
+                            }).then((res)=>{
+                                if(res) {
+                                    const {result, order_uid} = res.data;
+                                    console.log(result);
+                                    if(result === 'OK') {
+                                        console.log(order_uid);
+                                    } else {
+                                        console.log('실패');
+                                        return;
+                                    }
+                                } else {
 
-    let goods_guide = "발주일로부터 평균 4일 소요";
+                                }
+                            })
 
-    //
-    const Cart = () =>{
-        Alert.alert(
-            '장바구니에 담으시겠습니까?',
-            '',
-            [
-                {text: '취소', onPress: () => {}, style: 'destructive'},
-                {
-                    text: '확인 ',
-                    onPress: () => {
-                        // onDelete(id);
-                        alert('추가 완료하였습니다.');
+                            Alert.alert('','장바구니에 추가하였습니다.');
+                        },
+                        style: 'cancel',
                     },
-                    style: 'cancel',
+                ],
+                {
+                    cancelable: true,
+                    onDismiss: () => {},
                 },
-            ],
-            {
-                cancelable: true,
-                onDismiss: () => {},
-            },
-        );
-    }
-    // 장바구니 알림창
+            );
+        }
 
-    const GoBuy = () =>{
-        {navigation.navigate('장바구니')}
+        if(type === 'order') {
+            // 상품을 장바구니에 담는다
+            axios.post('http://49.50.162.86:80/ajax/UTIL_cart.php',{
+                act_type            : 'save_cart',
+                goods_uid           : uid,           // 상품 uid
+                mem_uid             : Member,                    // 회원 uid
+                ord_cnt             :  '1'
+            },{
+                headers: {
+                    'Content-type': 'multipart/form-data'
+                }
+            }).then((res)=>{
+                if(res) {
+                    const {result, order_uid} = res.data;
+                    console.log(result);
+                    if(result === 'OK') {
+                        navigation.navigate('장바구니');
+                        console.log(order_uid);
+                    } else {
+                        console.log('실패');
+                        return;
+                    }
+                }
+            })
+
+
+        }
+
     }
-    //
+
+
     const source = {
         html: GoodsDetail.summary_contents
     };
@@ -236,10 +290,10 @@ export default function GoodsDetail({route,navigation}) {
             </ScrollView>
             <View style={[]}>
                 <View style={[flex_around]}>
-                    <TouchableOpacity style={styles.btn} onPress={() => Cart()}>
+                    <TouchableOpacity style={styles.btn} onPress={() => goForm('cart',GoodsDetail.goods_uid)}>
                         <Text style={[btn_primary,styles.center]}>장바구니</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('장바구니')}>
+                    <TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>
                         <Text style={[btn_black,styles.center]}>구매하기</Text>
                     </TouchableOpacity>
                 </View>
