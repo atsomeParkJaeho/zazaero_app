@@ -1,9 +1,21 @@
 import React,{useState,useEffect} from 'react';
-import { StyleSheet, Button, CheckBox,  Text, TextInput, View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {
+    StyleSheet,
+    Button,
+    CheckBox,
+    Text,
+    TextInput,
+    View,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    KeyboardAvoidingView,
+    Alert
+} from 'react-native';
 
 
 // 공통 CSS 추가
-import {container, bg_white,flex_between} from '../../common/style/AtStyle';
+import {container, bg_white, flex_between, input} from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 
 
@@ -11,44 +23,85 @@ import {sub_page} from '../../common/style/SubStyle';
 export default function MemOut({navigation,route}) {
 
 
-    const [id, onChangeText] = React.useState("");
-    const [pw, onChangePW] = React.useState("");
-    const [pwch, onChangePWch] = React.useState("");
-    const [com_name, onChangecom_name] = React.useState("");
-    const [addr1, onChangeaddr1] = React.useState("");
-    const [addr2, onChangeaddr2] = React.useState("");
+    //1.
+    const [MemOut, setMemOut]  = useState({
+        mem_out_pw                  :"",    //비밀번호
+        mem_out_pw_ch               :"",   // 비밀번호 확인
+
+    })
 
 
+    //2. 입력폼 체크루틴
+    const ChkInput = (keyValue, text)   =>{
+        //기본 루틴
+        setMemOut({
+            ...MemOut,
+            [keyValue]:text,
+        })
+    }
+
+    console.log(MemOut);
+
+    const goMemOut = async () => {
+        const {mem_out_pw, mem_out_pw_ch} = MemOut;
+        if (!MemOut.mem_out_pw) {
+            Alert.alert(
+                '비밀번호를 입력하세요.',
+            );
+            return;
+        }
+        if (!MemOut.mem_out_pw_ch) {
+            Alert.alert('비밀번호확인을 입력해주세요.');
+            return;
+        }
+        if (MemOut.mem_out_pw !== MemOut.mem_out_pw_ch){
+            Alert.alert('비밀번호가 일치하지 않습니다!!');
+            return;
+        }
+
+    }
 
 
     return (
         <>
-            <ScrollView style={[bg_white]}>
-                <View style={[styles.subPage,styles.MemInfo]}>
-                    <View style={styles.container}>
-                        <View style={styles.formGroup}>
-                            <View style={styles.inputGroup}>
-                                <Text style={styles.inputTopText}>비밀번호</Text>
-                                <TextInput style={styles.input} secureTextEntry={true} onChangeText={onChangePW}  placeholder="비밀번호를 입력해주세요." value={pw}/>
+
+                <ScrollView style={[bg_white]}>
+                    <View style={[styles.subPage,styles.MemInfo]}>
+                        <View style={styles.container}>
+                            <View style={styles.formGroup}>
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.inputTopText}>비밀번호</Text>
+                                    <TextInput style={styles.input}
+                                               secureTextEntry={true}
+                                               onChangeText={(mem_out_pw)=>ChkInput("mem_out_pw",mem_out_pw)}
+                                               placeholder="비밀번호를 입력해주세요."
+                                               value={MemOut.mem_out_pw}/>
+                                </View>
                             </View>
-                        </View>
-                        {/*비밀번호 입력창*/}
-                        <View style={styles.formGroup}>
-                            <View style={styles.inputGroup}>
-                                <Text style={styles.inputTopText}>비밀번호 입력확인</Text>
-                                <TextInput style={styles.input} secureTextEntry={true} onChangeText={onChangePWch}  placeholder="비밀번호를 입력해주세요." value={pwch}/>
+                            {/*비밀번호 입력창*/}
+                            <View style={styles.formGroup}>
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.inputTopText}>비밀번호 입력확인</Text>
+                                    <TextInput style={styles.input}
+                                               secureTextEntry={true}
+                                               onChangeText={(mem_out_pw_ch)=>ChkInput("mem_out_pw_ch",mem_out_pw_ch)}
+                                               placeholder="비밀번호를 확인해주세요."
+                                               value={MemOut.mem_out_pw_ch}/>
+                                </View>
                             </View>
+                            {/*비밀번호확인 입력창*/}
                         </View>
-                        {/*비밀번호확인 입력창*/}
+                        <View style={styles.gary_bar}/>
                     </View>
-                    <View style={styles.gary_bar}/>
+                </ScrollView>
+
+                <View style={[styles.form_btn,styles.form_meminfo_btn]}>
+                    <TouchableOpacity style={[styles.form_btn_link,styles.form_btn_meminfo_link]} onPress={goMemOut}>
+                        <Text style={styles.form_btn_txt}>회원탈퇴</Text>
+                    </TouchableOpacity>
                 </View>
-            </ScrollView>
-            <View style={[styles.form_btn,styles.form_meminfo_btn]}>
-                <TouchableOpacity style={[styles.form_btn_link,styles.form_btn_meminfo_link]} >
-                    <Text style={styles.form_btn_txt}>회원탈퇴</Text>
-                </TouchableOpacity>
-            </View>
+
+
         </>
 
 
@@ -85,8 +138,9 @@ const styles = StyleSheet.create({
         color:"#696A81",
     },
     input: {
-        height: 36,
+        height: 46,
         margin: 0,
+        borderRadius:5,
         borderWidth: 1,
         paddingVertical:7,
         paddingHorizontal: 18,

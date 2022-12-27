@@ -17,7 +17,17 @@ import Loading from '../../components/Loading';
 import Logo from '../../icons/login_logo.svg';
 
 // 공통 CSS 추가
-import {container, bg_white, flex, h14, justify_content_center, mb2, mb4, mb5,} from '../../common/style/AtStyle';
+import {
+    container,
+    bg_white,
+    flex,
+    h14,
+    justify_content_center,
+    mb2,
+    mb4,
+    mb5,
+    input, pos_center,
+} from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -62,8 +72,6 @@ export default function Login({navigation, route}) {
         if (!Login.mem_id) {
             Alert.alert(
                 '아이디를 입력하세요.',
-
-
             );
             return;
         }
@@ -117,7 +125,8 @@ export default function Login({navigation, route}) {
 
         return ready ? <Loading/> : (
             <>
-                <KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding',android:'padding'})}>
+                <KeyboardAvoidingView style={[styles.avoidingView]}
+                                      behavior={Platform.select({ios: 'padding',android:'padding'})}>
                     <View style={[sub_page, styles.login]}>
                         <View style={[container]}>
                             <View style={[flex,justify_content_center,mb5]}>
@@ -128,7 +137,7 @@ export default function Login({navigation, route}) {
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>아이디</Text>
-                                    <TextInput style={styles.input} onChangeText={(mem_id) => goInput("mem_id", mem_id)}
+                                    <TextInput style={[input]} onChangeText={(mem_id) => goInput("mem_id", mem_id)}
                                                value={Login.mem_id} placeholder="아이디를 입력해주세요"/>
                                 </View>
                             </View>
@@ -136,7 +145,7 @@ export default function Login({navigation, route}) {
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>비밀번호</Text>
-                                    <TextInput style={styles.input} secureTextEntry={true}
+                                    <TextInput style={[input]} secureTextEntry={true}
                                                onChangeText={(mem_pw) => goInput("mem_pw", mem_pw)} value={Login.mem_pw}
                                                placeholder="비밀번호를 입력해주세요."/>
                                 </View>
@@ -153,7 +162,9 @@ export default function Login({navigation, route}) {
                             {/*자동로그인*/}
 
                             <TouchableOpacity style={styles.loginformbtn} onPress={goLogin}>
-                                <Text style={styles.loginformbtntxt}>로그인</Text>
+                                <View  style={[pos_center]} >
+                                    <Text style={styles.loginformbtntxt}>로그인</Text>
+                                </View>
                             </TouchableOpacity>
                             {/*로그인 버튼*/}
                             <View style={styles.link_idpw}>
@@ -221,21 +232,11 @@ const styles = StyleSheet.create({
     inputTopText: {
         marginBottom: 8,
     },
-    input: {
-        height: 36,
-        margin: 0,
-        borderWidth: 1,
-        paddingVertical: 7,
-        paddingHorizontal: 18,
-        borderColor: "#ededf1",
-        fontSize: 12,
-    },
     loginformbtn: {
         backgroundColor: "#b1b2c3",
-        textAlign: "center",
+        height:48,
         borderRadius: 5,
-        paddingVertical: 10,
-        marginBottom: 26
+        marginBottom: 25,
     },
     loginformbtntxt: {
         fontSize: 16,
@@ -248,7 +249,7 @@ const styles = StyleSheet.create({
         paddingBottom: 64,
     },
     link_find_txt: {
-        fontSize: 12,
+        fontSize: 14,
         color: "#718096",
         paddingHorizontal: 18,
     },

@@ -6,7 +6,7 @@ import {SelectList} from "react-native-dropdown-select-list";
 import Loading from '../../components/Loading';
 
 // 공통 CSS 추가
-import {container, bg_white, flex} from '../../common/style/AtStyle';
+import {container, bg_white, flex, input, pos_center, pe1, me1, me2, pe2} from '../../common/style/AtStyle';
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
 import axios from "axios";
 import {AddrMatch, Minlangth, regId,regPW} from "../../util/util";
@@ -17,7 +17,8 @@ export default function SignUp({navigation,route}) {
     // 회원가입폼 상태 루틴
     const [selected, setSelected] = useState("");
     const [IsPostOpen, setIsPostOpen] = useState(false);
-    
+
+
     // 1. data로 넘길 status 셋팅
     const [SignUpContent, setSignUpContent] = useState({
         mem_id          :"",  // 아이디
@@ -255,206 +256,219 @@ export default function SignUp({navigation,route}) {
     console.log(selected);
 
     return (
-        <ScrollView style={[bg_white]}>
-            <View style={[sub_page,styles.signup]}>
-                <View style={[container]}>
+        <>
+            <ScrollView style={[bg_white]}>
+                <View style={[sub_page,styles.signup]}>
+                    <View style={[container]}>
 
-                    <View style={styles.formGroup}>
-                        <Text style={styles.inputTopText}>아이디</Text>
-                        <View style={styles.flex}>
-                            <View style={[styles.inputGroup,styles.flexitem1]}>
-                                <TextInput style={[styles.input,styles.me_18]}
-                                 onChangeText={(mem_id)=>ChkInput("mem_id",mem_id)}
-                                 placeholder="아이디를 입력해주세요"
-                                 editable={(SignUpContent.mem_id_chk == 'Y') ? false : true}
-                                 value={SignUpContent.mem_id}/>
+                        <View style={styles.formGroup}>
+                            <Text style={styles.inputTopText}>아이디</Text>
+                            <View style={styles.flex}>
+                                <View style={[styles.inputGroup,styles.flexitem1,pe2]}>
+                                    <TextInput style={[input]}
+                                               onChangeText={(mem_id)=>ChkInput("mem_id",mem_id)}
+                                               placeholder="아이디를 입력해주세요"
+                                               editable={(SignUpContent.mem_id_chk == 'Y') ? false : true}
+                                               value={SignUpContent.mem_id}/>
+                                </View>
+                                <View style={[styles.flexitem2]}>
+                                    {(SignUpContent.mem_id_chk == 'Y') ? (
+                                        <TouchableOpacity style={styles.find_id_btn} onPress={reSet} >
+                                            <View  style={[pos_center]} >
+                                                <Text style={[styles.find_id_btn_txt]}>아이디 변경하기</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    ):(
+                                        <TouchableOpacity style={[styles.find_id_btn]} onPress={IdChk} >
+                                            <View  style={[pos_center]} >
+                                                <Text style={[styles.find_id_btn_txt]}>아이디 중복확인</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    ) }
+                                </View>
                             </View>
-                            <View style={[styles.flexitem2]}>
-                                {(SignUpContent.mem_id_chk == 'Y') ? (
-                                    <TouchableOpacity style={styles.find_id_btn} onPress={reSet} >
-                                        <Text style={[styles.find_id_btn_txt]}>아이디 변경하기</Text>
-                                    </TouchableOpacity>
-                                ):(
-                                    <TouchableOpacity style={styles.find_id_btn} onPress={IdChk} >
-                                        <Text style={[styles.find_id_btn_txt]}>아이디 중복확인</Text>
-                                    </TouchableOpacity>
-                                ) }
+                        </View>
+                        {/*아이디 입력창/중복확인*/}
+                        <View style={styles.formGroup}>
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.inputTopText}>비밀번호</Text>
+                                <TextInput style={[input]} secureTextEntry={true} onChangeText={(mem_pw)=>ChkInput("mem_pw",mem_pw)}  placeholder="비밀번호를 입력해주세요." value={SignUpContent.mem_pw}/>
                             </View>
                         </View>
-                    </View>
-                    {/*아이디 입력창/중복확인*/}
-                    <View style={styles.formGroup}>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputTopText}>비밀번호</Text>
-                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={(mem_pw)=>ChkInput("mem_pw",mem_pw)}  placeholder="비밀번호를 입력해주세요." value={SignUpContent.mem_pw}/>
+                        {/*비밀번호 입력창*/}
+                        <View style={styles.formGroup}>
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.inputTopText}>비밀번호 확인</Text>
+                                <TextInput style={[input]} secureTextEntry={true}
+                                           onChangeText={(mem_pw_chk)=>ChkInput("mem_pw_chk",mem_pw_chk)}
+                                           placeholder="비밀번호를 확인해주세요."
+                                           value={SignUpContent.mem_pw_chk}/>
+                            </View>
                         </View>
-                    </View>
-                    {/*비밀번호 입력창*/}
-                    <View style={styles.formGroup}>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputTopText}>비밀번호 확인</Text>
-                            <TextInput style={styles.input} secureTextEntry={true} onChangeText={(mem_pw_chk)=>ChkInput("mem_pw_chk",mem_pw_chk)}  placeholder="비밀번호를 입력해주세요." value={SignUpContent.mem_pw_chk}/>
-                        </View>
-                    </View>
-                    {/*비밀번호확인 입력창*/}
+                        {/*비밀번호확인 입력창*/}
 
+                    </View>
+
+                    <View style={[gray_bar]}/>
+
+                    <View style={styles.container}>
+                        <View style={styles.formGroup}>
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.inputTopText}>지역</Text>
+                                <SelectList
+                                    setSelected={(val) => setSelected(val)}
+                                    data={AddrMatch}
+                                    onSelect={(selected)=>ChkInput("addr_name",selected)}
+                                    defaultOption={{key: '서울특별시', value: '서울'}}
+                                    save="value"
+                                />
+                            </View>
+                        </View>
+                        <View style={styles.formGroup}>
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.inputTopText}>업체명</Text>
+                                <TextInput style={[input]} onChangeText={(com_name)=>ChkInput("com_name",com_name)} placeholder="가나인테리어" value={SignUpContent.com_name}/>
+                            </View>
+                        </View>
+                        {/*업체명 입력창*/}
+                        <View style={styles.formGroup}>
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.inputTopText}>사업자 등록번호</Text>
+                                <TextInput style={[input]}
+                                           keyboardType="number-pad"
+                                           onChangeText={(com_biz_no)=>ChkInput("com_biz_no",com_biz_no)} placeholder="12345-51-687891"   value={SignUpContent.com_biz_no}/>
+                            </View>
+                        </View>
+                        {/*사업자 등록번호 입력창*/}
+                        <View style={styles.formGroup}>
+                            <Text style={styles.inputTopText}>사업장 주소</Text>
+                            <View style={styles.flex}>
+                                <View style={[styles.inputGroup,styles.flexitem1,pe2]}>
+                                    <TextInput style={[input,styles.me_18,styles.zonecode]} onChangeText={(zonecode)=>ChkInput("zonecode",zonecode)} editable={false} selectTextOnFocus={false}  value={SignUpContent.zonecode}/>
+                                </View>
+                                <View style={[styles.flexitem2]}>
+                                    <TouchableOpacity style={styles.find_id_btn} onPress={DaumApi} >
+                                        <View  style={[pos_center]} >
+                                            <Text style={[styles.find_id_btn_txt]}>주소찾기</Text>
+                                        </View>
+
+                                    </TouchableOpacity>
+                                </View>
+                                {IsPostOpen && (
+                                    <View>
+                                        <DaumPostcode onComplete={DaumPopup} />
+                                    </View>
+                                )}
+                            </View>
+                            {/*=============주소 1==============*/}
+                            <View style={[styles.inputGroup,styles.py_12]}>
+                                <TextInput style={[input]} onChangeText={(addr1)=>ChkInput("addr1",addr1)} placeholder=""   value={SignUpContent.addr1}/>
+                            </View>
+                            {/*=============주소 2==============*/}
+                            <View style={[styles.inputGroup]}>
+                                <TextInput style={[input]}
+                                           onChangeText={(addr2)=>ChkInput("addr2",addr2)}
+                                           placeholder="상세주소 입력"
+                                           value={SignUpContent.addr2}/>
+                            </View>
+                        </View>
+                        {/*사업장 주소 입력창*/}
+                        <View style={styles.formGroup}>
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.inputTopText}>담당자명</Text>
+                                <TextInput style={[input]} onChangeText={(mem_name)=>ChkInput("mem_name",mem_name)} placeholder=""   value={SignUpContent.mem_name}/>
+                            </View>
+                        </View>
+                        {/*담당자명 입력창*/}
+                        <View style={styles.formGroup}>
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.inputTopText}>담당자 연락처</Text>
+                                <TextInput style={[input]} onChangeText={(mem_mobile)=>ChkInput("mem_mobile",mem_mobile)} placeholder=""   value={SignUpContent.mem_mobile}/>
+                            </View>
+                        </View>
+                        {/*사업장 주소 입력창*/}
+                    </View>
+
+                    <View style={[gray_bar]}/>
+
+                    <View style={styles.container}>
+                        <View style={styles.privacy_wrap}>
+                            <View style={[styles.privacy_chek_all,flex]}>
+                                <Checkbox style={styles.checkbox} color={"#4630eb"}  />
+                                <Text style={styles.privacy_chek_all_txt} >전체 약관 동의</Text>
+                            </View>
+                            <View style={styles.privacy_list}>
+                                <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
+                                    <View style={[styles.privacy_list_flex_item,flex]}>
+                                        <Checkbox style={styles.checkbox} color={"#4630eb"}  />
+                                        <Text style={styles.privacy_list_flex_item_txt}>서비스 이용약관 <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
+                                    </View>
+                                    <View style={styles.privacy_list_flex_item}>
+                                        <TouchableOpacity style={styles.privacy_btn}  >
+                                            <Text style={styles.privacy_btn_txt}>보기</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                {/* 서비스 이용약관  */}
+                                <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
+                                    <View style={[styles.privacy_list_flex_item,flex]}>
+                                        <Checkbox style={styles.checkbox} color={"#4630eb"}  />
+                                        <Text style={styles.privacy_list_flex_item_txt}>개인정보 처리방침 동의 <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
+                                    </View>
+                                    <View style={styles.privacy_list_flex_item}>
+                                        <TouchableOpacity style={styles.privacy_btn}  >
+                                            <Text style={styles.privacy_btn_txt}>보기</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                {/* 개인정보 처리방침 동의 */}
+                                <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
+                                    <View style={[styles.privacy_list_flex_item,flex]}>
+                                        <Checkbox style={styles.checkbox} color={"#4630eb"}  />
+                                        <Text style={styles.privacy_list_flex_item_txt}>전자금융거래 이용약관  <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
+                                    </View>
+                                    <View style={styles.privacy_list_flex_item}>
+                                        <TouchableOpacity style={styles.privacy_btn}  >
+                                            <Text style={styles.privacy_btn_txt}>보기</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                {/* 전자금융거래 이용약관 */}
+                                <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
+                                    <View style={[styles.privacy_list_flex_item,flex]}>
+                                        <Checkbox style={styles.checkbox} color={"#4630eb"}  />
+                                        <Text style={styles.privacy_list_flex_item_txt}>제3자 개인정보수집 동의  <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
+                                    </View>
+                                    <View style={styles.privacy_list_flex_item}>
+                                        <TouchableOpacity style={styles.privacy_btn}  >
+                                            <Text style={styles.privacy_btn_txt}>보기</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                {/* 제3자 개인정보수집 동의 */}
+                                <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
+                                    <View style={[styles.privacy_list_flex_item,flex]}>
+                                        <Checkbox style={styles.checkbox} color={"#4630eb"}  />
+                                        <Text style={styles.privacy_list_flex_item_txt}>홍보 및 마케팅 이용 동의 (선택) </Text>
+                                    </View>
+                                    <View style={styles.privacy_list_flex_item}>
+                                        <TouchableOpacity style={styles.privacy_btn}  >
+                                            <Text style={styles.privacy_btn_txt}>보기</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                {/* 제3자 개인정보수집 동의 */}
+                            </View>
+                        </View>
+                    </View>
                 </View>
-
-                <View style={[gray_bar]}/>
-
-                <View style={styles.container}>
-                    <View style={styles.formGroup}>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputTopText}>지역</Text>
-                            <SelectList
-                                setSelected={(val) => setSelected(val)}
-                                data={AddrMatch}
-                                onSelect={(selected)=>ChkInput("addr_name",selected)}
-                                defaultOption={{key: '서울특별시', value: '서울'}}
-                                save="value"
-                            />
-                        </View>
-                    </View>
-                    <View style={styles.formGroup}>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputTopText}>업체명</Text>
-                            <TextInput style={[styles.input]} onChangeText={(com_name)=>ChkInput("com_name",com_name)} placeholder="가나인테리어" value={SignUpContent.com_name}/>
-                        </View>
-                    </View>
-                    {/*업체명 입력창*/}
-                    <View style={styles.formGroup}>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputTopText}>사업자 등록번호</Text>
-                            <TextInput style={[styles.input]}
-                            keyboardType="number-pad"
-                            onChangeText={(com_biz_no)=>ChkInput("com_biz_no",com_biz_no)} placeholder="12345-51-687891"   value={SignUpContent.com_biz_no}/>
-                        </View>
-                    </View>
-                    {/*사업자 등록번호 입력창*/}
-                    <View style={styles.formGroup}>
-                        <Text style={styles.inputTopText}>사업장 주소</Text>
-                        <View style={styles.flex}>
-                            <View style={[styles.inputGroup,styles.flexitem1]}>
-                                <TextInput style={[styles.input,styles.me_18,styles.zonecode]} onChangeText={(zonecode)=>ChkInput("zonecode",zonecode)} editable={false} selectTextOnFocus={false}  value={SignUpContent.zonecode}/>
-                            </View>
-                            <View style={[styles.flexitem2]}>
-                                <TouchableOpacity style={styles.find_id_btn} onPress={DaumApi} >
-                                    <Text style={[styles.find_id_btn_txt]}>주소찾기</Text>
-                                </TouchableOpacity>
-                            </View>
-                            {IsPostOpen && (
-                                <View>
-                                    <DaumPostcode onComplete={DaumPopup} />
-                                </View>
-                            )}
-                        </View>
-                        {/*=============주소 1==============*/}
-                        <View style={[styles.inputGroup,styles.py_12]}>
-                            <TextInput style={[styles.input]} onChangeText={(addr1)=>ChkInput("addr1",addr1)} placeholder=""   value={SignUpContent.addr1}/>
-                        </View>
-                        {/*=============주소 2==============*/}
-                        <View style={[styles.inputGroup]}>
-                            <TextInput style={[styles.input]} onChangeText={(addr2)=>ChkInput("addr2",addr2)} placeholder=""   value={SignUpContent.addr2}/>
-                        </View>
-                    </View>
-                    {/*사업장 주소 입력창*/}
-                    <View style={styles.formGroup}>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputTopText}>담당자명</Text>
-                            <TextInput style={[styles.input]} onChangeText={(mem_name)=>ChkInput("mem_name",mem_name)} placeholder=""   value={SignUpContent.mem_name}/>
-                        </View>
-                    </View>
-                    {/*담당자명 입력창*/}
-                    <View style={styles.formGroup}>
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputTopText}>담당자 연락처</Text>
-                            <TextInput style={[styles.input]} onChangeText={(mem_mobile)=>ChkInput("mem_mobile",mem_mobile)} placeholder=""   value={SignUpContent.mem_mobile}/>
-                        </View>
-                    </View>
-                    {/*사업장 주소 입력창*/}
-                </View>
-
-                <View style={[gray_bar]}/>
-
-                <View style={styles.container}>
-                    <View style={styles.privacy_wrap}>
-                        <View style={[styles.privacy_chek_all,flex]}>
-                            <Checkbox style={styles.checkbox} color={"#4630eb"}  />
-                            <Text style={styles.privacy_chek_all_txt} >전체 약관 동의</Text>
-                        </View>
-                        <View style={styles.privacy_list}>
-                            <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
-                                <View style={[styles.privacy_list_flex_item,flex]}>
-                                    <Checkbox style={styles.checkbox} color={"#4630eb"}  />
-                                    <Text style={styles.privacy_list_flex_item_txt}>서비스 이용약관 <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
-                                </View>
-                                <View style={styles.privacy_list_flex_item}>
-                                    <TouchableOpacity style={styles.privacy_btn}  >
-                                        <Text style={styles.privacy_btn_txt}>보기</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            {/* 서비스 이용약관  */}
-                            <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
-                                <View style={[styles.privacy_list_flex_item,flex]}>
-                                    <Checkbox style={styles.checkbox} color={"#4630eb"}  />
-                                    <Text style={styles.privacy_list_flex_item_txt}>개인정보 처리방침 동의 <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
-                                </View>
-                                <View style={styles.privacy_list_flex_item}>
-                                    <TouchableOpacity style={styles.privacy_btn}  >
-                                        <Text style={styles.privacy_btn_txt}>보기</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            {/* 개인정보 처리방침 동의 */}
-                            <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
-                                <View style={[styles.privacy_list_flex_item,flex]}>
-                                    <Checkbox style={styles.checkbox} color={"#4630eb"}  />
-                                    <Text style={styles.privacy_list_flex_item_txt}>전자금융거래 이용약관  <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
-                                </View>
-                                <View style={styles.privacy_list_flex_item}>
-                                    <TouchableOpacity style={styles.privacy_btn}  >
-                                        <Text style={styles.privacy_btn_txt}>보기</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            {/* 전자금융거래 이용약관 */}
-                            <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
-                                <View style={[styles.privacy_list_flex_item,flex]}>
-                                    <Checkbox style={styles.checkbox} color={"#4630eb"}  />
-                                    <Text style={styles.privacy_list_flex_item_txt}>제3자 개인정보수집 동의  <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
-                                </View>
-                                <View style={styles.privacy_list_flex_item}>
-                                    <TouchableOpacity style={styles.privacy_btn}  >
-                                        <Text style={styles.privacy_btn_txt}>보기</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            {/* 제3자 개인정보수집 동의 */}
-                            <View style={[styles.privacy_list_item,styles.privacy_list_flex]}>
-                                <View style={[styles.privacy_list_flex_item,flex]}>
-                                    <Checkbox style={styles.checkbox} color={"#4630eb"}  />
-                                    <Text style={styles.privacy_list_flex_item_txt}>홍보 및 마케팅 이용 동의 (선택) </Text>
-                                </View>
-                                <View style={styles.privacy_list_flex_item}>
-                                    <TouchableOpacity style={styles.privacy_btn}  >
-                                        <Text style={styles.privacy_btn_txt}>보기</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            {/* 제3자 개인정보수집 동의 */}
-                        </View>
-                    </View>
-                </View>
-                <View style={[gray_bar]}/>
-                <View style={[styles.form_btn,styles.form_meminfo_btn]}>
-                    <TouchableOpacity onPress={goSignUp} style={[styles.form_btn_link,styles.form_btn_meminfo_link]} >
-                        <Text style={styles.form_btn_txt}>회원가입</Text>
-                    </TouchableOpacity>
-                </View>
+            </ScrollView>
+            <View style={[styles.form_btn,styles.form_meminfo_btn]}>
+                <TouchableOpacity onPress={goSignUp} style={[styles.form_btn_link,styles.form_btn_meminfo_link]} >
+                    <Text style={styles.form_btn_txt}>회원가입</Text>
+                </TouchableOpacity>
             </View>
-        </ScrollView>
-
+        </>
     );
 }
 
@@ -533,7 +547,8 @@ const styles = StyleSheet.create({
     },
     find_id_btn:{
         backgroundColor:"#4549e0",
-        paddingVertical:9,
+        height:46,
+        borderRadius:5,
         paddingHorizontal:16,
     },
     find_id_btn_txt:{
@@ -542,10 +557,10 @@ const styles = StyleSheet.create({
         textAlign:"center",
     },
     flexitem1:{
-        width:"65%"
+        width:"70%"
     },
     flexitem2:{
-        width:"35%"
+        width:"30%"
     },
     me_18:{
         marginRight:18,
@@ -589,7 +604,6 @@ const styles = StyleSheet.create({
     form_btn:{
         backgroundColor:"#B1B2C3",
         paddingVertical:20,
-        marginTop:30,
     },
     form_btn_txt:{
         textAlign:"center",

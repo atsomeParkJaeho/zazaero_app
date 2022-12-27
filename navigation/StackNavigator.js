@@ -7,7 +7,9 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Login from '../pages/Mypage/Login';                                  //로그인
 import SignUp from '../pages/Mypage/SignUp';                                //회원가입
 import FindId from '../pages/Mypage/FindId';                                //아이디 찾기
+import FindIdResult from '../pages/Mypage/FindIdResult';                                //아이디 찾기결과
 import FindPw from '../pages/Mypage/FindPw';                                //비밀번호 찾기
+import FindPwResult  from '../pages/Mypage/FindPwResult';                                //비밀번호 찾기
 
 //메인페이지
 import MainPage from '../pages/MainPage';                                   //메인페이지
@@ -129,7 +131,9 @@ const StackNavigator = () => {
                 <Stack.Screen name="장바구니" component={Cart}/>
                 <Stack.Screen name="즐겨찾기" component={Wishlist}/>
                 <Stack.Screen name="아이디 찾기" component={FindId}/>
+                <Stack.Screen name="아이디 찾기결과" options={{title:'아이디 찾기'}} component={FindIdResult}/>
                 <Stack.Screen name="비밀번호 찾기" component={FindPw}/>
+                <Stack.Screen name="비밀번호 찾기결과" options={{title:'비밀번호 찾기'}} component={FindPwResult}/>
                 <Stack.Screen name="약관/개인정보처리방침" component={Provision}/>
 
                 <Stack.Screen name="상품목록" component={GoodsCateList}/>

@@ -19,22 +19,21 @@ export default function FindId({navigation,route}) {
 
 
     return   (
-            <>
-                <View style={[styles.FindId]}>
-                    <View style={[styles.container,{paddingTop:0}]}>
-                        <View style={styles.center_middle}>
-                            <Text style={styles.FindId_txt}>
-                                가입시 입력하신 {'\n'}
-                                담당자의 연락처 인증을 통해{'\n'}
-                                아이디를 찾을 수 있습니다.
-                            </Text>
-                            <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={() => {navigation.navigate('아이디 찾기결과')}}>
-                                <Text style={[text_primary,text_center,pt1,pb1,h20]}>본인인증</Text>
-                            </TouchableOpacity>
-                        </View>
+        <>
+            <View style={[styles.FindId]}>
+                <View style={[styles.container,{paddingTop:0}]}>
+                    <View style={styles.center_middle}>
+                        <Text style={styles.FindId_txt}>
+                            가입시 아이디는 {'\n'}
+                            아이디값표출 입니다.
+                        </Text>
+                        <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={() => {navigation.navigate('로그인')}}>
+                            <Text style={[text_primary,text_center,pt1,pb1,h20]}>닫기</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
-            </>
+            </View>
+        </>
     );
 }
 

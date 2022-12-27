@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView} from 'react-native';
-
+import {useNavigationState} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {List} from 'react-native-paper';
 
@@ -22,9 +22,7 @@ import {
 // 이미지 추가
 // import logo from '../assets/img/top_logo.png';
 import Footer from "./Footer";
-import col1 from '../assets/img/co1.png';
-import col2 from '../assets/img/co2.png';
-import col3 from '../assets/img/co3.png';
+
 import Search from '../icons/search.svg';
 import NotificationIcon from "../icons/Notification_icon.svg";
 import Main_logo from '../icons/main_logo.svg';
@@ -85,6 +83,8 @@ function Cate2nd({uid,navigation,name}) {
 // 상품출력 페이지
 export default function MainPage({navigation, route}) {
 
+
+
     // 1. 1차 카테고리 추출
     const [Cate1st, setCate1st] = useState([]);   // 1차 카테고리 설정
     useEffect(() => {
@@ -111,6 +111,8 @@ export default function MainPage({navigation, route}) {
     }, []);
 
     console.log('1차 카테고리', Cate1st);
+
+
 
     return (
         /*

@@ -335,7 +335,7 @@ export const flex_around = {
 
 export const input = {
     width:"100%",
-    height: 36,
+    height: 46,
     margin: 0,
     borderWidth: 1,
     paddingVertical:7,

@@ -4,7 +4,15 @@ import { StyleSheet, Text, TextInput, View, Image, TouchableOpacity, ScrollView}
 
 
 // 공통 CSS 추가
-import {container, bg_white} from '../../common/style/AtStyle';
+import {
+    container,
+    bg_white,
+    btn_outline_primary,
+    mt3,
+    text_primary,
+    text_center,
+    pt1, pb1, h20
+} from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 
 
@@ -24,8 +32,8 @@ export default function FindPw({navigation,route}) {
                         재설정 할 수 있습니다.
                     </Text>
                     <TextInput style={styles.input} onChangeText={onChangeText} placeholder="아이디 입력" value={id}/>
-                    <TouchableOpacity style={styles.FindId_btn}  >
-                        <Text style={[styles.FindId_btn_txt]}>본인인증</Text>
+                    <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={() => {navigation.navigate('비밀번호 찾기결과')}}>
+                        <Text style={[text_primary,text_center,pt1,pb1,h20]}>본인인증</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -49,7 +57,7 @@ const styles = StyleSheet.create({
     FindId_txt:{
         fontSize:20,
         lineHeight:24,
-        fontWeight:"600",
+        fontWeight:"500",
         color:"#333",
         paddingBottom:24,
     },
@@ -65,13 +73,17 @@ const styles = StyleSheet.create({
         color:"#fff",
     },
     input: {
-        height: 36,
+        height: 46,
         margin: 0,
+        borderRadius:5,
         borderWidth: 1,
         paddingVertical:7,
         paddingHorizontal: 18,
         borderColor:"#ededf1",
         fontSize:12,
-        marginBottom:24,
+        marginBottom:0,
     },
+    border_radius:{
+        borderRadius:5,
+    }
 });
