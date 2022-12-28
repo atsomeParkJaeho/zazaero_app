@@ -363,16 +363,6 @@ export default function OrderForm({route,navigation}) {
                                 />
                             </View>
                             {/*다음 api 주소 팝업*/}
-
-                            <View>
-                                <Postcode
-                                    style={{ flex: 1, width: '100%', zIndex: 999 }}
-                                    jsOptions={{ animation: true }}
-                                    onSelected={data => getAddressData(data)}
-                                    onError={(error)=>console.log(error)}
-                                />
-                            </View>
-
                         </View>
                     </View>
                     {/*==============희망배송일==============*/}

@@ -249,7 +249,7 @@ export default function GoodsCateList({route,navigation}) {
                 <ScrollView style={styles.cate_1st_list} horizontal indicatorStyle={"black"}>
                     {Cate2List.map((val,idx)=>(
                         <>
-                            <TouchableOpacity style={[styles.cate_1st_btn]} onPress={() => goCate2nd(val.ind_cfg_uid)}>
+                            <TouchableOpacity key={idx} style={[styles.cate_1st_btn]} onPress={() => goCate2nd(val.ind_cfg_uid)}>
                                 <Text style={[styles.cate_1st_btn_txt,(val.ind_cfg_uid === CateActive) && text_primary]}>
                                     {val.cfg_val1}
                                 </Text>
@@ -265,7 +265,7 @@ export default function GoodsCateList({route,navigation}) {
 
                 {/*========================자재목록 출력(반복문)====================*/}
                 {GoodsList.map((val, idx) => (
-                    <View style={styles.cate_goods_list}>
+                    <View style={styles.cate_goods_list} key={idx}>
                         <View style={styles.cate_goods_list_item}>
                             {/**/}
                             <View style={[flex_top]}>

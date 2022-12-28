@@ -32,7 +32,7 @@ export default function NoticeList({navigation}) {
             <ScrollView style={styles.container}>
                 <View style={styles.mypageList}>
                     {NoticeList.map((val,idx)=>(
-                        <View style={styles.mypageListItem}>
+                        <View style={styles.mypageListItem} key={idx}>
                             <TouchableOpacity onPress={() => navigation.navigate('공지사항상세',{bd_uid:val.bd_uid})}>
                                 {/*===========제목=========*/}
                                 <View style={styles.mypageListItemTitle}>

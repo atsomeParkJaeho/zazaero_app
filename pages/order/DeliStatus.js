@@ -97,10 +97,10 @@ let test = 1;
                 <ScrollView>
                     <View style={[styles.bt, styles.bb]}>
                         <View>
-                            {OrderList.map(val => (
+                            {OrderList.map((val,idx) => (
                                 (val.order_status === 'ready' || val.order_status === 'doing' || val.order_status === 'done') && (
                                     <>
-                                        <View style={[styles.order_list_items]}>
+                                        <View style={[styles.order_list_items]} key={idx}>
                                             <View style={[container]}>
                                                 <View style={[flex, styles.mb_5]}>
                                                     <View style={[styles.wt3]}>

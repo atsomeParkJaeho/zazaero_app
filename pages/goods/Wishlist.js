@@ -241,12 +241,12 @@ export default function Wishlist({route,navigation}) {
                             {/*=============1차 카테고리 항목==============*/}
                             {Cate1st.map((val,idx)=>(
                                 <>
-                                    <List.Accordion title={val.cfg_val1} style={[container, styles.Accordion_tit]}>
+                                    <List.Accordion key={idx} title={val.cfg_val1} style={[container, styles.Accordion_tit]}>
                                         {/*=================즐겨찾기 리스트 출력-================*/}
                                         {WishList.map((val)=>(
                                             <>
                                                 {(val.goods_wish_chk) ? (
-                                                    <View style={[styles.cate_goods_list]}>
+                                                    <View key={idx} style={[styles.cate_goods_list]}>
                                                         <View style={styles.cate_goods_list_item}>
                                                             {/**/}
                                                             <View style={[flex_top,{paddingLeft:15, paddingRight:15,}]}>

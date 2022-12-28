@@ -280,10 +280,10 @@ export default function Cart({route, navigation}) {
                                 <>
                                     {CartCate1st.map((val, idx) => (
                                         <>
-                                            <List.Accordion
-                                                onPress={()=>getGoodsCate(val.ind_cfg_uid)}
-                                                title={val.cfg_val1}
-                                                style={[container, styles.Accordion_tit]}>
+                                            <List.Accordion key={val.ind_cfg_uid}
+                                                            onPress={()=>getGoodsCate(val.ind_cfg_uid)}
+                                                            title={val.cfg_val1}
+                                                            style={[container, styles.Accordion_tit]}>
                                                 {/*=============상품리스트 반복================*/}
 
                                                 {CartList.map((val, idx) => (
@@ -294,8 +294,8 @@ export default function Cart({route, navigation}) {
                                                                     <>
                                                                         {(val.goods_Cart) ? (
                                                                             <>
-                                                                                <View
-                                                                                    style={[styles.pb_2, {padding: 15}]}>
+                                                                                <View key={val.ind_cfg_uid}
+                                                                                      style={[styles.pb_2, {padding: 15}]}>
                                                                                     {/*================자재명==============*/}
                                                                                     <View
                                                                                         style={[flex_between, styles.pd_18]}>

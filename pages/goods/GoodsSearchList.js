@@ -254,7 +254,7 @@ export default function GoodsSearchList({route,navigation}) {
                 </View>
                 {/*========================자재목록 출력(반복문)====================*/}
                 {GoodsList.map((val, idx) => (
-                    <View style={styles.cate_goods_list}>
+                    <View style={styles.cate_goods_list} key={idx}>
                         <View style={styles.cate_goods_list_item}>
                             {/**/}
                             <View style={[flex_top]}>
