@@ -206,6 +206,10 @@ export default function GoodsCateList({route,navigation}) {
                 goods_uid           : items.goods_uid,           // 상품 uid
                 mem_uid             : Member,                    // 회원 uid
                 ord_cnt             :  '1'
+                // act_type        :'ins_cart',
+                // mem_uid         :Member,
+                // goods_uid       :items.goods_uid,
+
             },{
                 headers: {
                     'Content-type': 'multipart/form-data'

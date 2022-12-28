@@ -119,14 +119,13 @@ export default function Cart({navigation,route}) {
 
                             {cate_list.map((items, index) =>
 
-                                <List.Accordion
-                                    style={[container,styles.Accordion_tit]}
-                                    title={[items]}
-                                    key={index}
-                                    left={ props =>  <Checkbox style={[styles.all_check]}
-                                                               value={isChecked}
-                                                               onValueChange={setChecked}
-                                                               color={"#4630eb"}  />}
+                                <List.Accordion style={[container,styles.Accordion_tit]}
+                                title={[items]}
+                                key={index}
+                                left={ props =>  <Checkbox style={[styles.all_check]}
+                                                           value={isChecked}
+                                                           onValueChange={setChecked}
+                                                           color={"#4630eb"}  />}
                                 >
                                     <View style={styles.Accordion_items}>
                                         <View style={[styles.Accordion_itemsflex]}>
