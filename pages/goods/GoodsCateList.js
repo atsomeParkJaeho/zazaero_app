@@ -226,7 +226,6 @@ export default function GoodsCateList({route,navigation}) {
             })
         ));
 
-        alert('장바구니에 추가하였습니다. ');
         navigation.navigate('장바구니');
 
     }

@@ -5,6 +5,25 @@ export const regId = /^[a-z0-9_]{4,20}$/;
 export const Minlangth = 6;
 
 
+// 시간 변경 포맷
+
+export const Time = (time) => {
+    let year = time.getFullYear();
+    let month = time.getMonth() + 1;
+    if(month<10) month = '0' + month;
+    let date = time.getDate();
+    if(date<10) date = '0' + date;
+    let hour = time.getHours();
+    if(hour<10) hour = '0' + hour;
+    let min = time.getMinutes();
+    if(min<10) min = '0' + min;
+    let sec = time.getSeconds();
+    if(sec) sec = '0' + sec;
+    return hour + ":" + min;
+}
+
+
+
 const locale = {
     name: 'fr',
     config: {
@@ -318,7 +337,15 @@ export const Price = (text) => {
     return String(text).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+// =================전화번호 입력제어=====================//
+export const Phone = (num) => {
+   return num.replace(/[^0-9]/g, '').replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3").replace(/(\-{1,2})$/g, "");
+}
 
+// =================사업자 번호 입력제어 입력제어=====================//
+export const bizNum = (num) => {
+    return num.replace(/[^0-9]/g, '').replace(/^(\d{0,3})(\d{0,2})(\d{0,5})$/g, "$1-$2-$3").replace(/(\-{1,2})$/g, "");
+}
 
 // =================숫자만 입력 가능=================//
 export const OnlyNum = (text) => {

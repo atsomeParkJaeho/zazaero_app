@@ -1,11 +1,13 @@
 import Postcode from '@actbase/react-daum-postcode';
 import {ScrollView, View} from "react-native";
 import {zonecode} from "../common/style/AtStyle";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 function DaumPostCode({route, navigation}) {
 
-    const {order_uid} = route.params;
+
+    const {order_uid, page} = route.params;
 
     const getAddressData = data => {
         let defaultAddress = ''; // 기본주소
@@ -15,8 +17,14 @@ function DaumPostCode({route, navigation}) {
             defaultAddress = data.buildingName;
         }
 
-        console.log(data);
-        navigation.goBack();
+        // console.log(data);
+        navigation.navigate(`${page}`,{
+            order_uid   :order_uid,
+            zonecode    :data.zonecode,
+            addr1       :data.address
+        });
+
+
     };
 
     return (

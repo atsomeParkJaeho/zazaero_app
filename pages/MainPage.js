@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView} from 'react
 import {useNavigationState} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {List} from 'react-native-paper';
-
+import {AccordionList} from "accordion-collapse-react-native";
 //이미지 슬라이드
 import {ImageSlider} from "react-native-image-slider-banner";
 
@@ -85,8 +85,16 @@ export default function MainPage({navigation, route}) {
 
 
 
+
+
     // 1. 1차 카테고리 추출
     const [Cate1st, setCate1st] = useState([]);   // 1차 카테고리 설정
+    // 아코디언 설정
+    const [expend, setExpend] = useState(`1`);
+    useEffect(()=>{
+        setExpend(`1`);
+    },[]);
+
     useEffect(() => {
         const data = {
             act_type: "goods_cate",
@@ -151,7 +159,13 @@ export default function MainPage({navigation, route}) {
                     timer={1000}
                 />
 
-                <List.AccordionGroup style={styles.Section}>
+
+
+
+                <List.AccordionGroup
+                    onAccordionPress={(id)=>setExpend(id)}
+                    expandedId={expend}
+                    style={styles.Section} >
                     {/*=================1차 카테고리===============*/}
                     {Cate1st.map((val, idx) => (
                         <>
