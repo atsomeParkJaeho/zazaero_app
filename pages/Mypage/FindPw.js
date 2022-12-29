@@ -1,5 +1,15 @@
-import React,{useState,useEffect} from 'react';
-import { StyleSheet, Text, TextInput, View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import React,{useState,useEffect,useRef} from 'react';
+import {
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    Alert,
+    KeyboardAvoidingView
+} from 'react-native';
 
 
 
@@ -14,36 +24,140 @@ import {
     pt1, pb1, h20
 } from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
+import axios from "axios";
+import {Phone} from "../../util/util";
 
 
 
 export default function FindPw({navigation,route}) {
 
-    const [id, onChangeText] = React.useState("");
+    const ChkInput = useRef([]);
+
+
+    // 1. 전달값 셋팅
+    const [FindId,setFindId] = useState({
+        mem_id          :'',
+        mem_name        :'',
+        mem_mobile      :'',
+    });
+    // 2. 입력시 상태 값 저장
+    const goInput = (key, value) => {
+        setFindId({
+            ...FindId,
+            [key]:value,
+        });
+    }
+
+    // 3. 본인 인증창 실행
+    const goFind = () => {
+
+        let {mem_mobile, mem_id, mem_name} = FindId;
+
+        if(mem_id === '') {
+            Alert.alert('','아이디를 입력해주세요.');
+            return ChkInput.current[0].focus();
+        }
+
+        if(mem_name === '') {
+            Alert.alert('','이름 입력해주세요.');
+            return ChkInput.current[1].focus();
+        }
+
+        if(mem_mobile === '') {
+            Alert.alert('','휴대폰번호를 입력해주세요.');
+            return ChkInput.current[2].focus();
+        }
+
+        axios.post('http://49.50.162.86:80/ajax/UTIL_search.php', {
+            act_type        :'search_pw_mobile',
+            mem_id          :mem_id,
+            mem_name        :mem_name,
+            mem_mobile      :mem_mobile,
+        }, {
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res) => {
+            if (res) {
+                console.log(res.data);
+                const {result} = res.data;
+                if (result === 'OK') {
+                    Alert.alert('본인인증','회원님의 연락처로 비밀번호가 문자전송되었습니다.');
+                    navigation.navigate('로그인');
+                }
+
+                if(result === 'NG') {
+                    Alert.alert('','계정정보가 없습니다.');
+                    return ChkInput.current[0].focus();
+                }
+
+                if (result === 'NG_info') {
+                    Alert.alert('해당계정이 없습니다.');
+                }
+                if (result === 'NG_sns') {
+                    Alert.alert('SNS로 회원가입하신 회원입니다.');
+                }
+            }
+        }).catch((err) => console.log(err));
+    }
+
+    console.log(FindId)
+
     return   (
 
-        <View style={[styles.subPage,styles.FindId]}>
-            <View style={styles.container}>
-                <View style={styles.center_middle}>
-                    <Text style={styles.FindId_txt}>
-                        가입시 입력하신 {'\n'}
-                        담당자의 연락처 인증을 통해{'\n'}
-                        비밀번호를 {'\n'}
-                        재설정 할 수 있습니다.
-                    </Text>
-                    <TextInput style={styles.input} onChangeText={onChangeText} placeholder="아이디 입력" value={id}/>
-                    <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={() => {navigation.navigate('비밀번호 찾기결과')}}>
-                        <Text style={[text_primary,text_center,pt1,pb1,h20]}>본인인증</Text>
-                    </TouchableOpacity>
+        <KeyboardAvoidingView style={[styles.avoidingView]} behavior={Platform.select({ios: 'padding'})}>
+            <View style={[styles.FindId]}>
+                <View style={[styles.container,{paddingTop:0}]}>
+                    <View style={styles.center_middle}>
+                        <Text style={styles.FindId_txt}>
+                            가입시 입력하신 {'\n'}
+                            담당자의 연락처 인증을 통해{'\n'}
+                            비밀번호를 {'\n'}
+                            재설정 할 수 있습니다.
+                        </Text>
+                        {/*아이디*/}
+                        <TextInput
+                            style={[styles.input,{marginBottom: 15}]}
+                            onChangeText={(mem_id)=>goInput('mem_id',mem_id)}
+                            value={`${FindId.mem_id}`}
+                            ref={val=>ChkInput.current[0] = val}
+                            returnKeyType="next"
+                            placeholder="아이디"
+                        />
+                        {/*이름*/}
+                        <TextInput
+                            style={[styles.input,{marginBottom: 15}]}
+                            onChangeText={(mem_name)=>goInput('mem_name',mem_name)}
+                            value={`${FindId.mem_name}`}
+                            ref={val=>ChkInput.current[1] = val}
+                            returnKeyType="next"
+                            placeholder="이름"
+                        />
+                        {/*전화번호*/}
+                        <TextInput
+                            onChangeText={(mem_mobile)=>goInput('mem_mobile',mem_mobile)}
+                            style={styles.input}
+                            value={Phone(FindId.mem_mobile)}
+                            ref={val=>ChkInput.current[2] = val}
+                            placeholder="전화번호"
+                        />
+                        <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={()=>goFind()}>
+                            <Text style={[text_primary,text_center,pt1,pb1,h20]}>본인인증</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
-        </View>
+        </KeyboardAvoidingView>
 
 
     );
 }
 
 const styles = StyleSheet.create({
+    avoidingView: {
+        flex: 1,
+    },
+
     FindId:{
         flex:1,
         justifyContent:'center',

@@ -37,8 +37,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export default function GoodsCateList({route,navigation}) {
-
-
     const [Member, setMember] = useState();
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
@@ -55,10 +53,23 @@ export default function GoodsCateList({route,navigation}) {
     const [Cate2List, setCate2List] =       useState([]);     // 2차 카테고리 담기
     const [Cate3th, setCate3th] =           useState([]);     // 3차 카테고리 담기
     const [CateActive, setCateActive] =     useState(``);     // 현재 페이지 상태
+
+    // 우측 메뉴 설정
+    const headerRight = () => {
+        return (
+            <>
+                <View></View>
+            </>
+        );
+    }
+
     // 2. ================최초 db 출력값 담기===================
     useEffect(() => {
         setCateActive(Cate2ndUid); // 카테고리 값 설정
-        navigation.setOptions({title:name});
+        navigation.setOptions({
+            title:name,     // 상단 설정
+
+        });
         // 상품 불러오기
         let cate2 = {
             act_type : 'find_goods',

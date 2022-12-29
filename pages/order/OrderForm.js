@@ -252,45 +252,45 @@ export default function OrderForm({route,navigation}) {
 
     return (
         <>
-            {/*<KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding',android:'padding'})}>*/}
+            <KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding',android:'padding'})}>
 
             <ScrollView style={[bg_white,]}>
                 <View style={{paddingBottom:110,}}>
                     {/*==============최근배송지 불러오기==============*/}
-                    {/*<View style={[FormStyle.FormGroup]}>*/}
-                    {/*    <View>*/}
-                    {/*        <View style={[flex]}>*/}
-                    {/*            <View style={[flex]}>*/}
-                    {/*                <View style={[styles.border]}>*/}
-                    {/*                    <TouchableOpacity onPress={()=>setmodAddr('mod')}>*/}
-                    {/*                        <View style={[flex]}>*/}
-                    {/*                            <RadioButton*/}
-                    {/*                                status={modAddr === 'mod' ? 'checked':'unchecked'}*/}
-                    {/*                                value="mod"*/}
-                    {/*                                onPress={()=>setmodAddr('mod')}*/}
-                    {/*                            />*/}
-                    {/*                            <Text>최근 배송지 불러오기</Text>*/}
-                    {/*                        </View>*/}
-                    {/*                    </TouchableOpacity>*/}
-                    {/*                </View>*/}
-                    {/*            </View>*/}
-                    {/*            <View style={[flex]}>*/}
-                    {/*                <View style={[styles.border]}>*/}
-                    {/*                    <TouchableOpacity onPress={()=>setmodAddr('add')}>*/}
-                    {/*                        <View style={[flex]}>*/}
-                    {/*                            <RadioButton*/}
-                    {/*                                status={modAddr === 'add' ? 'checked':'unchecked'}*/}
-                    {/*                                value="add"*/}
-                    {/*                                onPress={()=>setmodAddr('add')}*/}
-                    {/*                            />*/}
-                    {/*                            <Text>신규 배송지 입력</Text>*/}
-                    {/*                        </View>*/}
-                    {/*                    </TouchableOpacity>*/}
-                    {/*                </View>*/}
-                    {/*            </View>*/}
-                    {/*        </View>*/}
-                    {/*    </View>*/}
-                    {/*</View>*/}
+                    <View style={[FormStyle.FormGroup]}>
+                        <View>
+                            <View style={[flex]}>
+                                <View style={[flex]}>
+                                    <View style={[styles.border]}>
+                                        <TouchableOpacity onPress={()=>setmodAddr('mod')}>
+                                            <View style={[flex]}>
+                                                <RadioButton
+                                                    status={modAddr === 'mod' ? 'checked':'unchecked'}
+                                                    value="mod"
+                                                    onPress={()=>setmodAddr('mod')}
+                                                />
+                                                <Text>최근 배송지 불러오기</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <View style={[flex]}>
+                                    <View style={[styles.border]}>
+                                        <TouchableOpacity onPress={()=>setmodAddr('add')}>
+                                            <View style={[flex]}>
+                                                <RadioButton
+                                                    status={modAddr === 'add' ? 'checked':'unchecked'}
+                                                    value="add"
+                                                    onPress={()=>setmodAddr('add')}
+                                                />
+                                                <Text>신규 배송지 입력</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
                     {/*==============신규배송지 입력==============*/}
                     <View style={[FormStyle.FormGroup]}>
                         {/*==============제목==============*/}
@@ -486,7 +486,7 @@ export default function OrderForm({route,navigation}) {
                     </Text>
                 </TouchableOpacity>
             </View>
-            {/*</KeyboardAvoidingView>*/}
+            </KeyboardAvoidingView>
 
         </>
     );

@@ -12,7 +12,18 @@ import {
     flex_between,
     textarea,
     flex_top,
-    align_items_center, pb2, wt8, wt2, d_flex, justify_content_end, btn_circle, bg_primary, bg_light, h13, text_primary
+    align_items_center,
+    pb2,
+    wt8,
+    wt2,
+    d_flex,
+    justify_content_end,
+    btn_circle,
+    bg_primary,
+    bg_light,
+    h13,
+    text_primary,
+    justify_content_center, text_light
 } from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 
@@ -24,93 +35,199 @@ import goods_img_1 from "../../assets/img/goods_img_1.png";
 import goods_like from "../../assets/img/ico_heart.png";
 import Footer from "../Footer";
 
-import {goodsList} from "../../util/util";
+import {Price} from "../../util/util";
 import axios from "axios";
 import Chk from "../../icons/chk.svg";
 import CartBag from "../../icons/cart_bag.svg";
-
-export default function Wishlist({navigation,route}) {
-
-    const cate_list = [ "목/형틀공사","바닥공사", "욕식공사", "도배공사"];
-
-
-    const Cate_List2 = [
-
-        {
-            goods_uid:"125",
-            goods_name:"일반석고보드 9.5T X 900 X 1800",
-            goods_price:"3,410",
-            goods_wish_chk:"N",
-            goods_cart_chk:false,
-            goods_guid_link:"발주일로부터 5일 소요",
-        },
-        {
-            goods_uid:"115",
-            goods_name:"라이트 브라운 테라조 포쉐린 타일[300*300] 일반석고보드",
-            goods_price:"3,410",
-            goods_wish_chk:"N",
-            goods_cart_chk:false,
-            goods_guid_link:"발주일로부터 3일 소요",
-        },
-        {
-            goods_uid:"119",
-            goods_name:"도배장판",
-            goods_price:"3,410",
-            goods_wish_chk:"N",
-            goods_cart_chk:false,
-            goods_guid_link:"즉시 발주가능",
-        },  {
-            goods_uid:"125",
-            goods_name:"일반석고보드 9.5T X 900 X 1800",
-            goods_price:"3,410",
-            goods_wish_chk:"N",
-            goods_cart_chk:false,
-            goods_guid_link:"발주일로부터 5일 소요",
-        },
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import WishlistNon from "../../icons/ico_heart_nc.svg";
+import WishIcon from "../../icons/ico_heart_c.svg";
+import { useIsFocused } from '@react-navigation/native';
 
 
-    ];
+export default function Wishlist({route,navigation}) {
 
-    const [state,setState] = useState(Cate_List2);
-    const [ready,setReady] = useState(true)
+    const [Member, setMember] = useState();
+    const mem_uid = AsyncStorage.getItem("member").then((value) => {
+        setMember(value);
+    });
+    const Update = useIsFocused();
 
-    const [count, onChangecount] = React.useState("");
-    //수량
-    const [Disc, onChangeDisc] = React.useState("");
-    //내용
+    console.log('즐겨찾기');
 
-    const [isChecked, setChecked] = useState(false);
+    // ==========1. 상태정의 리스트
+    const [WishList, setWishList]       = useState([]);     // 즐겨찾기 상태정의
+    const [Cate1st, setCate1st]         = useState([]);     // 1차 카테고리 상태정의
 
 
-    const [expanded, setExpanded] = React.useState(true);
-    const handlePress = () => setExpanded(!expanded);
-    //아코디언
+    // ===========2. 불러오기
+    useEffect(()=>{
+        // ==============1) 1차 카테고리 불러오기
+        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php',{
+            act_type: "goods_cate",
+        },{
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            if(res) {
+                const {result, A_cate_1st} = res.data;
+                if(result === 'OK') {
+                    console.log(result);
+                    setCate1st(A_cate_1st);
 
-    const [isEnabled, setIsEnabled] = useState(false);
+                } else {
+                    console.log('실패');
+                    console.log(result);
+                }
+            }
+        });
 
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+        // 1차 카테고리 상품코드 불러오기
+        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php',{
+            act_type: "goods_cate",
+        },{
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            if(res) {
+                const {result, A_cate_1st} = res.data;
+                if(result === 'OK') {
+                    console.log(result);
+                    setCate1st(A_cate_1st);
 
-    //스위치
+                } else {
+                    console.log('실패');
+                    console.log(result);
+                }
+            }
+        });
 
-    const numberState = useState(0);
-    const number = numberState[0];
-    const setNumber = numberState[1];
 
-    const [countr, setCount] = useState(0);
+        // ==============2) 즐겨찾기 리스트 불러오기
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
+            act_type        :"get_my_zzim_list",
+            login_status    :"Y",
+            mem_uid         :Member,
+        },{
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            if(res) {
+                const {result, A_data} = res.data;
+                console.log(result);
+                if(result === 'OK') {
+                    let temp = A_data.map((val) => {
+                        return {...val, goods_wish_chk: !val.goods_wish_chk,};
+                    });
+                    console.log('체크리스트추가 / ',temp)
 
-    const onPress = () => {
-        setNumber(countr + 1);
-    };
+                    setWishList(temp);
 
-    const onIncrease = () => {
-        setNumber(number * 2);
+
+                } else {
+                    console.log('실패');
+                }
+            }
+        });
+    },[Member,Update]);
+
+
+    // ========즐겨찾기 상품 장바구니에 담기===============//
+
+    // 6. 장바구니 추가 이벤트
+    const goCart = () => {
+        let goForm = WishList.filter((val) => val.goods_cart_chk);
+        // 반복문
+        goForm.map(items=>(
+            axios.post('http://49.50.162.86:80/ajax/UTIL_cart.php',{
+                act_type            : 'save_cart',
+                goods_uid           : items.goods_uid,           // 상품 uid
+                mem_uid             : Member,                    // 회원 uid
+                ord_cnt             :  '1'
+            },{
+                headers: {
+                    'Content-type': 'multipart/form-data'
+                }
+            }).then((res)=>{
+                if(res) {
+                    const {result, order_uid} = res.data;
+                    console.log(result);
+                    if(result === 'OK') {
+                        console.log(order_uid);
+                    } else {
+                        console.log('실패');
+                        return;
+                    }
+                } else {
+
+                }
+            })
+        ));
+
+        alert('장바구니에 추가하였습니다. ');
+        navigation.navigate('장바구니');
+
     }
 
-    const onDecrease = () => {
-        setNumber(number - 1);
+
+
+    // 4. ================상품체크시 상태변경=======================
+    const goChk = (uid) => {
+        let temp = WishList.map((val) => {
+            if (uid === val.goods_uid) {
+                return {...val, goods_cart_chk: !val.goods_cart_chk,};
+            }
+            return val;
+        });
+        setWishList(temp);
     }
 
-    console.log(state);
+    // ===========5. 즐겨찾기에서 삭제========================
+    const delWish = (uid) => {
+        // 즐겨찾기 상품리스트 가져오기
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
+            act_type        : "set_my_zzim",
+            login_status    : "Y",
+            mem_uid         : Member,
+            link_uid        : uid,
+        },{
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            if(res) {
+                const {result, my_zzim_flag} = res.data;
+                if(result === 'OK') {
+                    console.log('연결');
+                }
+                if(my_zzim_flag === 'N') {
+                    alert('즐겨찾기에서 삭제하였습니다.');
+                } else {
+                    console.log('실패');
+                }
+            }
+        });
+
+        let temp = WishList.map((val) => {
+            if (uid === val.goods_uid) {
+                return {...val, goods_wish_chk: !val.goods_wish_chk,};
+            }
+            return val;
+        });
+        setWishList(temp);
+
+    }
+
+
+    console.log('1차 카테고리 리스트 / ', Cate1st);
+    // console.log('즐겨찾기 추가 리스트  / ', WishList);
+
+
+    // 체크한 상품 버튼 생성
+    let goForm = WishList.filter((val) => val.goods_cart_chk);
 
     return (
         <>
@@ -121,116 +238,135 @@ export default function Wishlist({navigation,route}) {
                     </View>
                     <View style={[styles.cartList]}>
                         <List.Section style={styles.Section}>
-
-                            {cate_list.map((items, idx) =>
-
-                                <List.Accordion
-                                    style={styles.Accordion_tit}
-                                    title={[items,idx+1]}
-                                    key={idx}
-                                    expanded={(idx+1 === 1) ? expanded:''}
-                                    onPress={handlePress}
-                                    left={ props =>  <Checkbox style={styles.all_check} value={isChecked} onValueChange={setChecked}  color={"#4630eb"}  />}
-                                >
-                                    <View style={styles.Accordion_items}>
-                                        {Cate_List2.map((val,idx)=>
-                                            <View style={styles.cate_goods_list_item}>
-                                                <View style={[flex_top]}>
-                                                    <View style={[styles.flex_item,styles.flex_item1]}>
-                                                        <Image style={styles.cate_list_Thumbnail} source={goods_img_1}/>
-                                                        <View style={styles.goods_like}>
-                                                            <Image style={styles.goods_like_icon} source={goods_like}/>
-                                                        </View>
-                                                    </View>
-                                                    <View style={[styles.flex_item,styles.flex_item2]}>
-                                                        <View style={[flex_between,align_items_center,pb2]}>
-                                                            <View style={[wt8]}>
-                                                                <TouchableOpacity style="" onPress={() => {navigation.navigate('상품상세')}}>
-                                                                    {/*========상품명========*/}
-                                                                    <Text style={styles.cate_2st_btn_txt} numberOfLines={1}>{val.goods_name}</Text>
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                            <View style={[wt2,d_flex,justify_content_end]}>
-                                                                {(val.goods_cart_chk) ? (
-                                                                    // 체크시에 노출
-                                                                    <View style={[btn_circle, bg_primary]}>
-                                                                        <Checkbox style={styles.btn_cart} value={val.goods_cart_chk}
-                                                                                  onValueChange={() => {
-                                                                                      goChk(val.goods_uid)
-                                                                                  }}/>
-                                                                        <View style={{
-                                                                            flex: 1,
-                                                                            alignItems: "center",
-                                                                            justifyContent: "center"
-                                                                        }}>
-                                                                            <Chk width={16} height={22}></Chk>
+                            {/*=============1차 카테고리 항목==============*/}
+                            {Cate1st.map((val,idx)=>(
+                                <>
+                                    <List.Accordion key={idx} title={val.cfg_val1} style={[container, styles.Accordion_tit]}>
+                                        {/*=================즐겨찾기 리스트 출력-================*/}
+                                        {WishList.map((val)=>(
+                                            <>
+                                                {(val.goods_wish_chk) ? (
+                                                    <View key={idx} style={[styles.cate_goods_list]}>
+                                                        <View style={styles.cate_goods_list_item}>
+                                                            {/**/}
+                                                            <View style={[flex_top,{paddingLeft:15, paddingRight:15,}]}>
+                                                                <View style={[styles.flex_item, styles.flex_item1]}>
+                                                                    <View style={[styles.cate_list_Thumbnail_box]}>
+                                                                        <Image style={styles.cate_list_Thumbnail} source={{uri:'http://www.zazaero.com'+val.list_img_url}}/>
+                                                                        <View style={styles.goods_like}>
+                                                                            {/*=============찜하기=================*/}
+                                                                            <TouchableOpacity onPress={()=>delWish(val.goods_uid)}>
+                                                                                <WishIcon width={35} height={24} color={'blue'}  />
+                                                                            </TouchableOpacity>
                                                                         </View>
                                                                     </View>
-                                                                ) : (
-                                                                    // 체크가 없을시 노출
-                                                                    <View style={[btn_circle, bg_light]}>
-                                                                        <Checkbox style={styles.btn_cart} value={val.goods_cart_chk}
-                                                                                  onValueChange={() => {
-                                                                                      goChk(val.goods_uid)
-                                                                                  }}/>
-                                                                        <View style={{
-                                                                            flex: 1,
-                                                                            alignItems: "center",
-                                                                            justifyContent: "center"
-                                                                        }}>
-                                                                            <CartBag width={16} height={22}></CartBag>
+                                                                </View>
+                                                                <View style={[styles.flex_item,styles.flex_item2]}>
+                                                                    <View style={[flex_between,align_items_center,pb2]}>
+                                                                        <View style={[wt8]}>
+                                                                            <TouchableOpacity style="" onPress={() => {navigation.navigate('상품상세',{uid:val.goods_uid})}}>
+                                                                                {/*========상품명========*/}
+                                                                                <Text style={[styles.cate_2st_btn_txt,(val.goods_wish_chk_chk) ? {color:"red"}:{color:"#000"}]} numberOfLines={1}>{val.goods_name}</Text>
+                                                                            </TouchableOpacity>
+                                                                        </View>
+                                                                        <View style={[wt2,d_flex,justify_content_end]}>
+                                                                            {(val.goods_cart_chk) ? (
+                                                                                // 체크시에 노출
+                                                                                <View style={[btn_circle, bg_primary]}>
+                                                                                    <Checkbox style={styles.btn_cart} value={val.goods_cart_chk}
+                                                                                              onValueChange={() => {
+                                                                                                  goChk(val.goods_uid);
+                                                                                              }}/>
+                                                                                    <View style={{flex: 1,alignItems: "center",justifyContent: "center"}}>
+                                                                                        <Chk width={16} height={22}></Chk>
+                                                                                    </View>
+                                                                                </View>
+                                                                            ) : (
+                                                                                // 체크가 없을시 노출
+                                                                                <View style={[btn_circle, bg_light]}>
+                                                                                    <Checkbox style={styles.btn_cart} value={val.goods_cart_chk}
+                                                                                              onValueChange={() => {
+                                                                                                  goChk(val.goods_uid)
+                                                                                              }}/>
+                                                                                    <View style={{flex: 1,alignItems: "center",justifyContent: "center"}}>
+                                                                                        <CartBag width={16} height={22}></CartBag>
+                                                                                    </View>
+                                                                                </View>
+                                                                            )}
+
                                                                         </View>
                                                                     </View>
-                                                                )}
-
+                                                                    <View style={styles.flex_bottom}>
+                                                                        <View style="">
+                                                                            <Text style={styles.cate_list_disc}>4일 이내로 발주가능합니다.</Text>
+                                                                        </View>
+                                                                        <View style="">
+                                                                            <Text style={styles.cate_list_price}>{Price(val.price)}원</Text>
+                                                                        </View>
+                                                                    </View>
+                                                                </View>
                                                             </View>
-                                                        </View>
-                                                        <View style={styles.flex_bottom}>
-                                                            <View style="">
-                                                                <Text style={[h13,text_primary]}>{val.goods_guid_link}</Text>
-                                                            </View>
-                                                            <View style="">
-                                                                <Text style={styles.cate_list_price}>3,410원</Text>
-                                                            </View>
+                                                            {/**/}
                                                         </View>
                                                     </View>
-                                                </View>
-                                            </View>
-                                        )}
-
-                                        {/*    */}
-                                    </View>
-                                </List.Accordion>
-                            )}
+                                                ):(
+                                                    <></>
+                                                )}
+                                            </>
+                                        ))}
+                                    </List.Accordion>
+                                </>
+                            ))}
 
                         </List.Section>
                     </View>
                 </View>
             </ScrollView>
+            {/*========상품체크시 노출=========*/}
+            {(goForm.length > 0) ? (
+                <>
+                    <View style={[styles.go_cart, bg_primary, {paddingBottom: 36, paddingTop: 7,}]}>
+                        <TouchableOpacity onPress={goCart} >
+                            <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
+                                <View style={{
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: 50,
+                                    marginRight: 10,
+                                    backgroundColor: "#fff"
+                                }}>
+                                    <Text style={{textAlign: "center", color: "#333",}}>{goForm.length}</Text>
+                                </View>
+                                <Text style={text_light}>장바구니 가기</Text>
+                            </View>
+                            <Text style={[{textAlign: "center", color: "#FFF", fontSize: 18,}, text_light]}>
+                                수량 및 추가정보 입력
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </>
+            ) : (
+                <></>
+            )}
             <Footer navigation={navigation}/>
         </>
     );
 }
 
-function WishTest(Cate_List2) {
-    console.log(Cate_List2);
-    const [Wishlist, setWishlist] = useState([]);
-
-        return (
-            <>
-                {Cate_List2.map((val, idx) => (
-                    <>
-                        <Text style={styles.Accordion_items_link_txt}>{val.ct_tit}</Text>
-
-                    </>
-                ))}
-            </>
-        );
-
-}
-
 
 const styles = StyleSheet.create({
+
+    go_cart: {
+        paddingBottom: 36,
+        paddingTop: 7,
+        position: "absolute",
+        left: 0,
+        bottom: 0,
+        zIndex: 50,
+        textAlign: "center",
+        width: "100%",
+    },
+
     all_check:{
         borderRadius:5,
     },

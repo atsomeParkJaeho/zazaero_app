@@ -84,9 +84,6 @@ function Cate2nd({uid,navigation,name}) {
 export default function MainPage({navigation, route}) {
 
 
-
-
-
     // 1. 1차 카테고리 추출
     const [Cate1st, setCate1st] = useState([]);   // 1차 카테고리 설정
     // 아코디언 설정

@@ -332,6 +332,9 @@ export const cancel_d_List = [
 ];
 
 
+
+
+
 // =================가격표 설정=====================//
 export const Price = (text) => {
     return String(text).replace(/\B(?=(\d{3})+(?!\d))/g, ",");

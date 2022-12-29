@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
     StyleSheet,
     Text,
@@ -40,6 +40,7 @@ export default function Login({navigation, route}) {
 
     const [Member, setMember] = useState();
 
+
     useEffect(() => {
         AsyncStorage.getItem('member').then((value) => {
             if (value) {
@@ -51,7 +52,10 @@ export default function Login({navigation, route}) {
     console.log('회원코드 / ', Member);
 
 
-    const [isChecked, setChecked] = useState(false);
+    const ChkValue = useRef([]);
+
+
+
 
     // 1. data로 넘길 status 셋팅
     const [Login, setLogin] = useState({    // 로그인상태 셋팅
@@ -95,7 +99,7 @@ export default function Login({navigation, route}) {
             if (res) {
                 const {result, mem_uid} = res.data;
                 if (result === 'OK') {
-                    alert('로그인');
+                    Alert.alert('로그인');
                     AsyncStorage.setItem('member', mem_uid);
                     //reloadAsync();
                     navigation.replace('메인페이지');
@@ -125,29 +129,37 @@ export default function Login({navigation, route}) {
 
         return ready ? <Loading/> : (
             <>
-                <KeyboardAvoidingView style={[styles.avoidingView]}
-                                      behavior={Platform.select({ios: 'padding',android:'padding'})}>
+                <KeyboardAvoidingView style={[styles.avoidingView]} behavior={Platform.select({ios: 'padding'})}>
                     <View style={[sub_page, styles.login]}>
                         <View style={[container]}>
+                            {/*자재로 로고*/}
                             <View style={[flex,justify_content_center,mb5]}>
                                 <Logo width={191} height={51} />
-                            </View>
-
-                            {/*자재로 로고*/}
-                            <View style={styles.formGroup}>
-                                <View style={styles.inputGroup}>
-                                    <Text style={styles.inputTopText}>아이디</Text>
-                                    <TextInput style={[input]} onChangeText={(mem_id) => goInput("mem_id", mem_id)}
-                                               value={Login.mem_id} placeholder="아이디를 입력해주세요"/>
-                                </View>
                             </View>
                             {/*아이디 입력창*/}
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
+                                    <Text style={styles.inputTopText}>아이디</Text>
+                                    <TextInput style={[input]} onChangeText={(mem_id) => goInput("mem_id", mem_id)}
+                                    value={Login.mem_id} placeholder="아이디를 입력해주세요"
+                                    ref={value=>(ChkValue.current[0] = value)}
+                                    onSubmitEditing={()=>ChkValue.current[1].focus()}
+                                    autoCapitalize="none"
+                                    returnKeyType="next"
+                                    />
+                                </View>
+                            </View>
+                            <View style={styles.formGroup}>
+                                <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>비밀번호</Text>
                                     <TextInput style={[input]} secureTextEntry={true}
-                                               onChangeText={(mem_pw) => goInput("mem_pw", mem_pw)} value={Login.mem_pw}
-                                               placeholder="비밀번호를 입력해주세요."/>
+                                     onChangeText={(mem_pw) => goInput("mem_pw", mem_pw)} value={Login.mem_pw}
+                                     placeholder="비밀번호를 입력해주세요."
+                                     ref={value=>(ChkValue.current[1] = value)}
+                                     onSubmitEditing={goLogin}
+                                     autoCapitalize="none"
+                                     returnKeyType="done"
+                                    />
                                 </View>
                             </View>
 

@@ -336,7 +336,7 @@ export default function Cart({route, navigation}) {
                             (val.goods_Cart) ? (
                                 <>
                                     <View key={val.ind_cfg_uid}
-                                          style={[styles.pb_2, {padding: 15}]}>
+                                          style={[styles.pb_2, {padding: 15, borderColor:"#e0e0e0"}]}>
                                         {/*================자재명==============*/}
                                         <View
                                             style={[flex_between, styles.pd_18]}>
@@ -442,7 +442,7 @@ export default function Cart({route, navigation}) {
                                             />
                                         </View>
                                         {(val.goods_option_chk) && (
-                                            <TextInput style={textarea} multiline={true} numberOfLines={4}/>
+                                            <TextInput style={[textarea]} multiline={true} numberOfLines={4}/>
                                         )}
                                     </View>
                                 </>
@@ -487,6 +487,7 @@ export default function Cart({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+
     go_cart: {
         paddingBottom: 36,
         paddingTop: 7,
@@ -526,7 +527,7 @@ const styles = StyleSheet.create({
     Accordion_tit: {
         backgroundColor: "#f9f9fb",
         borderBottomWidth: 1,
-        borderColor: "#ededf1",
+        borderColor: "#f0f0f0",
     },
     Accordion_items: {
         paddingVertical: 10,

@@ -15,8 +15,12 @@ import {sub_page} from '../../common/style/SubStyle';
 
 
 
-export default function FindId({navigation,route}) {
+export default function FindId({route ,navigation}) {
 
+    console.log('아이디 확인');
+    
+    // 인증 전달값
+    let mem_info = route.params.mem_id;
 
     return   (
         <>
@@ -25,7 +29,7 @@ export default function FindId({navigation,route}) {
                     <View style={styles.center_middle}>
                         <Text style={styles.FindId_txt}>
                             가입시 아이디는 {'\n'}
-                            아이디값표출 입니다.
+                            {mem_info.mem_id} 입니다.
                         </Text>
                         <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={() => {navigation.navigate('로그인')}}>
                             <Text style={[text_primary,text_center,pt1,pb1,h20]}>닫기</Text>
