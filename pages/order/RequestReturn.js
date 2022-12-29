@@ -1,7 +1,18 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Button, CheckBox, Text, TextInput, View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {
+    StyleSheet,
+    Button,
+    CheckBox,
+    Text,
+    TextInput,
+    View,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    Pressable
+} from 'react-native';
 import Checkbox from 'expo-checkbox';
-
+import * as ImagePicker from 'expo-image-picker';
 
 // 공통 CSS 추가
 import {
@@ -38,6 +49,35 @@ export default function RequestReturn({navigation, route}) {
 
     const [isChecked, setChecked] = useState(true);
     const [isChecked2, setChecked2] = useState(false);
+
+    const [imageUrl, setimageUrl] = useState('');
+    //권한 요청을 위한 hooks
+    const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
+
+    const uploadImage = async () => {
+        //권한 확인 코드 : 권한 없으면 물어보고, 승인하지 않으면 함수종료
+        if (!status.granted){
+            const permission = await requestPermission();
+            if (!permission.granted){
+                return null;
+            }
+        }
+        //이미지 업로드 가능
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing : false,
+            quality: 1,
+            aspect:[1,1]
+        });
+        if (result.cancelled){
+            return null; //이미지 업로드 취소한 경우
+        }
+        //이미지 업로드 결과 및 이미지 경로 업데이트
+        console.log('이미지경로 : '+ result.uri);
+
+        setimageUrl(result.uri);
+
+    }
 
     return (
         <>
@@ -98,11 +138,14 @@ export default function RequestReturn({navigation, route}) {
                             <Text style={[mb1]}>반품 자재 사진 등록</Text>
                         </View>
                         <View  style={[]} >
-                            <TouchableOpacity style={[styles.camera_line]}>
+                            <Pressable style={[styles.upload_btn]} onPress={uploadImage}>
                                 <View  style={[pos_center]} >
-                                    <CameraIcon width={28} height={23}/>
+                                    <CameraIcon width={30} height={24}/>
                                 </View>
-                            </TouchableOpacity>
+                            </Pressable>
+                            <View  style={[mt2,styles.upload_box]} >
+                                <Image style={styles.upload_img} source={{uri: imageUrl}}/>
+                            </View>
                         </View>
                     </View>
                     {/*==============반품사진 등록==============*/}
@@ -154,6 +197,18 @@ const styles = StyleSheet.create({
         height:75,
         borderColor:"#EDEDF1",
         position:"relative",
-    }
+    },
+    upload_box:{
+        borderWidth:1,
+        width:"100%",
+        height:300,
+        position:"relative",
+    },
+    upload_img:{
+        resizeMode:"contain",
+        width:"100%",
+        height:'100%',
+
+    },
 });
 

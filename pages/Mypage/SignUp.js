@@ -1,15 +1,18 @@
 import React,{useState,useEffect} from 'react';
-import { StyleSheet, Button,   Text, TextInput, View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import { StyleSheet, Button,   Text, TextInput, View, Image, TouchableOpacity, ScrollView,Pressable} from 'react-native';
 import Checkbox from 'expo-checkbox';
 import {SelectList} from "react-native-dropdown-select-list";
+import * as ImagePicker from 'expo-image-picker';
+
 //로딩화면
 import Loading from '../../components/Loading';
 
 // 공통 CSS 추가
-import {container, bg_white, flex, input, pos_center, pe1, me1, me2, pe2} from '../../common/style/AtStyle';
+import {container, bg_white, flex, input, pos_center, pe1, me1, me2, pe2, mt2} from '../../common/style/AtStyle';
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
 import axios from "axios";
 import {AddrMatch, Minlangth, regId,regPW} from "../../util/util";
+import CameraIcon from "../../icons/camera_icon.svg";
 
 export default function SignUp({navigation,route}) {
 
@@ -38,7 +41,51 @@ export default function SignUp({navigation,route}) {
         privacy_3       :"N",  // 전자금율거래 이용약관
         privacy_4       :"N",  // 제3자 개인정보수집 동의
         privacy_5       :"N",  // 홍보 및 마케팅 이용 동의
+
     });
+
+    const [imageUrl, setimageUrl] = useState({
+        Businesslicense :'',    //사업자등록증
+        CopyBankbook    :'',    //통장사본
+    });
+    //권한 요청을 위한 hooks
+    const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
+
+    const uploadImage = async (keyValue) => {
+        //권한 확인 코드 : 권한 없으면 물어보고, 승인하지 않으면 함수종료
+        if (!status.granted){
+            const permission = await requestPermission();
+            if (!permission.granted){
+                return null;
+            }
+        }
+        //이미지 업로드 가능
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing : false,
+            quality: 1,
+            aspect:[1,1]
+        });
+        if (result.cancelled){
+            return null; //이미지 업로드 취소한 경우
+        }
+        //이미지 업로드 결과 및 이미지 경로 업데이트
+        console.log('keyvalue : '+keyValue);
+        console.log('이미지경로 : '+ result.uri);
+        if (keyValue === 'Businesslicense'){
+            setimageUrl({
+                ...imageUrl,
+                Businesslicense    : result.uri,
+            });
+        }
+        if (keyValue === 'CopyBankbook'){
+            setimageUrl({
+                ...imageUrl,
+                CopyBankbook    : result.uri,
+            });
+        }
+    }
+
 
     // 다음api 주소 찾기
 
@@ -252,7 +299,7 @@ export default function SignUp({navigation,route}) {
     ) ? true : false;
 
 
-    console.log(SignUpContent);
+    //console.log(SignUpContent);
     console.log(selected);
 
     return (
@@ -387,6 +434,38 @@ export default function SignUp({navigation,route}) {
                             </View>
                         </View>
                         {/*사업장 주소 입력창*/}
+                        <View style={styles.formGroup}>
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.inputTopText}>사업자 등록증</Text>
+
+                                <Pressable style={[styles.upload_btn]} onPress={(Businesslicense=>uploadImage('Businesslicense',Businesslicense))}>
+                                    <View  style={[pos_center]} >
+                                        <CameraIcon width={30} height={24}/>
+                                    </View>
+                                </Pressable>
+                                <View  style={[mt2,styles.upload_box]} >
+                                    <Image style={styles.upload_img} source={{uri: imageUrl.Businesslicense}}/>
+                                </View>
+
+                            </View>
+                        </View>
+                        {/*사업자 등록증 업로드*/}
+                        <View style={styles.formGroup}>
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.inputTopText}>통장사본</Text>
+
+                                <Pressable style={[styles.upload_btn]} onPress={(CopyBankbook=>uploadImage('CopyBankbook',CopyBankbook))}>
+                                    <View  style={[pos_center]} >
+                                        <CameraIcon width={30} height={24}/>
+                                    </View>
+                                </Pressable>
+                                <View  style={[mt2,styles.upload_box]} >
+                                    <Image style={styles.upload_img} source={{uri: imageUrl.CopyBankbook}}/>
+                                </View>
+
+                            </View>
+                        </View>
+                        {/*통장사본 업로드*/}
                     </View>
 
                     <View style={[gray_bar]}/>
@@ -619,5 +698,21 @@ const styles = StyleSheet.create({
         borderRadius:0,
         minHeight:36,
         height:36,
+    },
+    upload_btn:{
+        backgroundColor:"#ddd",
+        borderRadius:5,
+        height:40,
+    },
+    upload_box:{
+        borderWidth:1,
+        width:"100%",
+        height:300,
+        position:"relative",
+    },
+    upload_img:{
+       resizeMode:"contain",
+        width:"100%",
+        height:'100%',
     },
 });
