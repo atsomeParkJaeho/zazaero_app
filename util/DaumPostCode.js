@@ -6,8 +6,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function DaumPostCode({route, navigation}) {
 
-
     const {order_uid, page} = route.params;
+
 
     const getAddressData = data => {
         let defaultAddress = ''; // 기본주소
@@ -16,8 +16,6 @@ function DaumPostCode({route, navigation}) {
         } else {
             defaultAddress = data.buildingName;
         }
-
-        // console.log(data);
         navigation.navigate(`${page}`,{
             order_uid   :order_uid,
             zonecode    :data.zonecode,

@@ -138,7 +138,7 @@ const StackNavigator = () => {
                 <Stack.Screen name="비밀번호 찾기결과" options={{title:'비밀번호 찾기'}} component={FindPwResult}/>
                 <Stack.Screen name="약관/개인정보처리방침" component={Provision}/>
 
-                <Stack.Screen name="상품목록" component={GoodsCateList}/>
+                <Stack.Screen name="상품목록" component={GoodsCateList} />
                 <Stack.Screen name="상품상세" component={GoodsDetail}/>
                 <Stack.Screen name="발주내역" component={Order}/>
                 <Stack.Screen name="발주상세" component={OrderDetail}/>

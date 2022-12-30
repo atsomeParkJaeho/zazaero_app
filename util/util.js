@@ -1,9 +1,10 @@
 import {LocaleConfig} from "react-native-calendars/src/index";
 import 'moment/locale/ko';
-export const regPW = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
+import {Alert} from "react-native";
 export const regId = /^[a-z0-9_]{4,20}$/;
 export const Minlangth = 6;
 
+export const regPW = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
 
 // 시간 변경 포맷
 
@@ -335,6 +336,8 @@ export const cancel_d_List = [
 
 
 
+
+
 // =================가격표 설정=====================//
 export const Price = (text) => {
     return String(text).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -357,8 +360,7 @@ export const OnlyNum = (text) => {
 };
 // =================영어만 입력 가능===============//
 export const OnlyEng = (text) => {
-    const val = text.target.value;
-    val.replace(/[^A-Za-z]/ig, '');
+    return String(text).replace(/[^A-Za-z0-9]/ig, '');
 }
 
 export const bankAccount = ["자재로(이정완)_국민은행 1234-23-5968714"];

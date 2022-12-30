@@ -7,6 +7,8 @@ import CartBag from "../../icons/cart_bag.svg";
 import WishlistNon from "../../icons/ico_heart_nc.svg";
 import Wishlist from "../../icons/ico_heart_c.svg";
 import Chk from "../../icons/chk.svg";
+import Search from '../../icons/search.svg';
+import NotificationIcon from "../../icons/Notification_icon.svg";
 
 
 import goods_img_1 from '../../assets/img/goods_img_1.png';
@@ -27,6 +29,9 @@ import {
     justify_content_center, justify_content_end,
     min_height, pb2,
     sub_page,
+    me1,
+    ms1,
+    flex,
     text_light, text_primary, wt2, wt8
 } from "../../common/style/AtStyle";
 import axios from "axios";
@@ -58,7 +63,16 @@ export default function GoodsCateList({route,navigation}) {
     const headerRight = () => {
         return (
             <>
-                <View></View>
+                <View style={[flex,me1]}>
+                    <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
+                        <Search width={30} height={21} style={[styles.icon]}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.link_signUp} onPress={() => {
+                        navigation.navigate('알림')
+                    }}>
+                        <NotificationIcon width={30} height={21} style={[styles.icon, ms1]}/>
+                    </TouchableOpacity>
+                </View>
             </>
         );
     }
@@ -68,7 +82,7 @@ export default function GoodsCateList({route,navigation}) {
         setCateActive(Cate2ndUid); // 카테고리 값 설정
         navigation.setOptions({
             title:name,     // 상단 설정
-
+            headerRight:headerRight,
         });
         // 상품 불러오기
         let cate2 = {
