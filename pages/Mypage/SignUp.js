@@ -12,7 +12,7 @@ import {
     Alert
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
-import {SelectList} from "react-native-dropdown-select-list";
+import RNPickerSelect from 'react-native-picker-select';
 import * as ImagePicker from 'expo-image-picker';
 
 //로딩화면
@@ -42,6 +42,7 @@ export default function SignUp({route, navigation}) {
         com_name        :'',            // 회사명
         mem_mobile      :'',            // 담당자 전화번호
         com_biz_no      :'',            // 사업자번호
+        road_address    :'',            // 지역코드
         zonecode        :'',            // 우편번호
         addr1           :'',            // 주소
         addr2           :'',            // 상세주소
@@ -350,7 +351,13 @@ export default function SignUp({route, navigation}) {
                         <View style={styles.formGroup}>
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>지역</Text>
-                                <SelectList/>
+                                <View style={{padding:10,borderColor:"#ededf1",borderWidth:1,}}>
+                                    <RNPickerSelect
+                                        placeholder={{label:"지역을 선택해주세요.", value:null}}
+                                        // onValueChange={(road_address) => goInput('road_address',road_address)}
+                                        items={AddrMatch}
+                                    />
+                                </View>
                             </View>
                         </View>
                         <View style={styles.formGroup}>
@@ -495,8 +502,13 @@ export default function SignUp({route, navigation}) {
                                         onValueChange={(privacy_1) => privacyChk('privacy_1',privacy_1)}
                                         value={SignUp.privacy_1}
                                         ref={val=> (Chkinput.current[10] = val)}
-                                        style={styles.checkbox} color={"#4630eb"}
+                                        style={[styles.checkbox]} color={"#4630eb"}
                                         />
+                                        {/*<Checkbox*/}
+                                        {/*onValueChange={(privacy_1) => privacyChk('privacy_1',privacy_1)}*/}
+                                        {/*value={SignUp.privacy_1}*/}
+                                        {/*style={styles.Chk} color={"#4630eb"}*/}
+                                        {/*/>*/}
                                         <Text style={styles.privacy_list_flex_item_txt}>서비스 이용약관 <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
@@ -599,7 +611,7 @@ const styles = StyleSheet.create({
         padding:16,
         width:"100%",
     },
-
+    Chk:{opacity:0, position:"absolute", zIndex:99, width:"100%", right:0, top:0},
     flex:{
       flexDirection:"row",
       alignItems:"center",
