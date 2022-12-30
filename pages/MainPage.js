@@ -117,8 +117,6 @@ export default function MainPage({navigation, route}) {
 
     console.log('1차 카테고리', Cate1st);
 
-
-
     return (
         /*
           return 구문 안에서는 {슬래시 + * 방식으로 주석
@@ -154,6 +152,7 @@ export default function MainPage({navigation, route}) {
                     preview={false}
                     autoPlay={false}
                     timer={1000}
+                    indicatorContainerStyle={{top: 0}}
                 />
 
 

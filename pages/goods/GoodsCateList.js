@@ -7,8 +7,6 @@ import CartBag from "../../icons/cart_bag.svg";
 import WishlistNon from "../../icons/ico_heart_nc.svg";
 import Wishlist from "../../icons/ico_heart_c.svg";
 import Chk from "../../icons/chk.svg";
-import Search from '../../icons/search.svg';
-import NotificationIcon from "../../icons/Notification_icon.svg";
 
 
 import goods_img_1 from '../../assets/img/goods_img_1.png';
@@ -23,19 +21,18 @@ import {
     bg_white,
     btn_circle,
     container,
-    d_flex, flex_between,
+    d_flex, flex, flex_between,
     flex_top, h13,
     h18,
     justify_content_center, justify_content_end,
-    min_height, pb2,
+    min_height, ms1, pb2,
     sub_page,
-    me1,
-    ms1,
-    flex,
     text_light, text_primary, wt2, wt8
 } from "../../common/style/AtStyle";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Search from "../../icons/search.svg";
+import NotificationIcon from "../../icons/Notification_icon.svg";
 
 
 
@@ -63,7 +60,7 @@ export default function GoodsCateList({route,navigation}) {
     const headerRight = () => {
         return (
             <>
-                <View style={[flex,me1]}>
+                <View style={flex}>
                     <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
                         <Search width={30} height={21} style={[styles.icon]}/>
                     </TouchableOpacity>
@@ -451,8 +448,8 @@ const styles = StyleSheet.create({
     },
     goods_like: {
         position: "absolute",
-        right: "5%",
-        bottom: 5,
+        right: "1%",
+        bottom: 1,
     },
     cate_1st_btn: {
         padding: 12,
