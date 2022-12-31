@@ -232,17 +232,12 @@ export default function Wishlist({route,navigation}) {
     return (
         <>
             <ScrollView style={[bg_white]}>
-                <View style={[styles.Cart]}>
-                    <View style={[container]}>
-
-                    </View>
-
-                    {/*=============1차 카테고리 항목==============*/}
+                <View style={[styles.Wishlist]}>
                     {/*=================즐겨찾기 리스트 출력-================*/}
                     {WishList.map((val,idx)=>(
                         <>
                             {(val.goods_wish_chk) ? (
-                                <View key={idx} style={[styles.cate_goods_list]}>
+                                <View key={idx+1} style={[styles.cate_goods_list]}>
                                     <View style={styles.cate_goods_list_item}>
                                         {/**/}
                                         <View style={[flex_top,{paddingLeft:15, paddingRight:15,}]}>
@@ -346,7 +341,6 @@ export default function Wishlist({route,navigation}) {
 
 
 const styles = StyleSheet.create({
-
     go_cart: {
         paddingBottom: 36,
         paddingTop: 7,
@@ -357,7 +351,6 @@ const styles = StyleSheet.create({
         textAlign: "center",
         width: "100%",
     },
-
     all_check:{
         borderRadius:5,
     },
@@ -378,12 +371,6 @@ const styles = StyleSheet.create({
         paddingHorizontal:16,
         paddingLeft:16,
     },
-    pd_18:{
-        paddingBottom:18,
-    },
-    pd_20:{
-        paddingBottom:20,
-    },
     flex:{
         flexDirection:"row",
         alignItems:"flex-start",
@@ -397,14 +384,8 @@ const styles = StyleSheet.create({
     },
     goods_like:{
         position:"absolute",
-        right:"20%",
-        bottom:"10%",
-    },
-    cate_1st_btn:{
-        padding:12,
-    },
-    cate_1st_btn_txt:{
-        fontSize:16,
+        right:"0%",
+        bottom:"1%",
     },
     cate_2st_list:{
         flexDirection:"row",
@@ -412,7 +393,6 @@ const styles = StyleSheet.create({
         alignItems:"center",
         borderTopWidth:2,
         borderColor:"#ddd",
-
     },
     cate_2st_btn:{
         padding:6,
@@ -422,7 +402,7 @@ const styles = StyleSheet.create({
         borderColor:"#ddd",
     },
     cate_2st_btn_txt:{
-        fontSize:14,
+        fontSize: Platform.OS === 'ios' ? 14 : 13,
     },
     cate_goods_list_item:{
         paddingVertical:26,
@@ -440,7 +420,7 @@ const styles = StyleSheet.create({
     cart_btn:{
         width:36,
         lineHeight:36,
-        fontSize:18,
+        fontSize: Platform.OS === 'ios' ? 18 : 17,
         backgroundColor:"#ededf1",
         color:"#696a81",
         borderRadius:50,
@@ -457,10 +437,10 @@ const styles = StyleSheet.create({
         justifyContent:"space-between",
     },
     cate_list_disc:{
-        fontSize:14,
+        fontSize: Platform.OS === 'ios' ? 14 : 13,
     },
     cate_list_price:{
-        fontSize:18,
+        fontSize: Platform.OS === 'ios' ? 18 : 17,
         fontWeight:"600",
         color:"#222",
     },

@@ -398,6 +398,7 @@ export default function GoodsCateList({route,navigation}) {
 }
 
 const styles = StyleSheet.create({
+
     go_cart: {
         paddingBottom: 36,
         paddingTop: 7,
@@ -423,9 +424,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
 
-    GoodsCateList: {
-        backgroundColor: "#fff",
-    },
+
     container: {
         //앱의 배경 색
         backgroundColor: '#fff',
@@ -464,7 +463,6 @@ const styles = StyleSheet.create({
         borderTopWidth: 2,
         borderColor: "#EDEDF1",
         borderBottomWidth: 8,
-
     },
     cate_2st_btn: {
         padding: 6,

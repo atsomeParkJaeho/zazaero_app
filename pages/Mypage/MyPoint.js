@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
       paddingHorizontal:20,
     },
     MyPoint_title:{
-        fontSize:16,
+        fontSize: Platform.OS === 'ios' ? 16 : 15,
         lineHeight:24,
         color:"#333",
     },
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
         color:"#B1B2C3",
     },
     MyPoint_Score:{
-        fontSize:16,
+        fontSize: Platform.OS === 'ios' ? 16 : 15,
         lineHeight:24,
     },
     MyPoint_Score_p:{
