@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-around",
     },
     toptitle: {
-        fontSize: 18,
+        fontSize: Platform.OS === 'ios' ? 18 : 17,
         fontWeight: "700",
         color: "#222",
     },
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
 
     },
     mypageList_name: {
-        fontSize: 20,
+        fontSize: Platform.OS === 'ios' ? 20 : 19,
         color: "#08052f",
         fontFamily: "Amatic-Bold",
         fontWeight: "700",
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
         fontWeight: "700",
     },
     title: {
-        fontSize: 30,
+        fontSize: Platform.OS === 'ios' ? 30 : 29,
         fontWeight: "700",
         color: "#fff",
         paddingLeft: 30,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     },
     desc01: {
         textAlign: "center",
-        fontSize: 20,
+        fontSize: Platform.OS === 'ios' ? 20 : 19,
         fontWeight: "700",
         paddingLeft: 22,
         paddingRight: 22
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     },
     desc02: {
         textAlign: "center",
-        fontSize: 15,
+        fontSize: Platform.OS === 'ios' ? 15 : 14,
         fontWeight: "700",
         padding: 22
     },
@@ -135,13 +135,8 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: "#fff",
-        fontSize: 15,
+        fontSize: Platform.OS === 'ios' ? 15 : 14,
         fontWeight: "700"
-    },
-    mypageListItem: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
     },
     mypageList: {
         marginTop: 30,
@@ -149,18 +144,17 @@ const styles = StyleSheet.create({
     mypageListItem: {
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: "center",
         paddingTop: 16,
         paddingBottom: 16,
         paddingLeft: 20,
         paddingRight: 20,
         borderBottomWidth: 1,
         borderColor: '#ededf1',
-    },
-    mypageList_name: {
-        fontSize: 16,
+        fontSize: Platform.OS === 'ios' ? 16 : 15,
     },
     csphone: {
-        fontSize: 14,
+        fontSize: Platform.OS === 'ios' ? 14 : 13,
         color: '#3d40e0',
     },
 })

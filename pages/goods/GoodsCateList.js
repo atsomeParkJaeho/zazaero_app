@@ -24,7 +24,7 @@ import {
     d_flex, flex, flex_between,
     flex_top, h13,
     h18,
-    justify_content_center, justify_content_end,
+    justify_content_center, justify_content_end, me1,
     min_height, ms1, pb2,
     sub_page,
     text_light, text_primary, wt2, wt8
@@ -60,7 +60,7 @@ export default function GoodsCateList({route,navigation}) {
     const headerRight = () => {
         return (
             <>
-                <View style={flex}>
+                <View style={[flex,me1]}>
                     <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
                         <Search width={30} height={21} style={[styles.icon]}/>
                     </TouchableOpacity>
@@ -398,6 +398,7 @@ export default function GoodsCateList({route,navigation}) {
 }
 
 const styles = StyleSheet.create({
+
     go_cart: {
         paddingBottom: 36,
         paddingTop: 7,
@@ -423,9 +424,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
 
-    GoodsCateList: {
-        backgroundColor: "#fff",
-    },
+
     container: {
         //앱의 배경 색
         backgroundColor: '#fff',
@@ -455,7 +454,7 @@ const styles = StyleSheet.create({
         padding: 12,
     },
     cate_1st_btn_txt: {
-        fontSize: 16,
+        fontSize: Platform.OS === 'ios' ? 16 : 15,
     },
     cate_2st_list: {
         flexDirection: "row",
@@ -464,7 +463,6 @@ const styles = StyleSheet.create({
         borderTopWidth: 2,
         borderColor: "#EDEDF1",
         borderBottomWidth: 8,
-
     },
     cate_2st_btn: {
         padding: 6,
@@ -474,7 +472,7 @@ const styles = StyleSheet.create({
         borderColor: "#ddd",
     },
     cate_2st_btn_txt: {
-        fontSize: 14,
+        fontSize: Platform.OS === 'ios' ? 14 : 13,
     },
     cate_goods_list_item: {
         paddingVertical: 26,
@@ -513,10 +511,10 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     cate_list_disc: {
-        fontSize: 14,
+        fontSize: Platform.OS === 'ios' ? 14 : 13,
     },
     cate_list_price: {
-        fontSize: 18,
+        fontSize: Platform.OS === 'ios' ? 18 : 17,
         fontWeight: "600",
         color: "#222",
     },

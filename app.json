@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "expo-zazero-app",
+    "name": "자재로",
     "slug": "expo-zazero-app",
     "sdkVersion": "46.0.0",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/zazero_icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -27,11 +27,12 @@
       ]
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.koreajason.expozazeroapp"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/zazero_icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.koreajason.expozazeroapp"

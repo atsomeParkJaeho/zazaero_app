@@ -291,10 +291,10 @@ export default function GoodsDetail({route,navigation}) {
             <View style={[]}>
                 <View style={[flex_around]}>
                     <TouchableOpacity style={styles.btn} onPress={() => goForm('cart',GoodsDetail.goods_uid)}>
-                        <Text style={[btn_primary,styles.center]}>장바구니</Text>
+                        <Text style={[btn_primary,styles.center]}>장바구니 담기</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>
-                        <Text style={[btn_black,styles.center]}>구매하기</Text>
+                        <Text style={[btn_black,styles.center]}>장바구니 가기</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
         paddingVertical:20,
     },
     GoodsDetail_title:{
-        fontSize:18,
+        fontSize: Platform.OS === 'ios' ? 18 : 16,
         fontWeight:"500",
         color:"#333",
         lineHeight:27,
@@ -344,13 +344,13 @@ const styles = StyleSheet.create({
         borderBottomWidth:0,
     },
     GoodsDetail_info_txt:{
-        fontSize:14,
+        fontSize: Platform.OS === 'ios' ? 14 : 13,
         color:"#333",
         lineHeight:24,
         textAlign:"right",
     },
     GoodsDetail_info_txt_val:{
-        fontSize:15,
+        fontSize: Platform.OS === 'ios' ? 15 : 14,
         lineHeight:24,
         fontWeight:"500",
         textAlign:"right",
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
         textAlign:"center",
     },
     GoodsDetail_total_price:{
-        fontSize:24,
+        fontSize: Platform.OS === 'ios' ? 24 : 23,
         lineHeight:27,
         fontWeight:"500",
         color:"#3D40E0",
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
 
     },
     button_txt:{
-        fontSize:14,
+        fontSize: Platform.OS === 'ios' ? 14 : 13,
         fontWeight:"500",
     },
     btn:{

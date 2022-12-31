@@ -28,6 +28,7 @@ import {sub_page, gray_bar} from '../../common/style/SubStyle';
 // 샘플데이터
 import {order_List} from "../../util/util";
 import axios from "axios";
+import Footer from "../Footer";
 
 
 function DeliStatus({navigation, route}) {
@@ -195,6 +196,7 @@ let test = 1;
                     <View style={[padding_bottom]} />
                 </ScrollView>
             </View>
+            <Footer navigation={navigation}/>
         </>
     );
 }

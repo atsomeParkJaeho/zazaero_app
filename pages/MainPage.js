@@ -168,6 +168,7 @@ export default function MainPage({navigation, route}) {
                             <List.Accordion style={[styles.Accordion_tit]}
                             id={`${idx+1}`}
                             title={[val.cfg_val1]}
+                                            titleStyle={{font:50}}
                             key={val.ind_cfg_uid}
                             >
                                 {/*=================2차 카테고리===============*/}
@@ -390,7 +391,7 @@ const styles = StyleSheet.create({
     },
     Accordion_items_link_txt: {
         textAlign: "center",
-        fontSize: 14,
+        fontSize: Platform.OS === 'ios' ? 14 : 12,
         lineHeight: 24,
         color: "#222",
         letterSpacing: -1,
