@@ -12,9 +12,8 @@ import {
     Alert
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
-import RNPickerSelect from 'react-native-picker-select';
 import * as ImagePicker from 'expo-image-picker';
-
+import RNPickerSelect from 'react-native-picker-select';
 //로딩화면
 import Loading from '../../components/Loading';
 
@@ -34,6 +33,7 @@ export default function SignUp({route, navigation}) {
     // 1. 상태정의
     const Chkinput = useRef([]);                // 입력값 위치 설정
     const Update   = useIsFocused();
+    const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
     const [SignUp, setSignUp] = useState({      // 회원가입 양식
         mem_id          :'',            // 아이디
         mem_pw          :'',            // 비밀번호
@@ -51,13 +51,50 @@ export default function SignUp({route, navigation}) {
         privacy_3       :false,            // 정보수집
         privacy_4       :false,            // 홍보 및 마케팅
         privacy_5       :false,            // 전자금율거래이용약관
-        img_file1       :'',            // 사업자등록증 사본
-        img_file2       :'',            // 통장사본
+        biz_paper       :'',            // 사업자등록증 사본
+        bank_paper      :'',            // 통장사본
         //
         mem_id_chk      :'N',           // 회원아이디 체크
         mem_pw_chk      :'',            // 비밀번호 확인
         all_chk         :false,
     });
+
+
+    // 첨부파일 업로드시 설정
+    const uploadImage = async (keyValue)=>{
+        //권한 확인 코드 : 권한 없으면 물어보고, 승인하지 않으면 함수종료
+        if (!status.granted){
+            const permission = await requestPermission();
+            if (!permission.granted){
+                return null;
+            }
+        }
+        //이미지 업로드 가능
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing : false,
+            quality: 1,
+            aspect:[1,1]
+        });
+        if (result.cancelled){
+            return null; //이미지 업로드 취소한 경우
+        }
+        //이미지 업로드 결과 및 이미지 경로 업데이트
+        console.log('keyvalue : '+keyValue);
+        console.log('이미지경로 : '+ result.uri);
+        if (keyValue === 'biz_paper'){
+            setSignUp({
+                ...SignUp,
+                biz_paper    : result.uri,
+            });
+        }
+        if (keyValue === 'bank_paper'){
+            setSignUp({
+                ...SignUp,
+                bank_paper    : result.uri,
+            });
+        }
+    }
 
 
 
@@ -191,6 +228,11 @@ export default function SignUp({route, navigation}) {
             return Chkinput.current[2].focus();
         }
 
+        if(SignUp.road_address === '') {  // 지역
+            Alert.alert('',`지역을 선택해주세요.`);
+            return Chkinput.current[3].focus();
+        }
+
         if(SignUp.com_name === '') {  // 업체명
             Alert.alert('',`업체명을 입력해주세요.`);
             return Chkinput.current[3].focus();
@@ -219,6 +261,14 @@ export default function SignUp({route, navigation}) {
             Alert.alert('',`담당자 연락처를 입력해주세요.`);
             return Chkinput.current[9].focus();
         }
+
+        if(SignUp.biz_paper === '') {  // 사업자 등록증 사본
+            return Alert.alert('','이미지를 추가해주세요.');
+        }
+        if(SignUp.bank_paper === '') {  // 통장사본
+            return Alert.alert('','이미지를 추가해주세요.');
+        }
+
         if(SignUp.privacy_1 === false) {  // 서비스 이용약관
 
             return Alert.alert('',`서비스 이용약관을 체크해주세요.`);
@@ -235,7 +285,7 @@ export default function SignUp({route, navigation}) {
 
             return Alert.alert('',`제3자 개인정보수집동의 체크하지 않으셨습니다.`);
         }
-        
+
 
         axios.post('http://49.50.162.86:80/ajax/UTIL_mem_reg.php',{
             act_type         :'mem_reg',
@@ -246,12 +296,13 @@ export default function SignUp({route, navigation}) {
             com_name         :SignUp.com_name,      // 회사명
             mem_mobile       :SignUp.mem_mobile,    // 담당자 연락처
             com_biz_no       :SignUp.com_biz_no,    // 사업자번호
+            road_address     :SignUp.road_address,    // 지역코드
             zonecode         :SignUp.zonecode,      // 우편번호
             addr1            :SignUp.addr1,         // 주소
             addr2            :SignUp.addr2,         // 상세주소
             //
-            img_file1        :SignUp.img_file1,     // 사업자등록증사본
-            img_file2        :SignUp.img_file2,     // 통장사본
+            biz_paper        :SignUp.biz_paper,     // 사업자등록증사본
+            bank_paper       :SignUp.bank_paper,     // 통장사본
 
         },{
             headers: {
@@ -354,9 +405,10 @@ export default function SignUp({route, navigation}) {
                                 <View style={{padding:10,borderColor:"#ededf1",borderWidth:1,}}>
                                     <RNPickerSelect
                                         placeholder={{label:"지역을 선택해주세요.", value:null}}
-                                        // onValueChange={(road_address) => goInput('road_address',road_address)}
+                                        onValueChange={(road_address) => goInput('road_address',road_address)}
                                         items={AddrMatch}
                                     />
+
                                 </View>
                             </View>
                         </View>
@@ -453,13 +505,18 @@ export default function SignUp({route, navigation}) {
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>사업자 등록증</Text>
 
-                                {/*<Pressable style={[styles.upload_btn]}>*/}
-                                {/*    <View  style={[pos_center]} >*/}
-                                {/*        <CameraIcon width={30} height={24}/>*/}
-                                {/*    </View>*/}
-                                {/*</Pressable>*/}
+                                <Pressable
+                                onPress={(biz_paper)=>uploadImage('biz_paper',biz_paper)}
+                                style={[styles.upload_btn]}>
+                                    <View  style={[pos_center]} >
+                                        <CameraIcon width={30} height={24}/>
+                                    </View>
+                                </Pressable>
                                 <View  style={[mt2,styles.upload_box]} >
-                                    <Image style={styles.upload_img}/>
+                                    <Image
+                                    source={{uri:SignUp.biz_paper}}
+                                    style={styles.upload_img}
+                                    />
                                 </View>
 
                             </View>
@@ -469,13 +526,16 @@ export default function SignUp({route, navigation}) {
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>통장사본</Text>
 
-                                {/*<Pressable style={[styles.upload_btn]} onPress={(CopyBankbook=>uploadImage('CopyBankbook',CopyBankbook))}>*/}
-                                {/*    <View  style={[pos_center]} >*/}
-                                {/*        <CameraIcon width={30} height={24}/>*/}
-                                {/*    </View>*/}
-                                {/*</Pressable>*/}
+                                <Pressable
+                                onPress={(bank_paper)=>uploadImage('bank_paper',bank_paper)}
+                                style={[styles.upload_btn]}
+                                >
+                                    <View  style={[pos_center]} >
+                                        <CameraIcon width={30} height={24}/>
+                                    </View>
+                                </Pressable>
                                 <View  style={[mt2,styles.upload_box]} >
-                                    {/*<Image style={styles.upload_img} source={{uri: imageUrl.CopyBankbook}}/>*/}
+                                    <Image style={styles.upload_img} source={{uri:SignUp.bank_paper}}/>
                                 </View>
 
                             </View>
