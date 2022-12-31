@@ -146,7 +146,7 @@ export default function GoodsSearch({route,navigation}) {
                         ):(
                             <>
                                 {/*=====================================검색어가 없을때======================================*/}
-                                <View style={[d_none,mt3,styles.flex_page]}>
+                                <View style={[mt3,styles.flex_page]}>
                                     <Image style={styles.goods_image} source={search_none}/>
                                     <Text style={[mt2,h14,styles.txt_color]}>최근 검색어가 없습니다.</Text>
                                 </View>

@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
         fontSize:16,
         color:"#08052f",
         fontFamily: "Amatic-Bold",
-        fontWeight:"700",
+        fontWeight:"500",
     },
     id:{
         marginStart:6,
