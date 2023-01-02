@@ -386,6 +386,17 @@ const styles = StyleSheet.create({
         width:"75%",
         paddingLeft:8,
     },
+    cate_list_Thumbnail_box:{
+        paddingTop:"100%",
+    },
+    cate_list_Thumbnail: {
+        paddingTop:"100%",
+        position: "absolute",
+        width: "100%",
+        borderRadius:10,
+        borderWidth:1,
+        borderColor:"#eee",
+    },
     goods_like:{
         position:"absolute",
         right:"0%",
@@ -413,10 +424,6 @@ const styles = StyleSheet.create({
         borderBottomWidth:1,
         borderColor:"#ddd",
     },
-    cate_list_Thumbnail:{
-        width:80,
-        height:80,
-    },
     goods_like_icon:{
         width:21,
         height:18,
@@ -428,12 +435,6 @@ const styles = StyleSheet.create({
         backgroundColor:"#ededf1",
         color:"#696a81",
         borderRadius:50,
-    },
-    flex_top:{
-        flexDirection:"row",
-        alignItems:"flex-start",
-        justifyContent:"space-between",
-        paddingBottom:24,
     },
     flex_bottom:{
         flexDirection:"row",
