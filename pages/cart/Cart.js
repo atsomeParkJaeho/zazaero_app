@@ -94,7 +94,7 @@ export default function Cart({route, navigation}) {
             }
         }).then((res) => {
             if (res) {
-                const {result,query ,A_order} = res.data;
+                const {result, query, A_order} = res.data;
                 if (result === 'OK') {
                     let temp = A_order.map((val) => {
                         return {...val, goods_Cart: !val.goods_Cart,};
@@ -109,33 +109,6 @@ export default function Cart({route, navigation}) {
         });
 
     }, [Member, Update]);
-
-    // ===================2. 1차 카테고리에 맞는 장바구니 상품 가져오기==================
-    const getGoodsCate = (ind_cfg_uid) => {
-        console.log('카테고리 코드 / ', ind_cfg_uid);
-        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php', {
-            act_type: "find_goods",
-            cate_1st: ind_cfg_uid,
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
-            if (res) {
-                const {result, A_goods} = res.data;
-                if (result === 'OK') {
-
-                    let temp = A_goods.map((val) => val.goods_uid);
-                    setCate1stCode(temp);
-                    console.log(temp);
-
-
-                } else {
-                    console.log('실패');
-                }
-            }
-        });
-    }
 
 
     // ==============3. 장바구니 삭제 설정=================
@@ -292,14 +265,13 @@ export default function Cart({route, navigation}) {
         console.log('출력 / ', goForm);
 
 
-
         let temp = CartList.map((val) => {
             return {...val, goods_Cart: !val.goods_Cart,};
         });
         setCartList(temp);
 
 
-        Alert.alert('','상품을 삭제 하였습니다.');
+        Alert.alert('', '상품을 삭제 하였습니다.');
 
     }
 
@@ -334,136 +306,142 @@ export default function Cart({route, navigation}) {
                     </View>
                     <View style={[styles.cartList]}>
                         {/*===================1차 카테고리 리스트 출력==================*/}
-                        {CartCate1st.map((cate,idx)=>(
-                            <>
-                                <List.Section style={[styles.Section,{padding:0, margin:0}]}>
-                                    <List.Accordion style={[container,styles.Accordion_tit]} title={cate.cfg_val1} key={idx}>
-                                        {CartList.map((val, idx)=>(
+                        <List.Section style={[styles.Section, {padding: 0, margin: 0}]}>
+                            {CartCate1st.map((cate, idx) => (
+                                <>
+                                    <List.Accordion style={[container, styles.Accordion_tit]} title={cate.cfg_val1}
+                                                    key={idx}>
+                                        {CartList.map((val, idx) => (
                                             (cate.cfg_val1 === val.cate_name) && (
-                                            <>
-                                                {(val.goods_Cart) && (
-                                                    <>
-                                                        <View key={val.ind_cfg_uid}
-                                                              style={[styles.pb_2, {padding: 15, borderColor:"#e0e0e0"}]}>
-                                                            {/*================자재명==============*/}
-                                                            <View style={[flex_between, styles.pd_18]}>
-                                                                <View style={[flex, wt8]}>
-                                                                    <Checkbox
-                                                                        onValueChange={() => goFormChk(val.goods_uid)}
-                                                                        value={val.goods_chk}
-                                                                        style={styles.all_check}
-                                                                        color={"#4630eb"}/>
+                                                <>
+                                                    {(val.goods_Cart) && (
+                                                        <>
+                                                            <View key={val.ind_cfg_uid}
+                                                                  style={[styles.pb_2, {
+                                                                      padding: 15,
+                                                                      borderColor: "#e0e0e0"
+                                                                  }]}>
+                                                                {/*================자재명==============*/}
+                                                                <View style={[flex_between, styles.pd_18]}>
+                                                                    <View style={[flex, wt8]}>
+                                                                        <Checkbox
+                                                                            onValueChange={() => goFormChk(val.goods_uid)}
+                                                                            value={val.goods_chk}
+                                                                            style={styles.all_check}
+                                                                            color={"#4630eb"}/>
+                                                                        <TouchableOpacity
+                                                                            onPress={() => {
+                                                                                navigation.navigate('상품상세', {uid: val.goods_uid})
+                                                                            }}>
+                                                                            <Text numberOfLines={1}
+                                                                                  style={styles.all_check_txt}>{val.goods_name} </Text>
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                    {/*=============삭제버튼============*/}
                                                                     <TouchableOpacity
-                                                                        onPress={() => {
-                                                                            navigation.navigate('상품상세', {uid: val.goods_uid})
-                                                                        }}>
-                                                                        <Text numberOfLines={1}
-                                                                              style={styles.all_check_txt}>{val.goods_name} </Text>
+                                                                        onPress={() => delCart(val.order_uid)}>
+                                                                        <View style="">
+                                                                            <Icon name="close"
+                                                                                  size={25}
+                                                                                  color="#000"/>
+                                                                        </View>
                                                                     </TouchableOpacity>
                                                                 </View>
-                                                                {/*=============삭제버튼============*/}
-                                                                <TouchableOpacity
-                                                                    onPress={() => delCart(val.order_uid)}>
-                                                                    <View style="">
-                                                                        <Icon name="close"
-                                                                              size={25}
-                                                                              color="#000"/>
-                                                                    </View>
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                            {/*=============상품상세정보===============*/}
-                                                            <View
-                                                                style={[flex]}>
+                                                                {/*=============상품상세정보===============*/}
                                                                 <View
-                                                                    style={[styles.flex_items, styles.flex_items1]}>
-                                                                    <Image
-                                                                        style={styles.cart_goods_img}
-                                                                        source={{uri: "http://49.50.162.86:80" + val.list_img_url}}/>
-                                                                </View>
-                                                                <View
-                                                                    style={[styles.flex_items, styles.flex_items2]}>
+                                                                    style={[flex]}>
                                                                     <View
-                                                                        style={[flex_between, styles.pd_20]}>
-                                                                        {/*가이드라인*/}
-                                                                        <View style="">
-                                                                            <Text
-                                                                                style={styles.goods_disc}> 가이드라인</Text>
-                                                                        </View>
-                                                                        {/*자재가격*/}
-                                                                        <View style="">
-                                                                            <Text
-                                                                                style={styles.goods_price}>{Price(val.sum_order_price * val.order_item_cnt)}원</Text>
-                                                                        </View>
+                                                                        style={[styles.flex_items, styles.flex_items1]}>
+                                                                        <Image
+                                                                            style={styles.cart_goods_img}
+                                                                            source={{uri: "http://49.50.162.86:80" + val.list_img_url}}/>
                                                                     </View>
-                                                                    <View style={[flex]}>
-                                                                        {/*=============마이너스 버튼==========*/}
-                                                                        <TouchableWithoutFeedback
-                                                                            onPress={() => modCart(val.goods_uid, 'minus')}>
-                                                                            <View
-                                                                                style={[count_btn]}>
-                                                                                <View
-                                                                                    style={[pos_center]}>
-                                                                                    <Text
-                                                                                        style={[count_btn_txt]}>－</Text>
-                                                                                </View>
+                                                                    <View
+                                                                        style={[styles.flex_items, styles.flex_items2]}>
+                                                                        <View
+                                                                            style={[flex_between, styles.pd_20]}>
+                                                                            {/*가이드라인*/}
+                                                                            <View style="">
+                                                                                <Text
+                                                                                    style={styles.goods_disc}> 가이드라인</Text>
                                                                             </View>
-                                                                        </TouchableWithoutFeedback>
-                                                                        {/*============수량=================*/}
-                                                                        <TextInput
-                                                                            style={[countinput,]}
-                                                                            keyboardType="number-pad"
-                                                                            onChangeText={(order_item_cnt) => modCart(val.goods_uid, 'order_item_cnt', order_item_cnt)}
-                                                                            defaultValue={`${val.order_item_cnt}`}
-                                                                            value={val.order_item_cnt}
-                                                                        />
-                                                                        {/*=============플러스 버튼============*/}
-                                                                        <TouchableWithoutFeedback
-                                                                            onPress={() => modCart(val.goods_uid, 'plus')}>
-                                                                            <View
-                                                                                style={[count_btn]}>
-                                                                                <View
-                                                                                    style={[pos_center]}>
-                                                                                    <Text
-                                                                                        style={[count_btn_txt]}>＋</Text>
-                                                                                </View>
+                                                                            {/*자재가격*/}
+                                                                            <View style="">
+                                                                                <Text
+                                                                                    style={styles.goods_price}>{Price(val.sum_order_price * val.order_item_cnt)}원</Text>
                                                                             </View>
-                                                                        </TouchableWithoutFeedback>
+                                                                        </View>
+                                                                        <View style={[flex]}>
+                                                                            {/*=============마이너스 버튼==========*/}
+                                                                            <TouchableWithoutFeedback
+                                                                                onPress={() => modCart(val.goods_uid, 'minus')}>
+                                                                                <View
+                                                                                    style={[count_btn]}>
+                                                                                    <View
+                                                                                        style={[pos_center]}>
+                                                                                        <Text
+                                                                                            style={[count_btn_txt]}>－</Text>
+                                                                                    </View>
+                                                                                </View>
+                                                                            </TouchableWithoutFeedback>
+                                                                            {/*============수량=================*/}
+                                                                            <TextInput
+                                                                                style={[countinput,]}
+                                                                                keyboardType="number-pad"
+                                                                                onChangeText={(order_item_cnt) => modCart(val.goods_uid, 'order_item_cnt', order_item_cnt)}
+                                                                                defaultValue={`${val.order_item_cnt}`}
+                                                                                value={val.order_item_cnt}
+                                                                            />
+                                                                            {/*=============플러스 버튼============*/}
+                                                                            <TouchableWithoutFeedback
+                                                                                onPress={() => modCart(val.goods_uid, 'plus')}>
+                                                                                <View
+                                                                                    style={[count_btn]}>
+                                                                                    <View
+                                                                                        style={[pos_center]}>
+                                                                                        <Text
+                                                                                            style={[count_btn_txt]}>＋</Text>
+                                                                                    </View>
+                                                                                </View>
+                                                                            </TouchableWithoutFeedback>
+                                                                        </View>
                                                                     </View>
                                                                 </View>
+                                                                {/*==============옵션상품 입력란===============*/}
+                                                                <View style={[flex_between]}>
+                                                                    <Text
+                                                                        style={styles.Request_txt}>이
+                                                                        자재에 모델명, 제작관련 등 요청사항이
+                                                                        있으신가요?</Text>
+                                                                    <Switch
+                                                                        onValueChange={() => CartOption(val.goods_uid)}
+                                                                        value={val.goods_option_chk}
+                                                                        trackColor={{
+                                                                            false: "#767577",
+                                                                            true: "#4630eb"
+                                                                        }}
+                                                                        ios_backgroundColor="#3e3e3e"
+                                                                        style={[switch_bar]}
+                                                                    />
+                                                                </View>
+                                                                {(val.goods_option_chk) && (
+                                                                    <TextInput style={[textarea]} multiline={true}
+                                                                               numberOfLines={4}/>
+                                                                )}
                                                             </View>
-                                                            {/*==============옵션상품 입력란===============*/}
-                                                            <View style={[flex_between]}>
-                                                                <Text
-                                                                    style={styles.Request_txt}>이
-                                                                    자재에 모델명, 제작관련 등 요청사항이
-                                                                    있으신가요?</Text>
-                                                                <Switch
-                                                                    onValueChange={() => CartOption(val.goods_uid)}
-                                                                    value={val.goods_option_chk}
-                                                                    trackColor={{
-                                                                        false: "#767577",
-                                                                        true: "#4630eb"
-                                                                    }}
-                                                                    ios_backgroundColor="#3e3e3e"
-                                                                    style={[switch_bar]}
-                                                                />
-                                                            </View>
-                                                            {(val.goods_option_chk) && (
-                                                                <TextInput style={[textarea]} multiline={true} numberOfLines={4}/>
-                                                            )}
-                                                        </View>
-                                                    </>
-                                                )}
-                                            </>
+                                                        </>
+                                                    )}
+                                                </>
                                             )
                                         ))}
                                     </List.Accordion>
-                                </List.Section>
-                            </>
-                        ))}
+                                </>
+                            ))}
+                        </List.Section>
                     </View>
                 </View>
             </ScrollView>
+            <Footer navigation={navigation}/>
             {/*========상품체크시 노출=========*/}
             {(goForm.length > 0) ? (
                 <>
@@ -490,7 +468,7 @@ export default function Cart({route, navigation}) {
             ) : (
                 <></>
             )}
-            <Footer navigation={navigation}/>
+
         </>
 
     );

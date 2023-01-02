@@ -99,7 +99,6 @@ export default function Login({navigation, route}) {
             if (res) {
                 const {result, mem_uid} = res.data;
                 if (result === 'OK') {
-                    Alert.alert('','로그인에 성공하였습니다.');
                     AsyncStorage.setItem('member', mem_uid);
                     //reloadAsync();
                     navigation.replace('메인페이지');
