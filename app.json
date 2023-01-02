@@ -13,7 +13,8 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/960980ea-d25e-4228-a133-be5e8d69d34c"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -28,7 +29,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.koreajason.expozazeroapp"
+      "bundleIdentifier": "com.koreajason.expozazeroapp",
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {
@@ -44,6 +46,9 @@
       "eas": {
         "projectId": "960980ea-d25e-4228-a133-be5e8d69d34c"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }

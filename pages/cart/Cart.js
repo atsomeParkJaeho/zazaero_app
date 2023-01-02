@@ -236,7 +236,7 @@ export default function Cart({route, navigation}) {
 
     // ====================9. 선택 삭제==============
     const chkDel = () => {
-        console.log('test');
+        console.log('test test');
         // 1. 체크한 상품만 필터링
         let goForm = CartList.filter((val) => {
             const {order_uid} = val;
