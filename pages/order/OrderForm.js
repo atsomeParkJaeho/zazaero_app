@@ -304,7 +304,7 @@ export default function OrderForm({route,navigation}) {
                             <View style={[FormStyle.FormGroupItems]}>
                                 {/*공사명*/}
                                 <Text style={[FormStyle.FormLabel]}>공사명</Text>
-                                <TextInput style={[FormStyle.InputStyle]}
+                                <TextInput style={[input]}
                                            onChangeText={(order_title)=>goInput("order_title",order_title)}
                                            placeholder="ex)공사명 입력"
                                            value={OrderData.order_title}
@@ -320,7 +320,7 @@ export default function OrderForm({route,navigation}) {
                                 <Text style={[FormStyle.FormLabel]}>배송지</Text>
                                 <View style={[d_flex,align_items_center]}>
                                     {/*우편번호*/}
-                                    <TextInput style={[FormStyle.InputStyle,{flex:1,marginRight:16},bg_light]}
+                                    <TextInput style={[input,{flex:1,marginRight:16},bg_light]}
                                                editable={false}
                                                placeholder="우편번호"
                                                value={zonecode}
@@ -332,7 +332,7 @@ export default function OrderForm({route,navigation}) {
                                     />
                                     {/*주소찾기*/}
                                     <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"배송정보등록", order_uid:order_uid})}>
-                                        <View style={[bg_primary,{padding:10,}]}>
+                                        <View style={[bg_primary,{padding:8,borderRadius:5,}]}>
                                             <Text style={[text_light]}>주소찾기</Text>
                                         </View>
                                     </TouchableOpacity>
@@ -340,7 +340,7 @@ export default function OrderForm({route,navigation}) {
                             </View>
                             {/*================주소============*/}
                             <View style={{paddingBottom:15,}}>
-                                <TextInput style={[FormStyle.InputStyle,{flex:1},bg_light]}
+                                <TextInput style={[input,{flex:1},bg_light]}
                                 editable={false}
                                 placeholder="주소"
                                 value={addr1}
@@ -353,7 +353,7 @@ export default function OrderForm({route,navigation}) {
                             </View>
                             {/*============상세주소=================*/}
                             <View>
-                                <TextInput style={[FormStyle.InputStyle,{flex:1}]}
+                                <TextInput style={[input,{flex:1}]}
                                            onChangeText={(addr2)=>goInput("addr2",addr2)}
                                            placeholder="상세주소"
                                            value={OrderData.addr2}
@@ -431,7 +431,7 @@ export default function OrderForm({route,navigation}) {
                                 <View style={{flex:1,}}>
                                     <TextInput placeholder="00:00"
                                    value={OrderData.hope_deli_time}
-                                   editable={false} onPressIn={showDatePicker} style={[FormStyle.InputStyle,{flex:1}]}
+                                   editable={false} onPressIn={showDatePicker} style={[input,{flex:1}]}
                                    ref={value => (ChkFocus.current[4] = value)}
                                     />
                                 </View>
@@ -444,9 +444,10 @@ export default function OrderForm({route,navigation}) {
                         <View style={[FormStyle.FormGroupItems]}>
                             <View>
                                 <Text style={[FormStyle.FormLabel]}>현장인도자 연락처</Text>
-                                <TextInput style={[FormStyle.InputStyle,{flex:1}]}
+                                <TextInput style={[input,{flex:1}]}
                                            onChangeText={(recv_phone)=>goInput("recv_phone",recv_phone)}
                                            placeholder="예 ) 010-XXXX-XXXX"
+                                           maxLength={13}
                                            value={Phone(OrderData.recv_phone)}
                                            ref={value => (ChkFocus.current[5] = value)}
                                            autoFocus={true}
@@ -459,7 +460,7 @@ export default function OrderForm({route,navigation}) {
                             <View>
                                 <Text style={[FormStyle.FormLabel]}>배송 요청 사항</Text>
                                 <TouchableWithoutFeedback >
-                                <TextInput style={[FormStyle.InputStyle,{flex:1,height:100}]}
+                                <TextInput style={[input,{flex:1,height:100}]}
                                            multiline={true}
                                            numberOfLines={4}
                                            onChangeText={(order_memo)=>goInput("order_memo",order_memo)}
