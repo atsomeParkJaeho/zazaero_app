@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({});
 
 
 export const padding_bottom = {
-    paddingBottom: 100,
+    paddingBottom: 150,
 }
 
 export const sub_page = {      // 하단 간격 설정
@@ -62,25 +62,25 @@ export const count_btn_txt = {
 }
 
 // 폰트사이즈 설정
-export const h12 = {fontSize:12, lineHeight: 21,}
-export const h13 = {fontSize:13, lineHeight: 21,}
-export const h14 = {fontSize:14, lineHeight: 21,}
-export const h15 = {fontSize:15, lineHeight: 22,}
-export const h16 = {fontSize:16, lineHeight: 24,}
-export const h17 = {fontSize:17, lineHeight: 25,}
-export const h18 = {fontSize:18, lineHeight: 27,}
-export const h19 = {fontSize:19, lineHeight: 28,}
-export const h20 = {fontSize:20, lineHeight: 30,}
-export const h21 = {fontSize:21, lineHeight: 31,}
-export const h22 = {fontSize:22, lineHeight: 33,}
-export const h23 = {fontSize:23, lineHeight: 34,}
-export const h24 = {fontSize:24, lineHeight: 36,}
-export const h25 = {fontSize:25, lineHeight: 37,}
-export const h26 = {fontSize:26, lineHeight: 39,}
-export const h27 = {fontSize:27, lineHeight: 40,}
-export const h28 = {fontSize:28, lineHeight: 42,}
-export const h29 = {fontSize:29, lineHeight: 43,}
-export const h30 = {fontSize:30, lineHeight: 45,}
+export const h12 = {fontSize: Platform.OS === 'ios' ? 12 : 11, lineHeight: 21,}
+export const h13 = {fontSize: Platform.OS === 'ios' ? 13 : 12, lineHeight: 21,}
+export const h14 = {fontSize: Platform.OS === 'ios' ? 14 : 13, lineHeight: 21,}
+export const h15 = {fontSize: Platform.OS === 'ios' ? 15 : 14, lineHeight: 22,}
+export const h16 = {fontSize: Platform.OS === 'ios' ? 16 : 15, lineHeight: 24,}
+export const h17 = {fontSize: Platform.OS === 'ios' ? 17 : 16, lineHeight: 25,}
+export const h18 = {fontSize: Platform.OS === 'ios' ? 18 : 17, lineHeight: 27,}
+export const h19 = {fontSize: Platform.OS === 'ios' ? 19 : 18, lineHeight: 28,}
+export const h20 = {fontSize: Platform.OS === 'ios' ? 20 : 19, lineHeight: 30,}
+export const h21 = {fontSize: Platform.OS === 'ios' ? 21 : 20, lineHeight: 31,}
+export const h22 = {fontSize: Platform.OS === 'ios' ? 22 : 21, lineHeight: 33,}
+export const h23 = {fontSize: Platform.OS === 'ios' ? 23 : 22, lineHeight: 34,}
+export const h24 = {fontSize: Platform.OS === 'ios' ? 24 : 23, lineHeight: 36,}
+export const h25 = {fontSize: Platform.OS === 'ios' ? 25 : 24, lineHeight: 37,}
+export const h26 = {fontSize: Platform.OS === 'ios' ? 26 : 25, lineHeight: 39,}
+export const h27 = {fontSize: Platform.OS === 'ios' ? 27 : 26, lineHeight: 40,}
+export const h28 = {fontSize: Platform.OS === 'ios' ? 28 : 27, lineHeight: 42,}
+export const h29 = {fontSize: Platform.OS === 'ios' ? 29 : 28, lineHeight: 43,}
+export const h30 = {fontSize: Platform.OS === 'ios' ? 30 : 29, lineHeight: 45,}
 
 // 폰트두계 설정
 export const fw100 = {fontWeight:"100"}
