@@ -40,8 +40,9 @@ const styles = styleSheet.create({
         // }),
     },
     Tabs:{
-        paddingTop:11,
-        textAlign:"center", paddingBottom:40,
+        paddingTop:15,
+        textAlign:"center",
+        paddingBottom: Platform.OS === 'ios' ? 40 : 15,
         flex:0.3,
     },
     TextCenter : {
