@@ -281,7 +281,7 @@ export default function GoodsDetail({route,navigation}) {
                         </View>
                         {/*상품정보*/}
                         <View style={[styles.GoodsDetail_more_image,mt5]}>
-                            <Text style={[styles.GoodsDetail_more_image_txt]}>추가 이미지</Text>
+                            {/*<Text style={[styles.GoodsDetail_more_image_txt]}>추가 이미지</Text>*/}
                             <RenderHtml source={source}/>
                         </View>
                         {/*추가 이미지*/}
