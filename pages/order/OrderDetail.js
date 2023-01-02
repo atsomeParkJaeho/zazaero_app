@@ -97,6 +97,7 @@ export default function OrderDetail({navigation, route}) {
         recv_name                    :"",   // 현장인도자 성명
         recv_phone                   :"",   // 현장인도자 연락처
         order_memo                   :"",   // 배송메모
+        hope_deli_date               :"",   //도착일
     })
 
     // 2. 주소 입력시 업데이트
@@ -166,6 +167,7 @@ export default function OrderDetail({navigation, route}) {
             "ct_disc": "주문시 3일이내 배송가능",                                //간략설명
             "ct_count": "1",                                    //상품갯수
             "ct_Request": "확인중",                                    //요청사항금액
+            "goods_memo": "자재 3단으로 재단해주세요",              //자재요청메모
         },
         {
             "ct_user_id": "1",                                  //아이디값
@@ -175,7 +177,8 @@ export default function OrderDetail({navigation, route}) {
             "ct_price": "50,000",                                //상품가격
             "ct_disc": "즉시발주 가능",                                //상품가격
             "ct_count": "1",                                    //상품갯수
-            "ct_Request": "8,000 원",                                    //요청사항금액
+            "ct_Request": "확인중",                                    //요청사항금액
+            "goods_memo": "자재 가로30cm x 세로 170cm  재단해주세요",              //자재요청메모
         },
         {
             "ct_user_id": "1",                                  //아이디값
@@ -185,7 +188,8 @@ export default function OrderDetail({navigation, route}) {
             "ct_price": "9,500",                                //상품가격
             "ct_disc": "주문시 7일이내 배송가능",                                //상품가격
             "ct_count": "1",                                    //상품갯수
-            "ct_Request": "15,000 원",                                    //요청사항금액
+            "ct_Request": "확인중",                                    //요청사항금액
+            "goods_memo": "자재 3단으로 재단해주세요",              //자재요청메모
         },
 
     ];
@@ -218,25 +222,41 @@ export default function OrderDetail({navigation, route}) {
     };
     //전체취소
 
-    const goCheck= (order_num) => {
-        Alert.alert(
-            '변경하신 내용으로 수정발주 요청하시겠습니까?',
-            '',
-            [
-                {text: '취소', onPress: () => {}, style: 'cancel'},
-                {
-                    text: '확인',
-                    onPress: () => {
-                        Alert.alert("수정발주 되었습니다.");
+    const goCheck= (orderType) => {
+        //console.log(orderType);
+        if(orderType === 'ready'){
+            Alert.alert(
+                '변경하신 내용으로 수정발주 요청하시겠습니까?',
+                '',
+                [
+                    {text: '취소', onPress: () => {}, style: 'cancel'},
+                    {
+                        text: '확인',
+                        onPress: () => {
+                            Alert.alert("수정발주 되었습니다.");
+                        },
+                        style: 'destructive',
                     },
-                    style: 'destructive',
+                ],
+                {
+                    cancelable: true,
+                    onDismiss: () => {},
                 },
-            ],
-            {
-                cancelable: true,
-                onDismiss: () => {},
-            },
-        );
+            );
+        }else if(orderType === 'request'){
+            Alert.alert(
+                '검수중',
+                '내용을 변경하실 수 없습니다.',
+                [
+                    {text: '확인', onPress: () => {}, style: 'cancel'},
+                ],
+                {
+                    cancelable: true,
+                    onDismiss: () => {},
+                },
+            );
+        }
+
     };
     //수정발주요청
 
@@ -359,8 +379,8 @@ export default function OrderDetail({navigation, route}) {
                                         ...Hope,
                                         hopeDate: String(Date.format('M' + '월' + 'D' + '일')),
                                     });
-                                    setOrderDate({
-                                        ...OrderData,
+                                    setOrderDetail({
+                                        ...OrderDetail,
                                         hope_deli_date: String(Date.format('YYYY-MM-DD')),
                                     });
                                 }
@@ -447,8 +467,8 @@ export default function OrderDetail({navigation, route}) {
                         {/*    <Text style={[FormStyle.FormLabel]}>직접배송</Text>*/}
                         {/*</View>*/}
                         <View style={[styles.order_goods_list]}>
-                            {state.map((items,i) =>
-                                <View style={[styles.order_goods_list_items,]} key={i}>
+                            {state.map((items,idx) =>
+                                <View style={[styles.order_goods_list_items,]} key={idx+1}>
                                     <View style={[container]}>
                                         <View style={[flex_between_top]}>
                                             <View style={flex_top}>
@@ -498,7 +518,7 @@ export default function OrderDetail({navigation, route}) {
                                                 style={[switch_bar]}
                                             />
                                         </View>
-                                        <TextInput style={textarea}   multiline={true} numberOfLines={4}    placeholder="" value=""/>
+                                        <TextInput style={textarea}   multiline={true} numberOfLines={4}    placeholder="" value={items.goods_memo}/>
                                         <Text style={[mt1,h12,styles.text_r]}>요청사항 금액 : <Text style={[h12,,text_danger]}>{items.ct_Request} </Text></Text>
                                     </View>
                                    <View style={[styles.border_b1]} />
@@ -521,7 +541,7 @@ export default function OrderDetail({navigation, route}) {
 
             </ScrollView>
             <View style={[bg_gray,pt3,pb3]}>
-                <TouchableOpacity style={[]} onPress={()=> goCheck()}>
+                <TouchableOpacity style={[]} onPress={()=> goCheck(orderType)}>
                     <Text style={[{textAlign: "center", color: "#fff", fontSize: 20,}]}>수정하기</Text>
                 </TouchableOpacity>
             </View>
