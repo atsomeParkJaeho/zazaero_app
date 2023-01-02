@@ -51,10 +51,11 @@ export default function GoodsCateList({route,navigation}) {
     console.log('아이디값');
 
     // 1. ===============상태값 정의==================
-    const [GoodsList, setGoodsList] =       useState([]);     // 자재리스트 설정
-    const [Cate2List, setCate2List] =       useState([]);     // 2차 카테고리 담기
-    const [Cate3rd, setCate3rd] =           useState([]);     // 3차 카테고리 담기
-    const [CateActive, setCateActive] =     useState(``);     // 현재 페이지 상태
+    const [GoodsList,   setGoodsList]   =       useState([]);     // 자재리스트 설정
+    const [Cate2List,   setCate2List]   =       useState([]);     // 2차 카테고리 담기
+    const [Cate3rd,     setCate3rd]     =       useState([]);     // 3차 카테고리 담기
+    const [Cate2ndActive,  setCate2ndActive]  =       useState(``);     // 현재 페이지 상태
+    const [Cate3rdActive,  setCate3rdActive]  =       useState(``);     // 현재 페이지 상태
 
     // 우측 메뉴 설정
     const headerRight = () => {
@@ -76,29 +77,33 @@ export default function GoodsCateList({route,navigation}) {
 
     // 2. ================최초 db 출력값 담기===================
     useEffect(() => {
-        setCateActive(Cate2ndUid); // 카테고리 값 설정
+        setCate2ndActive(Cate2ndUid); // 카테고리 값 설정
         navigation.setOptions({
             title:name,     // 상단 설정
             headerRight:headerRight,
         });
-        // 상품 불러오기
-        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php', {
-            act_type : 'find_goods',
-            cate_2nd : Cate2ndUid
+
+        // ==========================상품 불러오기 2023.01.02 수정 ========================== //
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
+            act_type    :"get_goods_list",
+            cate_1st    :Cate1stUid,
+            cate_2nd    :Cate2ndUid,
         },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
+            headers:{
+                'Content-type': 'multipart/form-data',
+            },
         }).then((res)=>{
             if(res) {
-                const {result, A_goods, query} = res.data;
+                const {result, A_goods} = res.data;
                 if(result === 'OK') {
+                    console.log('확인');
                     setGoodsList(A_goods);
                 } else {
                     console.log('실패');
                 }
             }
         });
+
 
         // 2차 카테고리 버튼 설정
         axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php', {
@@ -118,7 +123,7 @@ export default function GoodsCateList({route,navigation}) {
                 }
             }
         });
-        
+
         // 3차 카테고리 버튼 설정
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
             act_type        : "get_cate_list",
@@ -140,68 +145,27 @@ export default function GoodsCateList({route,navigation}) {
             }
         });
 
-        // 즐겨찾기 상품리스트 가져오기
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
-            act_type        : "get_my_zzim_list",
-            login_status    : "Y",
-            mem_uid         : Member,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
-            if(res) {
-                const {result, A_data} = res.data;
-                if(result === 'OK') {
-                    console.log('즐겨찾기에 등록한 상품 / ', A_data);
-                    setWishGoods(A_data);
-                } else {
-                    console.log('실패');
-                }
-            }
-        });
 
     }, [Member]);
 
-    // ===============4. 카테고리 클릭시 상품 상태 변경(2차)===============
-    // const goCate2nd = (uid) => {
-    //     setCateActive(uid);
-    //     console.log('2차 카테고리 uid',uid);
-    //     // 상품 불러오기
-    //     let cate2 = {
-    //         act_type : 'find_goods',
-    //         cate_2nd : uid
-    //     };
-    //     axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php',cate2,{
-    //         headers: {
-    //             'Content-type': 'multipart/form-data'
-    //         }
-    //     }).then((res)=>{
-    //         if(res) {
-    //             const {result, A_goods} = res.data;
-    //             if(result === 'OK') {
-    //                 setGoodsList(A_goods);
-    //             } else {
-    //                 console.log('실패');
-    //             }
-    //         }
-    //     });
-    // }
     const goCate2nd = (uid) => {
-        setCateActive(uid);
+        setCate2ndActive(uid);
+        setCate3rdActive(uid);
         console.log('2차 카테고리 uid',uid);
         // ==============2차 카테고리 상품 불러오기==============//
-        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php', {
-            act_type : 'find_goods',
-            cate_2nd : uid
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
+            act_type    :"get_goods_list",
+            cate_1st    :Cate1stUid,
+            cate_2nd    :uid,
         },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
+            headers:{
+                'Content-type': 'multipart/form-data',
+            },
         }).then((res)=>{
             if(res) {
                 const {result, A_goods} = res.data;
                 if(result === 'OK') {
+                    console.log('확인');
                     setGoodsList(A_goods);
                 } else {
                     console.log('실패');
@@ -239,19 +203,22 @@ export default function GoodsCateList({route,navigation}) {
 
     // ===============5. 카테고리 클릭시 상품 상태 변경(3차)===============
     const goCate3rd = (uid) => {
-        // setCateActive(uid);
+        setCate3rdActive(uid);
         console.log('3차 카테고리 uid',uid);
-        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php',{
-            act_type : 'find_goods',
-            cate_2nd : uid
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
+            act_type        :"get_goods_list",
+            cate_1st        :Cate1stUid,
+            cate_2nd        :Cate2ndUid,
+            cate_3rd        :uid,
         },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
+            headers:{
+                'Content-type': 'multipart/form-data',
+            },
         }).then((res)=>{
             if(res) {
                 const {result, A_goods} = res.data;
                 if(result === 'OK') {
+                    console.log('확인');
                     setGoodsList(A_goods);
                 } else {
                     console.log('실패');
@@ -320,9 +287,6 @@ export default function GoodsCateList({route,navigation}) {
                 goods_uid           : items.goods_uid,           // 상품 uid
                 mem_uid             : Member,                    // 회원 uid
                 ord_cnt             :  '1'
-                // act_type        :'ins_cart',
-                // mem_uid         :Member,
-                // goods_uid       :items.goods_uid,
 
             },{
                 headers: {
@@ -369,7 +333,7 @@ export default function GoodsCateList({route,navigation}) {
                         {Cate2List.map((val,idx)=>(
                             <>
                                 <TouchableOpacity key={idx} style={[styles.cate_1st_btn]} onPress={() => goCate2nd(val.ind_cfg_uid)}>
-                                    <Text style={[styles.cate_1st_btn_txt,(val.ind_cfg_uid === CateActive) && text_primary]}>
+                                    <Text style={[styles.cate_1st_btn_txt,(val.ind_cfg_uid === Cate2ndActive) && text_primary]}>
                                         {val.cfg_val1}
                                     </Text>
                                 </TouchableOpacity>
@@ -380,13 +344,22 @@ export default function GoodsCateList({route,navigation}) {
                     <View style={styles.cate_2st_list}>
                         {Cate3rd &&
                         <>
+                            <View style={[styles.cate_2st_btn,]}>
+                                <TouchableOpacity style={[styles.cate_1st_btn]} onPress={() => goCate2nd(Cate2ndActive)}>
+                                    <Text style={[styles.cate_2st_btn_txt,(Cate2ndActive === Cate3rdActive) && text_primary]}>
+                                        전체
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
                             {Cate3rd.map((val,idx)=>(
                                 <>
-                                    <TouchableOpacity key={idx} style={[styles.cate_1st_btn]}>
-                                        <Text style={[styles.cate_1st_btn_txt,(val.ind_cfg_uid === CateActive) && text_primary]}>
-                                            {val.cfg_val1}
-                                        </Text>
-                                    </TouchableOpacity>
+                                    <View style={[styles.cate_2st_btn,]}>
+                                        <TouchableOpacity key={idx} style={[styles.cate_1st_btn]} onPress={()=>goCate3rd(val.ind_cfg_uid)}>
+                                            <Text style={[styles.cate_2st_btn_txt,(val.ind_cfg_uid === Cate3rdActive) && text_primary]}>
+                                                {val.cfg_val1}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </>
                             ))}
                         </>
@@ -546,7 +519,7 @@ const styles = StyleSheet.create({
         bottom: 1,
     },
     cate_2st_btn_txt: {
-        fontSize: Platform.OS === 'ios' ? 14 : 13,
+        fontSize: Platform.OS === 'ios' ? 12 : 12,
     },
     btn_cart: {
         width: 37,
@@ -566,7 +539,7 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     cate_2st_btn: {
-        padding: 6,
+        padding: 1,
         width: "33.3333%",
         borderBottomWidth: 1,
         borderRightWidth: 1,

@@ -24,20 +24,20 @@ const styles = styleSheet.create({
         backgroundColor:"#fff",
         borderTopLeftRadius:15,
         borderTopRightRadius:15,
-        // ...Platform.select({
-        //     ios: {
-        //         shadowColor: "#000",
-        //         shadowOffset: {
-        //             width: 10,
-        //             height: 10,
-        //         },
-        //         shadowOpacity: 0.5,
-        //         shadowRadius: 10,
-        //     },
-        //     android: {
-        //         elevation: 20,
-        //     },
-        // }),
+        ...Platform.select({
+            ios: {
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 10,
+                    height: 10,
+                },
+                shadowOpacity: 0.5,
+                shadowRadius: 10,
+            },
+            android: {
+                elevation: 20,
+            },
+        }),
     },
     Tabs:{
         paddingTop:15,

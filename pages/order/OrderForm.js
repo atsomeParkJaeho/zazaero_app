@@ -252,7 +252,7 @@ export default function OrderForm({route,navigation}) {
 
     return (
         <>
-            <KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding',android:'padding'})}>
+            <KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding'})}>
 
             <ScrollView style={[bg_white,]}>
                 <View style={{paddingBottom:110,}}>
@@ -419,19 +419,20 @@ export default function OrderForm({route,navigation}) {
                         <View style={[FormStyle.FormGroup]}>
                             <View style={[d_flex, align_items_center]}>
                                 {/*오전, 오후*/}
-                                <DateTimePickerModal
-                                locale="KR"
-                                mode="time"
-                                textColor="black"
-                                style={{backgroundColor:"rgba(255,255,255,0.5)",}}
-                                onConfirm={handleConfirm}
-                                onCancel={hideDatePicker}
-                                isVisible={DatePicker}
-                                />
+                                {/*<DateTimePickerModal*/}
+                                {/*locale="KR"*/}
+                                {/*mode="time"*/}
+                                {/*textColor="black"*/}
+                                {/*style={{backgroundColor:"rgba(255,255,255,0.5)",}}*/}
+                                {/*onConfirm={handleConfirm}*/}
+                                {/*onCancel={hideDatePicker}*/}
+                                {/*isVisible={DatePicker}*/}
+                                {/*/>*/}
                                 <View style={{flex:1,}}>
                                     <TextInput placeholder="00:00"
                                    value={OrderData.hope_deli_time}
-                                   editable={false} onPressIn={showDatePicker} style={[input,{flex:1}]}
+                                   // editable={false} onPressIn={showDatePicker}
+                                   style={[input,{flex:1}]}
                                    ref={value => (ChkFocus.current[4] = value)}
                                     />
                                 </View>
