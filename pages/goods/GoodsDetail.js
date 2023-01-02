@@ -288,13 +288,13 @@ export default function GoodsDetail({route,navigation}) {
                     </View>
                 </View>
             </ScrollView>
-            <View style={[]}>
+            <View style={[styles.bottom_btn]}>
                 <View style={[flex_around]}>
                     <TouchableOpacity style={styles.btn} onPress={() => goForm('cart',GoodsDetail.goods_uid)}>
-                        <Text style={[btn_primary,styles.center]}>장바구니 담기</Text>
+                        <Text style={[btn_primary,styles.center,styles.boottom_btn]}>장바구니 담기</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>
-                        <Text style={[btn_black,styles.center]}>장바구니 가기</Text>
+                        <Text style={[btn_black,styles.center,styles.boottom_btn]}>장바구니 가기</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -387,7 +387,6 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius:100,
         borderBottomRightRadius:100,
         borderColor:"#eee",
-
     },
     button_txt:{
         fontSize: Platform.OS === 'ios' ? 14 : 13,
@@ -401,5 +400,8 @@ const styles = StyleSheet.create({
         textAlign:"center",
         paddingVertical:20,
 
-    }
+    },
+    boottom_btn:{
+        paddingBottom: Platform.OS === 'ios' ? 30 : 20,
+    },
 });
