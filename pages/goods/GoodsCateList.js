@@ -33,6 +33,8 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Search from "../../icons/search.svg";
 import NotificationIcon from "../../icons/Notification_icon.svg";
+import {Price} from "../../util/util";
+import {useIsFocused} from "@react-navigation/native";
 
 
 
@@ -56,6 +58,9 @@ export default function GoodsCateList({route,navigation}) {
     const [Cate3rd,     setCate3rd]     =       useState([]);     // 3차 카테고리 담기
     const [Cate2ndActive,  setCate2ndActive]  =       useState(``);     // 현재 페이지 상태
     const [Cate3rdActive,  setCate3rdActive]  =       useState(``);     // 현재 페이지 상태
+
+    const update = useIsFocused();
+
 
     // 우측 메뉴 설정
     const headerRight = () => {
@@ -86,6 +91,7 @@ export default function GoodsCateList({route,navigation}) {
         // ==========================상품 불러오기 2023.01.02 수정 ========================== //
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
             act_type    :"get_goods_list",
+            mem_uid     :Member,
             cate_1st    :Cate1stUid,
             cate_2nd    :Cate2ndUid,
         },{
@@ -258,7 +264,21 @@ export default function GoodsCateList({route,navigation}) {
                 const {result} = res.data;
                 if(result === 'OK') {
                     console.log(result);
-                    alert('즐겨찾기에 추가 하였습니다.');
+                    let temp = GoodsList.map((val) => {
+                        if (uid === val.goods_uid) {
+                            if(val.my_zzim_flag === 'Y') {
+                                Alert.alert('','즐겨찾기에서 삭제하였습니다.');
+                                return {...val, my_zzim_flag:'N',};
+                            }
+                            if(val.my_zzim_flag === 'N') {
+                                Alert.alert('','즐겨찾기에서 추가하였습니다.');
+                                return {...val, my_zzim_flag:'Y',};
+                            }
+                        }
+                        return val;
+                    });
+                   
+                    setGoodsList(temp);
                 }
             } else {
                 const {result} = res.data;
@@ -266,14 +286,8 @@ export default function GoodsCateList({route,navigation}) {
             }
         }).catch((error)=>{console.log(error)});
 
-        // 내 즐겨찾기에 등록된 상품 필터링하기
-        let temp = GoodsList.map((val) => {
-            if (uid === val.goods_uid) {
-                return {...val, goods_wish_chk: !val.goods_wish_chk,};
-            }
-            return val;
-        });
-        setGoodsList(temp);
+        // // 내 즐겨찾기에 등록된 상품 필터링하기
+
 
     }
 
@@ -319,6 +333,7 @@ export default function GoodsCateList({route,navigation}) {
     console.log('3차 카테고리 / ', Cate3rd);
 
 
+    console.log(GoodsList);
     // console.log('상품리스트 출력 / ',GoodsList[0].goods_wish_chk);
     //console.log('즐겨찾기 상품리스트 출력 / ',WishGoods);
     return (
@@ -380,12 +395,14 @@ export default function GoodsCateList({route,navigation}) {
                                                 {/*=============찜하기=================*/}
                                                 <TouchableOpacity onPress={()=>goWish(val.goods_uid)}>
                                                     {/*<Text>찜하기</Text>*/}
-                                                    {(val.goods_wish_chk) ? (
+                                                    {(val.my_zzim_flag === 'Y') ? (
                                                         <>
-                                                            <Wishlist width={35} height={24} color={'blue'}  />
+                                                            <Wishlist width={35} height={24} color={'blue'}/>
                                                         </>
-                                                    ) :(
+                                                    ):(
+                                                        <>
                                                             <WishlistNon width={35} height={24} color={'blue'}  />
+                                                        </>
                                                     )}
                                                 </TouchableOpacity>
                                             </View>
@@ -430,7 +447,7 @@ export default function GoodsCateList({route,navigation}) {
                                                 <Text style={styles.cate_list_disc}>4일 이내로 발주가능합니다.</Text>
                                             </View>
                                             <View style="">
-                                                <Text style={styles.cate_list_price}>{val.price}원</Text>
+                                                <Text style={styles.cate_list_price}>{Price(val.price)}원</Text>
                                             </View>
                                         </View>
                                     </View>

@@ -256,53 +256,22 @@ export default function OrderForm({route,navigation}) {
 
             <ScrollView style={[bg_white,]}>
                 <View style={{paddingBottom:110,}}>
-                    {/*==============최근배송지 불러오기==============*/}
-                    <View style={[FormStyle.FormGroup]}>
-                        <View>
-                            <View style={[flex]}>
-                                <View style={[flex]}>
-                                    <View style={[styles.border]}>
-                                        <TouchableOpacity onPress={()=>setmodAddr('mod')}>
-                                            <View style={[flex]}>
-                                                <RadioButton
-                                                    status={modAddr === 'mod' ? 'checked':'unchecked'}
-                                                    value="mod"
-                                                    onPress={()=>setmodAddr('mod')}
-                                                />
-                                                <Text>최근 배송지 불러오기</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                                <View style={[flex]}>
-                                    <View style={[styles.border]}>
-                                        <TouchableOpacity onPress={()=>setmodAddr('add')}>
-                                            <View style={[flex]}>
-                                                <RadioButton
-                                                    status={modAddr === 'add' ? 'checked':'unchecked'}
-                                                    value="add"
-                                                    onPress={()=>setmodAddr('add')}
-                                                />
-                                                <Text>신규 배송지 입력</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
                     {/*==============신규배송지 입력==============*/}
                     <View style={[FormStyle.FormGroup]}>
                         {/*==============제목==============*/}
                         <View>
                             {/*체크박스*/}
-                            <Text style={[FormStyle.FormTitle]}>신규 배송지 입력</Text>
+                            <Text style={[FormStyle.FormTitle]}>배송지 입력</Text>
                         </View>
                         {/*==============배송지 입력==============*/}
                         <View>
                             {/*공사명*/}
                             <View style={[FormStyle.FormGroupItems]}>
                                 {/*공사명*/}
+                                <View style={[flex,{paddingBottom:15,}]}>
+                                    <Text style={[styles.Chk,{paddingRight:10,}]}>최근 공사명 불러오기</Text>
+                                    <Text style={[styles.Chk,{paddingRight:10,}]}>신규 공사명으로 입력</Text>
+                                </View>
                                 <Text style={[FormStyle.FormLabel]}>공사명</Text>
                                 <TextInput style={[input]}
                                            onChangeText={(order_title)=>goInput("order_title",order_title)}
@@ -494,6 +463,11 @@ export default function OrderForm({route,navigation}) {
     );
 }
 const styles = StyleSheet.create({
+
+    Chk:{
+       fontSize:12,
+       color:"#999",
+    },
 
     modalStyle:{
       color:"#333",
