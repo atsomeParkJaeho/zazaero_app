@@ -4,7 +4,7 @@ import logo from "../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
 
 // 공통 CSS 추가
-import {container, bg_white} from '../common/style/AtStyle';
+import {container, bg_white, flex_around, wt10, wt4, wt5, wt1} from '../common/style/AtStyle';
 import {sub_page} from '../common/style/SubStyle';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -57,11 +57,16 @@ export default function MyPage({navigation, route}) {
                                 {mem_info.mem_name} ({mem_info.mem_mobile})
                             </Text>
                             <Text style={styles.user_point}>보유포인트:<Text style={styles.user_point_score}>5000P</Text></Text>
-                            <TouchableOpacity style={styles.user_point_link} onPress={() => {
-                                navigation.navigate('포인트내역')
-                            }}>
-                                <Text style={[styles.user_point_link_txt]}>나의 포인트 보유내역 확인하기</Text>
-                            </TouchableOpacity>
+                            <View style={[flex_around]}>
+                                <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {navigation.navigate('포인트내역')}}>
+                                    <Text style={[styles.user_point_link_txt]}>나의 포인트 내역</Text>
+                                </TouchableOpacity>
+                                <View style={[wt1]}/>
+                                <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {navigation.navigate('환불내역')}}>
+                                    <Text style={[styles.user_point_link_txt]}>나의 환불내역</Text>
+                                </TouchableOpacity>
+                            </View>
+                            
                         </View>
                     </View>
                     <View style={styles.mypageList}>

@@ -24,6 +24,7 @@ import OrderForm from '../pages/order/OrderForm';                           //�
 //마이페이지
 import MyPage from '../pages/MyPage';                                        //마이페이지
 import MyPoint from '../pages/Mypage/MyPoint';                               //포인트 내역
+import MyRefund from "../pages/Mypage/MyRefund";                     //환불상세내역
 import Setting from '../pages/Setting';                                      //설정
 import MemOut from '../pages/Mypage/MemOut';                                 //회원탈퇴
 import MemInfo from '../pages/Mypage/MemInfo';                               //회원정보 변경
@@ -58,7 +59,8 @@ import RequestReturn from "../pages/order/RequestReturn";
 import DeliDetailIng from "../pages/order/DeliDetailIng";
 import DeliDetailDone from "../pages/order/DeliDetailDone";
 import Postcode from "@actbase/react-daum-postcode/lib/app.native";
-import DaumPostCode from "../util/DaumPostCode";                     //반품상세내역
+import DaumPostCode from "../util/DaumPostCode";
+
 
 
 
@@ -94,6 +96,7 @@ const StackNavigator = () => {
                         backgroundColor: '#fff',
                         borderBottomColor: "#fff",
                         shadowColor: "#fff",
+                        fontSize:10,
                     },
                     //헤더의 텍스트를 왼쪾에 둘지 가운데에 둘지를 결정
                     headerTitleAlign: 'center',
@@ -128,6 +131,7 @@ const StackNavigator = () => {
                 <Stack.Screen name="마이페이지" component={MyPage}/>
                 <Stack.Screen name="회원정보수정" component={MemInfo}/>
                 <Stack.Screen name="포인트내역" component={MyPoint}/>
+                <Stack.Screen name="환불내역" component={MyRefund}/>
                 <Stack.Screen name="설정" component={Setting}/>
                 <Stack.Screen name="배송정보등록" component={OrderForm}/>
                 <Stack.Screen name="장바구니" component={Cart}/>
