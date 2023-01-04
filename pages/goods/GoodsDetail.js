@@ -63,13 +63,15 @@ export default function GoodsDetail({route,navigation}) {
     const [goodsWishChk, setgoodsWishChk] = useState(false);
 
 
-    const goWish = () => {
+    const goWish = (WishChk) => {
+        console.log('체크값 : '+WishChk);
 
-
-     setgoodsWishChk(true)
-
-        console.log('체크값 : '+goodsWishChk);
-
+        if(WishChk === true){
+            setgoodsWishChk(false)
+        }
+        else if (WishChk === false){
+            setgoodsWishChk(true)
+        }
     }
 
     let {uid} = route.params;
@@ -311,12 +313,19 @@ export default function GoodsDetail({route,navigation}) {
             <View style={[styles.bottom_btn]}>
                 <View style={[flex]}>
                     <View style={[styles.wt1_5]}>
-                        <TouchableOpacity  onPress={()=>goWish()}>
-                            {/*<Text>찜하기</Text>*/}
-                            <>
-                                <WishlistNon width={35} height={24} color={'blue'}  style={[styles.magin_auto]}/>
-                            </>
-                        </TouchableOpacity>
+                            <TouchableOpacity style={[styles.wish]}  onPress={()=>goWish(goodsWishChk)}>
+                                {/*<Text>찜하기</Text>*/}
+
+                                {(goodsWishChk === true) ? (
+                                    <>
+                                        <Wishlist width={35} height={24} />
+                                    </>
+                                ):(
+                                    <>
+                                        <WishlistNon width={35} height={24} />
+                                    </>
+                                )}
+                            </TouchableOpacity>
                     </View>
                     <View style={[styles.wt8_5]}>
                         <View style={[flex_around]}>
@@ -443,9 +452,10 @@ const styles = StyleSheet.create({
         width:"85%",
 
     },
-    magin_auto:{
-        marginHorizontal:12,
-
+    wish:{
+        flex:1,
+        alignItems:"center",
+        justifyContent:"center",
     },
     ios_pb:{
         paddingBottom: Platform.OS === 'ios' ? 17 : 0,
