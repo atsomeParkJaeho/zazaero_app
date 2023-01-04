@@ -28,15 +28,23 @@ import {
     mt3,
     btn_primary,
     mt5,
-    countinput, flex_around, btn_outline_primary, btn_outline_danger, btn_black, count_btn, pos_center, count_btn_txt
+    countinput,
+    flex_around,
+    btn_outline_primary,
+    btn_outline_danger,
+    btn_black,
+    count_btn,
+    pos_center,
+    count_btn_txt,
+    wt1, wt9, text_center
 } from '../../common/style/AtStyle';
 import {sub_page, gary_bar, sub_container} from '../../common/style/SubStyle';
 
 //더미데이터
 import {goodsDetail, Price} from "../../util/util";
 
-import goods_image from "../../assets/img/goods_image.jpg";
-import goods_image_more from "../../assets/img/goods_image_more.jpg";
+import WishlistNon from "../../icons/ico_heart_nc.svg";
+import Wishlist from "../../icons/ico_heart_c.svg";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -52,8 +60,20 @@ export default function GoodsDetail({route,navigation}) {
     })
 
 
+    const [goodsWishChk, setgoodsWishChk] = useState(false);
+
+
+    const goWish = () => {
+
+
+     setgoodsWishChk(true)
+
+        console.log('체크값 : '+goodsWishChk);
+
+    }
+
     let {uid} = route.params;
-    console.log(uid);
+    console.log('넘어온값 : '+uid);
     // 수량 데이터 상태 임시
 
     // ===========1. 상품상세정보 상태 정의======
@@ -289,17 +309,29 @@ export default function GoodsDetail({route,navigation}) {
                 </View>
             </ScrollView>
             <View style={[styles.bottom_btn]}>
-                <View style={[flex_around]}>
-                    <TouchableOpacity style={styles.btn} onPress={() => goForm('cart',GoodsDetail.goods_uid)}>
-                        <Text style={[btn_primary,styles.center,styles.boottom_btn]}>장바구니 담기</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>
-                        <Text style={[btn_black,styles.center,styles.boottom_btn]}>장바구니 가기</Text>
-                    </TouchableOpacity>
+                <View style={[flex]}>
+                    <View style={[styles.wt1_5]}>
+                        <TouchableOpacity  onPress={()=>goWish()}>
+                            {/*<Text>찜하기</Text>*/}
+                            <>
+                                <WishlistNon width={35} height={24} color={'blue'}  style={[styles.magin_auto]}/>
+                            </>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={[styles.wt8_5]}>
+                        <View style={[flex_around]}>
+                            <TouchableOpacity style={styles.btn} onPress={() => goForm('cart',GoodsDetail.goods_uid)}>
+                                <Text style={[btn_primary,styles.center,styles.boottom_btn]}>장바구니 담기</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>
+                                <Text style={[btn_black,styles.center,styles.boottom_btn]}>장바구니 가기</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
             </View>
             {/*장바구니/구매*/}
-
+            <View style={[styles.ios_pb]} />
         </>
     );
 }
@@ -308,14 +340,15 @@ const styles = StyleSheet.create({
     goods_iamge_box:{
         borderWidth:1,
         borderColor:"#ccc",
+        paddingTop:"100%",
     },
     goods_image:{
-        width:300,
-        height:300,
+        paddingTop:"100%",
+        position: "absolute",
+        width: "100%",
         marginLeft:"auto",
         marginRight:"auto",
     },
-
     GoodsDetail_info:{
         paddingVertical:20,
     },
@@ -399,9 +432,22 @@ const styles = StyleSheet.create({
         fontSize:15,
         textAlign:"center",
         paddingVertical:20,
-
     },
     boottom_btn:{
-        paddingBottom: Platform.OS === 'ios' ? 30 : 20,
+        paddingBottom: 20,
+    },
+    wt1_5:{
+        width:"15%",
+    },
+    wt8_5:{
+        width:"85%",
+
+    },
+    magin_auto:{
+        marginHorizontal:12,
+
+    },
+    ios_pb:{
+        paddingBottom: Platform.OS === 'ios' ? 17 : 0,
     },
 });
