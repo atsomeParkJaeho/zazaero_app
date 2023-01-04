@@ -420,7 +420,6 @@ export default function OrderForm({route,navigation}) {
                                            maxLength={13}
                                            value={Phone(OrderData.recv_phone)}
                                            ref={value => (ChkFocus.current[5] = value)}
-                                           autoFocus={true}
                                 />
                             </View>
                         </View>
