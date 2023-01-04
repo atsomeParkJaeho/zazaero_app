@@ -53,7 +53,7 @@ export default function Cart({route, navigation}) {
     const [CartCate1st, setCartCate1st] = useState([]);           // 1차카테고리 설정
     const [CartList, setCartList] = useState([]);           // 장바구니 상품리스트 출력
     const [Cate1stCode, setCate1stCode] = useState([]);           // 2차 카테고리 코드 설정
-    console.log('회원코드 / ', Member);
+    console.log('회원코드 1 / ', Member);
 
     const Update = useIsFocused();
     // ====================2. 출력리스트===========
