@@ -30,7 +30,7 @@ import {
     justify_content_between,
     ms1,
     ms2,
-    bg_light
+    bg_light, pb2, pos_center
 } from '../../common/style/AtStyle';
 import {sub_page, gary_bar} from '../../common/style/SubStyle';
 import axios from "axios";
@@ -131,8 +131,8 @@ export default function OrderForm({route,navigation}) {
     // 시간 선택값 전달
     const handleConfirm = (date) => {
         setOrderDate({
-           ...OrderData,
-           hope_deli_time:Time(date)+':00',
+            ...OrderData,
+            hope_deli_time:Time(date)+':00',
         });
         hideDatePicker();
     };
@@ -244,7 +244,7 @@ export default function OrderForm({route,navigation}) {
                 onDismiss: () => {},
             },
         );
-    
+
     }
 
     console.log(OrderData);
@@ -254,208 +254,220 @@ export default function OrderForm({route,navigation}) {
         <>
             <KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding'})}>
 
-            <ScrollView style={[bg_white,]}>
-                <View style={{paddingBottom:110,}}>
-                    {/*==============신규배송지 입력==============*/}
-                    <View style={[FormStyle.FormGroup]}>
-                        {/*==============제목==============*/}
-                        <View>
-                            {/*체크박스*/}
-                            <Text style={[FormStyle.FormTitle]}>배송지 입력</Text>
-                        </View>
-                        {/*==============배송지 입력==============*/}
-                        <View>
-                            {/*공사명*/}
-                            <View style={[FormStyle.FormGroupItems]}>
-                                {/*공사명*/}
-                                <View style={[flex,{paddingBottom:15,}]}>
-                                    <Text style={[styles.Chk,{paddingRight:10,}]}>최근 공사명 불러오기</Text>
-                                    <Text style={[styles.Chk,{paddingRight:10,}]}>신규 공사명으로 입력</Text>
-                                </View>
-                                <Text style={[FormStyle.FormLabel]}>공사명</Text>
-                                <TextInput style={[input]}
-                                           onChangeText={(order_title)=>goInput("order_title",order_title)}
-                                           placeholder="ex)공사명 입력"
-                                           value={OrderData.order_title}
-                                           ref={value => (ChkFocus.current[0] = value)}
-                                           onSubmitEditing={()=>navigation.navigate('주소검색',{page:"배송정보등록", order_uid:order_uid})}
-                                           returnKeyType="next"
-                                           blurOnSubmit={false}
-                                />
-
+                <ScrollView style={[bg_white,]}>
+                    <View style={{paddingBottom:110,}}>
+                        {/*==============신규배송지 입력==============*/}
+                        <View style={[FormStyle.FormGroup]}>
+                            {/*==============제목==============*/}
+                            <View>
+                                {/*체크박스*/}
+                                <Text style={[FormStyle.FormTitle]}>배송지 입력</Text>
                             </View>
-                            {/*==============배송지 주소===============*/}
-                            <View style={[FormStyle.FormGroupItems]}>
-                                <Text style={[FormStyle.FormLabel]}>배송지</Text>
-                                <View style={[d_flex,align_items_center]}>
-                                    {/*우편번호*/}
-                                    <TextInput style={[input,{flex:1,marginRight:16},bg_light]}
-                                               editable={false}
-                                               placeholder="우편번호"
-                                               value={zonecode}
-                                               onChangeText={(zonecode)=>goInput("zonecode",zonecode)}
-                                               ref={value => (ChkFocus.current[1] = value)}
-                                               onSubmitEditing={()=>ChkFocus.current[2].focus()}
+                            {/*==============배송지 입력==============*/}
+                            <View>
+                                {/*공사명*/}
+                                <View style={[FormStyle.FormGroupItems]}>
+                                    {/*공사명*/}
+                                    <View style={[flex,pb2]}>
+                                        <View style={[flex]}>
+                                            <View style={[styles.border_Circle]}>
+                                                <View style={[pos_center]}>
+                                                    <View style={[styles.border_Circle_active]}/>
+                                                </View>
+                                            </View>
+                                            <Text style={[styles.Chk, {paddingLeft: 5}]}>신규공사</Text>
+                                        </View>
+                                        <View style={[flex,ms2]}>
+                                            <View style={[styles.border_Circle]}>
+
+                                            </View>
+                                            <Text style={[styles.Chk, {paddingLeft: 5}]}>기존공사</Text>
+                                        </View>
+                                    </View>
+                                    <Text style={[FormStyle.FormLabel]}>공사명</Text>
+                                    <TextInput style={[input]}
+                                               onChangeText={(order_title)=>goInput("order_title",order_title)}
+                                               placeholder="ex)공사명 입력"
+                                               value={OrderData.order_title}
+                                               ref={value => (ChkFocus.current[0] = value)}
+                                               onSubmitEditing={()=>navigation.navigate('주소검색',{page:"배송정보등록", order_uid:order_uid})}
                                                returnKeyType="next"
                                                blurOnSubmit={false}
                                     />
-                                    {/*주소찾기*/}
-                                    <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"배송정보등록", order_uid:order_uid})}>
-                                        <View style={[bg_primary,{padding:8,borderRadius:5,}]}>
-                                            <Text style={[text_light]}>주소찾기</Text>
-                                        </View>
-                                    </TouchableOpacity>
+
+                                </View>
+                                {/*==============배송지 주소===============*/}
+                                <View style={[FormStyle.FormGroupItems]}>
+                                    <Text style={[FormStyle.FormLabel]}>배송지</Text>
+                                    <View style={[d_flex,align_items_center]}>
+                                        {/*우편번호*/}
+                                        <TextInput style={[input,{flex:1,marginRight:16},bg_light]}
+                                                   editable={false}
+                                                   placeholder="우편번호"
+                                                   value={zonecode}
+                                                   onChangeText={(zonecode)=>goInput("zonecode",zonecode)}
+                                                   ref={value => (ChkFocus.current[1] = value)}
+                                                   onSubmitEditing={()=>ChkFocus.current[2].focus()}
+                                                   returnKeyType="next"
+                                                   blurOnSubmit={false}
+                                        />
+                                        {/*주소찾기*/}
+                                        <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"배송정보등록", order_uid:order_uid})}>
+                                            <View style={[bg_primary,{padding:8,borderRadius:5,}]}>
+                                                <Text style={[text_light]}>주소찾기</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                {/*================주소============*/}
+                                <View style={{paddingBottom:15,}}>
+                                    <TextInput style={[input,{flex:1},bg_light]}
+                                               editable={false}
+                                               placeholder="주소"
+                                               value={addr1}
+                                               onChangeText={(addr1)=>goInput("addr1",addr1)}
+                                               ref={value => (ChkFocus.current[2] = value)}
+                                               onSubmitEditing={()=>ChkFocus.current[3].focus()}
+                                               returnKeyType="next"
+                                               blurOnSubmit={false}
+                                    />
+                                </View>
+                                {/*============상세주소=================*/}
+                                <View>
+                                    <TextInput style={[input,{flex:1}]}
+                                               onChangeText={(addr2)=>goInput("addr2",addr2)}
+                                               placeholder="상세주소"
+                                               value={OrderData.addr2}
+                                               ref={value => (ChkFocus.current[3] = value)}
+                                               onSubmitEditing={()=>ChkFocus.current[4].focus()}
+                                               returnKeyType="done"
+                                    />
+                                </View>
+                                {/*다음 api 주소 팝업*/}
+                            </View>
+                        </View>
+                        {/*==============희망배송일==============*/}
+                        <View>
+                            {/*==============제목==============*/}
+                            <View style={[d_flex, align_items_center, FormStyle.FormDate, {justifyContent:"space-between"}]}>
+                                {/*체크박스*/}
+                                <Text style={[FormStyle.FormDateLabel]}>도착일</Text>
+                                <Text style={[FormStyle.FormDateLabel]}>{Hope.hopeDate}</Text>
+                            </View>
+                            {/*==============캘린더==============*/}
+                            <View style={[FormStyle.FormGroup, {paddingTop:5, paddingBottom: 5,}]}>
+                                <CalendarStrip
+                                    scrollable
+                                    onDateSelected={(Date)=> {
+                                        setHope({
+                                            ...Hope,
+                                            hopeDate: String(Date.format('M' + '월' + 'D' + '일')),
+                                        });
+                                        setOrderDate({
+                                            ...OrderData,
+                                            hope_deli_date: String(Date.format('YYYY-MM-DD')),
+                                        });
+                                    }
+                                    }
+                                    minDate={`2020-12-31`}
+                                    maxDate={`2024-12-31`}
+                                    style={{height:150, paddingTop: 20, paddingBottom: 10}}
+                                    daySelectionAnimation={{
+                                        type:"background",
+                                        highlightColor:"#3D40E0",
+                                    }}
+                                    highlightDateNameStyle={{color:"#fff",fontSize:12, paddingBottom:5,}}
+                                    highlightDateNumberStyle={{color:"#fff",fontSize:16,}}
+                                    weekendDateNameStyle={{color:"#452"}}
+                                    dateNameStyle={{fontSize:12, color:"#666", paddingBottom:5,}}
+                                    dateNumberStyle={{fontSize:16}}
+
+                                />
+                            </View>
+
+                        </View>
+                        {/*==============희망배송시간==============*/}
+                        <View>
+                            {/*==============제목==============*/}
+                            <View style={[d_flex, align_items_center, FormStyle.FormDate, {justifyContent:"space-between"}]}>
+                                {/*체크박스*/}
+                                <Text style={[FormStyle.FormDateLabel]}>도착시간</Text>
+                                <Text style={[FormStyle.FormDateLabel]}>
+                                    {OrderData.hope_deli_time}
+                                </Text>
+                            </View>
+                            {/*==============시간입력==============*/}
+                            <View style={[FormStyle.FormGroup]}>
+                                <View style={[d_flex, align_items_center]}>
+                                    {/*오전, 오후*/}
+                                    {/*<DateTimePickerModal*/}
+                                    {/*locale="KR"*/}
+                                    {/*mode="time"*/}
+                                    {/*textColor="black"*/}
+                                    {/*style={{backgroundColor:"rgba(255,255,255,0.5)",}}*/}
+                                    {/*onConfirm={handleConfirm}*/}
+                                    {/*onCancel={hideDatePicker}*/}
+                                    {/*isVisible={DatePicker}*/}
+                                    {/*/>*/}
+                                    <View style={{flex:1,}}>
+                                        <TextInput placeholder="00:00"
+                                                   value={OrderData.hope_deli_time}
+                                            // editable={false} onPressIn={showDatePicker}
+                                                   style={[input,{flex:1}]}
+                                                   ref={value => (ChkFocus.current[4] = value)}
+                                        />
+                                    </View>
                                 </View>
                             </View>
-                            {/*================주소============*/}
-                            <View style={{paddingBottom:15,}}>
-                                <TextInput style={[input,{flex:1},bg_light]}
-                                editable={false}
-                                placeholder="주소"
-                                value={addr1}
-                                onChangeText={(addr1)=>goInput("addr1",addr1)}
-                                ref={value => (ChkFocus.current[2] = value)}
-                                           onSubmitEditing={()=>ChkFocus.current[3].focus()}
-                                           returnKeyType="next"
-                                           blurOnSubmit={false}
-                                />
-                            </View>
-                            {/*============상세주소=================*/}
-                            <View>
-                                <TextInput style={[input,{flex:1}]}
-                                           onChangeText={(addr2)=>goInput("addr2",addr2)}
-                                           placeholder="상세주소"
-                                           value={OrderData.addr2}
-                                           ref={value => (ChkFocus.current[3] = value)}
-                                           onSubmitEditing={()=>ChkFocus.current[4].focus()}
-                                           returnKeyType="done"
-                                />
-                            </View>
-                            {/*다음 api 주소 팝업*/}
                         </View>
-                    </View>
-                    {/*==============희망배송일==============*/}
-                    <View>
-                        {/*==============제목==============*/}
-                        <View style={[d_flex, align_items_center, FormStyle.FormDate, {justifyContent:"space-between"}]}>
-                            {/*체크박스*/}
-                            <Text style={[FormStyle.FormDateLabel]}>도착일</Text>
-                            <Text style={[FormStyle.FormDateLabel]}>{Hope.hopeDate}</Text>
-                        </View>
-                        {/*==============캘린더==============*/}
-                        <View style={[FormStyle.FormGroup, {paddingTop:5, paddingBottom: 5,}]}>
-                            <CalendarStrip
-                                scrollable
-                                onDateSelected={(Date)=> {
-                                    setHope({
-                                        ...Hope,
-                                        hopeDate: String(Date.format('M' + '월' + 'D' + '일')),
-                                    });
-                                    setOrderDate({
-                                        ...OrderData,
-                                        hope_deli_date: String(Date.format('YYYY-MM-DD')),
-                                    });
-                                    }
-                                }
-                                minDate={`2020-12-31`}
-                                maxDate={`2024-12-31`}
-                                style={{height:150, paddingTop: 20, paddingBottom: 10}}
-                                daySelectionAnimation={{
-                                    type:"background",
-                                    highlightColor:"#3D40E0",
-                                }}
-                                highlightDateNameStyle={{color:"#fff",fontSize:12, paddingBottom:5,}}
-                                highlightDateNumberStyle={{color:"#fff",fontSize:16,}}
-                                weekendDateNameStyle={{color:"#452"}}
-                                dateNameStyle={{fontSize:12, color:"#666", paddingBottom:5,}}
-                                dateNumberStyle={{fontSize:16}}
-
-                            />
-                        </View>
-
-                    </View>
-                    {/*==============희망배송시간==============*/}
-                    <View>
-                        {/*==============제목==============*/}
-                        <View style={[d_flex, align_items_center, FormStyle.FormDate, {justifyContent:"space-between"}]}>
-                            {/*체크박스*/}
-                            <Text style={[FormStyle.FormDateLabel]}>도착시간</Text>
-                            <Text style={[FormStyle.FormDateLabel]}>
-                                {OrderData.hope_deli_time}
-                            </Text>
-                        </View>
-                        {/*==============시간입력==============*/}
+                        {/*==============현장인도자 연락처==============*/}
                         <View style={[FormStyle.FormGroup]}>
-                            <View style={[d_flex, align_items_center]}>
-                                {/*오전, 오후*/}
-                                {/*<DateTimePickerModal*/}
-                                {/*locale="KR"*/}
-                                {/*mode="time"*/}
-                                {/*textColor="black"*/}
-                                {/*style={{backgroundColor:"rgba(255,255,255,0.5)",}}*/}
-                                {/*onConfirm={handleConfirm}*/}
-                                {/*onCancel={hideDatePicker}*/}
-                                {/*isVisible={DatePicker}*/}
-                                {/*/>*/}
-                                <View style={{flex:1,}}>
-                                    <TextInput placeholder="00:00"
-                                   value={OrderData.hope_deli_time}
-                                   // editable={false} onPressIn={showDatePicker}
-                                   style={[input,{flex:1}]}
-                                   ref={value => (ChkFocus.current[4] = value)}
+                            {/*==============현장인도자 연락처==============*/}
+                            <View style={[FormStyle.FormGroupItems]}>
+                                <View>
+                                    <Text style={[FormStyle.FormLabel]}>현장인도자 연락처</Text>
+                                    <TextInput style={[input,{flex:1}]}
+                                               onChangeText={(recv_phone)=>goInput("recv_phone",recv_phone)}
+                                               placeholder="예 ) 010-XXXX-XXXX"
+                                               maxLength={13}
+                                               value={Phone(OrderData.recv_phone)}
+                                               ref={value => (ChkFocus.current[5] = value)}
                                     />
                                 </View>
                             </View>
+                            {/*==============배송 요청 사항==============*/}
+
+                            <View style={[FormStyle.FormGroupItems]}>
+                                <View>
+                                    <Text style={[FormStyle.FormLabel]}>배송 요청 사항</Text>
+                                    <TouchableWithoutFeedback >
+                                        <TextInput style={[input,{flex:1,height:100}]}
+                                                   multiline={true}
+                                                   numberOfLines={4}
+                                                   onChangeText={(order_memo)=>goInput("order_memo",order_memo)}
+                                                   placeholder="배송요청사항"
+                                                   onPressIn={()=>ChkFocus.current[6].focus()}
+                                                   ref={value => (ChkFocus.current[6] = value)}
+                                                   value={OrderData.order_memo}/>
+                                    </TouchableWithoutFeedback>
+                                </View>
+                            </View>
+
                         </View>
                     </View>
-                    {/*==============현장인도자 연락처==============*/}
-                    <View style={[FormStyle.FormGroup]}>
-                        {/*==============현장인도자 연락처==============*/}
-                        <View style={[FormStyle.FormGroupItems]}>
-                            <View>
-                                <Text style={[FormStyle.FormLabel]}>현장인도자 연락처</Text>
-                                <TextInput style={[input,{flex:1}]}
-                                           onChangeText={(recv_phone)=>goInput("recv_phone",recv_phone)}
-                                           placeholder="예 ) 010-XXXX-XXXX"
-                                           maxLength={13}
-                                           value={Phone(OrderData.recv_phone)}
-                                           ref={value => (ChkFocus.current[5] = value)}
-                                />
-                            </View>
-                        </View>
-                        {/*==============배송 요청 사항==============*/}
+                </ScrollView>
+                {/*============배송정보 입력시 활성화=============*/}
 
-                        <View style={[FormStyle.FormGroupItems]}>
-                            <View>
-                                <Text style={[FormStyle.FormLabel]}>배송 요청 사항</Text>
-                                <TouchableWithoutFeedback >
-                                <TextInput style={[input,{flex:1,height:100}]}
-                                           multiline={true}
-                                           numberOfLines={4}
-                                           onChangeText={(order_memo)=>goInput("order_memo",order_memo)}
-                                           placeholder="배송요청사항"
-                                           onPressIn={()=>ChkFocus.current[6].focus()}
-                                           ref={value => (ChkFocus.current[6] = value)}
-                                           value={OrderData.order_memo}/>
-                                </TouchableWithoutFeedback>
-                            </View>
+                <View style={[bg_gray, {paddingTop:6, paddingBottom:38, position:"absolute", left:0, bottom:0, width:"100%"}]}>
+                    <TouchableOpacity onPress={goForm}>
+                        <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
+                            <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
                         </View>
-
-                    </View>
+                        <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
+                            발주요청
+                        </Text>
+                    </TouchableOpacity>
                 </View>
-            </ScrollView>
-            {/*============배송정보 입력시 활성화=============*/}
-
-            <View style={[bg_gray, {paddingTop:6, paddingBottom:38, position:"absolute", left:0, bottom:0, width:"100%"}]}>
-                <TouchableOpacity onPress={goForm}>
-                    <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
-                        <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
-                    </View>
-                    <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
-                        발주요청
-                    </Text>
-                </TouchableOpacity>
-            </View>
             </KeyboardAvoidingView>
 
         </>
@@ -463,14 +475,9 @@ export default function OrderForm({route,navigation}) {
 }
 const styles = StyleSheet.create({
 
-    Chk:{
-       fontSize:12,
-       color:"#999",
-    },
-
     modalStyle:{
-      color:"#333",
-      // backgroundColor:"rgba(255,255,255,0.5)",
+        color:"#333",
+        // backgroundColor:"rgba(255,255,255,0.5)",
     },
     border_Circle:{
         width:20,
