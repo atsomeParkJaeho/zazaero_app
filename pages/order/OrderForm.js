@@ -104,9 +104,12 @@ export default function OrderForm({route,navigation}) {
     const [Hope, setHope]                   = useState({
         hopeDate    :'',
         hopeTime    :'',
-    });       // 희망배송일시 설정,
-    const [modAddr, setmodAddr]             = useState('mod');  // 최근배송지, 신규배송지 상태정의
+    });
+    // 희망배송일시 설정,
+    const [modAddr, setmodAddr]             = useState('add');  // 최근배송지, 신규배송지 상태정의
     const [DatePicker, setDatePicker]       = useState(false);
+
+
 
     // 2. 주소 입력시 업데이트
     useEffect(()=>{
@@ -269,20 +272,32 @@ export default function OrderForm({route,navigation}) {
                                 <View style={[FormStyle.FormGroupItems]}>
                                     {/*공사명*/}
                                     <View style={[flex,pb2]}>
-                                        <View style={[flex]}>
-                                            <View style={[styles.border_Circle]}>
-                                                <View style={[pos_center]}>
-                                                    <View style={[styles.border_Circle_active]}/>
+                                        {/*============신규공사========*/}
+                                        <TouchableOpacity onPress={()=>setmodAddr('add')}>
+                                            <View style={[flex]}>
+                                                <View style={[styles.border_Circle]}>
+                                                    {(modAddr === 'add') &&
+                                                        <View style={[pos_center]}>
+                                                            <View style={[styles.border_Circle_active]}/>
+                                                        </View>
+                                                    }
                                                 </View>
+                                                <Text style={[styles.Chk, {paddingLeft: 5}]}>신규공사</Text>
                                             </View>
-                                            <Text style={[styles.Chk, {paddingLeft: 5}]}>신규공사</Text>
-                                        </View>
-                                        <View style={[flex,ms2]}>
-                                            <View style={[styles.border_Circle]}>
-
+                                        </TouchableOpacity>
+                                        {/*===========기존공사===============*/}
+                                        <TouchableOpacity onPress={()=>setmodAddr('mod')}>
+                                            <View style={[flex,ms2]}>
+                                                <View style={[styles.border_Circle]}>
+                                                    {(modAddr === 'mod') &&
+                                                        <View style={[pos_center]}>
+                                                            <View style={[styles.border_Circle_active]}/>
+                                                        </View>
+                                                    }
+                                                </View>
+                                                <Text style={[styles.Chk, {paddingLeft: 5}]}>기존공사</Text>
                                             </View>
-                                            <Text style={[styles.Chk, {paddingLeft: 5}]}>기존공사</Text>
-                                        </View>
+                                        </TouchableOpacity>
                                     </View>
                                     <Text style={[FormStyle.FormLabel]}>공사명</Text>
                                     <TextInput style={[input]}

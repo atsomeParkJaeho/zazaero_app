@@ -169,7 +169,7 @@ const StackNavigator = () => {
                 <Stack.Screen name="자주묻는질문" component={FaqList}/>
                 <Stack.Screen name="알림" component={NotificationList}/>
                 <Stack.Screen name="검색" component={GoodsSearch}/>
-                <Stack.Screen name="검색상품리스트" component={GoodsSearchList}/>
+                <Stack.Screen name="검색결과" component={GoodsSearchList}/>
                 <Stack.Screen name="1:1문의작성" component={inquiryWrite}/>
                 <Stack.Screen name="1:1문의목록" component={inquiryList}/>
                 <Stack.Screen name="공지사항" component={NoticeList}/>
