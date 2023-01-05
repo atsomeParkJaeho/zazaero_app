@@ -19,7 +19,19 @@ import * as ImagePicker from 'expo-image-picker';
 import Loading from '../../components/Loading';
 
 // 공통 CSS 추가
-import {container, bg_white, flex, input, pos_center, pe1, me1, me2, pe2, mt2} from '../../common/style/AtStyle';
+import {
+    container,
+    bg_white,
+    flex,
+    input,
+    pos_center,
+    pe1,
+    me1,
+    me2,
+    pe2,
+    mt2,
+    ios_pb
+} from '../../common/style/AtStyle';
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
 import axios from "axios";
 import {AddrMatch, bizNum, Minlangth, OnlyEng, Phone, PwChk, regId, regPW} from "../../util/util";
@@ -601,40 +613,19 @@ export default function SignUp({route, navigation}) {
                     </View>
                 </View>
             </ScrollView>
-            <View style={[styles.form_btn,styles.form_meminfo_btn]}>
+            <View style={[styles.form_btn,ios_pb]}>
                 <TouchableOpacity
                     onPress={goForm}
                     style={[styles.form_btn_link,styles.form_btn_meminfo_link]} >
                     <Text style={styles.form_btn_txt}>회원가입</Text>
                 </TouchableOpacity>
             </View>
+            <View style={[styles.ios_pb]} />
         </>
     );
 }
 
-const pickerSelectStyles = StyleSheet.create({
-    inputIOS: {
-        fontSize: 12,
-        height: 40,
-        width: "100%",
-        color: '#000000',
-        borderColor: '#ededf1',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 10
-    },
-    inputAndroid: {
-        placeholderColor:"blue",
-        fontSize: 12,
-        height: 40,
-        width: "100%",
-        color: 'red',
-        borderColor: '#ededf1',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 10
-    },
-});
+
 
 const styles = StyleSheet.create({
     subPage: {
@@ -809,4 +800,5 @@ const styles = StyleSheet.create({
         width:"100%",
         height:'100%',
     },
+
 });

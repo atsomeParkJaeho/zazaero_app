@@ -172,6 +172,7 @@ export const pt8 = {paddingTop:80}
 export const pt9 = {paddingTop:90}
 export const pt10 = {paddingTop:100}
 //
+export const ios_pb = {paddingBottom:Platform.OS === 'ios' ? 30 : 20,}
 export const pb1 = {paddingBottom:10}
 export const pb2 = {paddingBottom:20}
 export const pb3 = {paddingBottom:30}
