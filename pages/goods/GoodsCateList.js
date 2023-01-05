@@ -459,6 +459,7 @@ export default function GoodsCateList({route,navigation}) {
 
                 </View>
             </ScrollView>
+            <Footer navigation={navigation}/>
             {/*========상품체크시 노출=========*/}
             {(goForm.length > 0) ? (
                 <>
@@ -485,13 +486,15 @@ export default function GoodsCateList({route,navigation}) {
             ) : (
                 <></>
             )}
-            <Footer navigation={navigation}/>
+
         </>
     );
 }
 
 const styles = StyleSheet.create({
-
+    GoodsCateList:{
+        paddingBottom: 100,
+    },
     cate_1st_btn: {
         padding: 12,
     },
