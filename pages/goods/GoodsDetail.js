@@ -83,26 +83,27 @@ export default function GoodsDetail({route,navigation}) {
 
     // ============2. 상품출력===============
     useEffect(()=>{
-        let data = {
-            act_type    :"get_relation_goods",
-            goods_uid   :uid,
-        }
-        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php',data,{
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
+            act_type    :   "get_goods_info",
+            goods_uid   :   uid,
+            mem_uid     :   Member,
+        },{
             headers: {
                 'Content-type': 'multipart/form-data',
             }
         }).then((res)=>{
             if(res) {
-                const {result, goods_info} = res.data;
+                const {result, goods_info, my_cart_cnt} = res.data;
+                console.log('확인 / ',my_cart_cnt);
                 if(result === 'OK') {
-                    console.log(goods_info);
+                    console.log('상품정보 / ',goods_info);
                     setGoodsDetail(goods_info);
                 } else {
                     console.log('실패');
                 }
             }
         });
-    },[]);
+    },[Member]);
 
     // ====================4. 수량증가 설정==================
     const goodsCnt = (type, value) => {

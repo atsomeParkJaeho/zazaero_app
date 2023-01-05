@@ -80,7 +80,7 @@ export default function GoodsSearch({route,navigation}) {
                     if(A_goods.length === 0) {
                         Alert.alert('','검색하신 상품이 없습니다');
                     } else {
-                        navigation.navigate('검색상품리스트',{search:search});
+                        navigation.navigate('검색결과',{search:search});
                     }
                 } else {
                     console.log('실패');
