@@ -44,21 +44,20 @@ import {RadioButton} from "react-native-paper";  // language must match config
 import Postcode from '@actbase/react-daum-postcode';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import {Phone, Time} from "../../util/util";
+import {AddrMatch, Phone, Time, Time1, Time2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
+import RNPickerSelect from "react-native-picker-select";
 
 
 
 
 export default function OrderForm({route,navigation}) {
 
-
-
+    console.log('확인 / ',route.params);
     // 유효성 검사
+
+    const {order_uid, zonecode, addr1} = route.params;
     const ChkFocus = useRef([]);
-
-    console.log('확인1 / ',ChkFocus.current);
-
     const [Member, setMember] = useState();
     const Update = useIsFocused();
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
@@ -68,16 +67,11 @@ export default function OrderForm({route,navigation}) {
     console.log('전달 2값 / ',Member);
 
 
-    const {order_uid, zonecode, addr1} = route.params;
-
-    console.log(route.params);
-
+    // 1-1 나의 장바구니 리스트 출력
+    const [CartList, setCartList] = useState([]);
+    
     // 1. 주문정보 상태 설정
     const [OrderData, setOrderDate] = useState({
-
-        act_type                    :'save_gd_order',
-
-
         order_uid                   :order_uid,             // 주문번호
         mgr_mem_uid                 :Member,
         mem_uid                     :Member,                // 회원 uid
@@ -92,8 +86,8 @@ export default function OrderForm({route,navigation}) {
         order_title                 :'',                    //  공사명
         hope_deli_date              :'',                    // 희망배송일
         hope_deli_time              :'',                    // 희망배송시간
-        zonecode                    :zonecode,                    // 배송지 우편번호
-        addr1                       :addr1,                    // 배송지 주소1
+        zonecode                    :zonecode,              // 배송지 우편번호
+        addr1                       :addr1,                 // 배송지 주소1
         addr2                       :'',                    // 배송지 주소2 상세주소
         deli_price                  :'',                    // 배송비
         deli_mem_name               :'',                    // 배송자명
@@ -106,13 +100,37 @@ export default function OrderForm({route,navigation}) {
         hopeTime    :'',
     });
     // 희망배송일시 설정,
-    const [modAddr, setmodAddr]             = useState('add');  // 최근배송지, 신규배송지 상태정의
-    const [DatePicker, setDatePicker]       = useState(false);
+    const [modAddr,       setmodAddr]             = useState('add');  // 최근배송지, 신규배송지 상태정의
+    const [DatePicker,    setDatePicker]          = useState(false);
+    
 
-
-
-    // 2. 주소 입력시 업데이트
     useEffect(()=>{
+        console.log('확인23 / ',order_uid);
+        // 나의 장바구니 정보 출력
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+            act_type            : "get_order_ready",
+            login_status        : "Y",
+            mem_uid             : Member,
+            A_order_uid         : {order_uid},
+        },{
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            console.log('확인 / ',order_uid);
+           if(res) {
+               // console.log('확인 / ',res);
+               const {result, A_order} = res.data;
+               if(result === 'OK') {
+                   console.log('나의 장바구니 확인/ ',A_order);
+                   setCartList(A_order);
+               } else {
+                   console.log('실패');
+               }
+           }
+        }).catch(err=>console.log("에러코드 / ",err));
+
+        // 주소입력시 업데이트
         setOrderDate({
             ...OrderData,
             mem_uid         :Member,
@@ -120,25 +138,11 @@ export default function OrderForm({route,navigation}) {
             zonecode        :zonecode,
             addr1           :addr1,
         });
+
+
     },[Update,Member]);
 
-
-    // 시간 선택 모달 show
-    const showDatePicker = () => {
-        setDatePicker(true);
-    };
-    // 시간 선택 모달 hide
-    const hideDatePicker = () => {
-        setDatePicker(false);
-    };
-    // 시간 선택값 전달
-    const handleConfirm = (date) => {
-        setOrderDate({
-            ...OrderData,
-            hope_deli_time:Time(date)+':00',
-        });
-        hideDatePicker();
-    };
+    console.log('장바구니 / ',CartList);
 
     // 2. 주문정보 입력상태 설정
     const goInput = (keyValue, e) => {
@@ -250,7 +254,7 @@ export default function OrderForm({route,navigation}) {
 
     }
 
-    console.log(OrderData);
+    console.log('주문정보 / ',OrderData);
     console.log(modAddr);
 
     return (
@@ -414,22 +418,34 @@ export default function OrderForm({route,navigation}) {
                             {/*==============시간입력==============*/}
                             <View style={[FormStyle.FormGroup]}>
                                 <View style={[d_flex, align_items_center]}>
-                                    {/*오전, 오후*/}
-                                    {/*<DateTimePickerModal*/}
-                                    {/*locale="KR"*/}
-                                    {/*mode="time"*/}
-                                    {/*textColor="black"*/}
-                                    {/*style={{backgroundColor:"rgba(255,255,255,0.5)",}}*/}
-                                    {/*onConfirm={handleConfirm}*/}
-                                    {/*onCancel={hideDatePicker}*/}
-                                    {/*isVisible={DatePicker}*/}
-                                    {/*/>*/}
-                                    <View style={{flex:1,}}>
-                                        <TextInput placeholder="00:00"
-                                                   value={OrderData.hope_deli_time}
-                                            // editable={false} onPressIn={showDatePicker}
-                                                   style={[input,{flex:1}]}
-                                                   ref={value => (ChkFocus.current[4] = value)}
+                                    <View style={[styles.formSelect,{flex:0.3, marginRight:10,}]}>
+                                        <RNPickerSelect
+                                            placeholder={{label:"오전,오후", value:null}}
+                                            onValueChange={(road_address) => goInput('road_address',road_address)}
+                                            items={Time1}
+                                            useNativeAndroidPickerStyle={false}
+                                            style={{
+                                                placeholder:{color:'gray'},
+                                                inputAndroid : styles.input,
+                                                inputAndroidContainer : styles.inputContainer,
+                                                inputIOS: styles.input,
+                                                inputIOSContainer : styles.inputContainer,
+                                            }}
+                                        />
+                                    </View>
+                                    <View style={[styles.formSelect,{flex:0.7}]}>
+                                        <RNPickerSelect
+                                            placeholder={{label:"시간을 선택해주세요.", value:null}}
+                                            onValueChange={(road_address) => goInput('road_address',road_address)}
+                                            items={Time2}
+                                            useNativeAndroidPickerStyle={false}
+                                            style={{
+                                                placeholder:{color:'gray'},
+                                                inputAndroid : styles.input,
+                                                inputAndroidContainer : styles.inputContainer,
+                                                inputIOS: styles.input,
+                                                inputIOSContainer : styles.inputContainer,
+                                            }}
                                         />
                                     </View>
                                 </View>
@@ -489,6 +505,12 @@ export default function OrderForm({route,navigation}) {
     );
 }
 const styles = StyleSheet.create({
+
+    formSelect : {
+        borderWidth: 1,
+        borderColor:"#e6e6e6",
+        padding:10,
+    },
 
     modalStyle:{
         color:"#333",

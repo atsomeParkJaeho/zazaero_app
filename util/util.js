@@ -365,6 +365,57 @@ export const OnlyEng = (text) => {
 
 export const bankAccount = ["자재로(이정완)_국민은행 1234-23-5968714"];
 
+
+export const Time1 = [
+    {
+        label     :"AM",
+        value   :"오전",
+    },
+    {
+        label     :"PM",
+        value   :"오후",
+    },
+];
+
+export const Time2 = [
+    {
+        label     :"08:00:00",
+        value   :"08:00",
+    },
+    {
+        label     :"08:30:00",
+        value   :"08:30",
+    },
+    {
+        label     :"09:00:00",
+        value   :"09:00",
+    },
+    {
+        label     :"09:30:00",
+        value   :"09:30",
+    },
+    {
+        label     :"10:00:00",
+        value   :"10:00",
+    },
+    {
+        label     :"10:30:00",
+        value   :"10:30",
+    },
+    {
+        label     :"11:00:00",
+        value   :"11:00",
+    },
+    {
+        label     :"11:30:00",
+        value   :"11:30",
+    },
+    {
+        label     :"12:00:00",
+        value   :"12:00",
+    },
+];
+
 export const AddrMatch = [
     {
         label          :"서울특별시",

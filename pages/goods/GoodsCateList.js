@@ -277,7 +277,7 @@ export default function GoodsCateList({route,navigation}) {
                         }
                         return val;
                     });
-                   
+
                     setGoodsList(temp);
                 }
             } else {
@@ -331,11 +331,8 @@ export default function GoodsCateList({route,navigation}) {
 
 
     console.log('3차 카테고리 / ', Cate3rd);
-
-
     console.log(GoodsList);
-    // console.log('상품리스트 출력 / ',GoodsList[0].goods_wish_chk);
-    //console.log('즐겨찾기 상품리스트 출력 / ',WishGoods);
+
     return (
         /*
           return 구문 안에서는 {슬래시 + * 방식으로 주석
@@ -358,28 +355,27 @@ export default function GoodsCateList({route,navigation}) {
                     {/*3차카테고리 메뉴 선택*/}
                     <View style={styles.cate_2st_list}>
                         {Cate3rd &&
-                        <>
-                            <View style={[styles.cate_2st_btn,]}>
-                                <TouchableOpacity style={[styles.cate_1st_btn]} onPress={() => goCate2nd(Cate2ndActive)}>
-                                    <Text style={[styles.cate_2st_btn_txt,(Cate2ndActive === Cate3rdActive) && text_primary]}>
-                                        전체
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                            {Cate3rd.map((val,idx)=>(
-                                <>
-                                    <View style={[styles.cate_2st_btn,]}>
-                                        <TouchableOpacity key={idx} style={[styles.cate_1st_btn]} onPress={()=>goCate3rd(val.ind_cfg_uid)}>
-                                            <Text style={[styles.cate_2st_btn_txt,(val.ind_cfg_uid === Cate3rdActive) && text_primary]}>
-                                                {val.cfg_val1}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </>
-                            ))}
-                        </>
+                            <>
+                                <View style={[styles.cate_2st_btn,]}>
+                                    <TouchableOpacity style={[styles.cate_1st_btn]} onPress={() => goCate2nd(Cate2ndActive)}>
+                                        <Text style={[styles.cate_2st_btn_txt,(Cate2ndActive === Cate3rdActive) && text_primary]}>
+                                            전체
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                                {Cate3rd.map((val,idx)=>(
+                                    <>
+                                        <View style={[styles.cate_2st_btn,]}>
+                                            <TouchableOpacity key={idx} style={[styles.cate_1st_btn]} onPress={()=>goCate3rd(val.ind_cfg_uid)}>
+                                                <Text style={[styles.cate_2st_btn_txt,(val.ind_cfg_uid === Cate3rdActive) && text_primary]}>
+                                                    {val.cfg_val1}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </>
+                                ))}
+                            </>
                         }
-
                     </View>
                     {/*2차카테고리 메뉴 선택*/}
                     <ScrollView>
@@ -387,7 +383,6 @@ export default function GoodsCateList({route,navigation}) {
                         {GoodsList.map((val, idx) => (
                             <View style={[]} key={idx}>
                                 <View style={styles.cate_goods_list_item}>
-                                    {/**/}
                                     <View style={[flex_top]}>
                                         <View style={[styles.flex_item, styles.flex_item1]}>
                                             <View style={[styles.cate_list_Thumbnail_box]}>
@@ -395,7 +390,6 @@ export default function GoodsCateList({route,navigation}) {
                                                 <View style={styles.goods_like}>
                                                     {/*=============찜하기=================*/}
                                                     <TouchableOpacity onPress={()=>goWish(val.goods_uid)}>
-                                                        {/*<Text>찜하기</Text>*/}
                                                         {(val.my_zzim_flag === 'Y') ? (
                                                             <>
                                                                 <Wishlist width={35} height={24} color={'blue'}/>

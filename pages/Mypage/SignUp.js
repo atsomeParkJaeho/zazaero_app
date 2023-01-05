@@ -366,7 +366,7 @@ export default function SignUp({route, navigation}) {
                                 <View style={[styles.select_box]}>
                                     <RNPickerSelect
                                         placeholder={{label:"지역을 선택해주세요.", value:null}}
-                                         onValueChange={(road_address) => goInput('road_address',road_address)}
+                                        onValueChange={(road_address) => goInput('road_address',road_address)}
                                         items={AddrMatch}
                                         useNativeAndroidPickerStyle={false}
                                         style={{

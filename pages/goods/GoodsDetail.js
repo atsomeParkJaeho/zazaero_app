@@ -57,22 +57,7 @@ export default function GoodsDetail({route,navigation}) {
     const [Member, setMember] = useState();
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
-    })
-
-
-    const [goodsWishChk, setgoodsWishChk] = useState(false);
-
-
-    const goWish = (WishChk) => {
-        console.log('체크값 : '+WishChk);
-
-        if(WishChk === true){
-            setgoodsWishChk(false)
-        }
-        else if (WishChk === false){
-            setgoodsWishChk(true)
-        }
-    }
+    });
 
     let {uid} = route.params;
     console.log('넘어온값 : '+uid);
@@ -94,10 +79,9 @@ export default function GoodsDetail({route,navigation}) {
         }).then((res)=>{
             if(res) {
                 const {result, goods_info, my_cart_cnt} = res.data;
-                console.log('확인 / ',my_cart_cnt);
                 if(result === 'OK') {
-                    console.log('상품정보 / ',goods_info);
-                    setGoodsDetail(goods_info);
+                    setGoodsDetail({...goods_info, my_cart_cnt:1})
+
                 } else {
                     console.log('실패');
                 }
@@ -105,19 +89,54 @@ export default function GoodsDetail({route,navigation}) {
         });
     },[Member]);
 
+    // 5. 즐겨찾기 액션
+    const goWish = (uid) => {
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
+            act_type        :"set_my_zzim",
+            login_status    :"Y",
+            mem_uid         :Member,
+            link_uid        :uid,
+        },{
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            console.log(res.data);
+            if(res) {
+                const {result} = res.data;
+                if(result === 'OK') {
+                    console.log(result);
+                    if(GoodsDetail.my_zzim_flag === 'Y') {
+                        Alert.alert('','즐겨찾기에서 삭제하였습니다.');
+                        setGoodsDetail({...GoodsDetail,my_zzim_flag:'N'});
+                    }
+                    if(GoodsDetail.my_zzim_flag === 'N') {
+                        Alert.alert('','즐겨찾기에 추가하였습니다.');
+                        setGoodsDetail({...GoodsDetail,my_zzim_flag:'Y'});
+                    }
+
+                }
+            } else {
+                const {result} = res.data;
+                console.log(result);
+            }
+        }).catch((error)=>{console.log(error)});
+        // // 내 즐겨찾기에 등록된 상품 필터링하기
+    }
+    
+
     // ====================4. 수량증가 설정==================
     const goodsCnt = (type, value) => {
-
         let test = setGoodsDetail({
             ...GoodsDetail,
-            goods_cnt:1,
+            my_cart_cnt:1,
         });
 
         if(type === 'minus') {
             console.log('마이너스');
             setGoodsDetail({
                 ...GoodsDetail,
-                goods_cnt:Number((GoodsDetail.goods_cnt < 1) ? (GoodsDetail.goods_cnt):(GoodsDetail.goods_cnt -=1)),
+                my_cart_cnt:Number((GoodsDetail.my_cart_cnt < 1) ? (GoodsDetail.my_cart_cnt):(GoodsDetail.my_cart_cnt -=1)),
             });
         }
 
@@ -125,15 +144,15 @@ export default function GoodsDetail({route,navigation}) {
             console.log('플러스');
             setGoodsDetail({
                 ...GoodsDetail,
-                goods_cnt:Number(GoodsDetail.goods_cnt+=1),
+                my_cart_cnt:Number(GoodsDetail.my_cart_cnt+=1),
             });
         }
 
-        if(type === 'goods_cnt') {
+        if(type === 'my_cart_cnt') {
             console.log('직접입력');
             setGoodsDetail({
                 ...GoodsDetail,
-                goods_cnt:Number(value),
+                my_cart_cnt:Number(value),
             });
         }
     }
@@ -221,11 +240,11 @@ export default function GoodsDetail({route,navigation}) {
         html: GoodsDetail.summary_contents
     };
 
-    console.log('상품정보 / ',GoodsDetail);
+    console.log('상품정보 확인 / ',GoodsDetail);
+
 
 
     return (
-
         <>
             <ScrollView style={[bg_white]}>
                 <View style={[styles.mypageinfo]}>
@@ -243,7 +262,7 @@ export default function GoodsDetail({route,navigation}) {
                                 </View>
                                 <View style={[styles.wt75]}>
                                     <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                        {Price(GoodsDetail.price)} 원
+                                        {Price(GoodsDetail.price) } 원
                                     </Text>
                                 </View>
                             </View>
@@ -275,8 +294,8 @@ export default function GoodsDetail({route,navigation}) {
                                         {/*============수량=================*/}
                                         <TextInput style={[countinput,]}
                                                    keyboardType="number-pad"
-                                                   onChangeText={(goods_cnt) => goodsCnt('goods_cnt',goods_cnt)}
-                                                   value={`${GoodsDetail.goods_cnt+1}`}
+                                                   onChangeText={(my_cart_cnt) => goodsCnt('my_cart_cnt',my_cart_cnt)}
+                                                   value={`${GoodsDetail.my_cart_cnt}`}
                                         />
                                         {/*=============플러스 버튼============*/}
                                         <TouchableWithoutFeedback
@@ -295,7 +314,7 @@ export default function GoodsDetail({route,navigation}) {
                                 <View style="">
                                     <Text style={[styles.GoodsDetail_info_txt]}>총금액</Text>
                                     <Text style={[styles.GoodsDetail_total_price]}>
-                                        {Price(GoodsDetail.price)} 원
+                                        {Price(GoodsDetail.price * GoodsDetail.my_cart_cnt)} 원
                                     </Text>
                                 </View>
                             </View>
@@ -314,10 +333,8 @@ export default function GoodsDetail({route,navigation}) {
             <View style={[styles.bottom_btn]}>
                 <View style={[flex]}>
                     <View style={[styles.wt1_5]}>
-                            <TouchableOpacity style={[styles.wish]}  onPress={()=>goWish(goodsWishChk)}>
-                                {/*<Text>찜하기</Text>*/}
-
-                                {(goodsWishChk === true) ? (
+                            <TouchableOpacity style={[styles.wish]}  onPress={()=>goWish(GoodsDetail.goods_uid)}>
+                                {(GoodsDetail.my_zzim_flag === 'Y') ? (
                                     <>
                                         <Wishlist width={35} height={24} />
                                     </>

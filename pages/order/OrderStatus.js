@@ -1,5 +1,17 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Button, CheckBox, Text, TextInput, View, Image, TouchableOpacity, ScrollView,useWindowDimensions} from 'react-native';
+import {
+    StyleSheet,
+    Button,
+    CheckBox,
+    Text,
+    TextInput,
+    View,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    useWindowDimensions,
+    Alert
+} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
@@ -38,15 +50,19 @@ function OrderStatus({navigation, route}) {
     const [OrderList, setOrderList] = useState(order_List);     // 발주내역 출력
     useEffect(()=>{
         // ======================= db 연결용==================//
-        /*
-        axios.get('',{
-            params:{
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+            act_type:"get_order_list",
+        },{
 
-            }
         }).then((res)=>{
+            const {result} = res.data;
+            if(result === 'OK') {
 
+            } else {
+                Alert.alert('','에러');
+            }
         });
-        */
+
         //======================== 임시====================//
 
 
