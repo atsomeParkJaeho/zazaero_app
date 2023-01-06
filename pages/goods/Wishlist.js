@@ -35,7 +35,7 @@ import {
     bg_light,
     h13,
     text_primary,
-    justify_content_center, text_light
+    justify_content_center, text_light, ms1
 } from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 
@@ -225,11 +225,22 @@ export default function Wishlist({route,navigation}) {
                     <List.Section style={[styles.Section, {padding: 0, margin: 0}]}>
                         {Cate1st.map((cate,idx)=>(
                             <>
+
                                 <List.Accordion
                                     key={idx}
                                     style={[container, styles.Accordion_tit]}
                                     title={cate.cfg_val1}
                                 >
+                                    <View style={[bg_white,container,{ borderBottomWidth: 1,borderColor:"#ddd"}]}>
+                                        <View style={[flex]}>
+                                            <Checkbox
+                                                onValueChange={() => goFormChk()}
+                                                value={false}
+                                                style={styles.all_check}
+                                                color={"#4630eb"}/>
+                                            <Text  style={[ms1]}>카테고리 삭제 </Text>
+                                        </View>
+                                    </View>
                                     {WishList.map((val,idx)=>(
                                         <>
                                             {(cate.cfg_val1 === val.cfg_val1) && (
