@@ -402,7 +402,7 @@ export default function SignUp({route, navigation}) {
                                  onChangeText={(com_biz_no)=>goInput('com_biz_no',com_biz_no)}
                                  value={bizNum(SignUp.com_biz_no)}
                                  ref={val=>(Chkinput.current[4] = val)}
-                                 keyboardType="number-pad"
+                                 maxLength={15}
                                  placeholder="12345-51-687891"
                                 />
                             </View>
@@ -465,6 +465,7 @@ export default function SignUp({route, navigation}) {
                                 <Text style={styles.inputTopText}>담당자 연락처</Text>
                                 <TextInput style={[input]}
                                 onChangeText={(mem_mobile)=>goInput('mem_mobile',mem_mobile)}
+                                           maxLength={13}
                                 value={Phone(SignUp.mem_mobile)}
                                 ref={val=>(Chkinput.current[9] = val)}
                                 />
@@ -620,7 +621,6 @@ export default function SignUp({route, navigation}) {
                     <Text style={styles.form_btn_txt}>회원가입</Text>
                 </TouchableOpacity>
             </View>
-            <View style={[styles.ios_pb]} />
         </>
     );
 }
@@ -773,7 +773,6 @@ const styles = StyleSheet.create({
     },
     select_box:{
        position:"relative",
-
     },
     select_icon_box:{
         position: "absolute",
@@ -782,7 +781,6 @@ const styles = StyleSheet.create({
         bottom: 0,
         justifyContent: "center",
         alignItems: "center",
-
     },
     upload_btn:{
         backgroundColor:"#ddd",
