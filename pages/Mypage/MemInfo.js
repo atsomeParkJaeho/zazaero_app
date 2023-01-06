@@ -1,118 +1,109 @@
-import React,{useState,useEffect} from 'react';
-import { StyleSheet, Button, CheckBox,  Text, TextInput, View, Image, TouchableOpacity, ScrollView,  KeyboardAvoidingView, } from 'react-native';
-
+import React, {useState, useEffect} from 'react';
+import {
+    StyleSheet,
+    Button,
+    CheckBox,
+    Text,
+    TextInput,
+    View,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    KeyboardAvoidingView,
+} from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
 
 // 공통 CSS 추가
-import {container, bg_white, flex_between, flex, input} from '../../common/style/AtStyle';
+import {container, bg_white, flex_between, flex, input, pe2, pos_center, ios_pb} from '../../common/style/AtStyle';
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
-import DropDownPicker from "react-native-dropdown-picker";
+
+import {AddrMatch, BankCode, EmailDomain, } from "../../util/util";
 
 
-
-export default function MemInfo({route,navigation}) {
+export default function MemInfo({route, navigation}) {
 
     let {uid} = route.params;
-    console.log(uid);
+    console.log('로그인 아이디 uid : ' + uid);
     // 로그인 아이디 uid
-
 
 
     // 1. data로 넘길 status 셋팅
     const [MemInfo, setMemInfo] = useState({
-        mem_pw          :"",  // 패스워드
-        mem_pw_chk      :"",  // 패스워드 체크
-        addr_name       :"",  // 지역코드
-        com_name        :"",  // 업체명
-        com_biz_no      :"",  // 사업자번호
-        addr1           :"",  // 주소1
-        addr2           :"",  // 주소2 상세
-        zonecode        :"",  // 우편번호
-        mem_name        :"",  // 담당자 이름
-        mem_mobile      :"",  // 담당자 전화번호
-        mem_email       :"",  // 담당자 이메일
-        ceo_name        :"",  // 대표자명
-        com_fax         :"",  // 팩스
-        biz_cate        :"",  // 업태
-        biz_item        :"",  // 종목
-        pay_bank_no     :"",  // 계좌번호
-        pay_bank_owner     :"",  // 예금주
+        mem_pw: "",                 // 비밀번호
+        mem_pw_chk: "",             // 비밀번호 확인
+        road_address:'',            // 지역코드
+        com_name: "",               // 업체명
+        com_biz_no: "",             // 사업자 등록번호
+        mem_name: "",               // 담당자명
+        mem_mobile: "",             // 담당자 연락처
+        mem_email1: "",             // 담당자 이메일1
+        mem_email2: "",             // 담당자 이메일2
+        mem_email_etc: "",          // 담당자 이메일 직접입력
+        ceo_name: "",               // 대표자명
+        zonecode: "",               // 우편번호
+        addr1: "",                  // 주소1
+        addr2: "",                  // 주소2 상세
+        biz_cate: "",               // 업태
+        biz_item: "",               // 종목
+        com_fax: "",                // 팩스번호
+        Tax_email1:"",              // 세금계산서 이메일1
+        Tax_email2:"",              // 세금계산서 이메일2
+        Tax_email_etc:"",           // 세금계산서 이메일_직접입력
+        pay_bank_code:"",           //은행코드
+        pay_bank_no: "",            // 계좌번호
+        pay_bank_owner: "",         // 예금주
+    //
+
+
+
+
+
+
+        
+
+        privacy_1       :false,            // 약관
+        privacy_2       :false,            // 개인정보처리방침
+        privacy_3       :false,            // 정보수집
+        privacy_4       :false,            // 홍보 및 마케팅
+        privacy_5       :false,            // 전자금율거래이용약관
+        img_file1       :'',            // 사업자등록증 사본
+        img_file2       :'',            // 통장사본
+        //
+        mem_id_chk      :'N',           // 회원아이디 체크
+
+        all_chk         :false,
+
 
     });
 
     // 2. 입력폼 체크루틴
     const ChkInput = (keyValue, text) => {
 
-
         // 기본 루틴
         setMemInfo({
             ...MemInfo,
-            [keyValue]:text,
+            [keyValue]: text,
         });
-
 
 
     }
 
-    //console.log(MemInfo);
-
-
-    //셀렉트박스
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState('naver.com');
-    const [items, setItems] = useState([
-        {label: 'naver.com', value: 'naver.com'},
-        {label: 'gmail.com', value: 'gmail.com'},
-        {label: 'daum.net', value: 'daum.net'},
-        {label: 'hanmail.net', value: 'hanmail.net'},
-        {label: 'nate.com', value: 'nate.com'},
-        {label: 'paran.com', value: 'paran.com'},
-
-    ]);
-    //담당자 이메일
-    const [open2, setOpen2] = useState(false);
-    const [value2, setValue2] = useState('naver.com');
-    const [items2, setItems2] = useState([
-        {label: 'naver.com', value: 'naver.com'},
-        {label: 'gmail.com', value: 'gmail.com'},
-        {label: 'daum.net', value: 'daum.net'},
-        {label: 'hanmail.net', value: 'hanmail.net'},
-        {label: 'nate.com', value: 'nate.com'},
-
-    ]);
-    //세금계산서 이메일
-    const [open3, setOpen3] = useState(false);
-    const [value3, setValue3] = useState('국민');
-    const [items3, setItems3] = useState([
-        {label: '국민', value: '국민'},
-        {label: '우리', value: '우리'},
-        {label: '신한', value: '신한'},
-        {label: '농협', value: '농협'},
-        {label: '부산', value: '부산'},
-        {label: '광주', value: '광주'},
-        {label: '대구', value: '대구'},
-        {label: '경남', value: '경남'},
-        {label: '경북', value: '경북'},
-        {label: '카카오', value: '카카오'},
-        {label: '케이', value: '케이'},
-
-
-    ]);
-    //세금계산서 이메일
+    console.log(MemInfo);
 
 
     return (
         <>
+            <KeyboardAvoidingView style={[styles.avoidingView]} behavior={Platform.select({ios: 'padding'})}>
+                <ScrollView style={[bg_white]}>
 
-            <ScrollView style={[bg_white]}>
-
-                    <View style={[styles.subPage,styles.MemInfo]}>
+                    <View style={[styles.MemInfo]}>
                         <View style={styles.container}>
                             <Text style={styles.MemInfo_txt}>비밀번호 변경</Text>
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>비밀번호</Text>
-                                    <TextInput style={styles.input} secureTextEntry={true}
-                                               onChangeText={(mem_pw)=>ChkInput("mem_pw",mem_pw)}
+                                    <TextInput style={[input]} secureTextEntry={true}
+                                               onChangeText={(mem_pw) => ChkInput("mem_pw", mem_pw)}
                                                placeholder="비밀번호를 입력해주세요."
                                                value={MemInfo.mem_pw}/>
                                 </View>
@@ -121,9 +112,9 @@ export default function MemInfo({route,navigation}) {
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>비밀번호 변경</Text>
-                                    <TextInput style={styles.input}
+                                    <TextInput style={[input]}
                                                secureTextEntry={true}
-                                               onChangeText={(mem_pw_chk)=>ChkInput("mem_pw_chk",mem_pw_chk)}
+                                               onChangeText={(mem_pw_chk) => ChkInput("mem_pw_chk", mem_pw_chk)}
                                                placeholder="비밀번호를 입력해주세요."
                                                value={MemInfo.mem_pw_chk}/>
                                 </View>
@@ -137,9 +128,34 @@ export default function MemInfo({route,navigation}) {
                             <Text style={styles.MemInfo_txt}>필수정보 변경</Text>
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
+                                    <Text style={styles.inputTopText}>지역</Text>
+                                    <View style={[styles.select_box]}>
+                                        <RNPickerSelect
+                                            placeholder={{label:"지역을 선택해주세요.", value:null}}
+                                            onValueChange={(road_address) => ChkInput('road_address',road_address)}
+                                            items={AddrMatch}
+                                            useNativeAndroidPickerStyle={false}
+                                            style={{
+                                                placeholder:{color:'gray'},
+                                                inputAndroid : styles.input,
+                                                inputAndroidContainer : styles.inputContainer,
+                                                inputIOS: styles.input,
+                                                inputIOSContainer : styles.inputContainer,
+                                            }}
+                                        />
+                                        <View style={[styles.select_icon_box]}>
+                                            <Text style={[styles.select_icon]}>▼</Text>
+                                        </View>
+
+                                    </View>
+                                </View>
+                            </View>
+                            {/*============ 지역 ============ */}
+                            <View style={styles.formGroup}>
+                                <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>업체명</Text>
-                                    <TextInput style={[styles.input]}
-                                               onChangeText={(com_name)=>ChkInput("com_name",com_name)}
+                                    <TextInput style={[input]}
+                                               onChangeText={(com_name) => ChkInput("com_name", com_name)}
                                                placeholder="가나인테리어"
                                                value={MemInfo.com_name}/>
                                 </View>
@@ -148,9 +164,9 @@ export default function MemInfo({route,navigation}) {
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>사업자 등록번호</Text>
-                                    <TextInput style={[styles.input]}
-                                               keyboardType="number-pad"
-                                               onChangeText={(com_biz_no)=>ChkInput("com_biz_no",com_biz_no)}
+                                    <TextInput style={[input]}
+                                               maxLength={15}
+                                               onChangeText={(com_biz_no) => ChkInput("com_biz_no", com_biz_no)}
                                                placeholder="12345-51-687891"
                                                value={MemInfo.com_biz_no}/>
                                 </View>
@@ -159,8 +175,8 @@ export default function MemInfo({route,navigation}) {
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>담당자명</Text>
-                                    <TextInput style={[styles.input]}
-                                               onChangeText={(mem_name)=>ChkInput("mem_name",mem_name)}
+                                    <TextInput style={[input]}
+                                               onChangeText={(mem_name) => ChkInput("mem_name", mem_name)}
                                                placeholder=""
                                                value={MemInfo.mem_name}/>
                                 </View>
@@ -169,9 +185,8 @@ export default function MemInfo({route,navigation}) {
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>담당자 연락처</Text>
-                                    <TextInput style={[styles.input]}
-                                               keyboardType="number-pad"
-                                               onChangeText={(mem_mobile)=>ChkInput("mem_mobile",mem_mobile)}
+                                    <TextInput style={[input]}
+                                               onChangeText={(mem_mobile) => ChkInput("mem_mobile", mem_mobile)}
                                                placeholder=""
                                                value={MemInfo.mem_mobile}/>
                                 </View>
@@ -186,25 +201,35 @@ export default function MemInfo({route,navigation}) {
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>담당자 이메일</Text>
                                     <View style={flex}>
-                                        <View style={[styles.flex_item,styles.flex_item1]}>
-                                            <TextInput style={[styles.input]}
-                                                       onChangeText={(mem_email)=>ChkInput("mem_email",mem_email)}
+                                        <View style={[styles.flex_item, styles.flex_item1]}>
+                                            <TextInput style={[input]}
+                                                       onChangeText={(mem_email1) => ChkInput("mem_email1", mem_email1)}
                                                        placeholder=""
-                                                       value={MemInfo.mem_email}/>
+                                                       value={MemInfo.mem_email1}/>
                                         </View>
-                                        <View style={[styles.flex_item,styles.flex_item2]}>
+                                        <View style={[styles.flex_item, styles.flex_item2]}>
                                             <Text style={styles.txt_center}>@</Text>
                                         </View>
-                                        <View style={[styles.flex_item,styles.flex_item3]}>
-                                            <DropDownPicker
-                                                open={open}
-                                                value={value}
-                                                items={items}
-                                                setOpen={setOpen}
-                                                setValue={setValue}
-                                                setItems={setItems}
-                                                style={styles.select_box}
-                                            />
+                                        <View style={[styles.flex_item, styles.flex_item3]}>
+                                            <View style={[styles.select_box]}>
+                                                <RNPickerSelect
+                                                     placeholder={{label: "직접입력", value: null}}
+                                                    onValueChange={(mem_email2) => ChkInput('mem_email2', mem_email2)}
+                                                    items={EmailDomain}
+                                                    useNativeAndroidPickerStyle={false}
+                                                    style={{
+                                                        placeholder: {color: 'gray'},
+                                                        inputAndroid: styles.input,
+                                                        inputAndroidContainer: styles.inputContainer,
+                                                        inputIOS: styles.input,
+                                                        inputIOSContainer: styles.inputContainer,
+                                                    }}
+                                                />
+                                                <View style={[styles.select_icon_box]}>
+                                                    <Text style={[styles.select_icon]}>▼</Text>
+                                                </View>
+                                            </View>
+
                                         </View>
                                     </View>
                                 </View>
@@ -213,8 +238,8 @@ export default function MemInfo({route,navigation}) {
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>대표자명</Text>
-                                    <TextInput style={[styles.input]}
-                                               onChangeText={(ceo_name)=>ChkInput("ceo_name",ceo_name)}
+                                    <TextInput style={[input]}
+                                               onChangeText={(ceo_name) => ChkInput("ceo_name", ceo_name)}
                                                placeholder=""
                                                value={MemInfo.ceo_name}/>
                                 </View>
@@ -223,29 +248,35 @@ export default function MemInfo({route,navigation}) {
                             <View style={styles.formGroup}>
                                 <Text style={styles.inputTopText}>사업장 주소</Text>
                                 <View style={styles.flex}>
-                                    <View style={[styles.inputGroup,styles.flexitem1]}>
-                                        <TextInput style={[styles.input,styles.me_18,styles.zonecode]}
-                                                   onChangeText={(zonecode)=>ChkInput("zonecode",zonecode)}
+                                    <View style={[styles.inputGroup, styles.flexitem1, pe2]}>
+                                        <TextInput style={[input, styles.me_18, styles.zonecode]}
+                                                   onChangeText={(zonecode) => ChkInput("zonecode", zonecode)}
                                                    editable={false}
                                                    electTextOnFocus={false}
                                                    value={MemInfo.zonecode}/>
                                     </View>
                                     <View style={[styles.flexitem2]}>
-                                        <TouchableOpacity style={styles.find_id_btn}  >
-                                            <Text style={[styles.find_id_btn_txt]}>주소찾기</Text>
+                                        <TouchableOpacity
+                                            onPress={() => navigation.navigate('주소검색', {page: '회원가입', order_uid: ''})}
+                                            style={styles.find_id_btn}>
+                                            <View style={[pos_center]}>
+                                                <Text style={[styles.find_id_btn_txt]}>주소찾기</Text>
+                                            </View>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                                <View style={[styles.inputGroup,styles.py_12]}>
-                                    <TextInput style={[styles.input]}
-                                               onChangeText={(addr1)=>ChkInput("addr1",addr1)}
+                                {/*=============주소 1==============*/}
+                                <View style={[styles.inputGroup, styles.py_12]}>
+                                    <TextInput style={[input]}
+                                               onChangeText={(addr1) => ChkInput("addr1", addr1)}
                                                placeholder=""
                                                value={MemInfo.addr1}/>
                                 </View>
+                                {/*=============주소 2==============*/}
                                 <View style={[styles.inputGroup]}>
-                                    <TextInput style={[styles.input]}
-                                               onChangeText={(addr2)=>ChkInput("addr2",addr2)}
-                                               placeholder=""
+                                    <TextInput style={[input]}
+                                               onChangeText={(addr2) => ChkInput("addr2", addr2)}
+                                               placeholder="상세주소 입력"
                                                value={MemInfo.addr2}/>
                                 </View>
                             </View>
@@ -255,8 +286,8 @@ export default function MemInfo({route,navigation}) {
                                     <Text style={styles.inputTopText}>업태/종목</Text>
                                     <View style={flex}>
                                         <View style={[styles.flex_item_4_half]}>
-                                            <TextInput style={[styles.input]}
-                                                       onChangeText={(biz_cate)=>ChkInput("biz_cate",biz_cate)}
+                                            <TextInput style={[input]}
+                                                       onChangeText={(biz_cate) => ChkInput("biz_cate", biz_cate)}
                                                        placeholder=""
                                                        value={MemInfo.biz_cate}/>
                                         </View>
@@ -264,8 +295,8 @@ export default function MemInfo({route,navigation}) {
                                             <Text style={styles.txt_center}>/</Text>
                                         </View>
                                         <View style={[styles.flex_item_4_half]}>
-                                            <TextInput style={[styles.input]}
-                                                       onChangeText={(biz_item)=>ChkInput("biz_item",biz_item)}
+                                            <TextInput style={[input]}
+                                                       onChangeText={(biz_item) => ChkInput("biz_item", biz_item)}
                                                        placeholder=""
                                                        value={MemInfo.biz_item}/>
                                         </View>
@@ -280,9 +311,8 @@ export default function MemInfo({route,navigation}) {
                             {/*대표전화번호 입력창*/}
                             <View style={styles.formGroup}>
                                 <Text style={styles.inputTopText}>팩스번호</Text>
-                                <TextInput style={[styles.input]}
-                                           keyboardType={"number-pad"}
-                                           onChangeText={(com_fax)=>ChkInput("com_fax",com_fax)}
+                                <TextInput style={[input]}
+                                           onChangeText={(com_fax) => ChkInput("com_fax", com_fax)}
                                            placeholder=""
                                            value={MemInfo.com_fax}/>
                             </View>
@@ -290,22 +320,34 @@ export default function MemInfo({route,navigation}) {
                             <View style={styles.formGroup}>
                                 <Text style={styles.inputTopText}>세금계산서 이메일</Text>
                                 <View style={flex}>
-                                    <View style={[styles.flex_item,styles.flex_item1]}>
-                                        <TextInput style={[input]}  placeholder="" value=""/>
+                                    <View style={[styles.flex_item, styles.flex_item1]}>
+                                        <TextInput style={[input]}
+                                                   onChangeText={(Tax_email1) => ChkInput("Tax_email1", Tax_email1)}
+                                                   placeholder=""
+                                                   value={MemInfo.Tax_email1}/>
                                     </View>
-                                    <View style={[styles.flex_item,styles.flex_item2]}>
+                                    <View style={[styles.flex_item, styles.flex_item2]}>
                                         <Text style={styles.txt_center}>@</Text>
                                     </View>
-                                    <View style={[styles.flex_item,styles.flex_item3]}>
-                                        <DropDownPicker
-                                            open={open2}
-                                            value={value2}
-                                            items={items2}
-                                            setOpen={setOpen2}
-                                            setValue={setValue2}
-                                            setItems={setItems2}
-                                            style={styles.select_box}
-                                        />
+                                    <View style={[styles.flex_item, styles.flex_item3]}>
+                                        <View style={[styles.select_box]}>
+                                            <RNPickerSelect
+                                                placeholder={{label: "직접입력", value: null}}
+                                                onValueChange={(Tax_email2) => ChkInput('Tax_email2', Tax_email2)}
+                                                items={EmailDomain}
+                                                useNativeAndroidPickerStyle={false}
+                                                style={{
+                                                    placeholder: {color: 'gray'},
+                                                    inputAndroid: styles.input,
+                                                    inputAndroidContainer: styles.inputContainer,
+                                                    inputIOS: styles.input,
+                                                    inputIOSContainer: styles.inputContainer,
+                                                }}
+                                            />
+                                            <View style={[styles.select_icon_box]}>
+                                                <Text style={[styles.select_icon]}>▼</Text>
+                                            </View>
+                                        </View>
                                     </View>
                                 </View>
                             </View>
@@ -313,20 +355,29 @@ export default function MemInfo({route,navigation}) {
                             <View style={styles.formGroup}>
                                 <Text style={styles.inputTopText}>계좌번호</Text>
                                 <View style={flex}>
-                                    <View style={[styles.flex_item,styles.bank_flex_item1]}>
-                                        <DropDownPicker
-                                            open={open3}
-                                            value={value3}
-                                            items={items3}
-                                            setOpen={setOpen3}
-                                            setValue={setValue3}
-                                            setItems={setItems3}
-                                            style={styles.select_box}
-                                        />
+                                    <View style={[styles.flex_item, styles.bank_flex_item1]}>
+                                        <View style={[styles.select_box]}>
+                                            <RNPickerSelect
+                                                placeholder={{label: "은행명", value: null}}
+                                                onValueChange={(pay_bank_code) => ChkInput('pay_bank_code', pay_bank_code)}
+                                                items={BankCode}
+                                                useNativeAndroidPickerStyle={false}
+                                                style={{
+                                                    placeholder: {color: 'gray'},
+                                                    inputAndroid: styles.input,
+                                                    inputAndroidContainer: styles.inputContainer,
+                                                    inputIOS: styles.input,
+                                                    inputIOSContainer: styles.inputContainer,
+                                                }}
+                                            />
+                                            <View style={[styles.select_icon_box]}>
+                                                <Text style={[styles.select_icon]}>▼</Text>
+                                            </View>
+                                        </View>
                                     </View>
-                                    <View style={[styles.flex_item,styles.bank_flex_item2]}>
-                                        <TextInput style={[styles.input]}
-                                                   onChangeText={(pay_bank_no)=>ChkInput("pay_bank_no",pay_bank_no)}
+                                    <View style={[styles.flex_item, styles.bank_flex_item2]}>
+                                        <TextInput style={[input]}
+                                                   onChangeText={(pay_bank_no) => ChkInput("pay_bank_no", pay_bank_no)}
                                                    placeholder=""
                                                    value={MemInfo.pay_bank_no}/>
                                     </View>
@@ -335,8 +386,8 @@ export default function MemInfo({route,navigation}) {
                             {/*계좌번호 입력창*/}
                             <View style={styles.formGroup}>
                                 <Text style={styles.inputTopText}>예금주명</Text>
-                                <TextInput style={[styles.input]}
-                                           onChangeText={(pay_bank_owner)=>ChkInput("pay_bank_owner",pay_bank_owner)}
+                                <TextInput style={[input]}
+                                           onChangeText={(pay_bank_owner) => ChkInput("pay_bank_owner", pay_bank_owner)}
                                            placeholder=""
                                            value={MemInfo.pay_bank_owner}/>
                             </View>
@@ -347,16 +398,14 @@ export default function MemInfo({route,navigation}) {
                             {/*</View>*/}
                             {/*사업자 등록증 이미지 입력창*/}
                         </View>
-
-
                     </View>
-
-            </ScrollView>
-                <View style={[styles.form_btn,styles.form_meminfo_btn]}>
-                    <TouchableOpacity style={[styles.form_btn_link,styles.form_btn_meminfo_link]} >
+                </ScrollView>
+                <View style={[styles.form_btn, styles.form_meminfo_btn]}>
+                    <TouchableOpacity style={[styles.form_btn_link, styles.form_btn_meminfo_link]}>
                         <Text style={styles.form_btn_txt}>정보변경</Text>
                     </TouchableOpacity>
                 </View>
+            </KeyboardAvoidingView>
 
         </>
 
@@ -364,182 +413,198 @@ export default function MemInfo({route,navigation}) {
 }
 
 const styles = StyleSheet.create({
-    subPage: {
+    avoidingView: {
+        flex: 1,
+    },
+    MemInfo: {
+        //앱의 배경 색
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: '#fff',
-        height:"100%",
     },
-    MemInfo_txt:{
-        fontSize:14,
-        fontWeight:"600",
-        lineHeight:22,
-        color:"#222",
-        paddingBottom:20,
+    MemInfo_txt: {
+        fontSize: 14,
+        fontWeight: "600",
+        lineHeight: 22,
+        color: "#222",
+        paddingBottom: 20,
     },
-    container:{
-        padding:16,
-        width:"100%",
+
+    container: {
+        padding: 16,
+        width: "100%",
     },
-    flex:{
-        flexDirection:"row",
-        alignItems:"center",
+    flex: {
+        flexDirection: "row",
+        alignItems: "center",
     },
-    formGroup:{
-        paddingBottom:22,
-    },
-    inputTopText:{
-        marginBottom:12,
-        fontSize:12,
-        lineHeight:22,
-        color:"#696A81",
+    formGroup: {
+        paddingBottom: 22,
     },
     input: {
-        width:"100%",
-        height: 36,
-        margin: 0,
+        fontSize: 12,
+        height: 40,
+        width: "100%",
+        color: '#000000',
+        paddingHorizontal: 10
+    },
+    inputContainer: {
         borderWidth: 1,
-        paddingVertical:7,
+        borderRadius: 5,
+        borderColor: '#ededf1',
+    },
+    inputTopText: {
+        marginBottom: 12,
+        fontSize: 12,
+        lineHeight: 22,
+        color: "#696A81",
+    },
+    loginformbtn: {
+        backgroundColor: "#b1b2c3",
+        textAlign: "center",
+        borderRadius: 5,
+        paddingVertical: 10,
+        marginBottom: 26
+    },
+    loginformbtntxt: {
+        fontSize: 16,
+        color: "#fff",
+        textAlign: "center",
+    },
+    link_idpw: {
+        flexDirection: "row",
+        justifyContent: "center",
+        paddingBottom: 64,
+    },
+    link_find_txt: {
+        fontSize: 12,
+        color: "#718096",
         paddingHorizontal: 18,
-        borderColor:"#ededf1",
-        fontSize:12,
-        color:"#000",
     },
-    loginformbtn:{
-        backgroundColor:"#b1b2c3",
-        textAlign:"center",
-        borderRadius:5,
-        paddingVertical:10,
-        marginBottom:26
+    br_1: {
+        borderRightWidth: 1,
+        borderColor: "#b1b2c3",
     },
-    loginformbtntxt:{
-        fontSize:16,
-        color:"#fff",
-        textAlign:"center",
+    signUpbox: {
+        flexDirection: "row",
+        justifyContent: "center",
     },
-    link_idpw:{
-        flexDirection:"row",
-        justifyContent:"center",
-        paddingBottom:64,
+    link_signUp: {
+        marginBottom: 0,
     },
-    link_find_txt:{
-        fontSize:12,
-        color:"#718096",
-        paddingHorizontal:18,
+    link_signUp_txt: {
+        color: "#4549e0",
+        marginLeft: 6,
+        marginBottom: 0,
+        fontWeight: "500",
     },
-    br_1:{
-        borderRightWidth:1,
-        borderColor:"#b1b2c3",
+    link_txt: {
+        fontWeight: "500",
+        textAlign: "center",
     },
-    signUpbox:{
-        flexDirection:"row",
-        justifyContent:"center",
+    find_id_btn_txt: {
+        color: "#fff",
+        fontSize: 12,
+        textAlign: "center",
     },
-    link_signUp:{
-        marginBottom:0,
+    flexitem1: {
+        width: "65%"
     },
-    link_signUp_txt:{
-        color:"#4549e0",
-        marginLeft:6,
-        marginBottom:0,
-        fontWeight:"500",
+    flexitem2: {
+        width: "35%"
     },
-    link_txt:{
-        fontWeight:"500",
-        textAlign:"center",
+    me_18: {
+        marginRight: 18,
     },
-    find_id_btn:{
-        backgroundColor:"#4549e0",
-        paddingVertical:9,
-        paddingHorizontal:16,
+    zonecode: {
+        backgroundColor: "#eaecf3",
     },
-    find_id_btn_txt:{
-        color:"#fff",
-        fontSize:12,
-        textAlign:"center",
+    py_12: {
+        paddingVertical: 12,
     },
-    flexitem1:{
-        width:"65%"
+    privacy_chek_all: {
+        paddingBottom: 15,
     },
-    flexitem2:{
-        width:"35%"
+    privacy_chek_all_txt: {
+        fontSize: 16,
     },
-    me_18:{
-        marginRight:18,
+    privacy_list: {
+        borderWidth: 1,
+        borderColor: "#ededf1",
+        padding: 15,
     },
-    zonecode:{
-        backgroundColor:"#eaecf3",
+    privacy_list_flex: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
     },
-    py_12:{
-        paddingVertical:12,
+    privacy_list_flex_item: {
+        paddingBottom: 14,
     },
-    privacy_chek_all:{
-        paddingBottom:15,
+    privacy_list_flex_item_txt: {
+        fontSize: 14,
+        color: "#222",
     },
-    privacy_chek_all_txt:{
-        fontSize:16,
+    privacy_list_flex_item_txt2: {
+        color: "#4549e0",
     },
-    privacy_list:{
-        borderWidth:1,
-        borderColor:"#ededf1",
-        padding:15,
+    privacy_btn_txt: {
+        fontSize: 12,
+        color: "#b1b2c3",
     },
-    privacy_list_flex:{
-        flexDirection:"row",
-        justifyContent:"space-between",
-        alignItems:"center",
+    form_btn: {
+        backgroundColor: "#B1B2C3",
+        paddingVertical: 20,
     },
-    privacy_list_flex_item:{
-        paddingBottom:14,
+    form_btn_txt: {
+        textAlign: "center",
+        fontSize: 17,
+        lineHeight: 24,
+        color: "#fff",
     },
-    privacy_list_flex_item_txt:{
-        fontSize:14,
-        color:"#222",
+    flex_item1: {
+        width: "45%",
     },
-    privacy_list_flex_item_txt2:{
-        color:"#4549e0",
+    flex_item2: {
+        width: "10%",
     },
-    privacy_btn_txt:{
-        fontSize:12,
-        color:"#b1b2c3",
+    flex_item3: {
+        width: "45%",
     },
-    form_btn:{
-        backgroundColor:"#B1B2C3",
-        paddingVertical:20,
+    bank_flex_item1: {
+        width: "30%",
     },
-    form_btn_txt:{
-        textAlign:"center",
-        fontSize:17,
-        lineHeight:24,
-        color:"#fff",
+    bank_flex_item2: {
+        width: "70%",
+        paddingLeft: 20,
     },
-    flex_item1:{
-        width:"40%",
+    flex_item_4_half: {
+        width: "45%",
     },
-    flex_item2:{
-        width:"10%",
+    flex_item_1: {
+        width: "10%",
     },
-    flex_item3:{
-        width:"50%",
+    txt_center: {
+        textAlign: "center",
+    },
+    find_id_btn: {
+        backgroundColor: "#4549e0",
+        height: 38,
+        borderRadius: 5,
     },
     select_box:{
-        borderRadius:0,
-        borderColor:"#EDEDF1",
-        height: 36,
-        minHeight:36,
+        position:"relative",
     },
-    bank_flex_item1:{
-        width:"30%",
+    select_icon_box:{
+        position: "absolute",
+        top: 0,
+        right: 10,
+        bottom: 0,
+        justifyContent: "center",
+        alignItems: "center",
     },
-    bank_flex_item2:{
-        width:"70%",
-        paddingLeft:20,
-    },
-    flex_item_4_half:{
-        width:"45%",
-    },
-    flex_item_1:{
-        width:"10%",
-    },
-    txt_center:{
-        textAlign:"center",
+    select_icon:{
+      color:"#999",
     },
 });
