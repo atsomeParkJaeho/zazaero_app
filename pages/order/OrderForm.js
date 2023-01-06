@@ -62,7 +62,7 @@ export default function OrderForm({route,navigation}) {
     const Update = useIsFocused();
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
-    })
+    });
 
     console.log('전달 2값 / ',Member);
 
