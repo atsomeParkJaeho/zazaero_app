@@ -3,7 +3,19 @@ import { StyleSheet, Button, CheckBox,  Text, TextInput, View, Image, TouchableO
 
 
 // 공통 CSS 추가
-import {container, bg_white,flex_between,flex,h12,h18,ms1,h16} from '../../common/style/AtStyle';
+import {
+    container,
+    bg_white,
+    flex_between,
+    flex,
+    h12,
+    h18,
+    ms1,
+    h16,
+    btn_primary,
+    p1,
+    text_light, text_center, text_white, padding_bottom
+} from '../../common/style/AtStyle';
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
 import col1 from "../../assets/img/co1.png";
 import col2 from "../../assets/img/co2.png";
@@ -79,12 +91,12 @@ export default function Return({navigation,route}) {
                                             {/*배송지*/}
 
                                         </View>
-
+                                        <View style={[styles.border_b_dotted]}></View>
                                         <View style={[container]}>
                                             <View style={[flex_between]}>
                                                 <View style={[styles.wt4]}>
-                                                    <TouchableOpacity style={styles.detail_btn} onPress={()=>{navigation.navigate('반품내역상세')}}>
-                                                        <Text style={styles.detail_btn_txt}>상세내역</Text>
+                                                    <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('반품내역상세')}>
+                                                        <Text style={[text_center, text_white]}>상세내역 </Text>
                                                     </TouchableOpacity>
                                                 </View>
                                                 <View style="">
@@ -118,7 +130,7 @@ export default function Return({navigation,route}) {
                                 </>
 
                             ))}
-
+                            <View style={[padding_bottom]}/>
                         </View>
                     </ScrollView>
                     {/*취소내역*/}
