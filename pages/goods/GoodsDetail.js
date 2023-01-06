@@ -7,10 +7,13 @@ import {
     TouchableOpacity,
     ScrollView,
     TextInput,
-    TouchableWithoutFeedback, Alert
+    TouchableWithoutFeedback,
+    Alert,
+    KeyboardAvoidingView
 } from 'react-native';
 
 import RenderHtml from 'react-native-render-html';
+import WrappedText from "react-native-wrapped-text";
 
 // 공통 CSS 추가
 import {
@@ -240,21 +243,27 @@ export default function GoodsDetail({route,navigation}) {
         html: GoodsDetail.summary_contents
     };
 
+
     console.log('상품정보 확인 / ',GoodsDetail);
 
 
 
     return (
         <>
+            <KeyboardAvoidingView style={[styles.avoidingView]} behavior={Platform.select({ios: 'padding'})}>
             <ScrollView style={[bg_white]}>
-                <View style={[styles.mypageinfo]}>
+                <View style={[styles.GoodsDetail]}>
                     <View style={[container]}>
                         <View style={[styles.goods_iamge_box]}>
                             <Image style={styles.goods_image} source={{uri:"http://www.zazaero.com"+GoodsDetail.list_img_url}}/>
                         </View>
                         {/*상품이미지*/}
                         <View style={[styles.GoodsDetail_info]}>
-                            <Text style={styles.GoodsDetail_title}>{GoodsDetail.goods_name} </Text>
+
+                            <WrappedText  textStyle={[styles.GoodsDetail_title,]}>
+                                {GoodsDetail.goods_name}
+                            </WrappedText>
+
                             {/*상품명*/}
                             <View style={[flex]}>
                                 <View style={[styles.wt25]}>
@@ -293,7 +302,6 @@ export default function GoodsDetail({route,navigation}) {
                                         </TouchableWithoutFeedback>
                                         {/*============수량=================*/}
                                         <TextInput style={[countinput,]}
-                                                   keyboardType="number-pad"
                                                    onChangeText={(my_cart_cnt) => goodsCnt('my_cart_cnt',my_cart_cnt)}
                                                    value={`${GoodsDetail.my_cart_cnt}`}
                                         />
@@ -359,11 +367,22 @@ export default function GoodsDetail({route,navigation}) {
             </View>
             {/*장바구니/구매*/}
             <View style={[styles.ios_pb]} />
+            </KeyboardAvoidingView>
         </>
     );
 }
 
 const styles = StyleSheet.create({
+    avoidingView: {
+        flex: 1,
+    },
+    GoodsDetail: {
+        //앱의 배경 색
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
     goods_iamge_box:{
         borderWidth:1,
         borderColor:"#ccc",
@@ -383,8 +402,7 @@ const styles = StyleSheet.create({
         fontSize: Platform.OS === 'ios' ? 18 : 16,
         fontWeight:"500",
         color:"#333",
-        lineHeight:27,
-        marginBottom:20,
+        lineHeight:28,
     },
     wt25: {
         width: "25%",
