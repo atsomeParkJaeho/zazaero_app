@@ -53,7 +53,7 @@ import RNPickerSelect from "react-native-picker-select";
 
 export default function OrderForm({route,navigation}) {
 
-    console.log('확인 / ',route.params);
+    console.log('확인1 / ',route.params);
     // 유효성 검사
 
     const {order_uid, zonecode, addr1} = route.params;
@@ -105,7 +105,7 @@ export default function OrderForm({route,navigation}) {
     
 
     useEffect(()=>{
-        console.log('확인23 / ',order_uid);
+        console.log('확인 / ',order_uid);
         // 나의 장바구니 정보 출력
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
             act_type            : "get_order_ready",

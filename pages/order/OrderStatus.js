@@ -39,7 +39,7 @@ import {
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
 // 샘플데이터
-import {order_List} from "../../util/util";
+import {order_List, ordStatus} from "../../util/util";
 import axios from "axios";
 import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -70,10 +70,15 @@ function OrderStatus({route, navigation}) {
             const {result, A_gd_order} = res.data;
             console.log(result);
             if(result === 'OK') {
-                console.log('나의 주문내역 / ',A_gd_order);
-                setOrderList(A_gd_order);
+                let temp = A_gd_order.filter(val=>
+                    val.ord_status === 'order_ready'   ||
+                    val.ord_status === 'order_doing'   ||
+                    val.ord_status === 'order_done'
+                );
+                console.log('결제완료만 / ',temp);
+                setOrderList(temp);
             } else {
-                Alert.alert('','에러');
+                console.log('에러');
             }
         });
 
@@ -81,35 +86,8 @@ function OrderStatus({route, navigation}) {
 
 
     },[Member]);
-
-
-    // 1. 발주상태 페이지
-    /*
-    * order_status 에서 ready, doing, done 상태 표출
-    *
-    * */
-
-
-    // 2. 결제상태
-    /*
-    * order_status에서 done이고 pay_status는 ready 경우 출력
-    *
-    * */
-
-
-
-    // 3. 배송상태
-    /*
-    * order_status에서 done이고
-    * pay_status에서 done이면
-    * 배송상태 출력
-    *
-    * */
-    console.log(OrderList);
-
-    let test = 1;
-
-
+    // console.log('확인3 / ',OrderList.length);
+    // console.log('확인3 / ',OrderList);
     return (
         <>
             <View style={[bg_white]}>
@@ -129,81 +107,85 @@ function OrderStatus({route, navigation}) {
                 <ScrollView>
                     <View style={[styles.bt, styles.bb]}>
                         <View>
-                            {OrderList.map((val,idx)=>(
-                                <>
-                                    <View style={[styles.order_list_items]} key={idx}>
-                                        <View style={[container]}>
-                                            <View style={[flex, styles.mb_5]}>
-                                                <View style={[styles.wt3]}>
-                                                    <Text style={[styles.goods_num, h16]}> 발주번호 :</Text>
-                                                </View>
-                                                <View style={[styles.wt7]}>
-                                                    <Text style={[styles.goods_num_val, h16, fw600]}>{val.order_no}</Text>
-                                                </View>
-                                            </View>
-                                            {/*발주번호*/}
-                                            <View style={[flex, styles.mb_5]}>
-                                                <View style={[styles.wt3]}>
-                                                    <Text style={[styles.Construction_name, h14]}> 공사명
-                                                        :</Text>
-                                                </View>
-                                                <View style={[styles.wt7]}>
-                                                    <Text style={[styles.Construction_name_val, h14]} numberOfLines={1}>{val.order_title}</Text>
-                                                </View>
-                                            </View>
-                                            {/*공사명*/}
-                                            <View style={[flex, styles.mb_5]}>
-                                                <View style={[styles.wt3]}>
-                                                    <Text
-                                                        style={[styles.Desired_Delivery_Date_name, h14]}> 희망배송일
-                                                        :</Text>
-                                                </View>
-                                                <View style={[styles.wt7]}>
-                                                    <Text
-                                                        style={[styles.Desired_Delivery_Date_val, h14]}>{val.hope_deli_date} 도착예정</Text>
-                                                </View>
-                                            </View>
-                                            {/*희망배송일*/}
-                                            <View style={[flex]}>
-                                                <View style={[styles.wt3]}>
-                                                    <Text style={[styles.Delivery_destination_name, h14, val.text_gray]}> 배송지 :</Text>
-                                                </View>
-                                                <View style={[styles.wt7]}>
-                                                    <Text style={[styles.Delivery_destination_name_val, h14, text_gray]}>
-                                                        {val.addr1} {val.addr2}
-                                                    </Text>
-                                                </View>
-                                            </View>
-                                            {/*배송지*/}
-                                        </View>
-                                        <View style={[styles.border_b_dotted]}></View>
-                                        <View style={[container]}>
-                                            <View style={[flex_between]}>
-                                                <View style="">
-                                                    <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('결제상세',{orderType:val.pay_status})}>
-                                                        <Text style={[text_light]}>상세내역 / 정보변경</Text>
-                                                    </TouchableOpacity>
-                                                </View>
-                                                <View style={[flex]}>
-                                                    {/*/!*<Text style={[h14]}>결제상태</Text>*!/*/}
-                                                    {/*{(val.pay_status == 'ready') ? (*/}
-                                                    {/*    <Text*/}
-                                                    {/*        style={[ text_danger,btn_outline_danger,ps1,pe1, h14]}>결제대기</Text>*/}
-                                                    {/*) : (*/}
-                                                    {/*    <Text*/}
-                                                    {/*        style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>결제완료</Text>*/}
-                                                    {/*)}*/}
-                                                    <Text style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>
-                                                        {(val.order_status === 'done') && `결제완료`}
-                                                        {(val.order_status === 'ready') && `결제대기`}
-                                                    </Text>
-                                                </View>
-                                            </View>
-                                        </View>
-                                        <View style={gray_bar}/>
-                                    </View>
-                                </>
-                            ))}
+                             {OrderList.map((val,idx)=>(
+                                 <>
+                                     <View style={[styles.order_list_items]} key={idx}>
+                                         <View style={[container]}>
+                                             <View style={[flex, styles.mb_5]}>
+                                                 <View style={[styles.wt3]}>
+                                                     <Text style={[styles.goods_num, h16]}> 발주번호 :</Text>
+                                                 </View>
+                                                 <View style={[styles.wt7]}>
+                                                     <Text style={[styles.goods_num_val, h16, fw600]}>{val.order_no}</Text>
+                                                 </View>
+                                             </View>
+                                             {/*발주번호*/}
+                                             <View style={[flex, styles.mb_5]}>
+                                                 <View style={[styles.wt3]}>
+                                                     <Text style={[styles.Construction_name, h14]}> 공사명
+                                                         :</Text>
+                                                 </View>
+                                                 <View style={[styles.wt7]}>
+                                                     <Text style={[styles.Construction_name_val, h14]} numberOfLines={1}>{val.order_title}</Text>
+                                                 </View>
+                                             </View>
+                                             {/*공사명*/}
+                                             <View style={[flex, styles.mb_5]}>
+                                                 <View style={[styles.wt3]}>
+                                                     <Text
+                                                         style={[styles.Desired_Delivery_Date_name, h14]}> 희망배송일
+                                                         :</Text>
+                                                 </View>
+                                                 <View style={[styles.wt7]}>
+                                                     <Text
+                                                         style={[styles.Desired_Delivery_Date_val, h14]}>{val.hope_deli_date} 도착예정</Text>
+                                                 </View>
+                                             </View>
+                                             {/*희망배송일*/}
+                                             <View style={[flex]}>
+                                                 <View style={[styles.wt3]}>
+                                                     <Text style={[styles.Delivery_destination_name, h14, val.text_gray]}> 배송지 :</Text>
+                                                 </View>
+                                                 <View style={[styles.wt7]}>
+                                                     <Text style={[styles.Delivery_destination_name_val, h14, text_gray]}>
+                                                         {val.addr1} {val.addr2}
+                                                     </Text>
+                                                 </View>
+                                             </View>
+                                             {/*배송지*/}
+                                         </View>
+                                         <View style={[styles.border_b_dotted]}></View>
+                                         <View style={[container]}>
+                                             <View style={[flex_between]}>
+                                                 <View style="">
+                                                     <TouchableOpacity style={[btn_primary, p1,]}
+                                                     onPress={()=>navigation.navigate('발주상세',{
+                                                         gd_order_uid   :val.gd_order_uid,
+                                                         hope_deli_date :val.hope_deli_date,
+                                                     })}
+                                                     >
+                                                         <Text style={[text_light]}>상세내역 / 정보변경</Text>
+                                                     </TouchableOpacity>
+                                                 </View>
+                                                 <View style={[flex]}>
+                                                     {/*<Text style={[h14]}>결제상태</Text>*/}
+                                                     {/*(val.pay_status == 'ready') ? (
+                                                         <Text
+                                                             style={[ text_danger,btn_outline_danger,ps1,pe1, h14]}>결제대기</Text>
+                                                     ) : (
+                                                         <Text
+                                                             style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>결제완료</Text>
+                                                     )*/}
+                                                     <Text style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>
+                                                         {ordStatus(`${val.ord_status}`)}
+                                                     </Text>
+                                                 </View>
+                                             </View>
+                                         </View>
+                                         <View style={gray_bar}/>
+                                     </View>
+                                 </>
+                             ))}
                         </View>
                     </View>
                     <View style={[padding_bottom]} />

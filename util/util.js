@@ -366,18 +366,91 @@ export const OnlyEng = (text) => {
 export const bankAccount = ["자재로(이정완)_국민은행 1234-23-5968714"];
 
 
+// 주문상태 정의 함수화
+
+export const ordStatus = (key) => {
+    if(key === 'order_ready')       {return '발주신청'; }
+    if(key === 'order_doing')       {return '발주검수중'; }
+    if(key === 'order_done')        {return '발주검수완료'; }
+    if(key === 'pay_try')           {return '결제시도'; }
+    if(key === 'pay_err')           {return '결제에러'; }
+    if(key === 'pay_ready')         {return '결제대기'; }
+    if(key === 'pay_done')          {return '결제완료'; }
+    if(key === 'deli_ready')        {return '배송대기'; }
+    if(key === 'deli_doing')        {return '배송중'; }
+    if(key === 'deli_done')         {return '배송완료'; }
+}
+
+
 export const Time1 = [
     {
         label     :"AM",
-        value   :"오전",
+        value     :"AM",
     },
     {
         label     :"PM",
-        value   :"오후",
+        value     :"PM",
     },
 ];
 
 export const Time2 = [
+    {
+        label     :"01:00:00",
+        value   :"01:00",
+    },
+    {
+        label     :"01:30:00",
+        value   :"01:30",
+    },
+    {
+        label     :"02:00:00",
+        value   :"02:00",
+    },
+    {
+        label     :"02:30:00",
+        value   :"02:30",
+    },
+    {
+        label     :"03:00:00",
+        value   :"03:00",
+    },
+    {
+        label     :"03:30:00",
+        value   :"03:30",
+    },
+    {
+        label     :"04:00:00",
+        value   :"04:00",
+    },
+    {
+        label     :"04:30:00",
+        value   :"04:30",
+    },
+    {
+        label     :"05:00:00",
+        value   :"05:00",
+    },
+    {
+        label     :"05:30:00",
+        value   :"05:30",
+    },
+
+    {
+        label     :"06:00:00",
+        value   :"06:00",
+    },
+    {
+        label     :"06:30:00",
+        value   :"06:30",
+    },
+    {
+        label     :"07:00:00",
+        value   :"07:00",
+    },
+    {
+        label     :"07:30:00",
+        value   :"07:30",
+    },
     {
         label     :"08:00:00",
         value   :"08:00",

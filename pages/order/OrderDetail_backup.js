@@ -98,10 +98,8 @@ export default function OrderDtail({navigation, route}) {
     let {orderType} = route.params;
     console.log('결제상태내역'+orderType);
     // 발주상태내역
-
     const [Member, setMember] = useState();
     const Update = useIsFocused();
-
     const {order_uid, zonecode, addr1} = route.params;
 
     //1.
@@ -150,8 +148,6 @@ export default function OrderDtail({navigation, route}) {
 
 // 2_1. 주문정보 입력상태 설정
     const goInput = (keyValue, e) => {
-
-
         if(keyValue === 'zonecode') {
             setOrderDetail({
                 ...OrderDetail,
@@ -171,8 +167,6 @@ export default function OrderDtail({navigation, route}) {
             [keyValue]:e,
         });
     }
-
-
     const order_Cate_List = [
 
         {
@@ -250,7 +244,7 @@ export default function OrderDtail({navigation, route}) {
                     text: '삭제',
                     onPress: () => {
                         Alert.alert("취소완료 되었습니다.");
-                    // 발주내역상태에 맞는페이지로 이동 -> ex) 결제상태에서 전체취소 시 결제상태목록으로 이동 / 발주상태에서 전체취소시 발주상태목록으로 이동
+                        // 발주내역상태에 맞는페이지로 이동 -> ex) 결제상태에서 전체취소 시 결제상태목록으로 이동 / 발주상태에서 전체취소시 발주상태목록으로 이동
                     },
                     style: 'destructive',
                 },
@@ -282,7 +276,7 @@ export default function OrderDtail({navigation, route}) {
                             )}
 
                             {/*<Text style={[styles.OrderDetail_txt,h16,text_center]}>결제 대기중 입니다. </Text>*/}
-                             {/*발주 신청중 문구*/}
+                            {/*발주 신청중 문구*/}
                         </View>
                     </View>
                     {/*==============발주 내역을 확인==============*/}
@@ -536,7 +530,7 @@ export default function OrderDtail({navigation, route}) {
                                             <Text style={[h14]}>2022.09.20</Text>
                                         </View>
                                         {/*결제일*/}
-                                       
+
                                         <View style={[flex,justify_content_end,mb1]}>
                                             <Text style={[h14,styles.color1,me2]}>자재 가격</Text>
                                             <Text style={[h14]}>535,900 원</Text>
@@ -561,8 +555,8 @@ export default function OrderDtail({navigation, route}) {
                                 </View>
                             </View>
                         </View>
+                        {/*결제정보*/}
                         <View style={[gray_bar]} />
-                        {/*=================결제정보========================*/}
                         <View style={container}>
                             <Text style={[h18,mb2]}>결제유형</Text>
                             <View style={flex}>

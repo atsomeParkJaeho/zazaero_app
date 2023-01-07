@@ -91,7 +91,7 @@ import {bankAccount} from "../../util/util";
 
 
 
-export default function PayDetailY({navigation, route}) {
+export default function OrderDtailY({navigation, route}) {
 
     //1.
     const [selected, setSelected] = useState("");

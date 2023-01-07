@@ -60,8 +60,10 @@ export default function Cart({route, navigation}) {
     console.log('장바구니');
     // ========================1. 상태 설정===============
     const [CartCate1st, setCartCate1st] = useState([]);           // 1차카테고리 설정
-    const [CartList, setCartList] = useState([]);           // 장바구니 상품리스트 출력
+    const [CartList,    setCartList]    = useState([]);           // 장바구니 상품리스트 출력
     const [Cate1stCode, setCate1stCode] = useState([]);           // 2차 카테고리 코드 설정
+    const [OrderUid, setOrderUid]       = useState([]);           //
+
     console.log('회원코드 1 / ', Member);
 
     const Update = useIsFocused();
@@ -244,22 +246,17 @@ export default function Cart({route, navigation}) {
             return val;
         });
         setCartList(temp);
+        setOrderUid([]);
     }
 
     // ===================7. 클릭시 배송정보 입력란으로 이동==================
     const goOrderForm = () => {
-        console.log('test');
-        // 1. 체크한 상품만 필터링
-        let goForm = CartList.filter((val) => {
-            if (val.goods_chk === true) {
-                return navigation.navigate('배송정보등록', {order_uid: val.order_uid});
+        let temp = CartList.map(val=>{
+            if(val.goods_chk === true) {
+                return val.order_uid;
             }
         });
-        console.log('출력 / ', goForm);
-
-        // 2. 수량변경시 업데이트 한다.
-
-        // 3. 옵션내용이 있을시 업데이트 한다.
+        console.log('전송 / ',temp);
     }
 
     // ===================8. 전체 선택==================
