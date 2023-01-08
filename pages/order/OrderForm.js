@@ -53,7 +53,7 @@ import RNPickerSelect from "react-native-picker-select";
 
 export default function OrderForm({route,navigation}) {
 
-    console.log('확인1 / ',route.params);
+    console.log('확인1 / ',route.params.order_uid);
     // 유효성 검사
 
     const {order_uid, zonecode, addr1} = route.params;
@@ -111,7 +111,7 @@ export default function OrderForm({route,navigation}) {
             act_type            : "get_order_ready",
             login_status        : "Y",
             mem_uid             : Member,
-            A_order_uid         : {order_uid},
+            A_order_uid         : Number(order_uid),
         },{
             headers: {
                 'Content-type': 'multipart/form-data'
@@ -121,14 +121,18 @@ export default function OrderForm({route,navigation}) {
            if(res) {
                // console.log('확인 / ',res);
                const {result, A_order} = res.data;
+               console.log('확인 / ',result);
                if(result === 'OK') {
-                   console.log('나의 장바구니 확인/ ',A_order);
+                   Alert.alert('','연결성2공');
                    setCartList(A_order);
                } else {
                    console.log('실패');
                }
            }
         }).catch(err=>console.log("에러코드 / ",err));
+
+        //
+
 
         // 주소입력시 업데이트
         setOrderDate({
@@ -194,7 +198,7 @@ export default function OrderForm({route,navigation}) {
         }
         if(OrderData.hope_deli_date === '') {
             Alert.alert('','희망배송일을 선택해주세요.');
-            ChkFocus.current[4].focus();
+            // ChkFocus.current[4].focus();
             return;
         }
 
@@ -218,7 +222,7 @@ export default function OrderForm({route,navigation}) {
                     text: '확인 ',
                     onPress: () => {
                         axios.post('http://49.50.162.86:80/ajax/UTIL_order_react.php',{
-                            act_type            : 'save_gd_order',
+                            act_type            : 'ins_order',
                             goods_uid           : uid,           // 상품 uid
                             mem_uid             : Member,                    // 회원 uid
                             ord_cnt             :  '1'
@@ -358,7 +362,7 @@ export default function OrderForm({route,navigation}) {
                                                placeholder="상세주소"
                                                value={OrderData.addr2}
                                                ref={value => (ChkFocus.current[3] = value)}
-                                               onSubmitEditing={()=>ChkFocus.current[4].focus()}
+                                               // onSubmitEditing={()=>ChkFocus.current[4].focus()}
                                                returnKeyType="done"
                                     />
                                 </View>
@@ -421,7 +425,7 @@ export default function OrderForm({route,navigation}) {
                                     <View style={[styles.formSelect,{flex:0.3, marginRight:10,}]}>
                                         <RNPickerSelect
                                             placeholder={{label:"오전,오후", value:null}}
-                                            onValueChange={(road_address) => goInput('road_address',road_address)}
+                                            onValueChange={(hope_deli_time) => goInput('hope_deli_time',hope_deli_time)}
                                             items={Time1}
                                             useNativeAndroidPickerStyle={false}
                                             style={{
@@ -436,7 +440,7 @@ export default function OrderForm({route,navigation}) {
                                     <View style={[styles.formSelect,{flex:0.7}]}>
                                         <RNPickerSelect
                                             placeholder={{label:"시간을 선택해주세요.", value:null}}
-                                            onValueChange={(road_address) => goInput('road_address',road_address)}
+                                            onValueChange={(hope_deli_time) => goInput('hope_deli_time',hope_deli_time)}
                                             items={Time2}
                                             useNativeAndroidPickerStyle={false}
                                             style={{

@@ -251,12 +251,10 @@ export default function Cart({route, navigation}) {
 
     // ===================7. 클릭시 배송정보 입력란으로 이동==================
     const goOrderForm = () => {
-        let temp = CartList.map(val=>{
-            if(val.goods_chk === true) {
-                return val.order_uid;
-            }
-        });
-        console.log('전송 / ',temp);
+        let temp = CartList.filter(val=>val.goods_chk === true);
+        let result = temp.map(val=>val.goods_uid);
+        console.log('전송 / ',result);
+        navigation.navigate('배송정보등록',{order_uid:result});
     }
 
     // ===================8. 전체 선택==================
