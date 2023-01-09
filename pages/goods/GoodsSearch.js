@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     StyleSheet,
     Text,
@@ -38,10 +38,18 @@ import col2 from "../../assets/img/co2.png";
 import col3 from "../../assets/img/co3.png";
 import goods_image from "../../assets/img/goods_image.jpg";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useIsFocused} from "@react-navigation/native";
 
 
 
 export default function GoodsSearch({route,navigation}) {
+
+
+    const [Member, setMember] = useState();
+    const mem_uid = AsyncStorage.getItem("member").then((value) => {
+        setMember(value);
+    });
 
     // 1. 상태정의
     const [GoodsSearch, setGoodsSearch] = useState({    // 검색어 확인
@@ -49,11 +57,37 @@ export default function GoodsSearch({route,navigation}) {
     });
 
     const [SearchLog, setSearchLog] = useState([]);     // 최근검색어
+    const update = useIsFocused();
+
+    useEffect(()=>{
+        // 최근검색목록을 불러온다
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
+            act_type        : "get_mem_search_log_list",
+            login_status    : 'Y',
+            mem_uid         :Member,
+        }, {
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res) => {
+            if (res) {
+                const {result, A_data} = res.data;
+                // console.log(que);
+                if (result === 'OK') {
+                    let temp = A_data.map(val=>{
+                        return {...val, log_show:true}
+                    })
+                    setSearchLog(temp);
+                } else {
+                    console.log('실패');
+                }
+            }
+        });
+    },[Member, update]);
 
 
 
     // 입력하기
-
     const ChkInput = (key, value) => {
         setGoodsSearch({
             ...GoodsSearch,
@@ -65,6 +99,8 @@ export default function GoodsSearch({route,navigation}) {
     // 2. 검색상품 불러오기
     const goSearch = (search) => {
         console.log(search);
+
+        // 검색상품으로 이동한다
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
             act_type        : "get_goods_list",
             f_goods_name    :search,
@@ -80,6 +116,29 @@ export default function GoodsSearch({route,navigation}) {
                     if(A_goods.length === 0) {
                         Alert.alert('','검색하신 상품이 없습니다');
                     } else {
+
+                        // 검색로그 저장
+                        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
+                            act_type        :"ins_mem_search_log",
+                            login_status    :"Y",
+                            find_txt        :search,
+                            mem_uid         :Member,
+                        }, {
+                            headers: {
+                                'Content-type': 'multipart/form-data'
+                            }
+                        }).then((res) => {
+                            if (res) {
+                                const {result} = res.data;
+                                if (result === 'OK') {
+                                    console.log('기록 저장');
+
+                                } else {
+                                    console.log('실패');
+                                }
+                            }
+                        });
+
                         navigation.navigate('검색결과',{search:search});
                     }
                 } else {
@@ -89,7 +148,39 @@ export default function GoodsSearch({route,navigation}) {
         });
     }
 
-    console.log('검색어 / ',GoodsSearch);
+
+    // 3. 최근검색어 삭제
+    const delLog = (uid) => {
+        // 검색상품으로 이동한다
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
+            act_type                :"del_mem_search_log",
+            login_status            :"Y",
+            mem_uid                 :Member,
+            mem_find_txt_log_uid    :uid
+        }, {
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res) => {
+            if (res) {
+                const {result} = res.data;
+                console.log(result);
+
+                let temp = SearchLog.map(val=>{
+                    if(uid=== val.mem_find_txt_log_uid){
+                        return {...val, log_show:false}
+                    }
+                    return val;
+                })
+                setSearchLog(temp);
+
+            }
+        });
+    }
+
+
+    console.log('검색어2 / ',GoodsSearch);
+    console.log('최근검색어 / ',SearchLog);
 
     return (
 
@@ -124,23 +215,38 @@ export default function GoodsSearch({route,navigation}) {
                                         <Text style={[h14,styles.txt_color]}>전체삭제</Text>
                                     </TouchableOpacity>
                                 </View>
-                                <View style={[styles.Recent_search_list,mt2]}>
-                                    <View style={styles.Recent_search_list_item}>
-                                        <View style={flex_between}>
-                                            <View style={[wt7]}>
-                                                <Text style={[h14,styles.txt_color2]}></Text>
-                                            </View>
-                                            <View style={[wt3]}>
-                                                <View style={[flex,justify_content_end]}>
-                                                    <Text style={[h14,styles.txt_color]}></Text>
-                                                    <TouchableOpacity style={ms2} >
-                                                        <Text style={[h14,styles.txt_color]}>X</Text>
+                                <View style={[mt2]}>
+                                {SearchLog.map(val=>(
+                                    <>
+                                        {(val.log_show) && (
+                                        <View style={styles.Recent_search_list_item}>
+                                            <View style={flex_between}>
+                                                <View>
+                                                    <TouchableOpacity
+                                                    onPress={()=>goSearch(val.find_txt)}
+                                                    >
+                                                        <Text style={[h14,styles.txt_color2]}>
+                                                            {val.find_txt}
+                                                        </Text>
                                                     </TouchableOpacity>
+                                                </View>
+                                                <View>
+                                                    <View style={[flex,justify_content_end]}>
+                                                        <Text style={[h14,styles.txt_color]}>
+                                                            {val.reg_dt}
+                                                        </Text>
+                                                        <TouchableOpacity style={ms2}
+                                                        onPress={()=>delLog(val.mem_find_txt_log_uid)}
+                                                        >
+                                                            <Text style={[h14,styles.txt_color]}>X</Text>
+                                                        </TouchableOpacity>
+                                                    </View>
                                                 </View>
                                             </View>
                                         </View>
-                                    </View>
-
+                                        )}
+                                    </>
+                                ))}
                                 </View>
                             </>
                         ):(

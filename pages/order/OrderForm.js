@@ -111,7 +111,7 @@ export default function OrderForm({route,navigation}) {
             act_type            : "get_order_ready",
             login_status        : "Y",
             mem_uid             : Member,
-            A_order_uid         : Number(order_uid),
+            A_order_uid         : order_uid,
         },{
             headers: {
                 'Content-type': 'multipart/form-data'
@@ -130,10 +130,6 @@ export default function OrderForm({route,navigation}) {
                }
            }
         }).catch(err=>console.log("에러코드 / ",err));
-
-        //
-
-
         // 주소입력시 업데이트
         setOrderDate({
             ...OrderData,
@@ -221,21 +217,24 @@ export default function OrderForm({route,navigation}) {
                 {
                     text: '확인 ',
                     onPress: () => {
-                        axios.post('http://49.50.162.86:80/ajax/UTIL_order_react.php',{
+                        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
                             act_type            : 'ins_order',
-                            goods_uid           : uid,           // 상품 uid
                             mem_uid             : Member,                    // 회원 uid
-                            ord_cnt             :  '1'
+                            login_status        : "Y",                       // 회원여부
+                            settlekind          : "bank",
+                            A_order_uid         : order_uid,
+                            ord_cnt             : "1",
                         },{
                             headers: {
                                 'Content-type': 'multipart/form-data'
                             }
                         }).then((res)=>{
                             if(res) {
-                                const {result, order_uid} = res.data;
+                                const {result, order_no} = res.data;
                                 console.log(result);
                                 if(result === 'OK') {
-                                    console.log(order_uid);
+                                    console.log(order_no);
+                                    return Alert.alert('','발주신청이 완료되었습니다.');
                                 } else {
                                     console.log('실패');
                                     return;
@@ -243,9 +242,7 @@ export default function OrderForm({route,navigation}) {
                             } else {
 
                             }
-                        })
-
-                        Alert.alert('','장바구니에 추가하였습니다.');
+                        });
                     },
                     style: 'cancel',
                 },

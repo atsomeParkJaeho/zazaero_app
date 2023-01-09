@@ -34,7 +34,7 @@ import {
     text_light,
     wt8,
     bg_light,
-    container_vertical, container_Horizontal, ms1, bg_gray, bg_secondary
+    container_vertical, container_Horizontal, ms1, bg_gray, bg_secondary, justify_content_between, text_gray
 } from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 
@@ -63,6 +63,11 @@ export default function Cart({route, navigation}) {
     const [CartList,    setCartList]    = useState([]);           // 장바구니 상품리스트 출력
     const [Cate1stCode, setCate1stCode] = useState([]);           // 2차 카테고리 코드 설정
     const [OrderUid, setOrderUid]       = useState([]);           //
+    // const [expanded, setExpanded]       = useState(true);
+    const [isChk, setIsChk] = useState(false);
+
+    const show = () => setExpanded(!expanded);
+
 
     console.log('회원코드 1 / ', Member);
 
@@ -71,9 +76,8 @@ export default function Cart({route, navigation}) {
     useEffect(() => {
         //1. ====================1차 카테고리 리스트를 출력=================///
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
-            act_type: "get_cate_list",
-            depth: "1",
-
+            act_type    : "get_cate_list",
+            depth       : "1",
         }, {
             headers: {
                 'Content-type': 'multipart/form-data'
@@ -81,23 +85,21 @@ export default function Cart({route, navigation}) {
         }).then((res) => {
             if (res) {
                 const {result, A_cate} = res.data;
+                console.log(result);
                 if (result === 'OK') {
                     // ==========1차 카테고리 배열 설정=============//
-                    console.log('확인');
                     setCartCate1st(A_cate);
-                    console.log()
+                    console.log('카티고리 확인2 / ');
                 } else {
                     console.log('실패');
                 }
             }
         });
-
-
         // //====================장바구니 목록을 출력=================///
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
-            act_type: "get_cart_list",
-            login_status: "Y",
-            mem_uid: Member,
+            act_type        : "get_cart_list",
+            login_status    : "Y",
+            mem_uid         : Member,
 
         }, {
             headers: {
@@ -107,12 +109,11 @@ export default function Cart({route, navigation}) {
             if (res) {
                 const {result,query ,A_order} = res.data;
                 if (result === 'OK') {
+
                     let temp = A_order.map((val) => {
-                        return {...val, goods_Cart: !val.goods_Cart,};
+                        return {...val, goods_Cart:true};
                     });
                     setCartList(temp);
-                    console.log(query);
-                    // console.log('확인',A_order);
                 } else {
                     console.log('실패');
                 }
@@ -121,33 +122,8 @@ export default function Cart({route, navigation}) {
 
     }, [Member, Update]);
 
-    // ===================2. 1차 카테고리에 맞는 장바구니 상품 가져오기==================
-    const getGoodsCate = (ind_cfg_uid) => {
-        console.log('카테고리 코드 / ', ind_cfg_uid);
-        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php', {
-            act_type: "find_goods",
-            cate_1st: ind_cfg_uid,
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
-            if (res) {
-                const {result, A_goods} = res.data;
-                if (result === 'OK') {
 
-                    let temp = A_goods.map((val) => val.goods_uid);
-                    setCate1stCode(temp);
-                    console.log(temp);
-
-
-                } else {
-                    console.log('실패');
-                }
-            }
-        });
-    }
-
+    console.log(CartList);
 
     // ==============3. 장바구니 삭제 설정=================
     const delCart = (order_uid) => {
@@ -179,6 +155,33 @@ export default function Cart({route, navigation}) {
         });
         setCartList(temp);
     }
+
+    const ChkDelCart = (key) => {
+        CartList.map((val)=>{
+            if(val.cate_name === key) {
+                axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
+                    act_type            : "del_cart",
+                    login_status        : "Y",
+                    mem_uid             : Member,
+                    A_order_uid         : [val.order_uid],
+                }, {
+                    headers: {
+                        'Content-type': 'multipart/form-data'
+                    }
+                }).then((res) => {
+                    if (res) {
+                        const {result} = res.data;
+                        if (result === 'OK') {
+                            Alert.alert('', '삭제완료 하였습니다.');
+                        } else {
+                            console.log('실패');
+                        }
+                    }
+                });
+            }
+        });
+    }
+
     // ====================4. 수량증가 설정==================
     const modCart = (uid, type, value) => {
         // 수량 증가시 설정
@@ -238,15 +241,33 @@ export default function Cart({route, navigation}) {
 
 
     // ===================6. 장바구니 상품 체크시 배송상품 추가==================
-    const goFormChk = (uid) => {
-        let temp = CartList.map((val) => {
-            if (uid === val.goods_uid) {
-                return {...val, goods_chk: !val.goods_chk,};
-            }
-            return val;
-        });
-        setCartList(temp);
-        setOrderUid([]);
+    const goFormChk = (uid,cate_name,value) => {
+
+        console.log('값 / ',value);
+
+        if(uid === 'All') {
+
+            let temp = CartList.map((val) => {
+                if (cate_name === val.cate_name) {
+                    return {...val, goods_chk: !val.goods_chk,};
+                }
+                return val;
+            });
+            setCartList(temp);
+
+        } else {
+
+            let temp = CartList.map((val) => {
+                if (uid === val.goods_uid) {
+                    return {...val, goods_chk: !val.goods_chk,};
+                }
+                return val;
+            });
+            setCartList(temp);
+
+        }
+        return value;
+
     }
 
     // ===================7. 클릭시 배송정보 입력란으로 이동==================
@@ -257,14 +278,6 @@ export default function Cart({route, navigation}) {
         navigation.navigate('배송정보등록',{order_uid:result});
     }
 
-    // ===================8. 전체 선택==================
-    const AllChk = () => {
-        let temp = CartList.map((val) => {
-            return {...val, goods_chk: !val.goods_chk,};
-        });
-        setCartList(temp);
-    }
-
     // ====================9. 선택 삭제==============
     const chkDel = () => {
         console.log('test test');
@@ -273,10 +286,10 @@ export default function Cart({route, navigation}) {
             const {order_uid} = val;
             if (val.goods_chk === true) {
                 axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
-                    act_type: "del_cart",
-                    login_status: "Y",
-                    mem_uid: Member,
-                    A_order_uid: {order_uid},
+                    act_type        : "del_cart",
+                    login_status    : "Y",
+                    mem_uid         : Member,
+                    A_order_uid     : {order_uid},
                 }, {
                     headers: {
                         'Content-type': 'multipart/form-data'
@@ -308,48 +321,40 @@ export default function Cart({route, navigation}) {
     }
 
 
+
     // ===================9. 체크한 상품 있을시 버튼입력란 생성
     let goForm = CartList.filter((val) => val.goods_chk);
-
-    console.log(CartList);
-    console.log(CartCate1st);
 
     return (
         <>
             <ScrollView style={[bg_white]}>
                 <View style={[styles.Cart]}>
-                    <View style={[container]}>
-                        <View style={[flex_between]}>
-                            <View style={[flex]}>
-                                <Checkbox
-                                    onValueChange={AllChk}
-                                    value={(goForm.length === CartList.length)}
-                                    style={styles.all_check} color={"#4630eb"}
-                                />
-                                <Text style={styles.all_check_txt}>전체선택({goForm.length}/{CartList.length})</Text>
-                            </View>
-                            <View style="">
-                                <TouchableOpacity onPress={chkDel}>
-                                    <Text style={styles.goods_cart_del_btn}>상품삭제</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                        {/* 전체선택 체크박스 영역*/}
-                    </View>
                     <View style={[styles.cartList]}>
                         {/*===================1차 카테고리 리스트 출력==================*/}
                         <List.Section style={[styles.Section,{padding:0, margin:0}]}>
                         {CartCate1st.map((cate,idx)=>(
                             <>
-                                <List.Accordion style={[container,styles.Accordion_tit]} title={cate.cfg_val1} key={idx}>
+                                <List.Accordion
+                                style={[container,styles.Accordion_tit]}
+                                title={cate.cfg_val1}
+                                key={idx}
+                                expanded={true}
+                                // expanded={expanded}
+                                // onPress={err=>console.log(err)}
+                                >
                                     <View style={[bg_white,container,{ borderBottomWidth: 1,borderColor:"#ddd"}]}>
-                                        <View style={[flex]}>
-                                            <Checkbox
-                                                onValueChange={() => goFormChk()}
-                                                value={false}
-                                                style={styles.all_check}
-                                                color={"#4630eb"}/>
-                                            <Text  style={[ms1]}>카테고리 삭제 </Text>
+                                        <View style={[flex,{justifyContent:"space-between",}]}>
+                                            <View style={[d_flex]}>
+                                                <Checkbox onValueChange={(all) => goFormChk(`All`,`${cate.cfg_val1}`,all)} value={isChk} style={styles.all_check}
+                                                 color={"#4630eb"}
+                                                 />
+                                                <Text  style={[ms1]}>전체선택</Text>
+                                            </View>
+                                            <View style={[d_flex]}>
+                                                <TouchableOpacity onPress={()=>ChkDelCart(`${cate.cfg_val1}`)}>
+                                                    <Text  style={[ms1,text_gray]}>선택상품 삭제</Text>
+                                                </TouchableOpacity>
+                                            </View>
                                         </View>
                                     </View>
                                         {CartList.map((val, idx)=>(
@@ -357,8 +362,6 @@ export default function Cart({route, navigation}) {
                                             <>
                                                 {(val.goods_Cart) && (
                                                     <>
-
-                                                        
                                                         <View key={val.ind_cfg_uid}
                                                               style={[styles.pb_2, {padding: 15, borderColor:"#e0e0e0"}]}>
                                                             {/*================자재명==============*/}
@@ -390,16 +393,13 @@ export default function Cart({route, navigation}) {
                                                             {/*=============상품상세정보===============*/}
                                                             <View
                                                                 style={[flex]}>
-                                                                <View
-                                                                    style={[styles.flex_items, styles.flex_items1]}>
+                                                                <View style={[styles.flex_items, styles.flex_items1]}>
                                                                     <Image
                                                                         style={styles.cart_goods_img}
                                                                         source={{uri: "http://49.50.162.86:80" + val.list_img_url}}/>
                                                                 </View>
-                                                                <View
-                                                                    style={[styles.flex_items, styles.flex_items2]}>
-                                                                    <View
-                                                                        style={[flex_between, styles.pd_20]}>
+                                                                <View style={[styles.flex_items, styles.flex_items2]}>
+                                                                    <View style={[flex_between, styles.pd_20]}>
                                                                         {/*가이드라인*/}
                                                                         <View style="">
                                                                             <Text
