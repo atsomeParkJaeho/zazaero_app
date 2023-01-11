@@ -47,6 +47,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {AddrMatch, Phone, Time, Time1, Time2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import RNPickerSelect from "react-native-picker-select";
+import SelectBox from "react-native-multi-selectbox";
 
 
 
@@ -57,25 +58,32 @@ export default function OrderForm({route,navigation}) {
     // 유효성 검사
 
     const {order_uid, zonecode, addr1} = route.params;
-    const ChkFocus = useRef([]);
     const [Member, setMember] = useState();
-    const Update = useIsFocused();
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
-
+    const ChkFocus = useRef([]);
+    const Update = useIsFocused();
     console.log('전달 2값 / ',Member);
-
+    console.log('우편번호 / ',zonecode);
 
     // 1-1 나의 장바구니 리스트 출력
-    const [CartList, setCartList] = useState([]);
-    
+
     // 1. 주문정보 상태 설정
-    const [OrderData, setOrderDate] = useState({
+    // const [CartList, setCartList] = useState([]);
+    const [modAddr,       setmodAddr]              = useState('add');  // 최근배송지, 신규배송지 상태정의
+    const [mem_info,      set_mem_info]            = useState([]);
+    const [OrderTitle,    setOrderTitle]           = useState([]);    // 최근배송지 가져오기
+    const [Selected,      setSelected]             = useState([]);    // 최근배송지 가져오기
+    const [Select, setSelect]                      = useState([]);
+    const [OrderData, setOrderDate]                = useState({
+        act_type                    :"ins_order",           // 주문추가하기 로직
         order_uid                   :order_uid,             // 주문번호
+        login_status                :"Y",
+        A_order_uid                 :order_uid,
         mgr_mem_uid                 :Member,
         mem_uid                     :Member,                // 회원 uid
-        order_mem_name              :'',                    // 주문자명
+        order_mem_name              :'',                    // 주문자명  / 담당자명
         order_mem_mobile            :'',                    // 주문자 휴대전화번호
         recv_name                   :'',                    // 현장인도자
         recv_phone                  :'',                    // 현장인도자 전화번호
@@ -95,41 +103,43 @@ export default function OrderForm({route,navigation}) {
         make_price                  :'',                    // 제작비
         hope_opt_price              :'',                    // 옵션요청비
     });
-    const [Hope, setHope]                   = useState({
+    const [Hope, setHope]           = useState({
         hopeDate    :'',
         hopeTime    :'',
     });
     // 희망배송일시 설정,
-    const [modAddr,       setmodAddr]             = useState('add');  // 최근배송지, 신규배송지 상태정의
-    const [DatePicker,    setDatePicker]          = useState(false);
-    
 
+    /**=============================상태 출력==========================**/
     useEffect(()=>{
-        console.log('확인 / ',order_uid);
-        // 나의 장바구니 정보 출력
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-            act_type            : "get_order_ready",
-            login_status        : "Y",
-            mem_uid             : Member,
-            A_order_uid         : order_uid,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
+
+        /**=================================================================================**/
+        axios.get('http://49.50.162.86:80/ajax/UTIL_mem_info.php', {
+            params: {
+                act_type : "my_page",
+                mem_uid  : Member,
             }
-        }).then((res)=>{
-            console.log('확인 / ',order_uid);
-           if(res) {
-               // console.log('확인 / ',res);
-               const {result, A_order} = res.data;
-               console.log('확인 / ',result);
-               if(result === 'OK') {
-                   Alert.alert('','연결성2공');
-                   setCartList(A_order);
-               } else {
-                   console.log('실패');
-               }
-           }
-        }).catch(err=>console.log("에러코드 / ",err));
+        }).then((res) => {
+            if(res) {
+                const {result, test, mem_info} = res.data;
+                if(result === 'OK') {
+                    console.log('정상2');
+                    // set_mem_info(mem_info);
+                    setOrderDate({
+                        ...OrderData,
+                        order_mem_name      :mem_info.mem_name,
+                        order_mem_mobile    :mem_info.mem_mobile,
+                    })
+                }
+                if(result === 'NG') {
+                    console.log('비정상');
+                }
+            }
+        });
+        /**=============================1. 최근 입력한 공사명을 가져온다==========================**/
+
+        /**===========================2. 장바구니 정보를 가져온다==========================**/
+
+        /**=========================3. 다음api로 가져온 정보 에러 방지용==========================**/
         // 주소입력시 업데이트
         setOrderDate({
             ...OrderData,
@@ -139,10 +149,9 @@ export default function OrderForm({route,navigation}) {
             addr1           :addr1,
         });
 
+    },[Member, Update]);
 
-    },[Update,Member]);
-
-    console.log('장바구니 / ',CartList);
+    // console.log(CartList,'/ 장바구니 상품');
 
     // 2. 주문정보 입력상태 설정
     const goInput = (keyValue, e) => {
@@ -167,6 +176,9 @@ export default function OrderForm({route,navigation}) {
         });
     }
 
+
+
+    /**=============================이벤트 액션 구간=============================**/
 
     // 6. 발주신청
     const goForm = () => {
@@ -194,18 +206,18 @@ export default function OrderForm({route,navigation}) {
         }
         if(OrderData.hope_deli_date === '') {
             Alert.alert('','희망배송일을 선택해주세요.');
-            // ChkFocus.current[4].focus();
+            ChkFocus.current[4].focus();
             return;
         }
 
         if(OrderData.hope_deli_time === '') {
             Alert.alert('','희망배송시간을 입력해주세요.');
-            ChkFocus.current[4].focus();
+            ChkFocus.current[5].focus();
             return;
         }
         if(OrderData.recv_phone === '') {
             Alert.alert('','현장인도자 연락처를 입력해주세요.');
-            ChkFocus.current[5].focus();
+            ChkFocus.current[6].focus();
             return;
         }
 
@@ -217,14 +229,7 @@ export default function OrderForm({route,navigation}) {
                 {
                     text: '확인 ',
                     onPress: () => {
-                        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-                            act_type            : 'ins_order',
-                            mem_uid             : Member,                    // 회원 uid
-                            login_status        : "Y",                       // 회원여부
-                            settlekind          : "bank",
-                            A_order_uid         : order_uid,
-                            ord_cnt             : "1",
-                        },{
+                        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',OrderData,{
                             headers: {
                                 'Content-type': 'multipart/form-data'
                             }
@@ -234,7 +239,13 @@ export default function OrderForm({route,navigation}) {
                                 console.log(result);
                                 if(result === 'OK') {
                                     console.log(order_no);
-                                    return Alert.alert('','발주신청이 완료되었습니다.');
+                                    let msg = `주문이 완료되었습니다. \n 주문번호 : ${order_no}`;
+                                    return Alert.alert('',msg,[{
+                                        text:"확인",
+                                        onPress:()=>{
+                                            navigation.replace('발주내역');
+                                        }
+                                    }]);
                                 } else {
                                     console.log('실패');
                                     return;
@@ -255,8 +266,9 @@ export default function OrderForm({route,navigation}) {
 
     }
 
-    console.log('주문정보 / ',OrderData);
-    console.log(modAddr);
+
+    console.log('주문정보2     / ',OrderData);
+    console.log('회원정보2      / ',mem_info);
 
     return (
         <>
@@ -273,7 +285,7 @@ export default function OrderForm({route,navigation}) {
                             </View>
                             {/*==============배송지 입력==============*/}
                             <View>
-                                {/*공사명*/}
+                                {/*===========공사명================*/}
                                 <View style={[FormStyle.FormGroupItems]}>
                                     {/*공사명*/}
                                     <View style={[flex,pb2]}>
@@ -304,17 +316,19 @@ export default function OrderForm({route,navigation}) {
                                             </View>
                                         </TouchableOpacity>
                                     </View>
+                                </View>
+                                {/*==============공사명===============*/}
+                                <View style={[FormStyle.FormGroupItems]}>
                                     <Text style={[FormStyle.FormLabel]}>공사명</Text>
-                                    <TextInput style={[input]}
-                                               onChangeText={(order_title)=>goInput("order_title",order_title)}
-                                               placeholder="ex)공사명 입력"
-                                               value={OrderData.order_title}
-                                               ref={value => (ChkFocus.current[0] = value)}
-                                               onSubmitEditing={()=>navigation.navigate('주소검색',{page:"배송정보등록", order_uid:order_uid})}
-                                               returnKeyType="next"
-                                               blurOnSubmit={false}
+                                    <TextInput style={[input,{flex:1}]}
+                                   placeholder="공사명"
+                                   value={OrderData.order_title}
+                                   onChangeText={(order_title)=>goInput("order_title",order_title)}
+                                   ref={value => (ChkFocus.current[0] = value)}
+                                   onSubmitEditing={()=>ChkFocus.current[1].focus()}
+                                   returnKeyType="next"
+                                   blurOnSubmit={false}
                                     />
-
                                 </View>
                                 {/*==============배송지 주소===============*/}
                                 <View style={[FormStyle.FormGroupItems]}>
@@ -322,14 +336,14 @@ export default function OrderForm({route,navigation}) {
                                     <View style={[d_flex,align_items_center]}>
                                         {/*우편번호*/}
                                         <TextInput style={[input,{flex:1,marginRight:16},bg_light]}
-                                                   editable={false}
-                                                   placeholder="우편번호"
-                                                   value={zonecode}
-                                                   onChangeText={(zonecode)=>goInput("zonecode",zonecode)}
-                                                   ref={value => (ChkFocus.current[1] = value)}
-                                                   onSubmitEditing={()=>ChkFocus.current[2].focus()}
-                                                   returnKeyType="next"
-                                                   blurOnSubmit={false}
+                                       editable={false}
+                                       placeholder="우편번호"
+                                       value={zonecode}
+                                       onChangeText={(zonecode)=>goInput("zonecode",zonecode)}
+                                       ref={value => (ChkFocus.current[0] = value)}
+                                       onSubmitEditing={()=>ChkFocus.current[1].focus()}
+                                       returnKeyType="next"
+                                       blurOnSubmit={false}
                                         />
                                         {/*주소찾기*/}
                                         <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"배송정보등록", order_uid:order_uid})}>

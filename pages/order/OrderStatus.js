@@ -48,13 +48,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 function OrderStatus({route, navigation}) {
 
     const [Member, setMember] = useState();
-    const Update = useIsFocused();
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
-
+    const [Status, setStatus] = useState('order_status');     // 발주상태, 결제상태, 배송상태정의
+    const Update = useIsFocused();
     console.log('전달 2값 / ',Member);
-
     const [OrderList, setOrderList] = useState(order_List);     // 발주내역 출력
     useEffect(()=>{
         // ======================= db 연결용==================//
