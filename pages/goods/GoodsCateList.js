@@ -452,9 +452,19 @@ export default function GoodsCateList({route,navigation}) {
                             </View>
                         ))}
                     </ScrollView>
+
                 </View>
             </View>
+
             <Footer navigation={navigation}/>
+            {/*========상품즐겨찾기 체크시=========*/}
+            <View style={[styles.wish]}>
+                <View style={[styles.wish_box,flex]}>
+                    <Wishlist width={35} height={24} color={'blue'}/>
+                    <Text style={styles.wish_box_txt} >즐겨찾기에 추가되었습니다.</Text>
+                </View>
+
+            </View>
             {/*========상품체크시 노출=========*/}
             {(goForm.length > 0) ? (
                 <>
@@ -489,7 +499,6 @@ export default function GoodsCateList({route,navigation}) {
 const styles = StyleSheet.create({
     GoodsCateList:{
         paddingBottom: 300,
-
     },
     cate_1st_btn: {
         padding: 12,
@@ -553,6 +562,25 @@ const styles = StyleSheet.create({
         zIndex: 50,
         textAlign: "center",
         width: "100%",
+    },
+    wish: {
+        position: "absolute",
+        left: 50,
+        bottom: Platform.OS === 'ios' ? 120 : 100,
+        zIndex: 50,
+        width: "100%",
+        transform: [{ translateX: 40 }],
+    },
+    wish_box:{
+        width:250,
+        paddingVertical:12,
+        paddingHorizontal:25,
+        backgroundColor: 'rgba(0,0,0, 0.5)',
+        borderRadius:50,
+    },
+    wish_box_txt:{
+        textAlign:"center",
+        color:"#fff",
     },
     cate_2st_btn: {
         padding: 1,
