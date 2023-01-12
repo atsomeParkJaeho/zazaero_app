@@ -29,6 +29,7 @@ import Main_logo from '../icons/main_logo.svg';
 import axios from "axios";
 import {At_db} from "../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Wishlist from "../icons/ico_heart_c.svg";
 
 //import main1 from '../assets/img/main_1.png'
 
@@ -224,6 +225,13 @@ export default function MainPage({navigation, route}) {
                 </View>
             </ScrollView>
             <Footer navigation={navigation}/>
+            {/*========상품즐겨찾기 체크시=========*/}
+            <View style={[styles.Notification]}>
+                <View style={[styles.Notification_box]}>
+                    <Text style={styles.Notification_box_txt} >로그인 완료</Text>
+                </View>
+
+            </View>
         </>
     );
 }
@@ -395,6 +403,24 @@ const styles = StyleSheet.create({
         lineHeight: 24,
         color: "#222",
         letterSpacing: -1,
-    }
-
+    },
+    Notification: {
+        position: "absolute",
+        left: "50%",
+        bottom: Platform.OS === 'ios' ? 120 : 100,
+        zIndex: 50,
+        width: "100%",
+        transform: [{ translateX: -100 }],
+    },
+    Notification_box:{
+        width:200,
+        paddingVertical:12,
+        paddingHorizontal:25,
+        backgroundColor: 'rgba(0,0,0, 0.5)',
+        borderRadius:50,
+    },
+    Notification_box_txt:{
+        textAlign:"center",
+        color:"#fff",
+    },
 });
