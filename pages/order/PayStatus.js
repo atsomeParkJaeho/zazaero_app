@@ -63,7 +63,7 @@ function PayStatus({route, navigation}) {
                     val.ord_status === 'pay_err'
                 );
                 console.log('결제완료만 / ',temp);
-                setOrderList(temp);
+                return setOrderList(temp);
             } else {
                 console.log('에러');
             }
@@ -80,18 +80,18 @@ function PayStatus({route, navigation}) {
             <View style={[bg_white]}>
                 <View style={[styles.Order]}>
                     <View style={[flex]}>
-                        <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('발주상태')}>
-                            <Text style={[styles.tab_txt]}>발주상태</Text>
+                        <TouchableOpacity style={[styles.wt_3, ]} onPress={()=>navigation.navigate('발주상태')}>
+                            <Text style={[styles.tab_txt,]}>발주상태</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.wt_3, active_link]} onPress={()=>navigation.navigate('결제상태')}>
-                            <Text style={[styles.tab_txt,active_txt]}>결제상태</Text>
+                            <Text style={[styles.tab_txt, active_txt]}>결제상태</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('배송상태')}>
                             <Text style={[styles.tab_txt]}>배송상태</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-                <ScrollView>
+                <ScrollView style={{backgroundColor:"#fff", height:"100%"}}>
                     <View style={[styles.bt, styles.bb]}>
                         <View>
                             {OrderList.map((val,idx)=>(

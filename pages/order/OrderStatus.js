@@ -79,7 +79,7 @@ function OrderStatus({route, navigation}) {
                         val.ord_status === 'order_doing' ||
                         val.ord_status === 'order_done'
                     )
-                    setOrderList(Order_status);
+                    return setOrderList(Order_status);
                 }
             } else {
                 console.log('에러');
@@ -92,86 +92,23 @@ function OrderStatus({route, navigation}) {
     },[Member, Update]);
 
 
-    // 클릭시 탭
-    const ChgStatus = (status) => {
-        setStatus(`${status}`);
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-            act_type        :"get_order_list",
-            login_status    :"Y",
-            mem_uid         :Member,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
-            const {result, A_gd_order} = res.data;
-            console.log(result);
-            if(result === 'OK') {
-                if(Status === 'order_status') {
-                    console.log(A_gd_order,'/ 데이터 추출 확인');
-                    if(status === 'order_status') {
-
-                        let Order_status = A_gd_order.filter(val=>
-                            val.ord_status === 'order_ready' ||
-                            val.ord_status === 'order_doing' ||
-                            val.ord_status === 'order_done'
-                        )
-                        return setOrderList(Order_status);
-                    }
-
-                    if(status === 'pay_status') {
-
-                        let Order_status = A_gd_order.filter(val=>
-                            val.ord_status === 'pay_ready' ||
-                            val.ord_status === 'pay_doing' ||
-                            val.ord_status === 'pay_done'
-                        )
-                        return setOrderList(Order_status);
-                    }
-
-                    if(status === 'deli_status') {
-
-                        let Order_status = A_gd_order.filter(val=>
-                            val.ord_status === 'deli_ready' ||
-                            val.ord_status === 'deli_doing' ||
-                            val.ord_status === 'deli_done'
-                        )
-                        return setOrderList(Order_status);
-                    }
-                }
-            } else {
-                console.log('에러');
-            }
-        });
-
-
-
-
-
-    }
-
-    console.log(Status);
-    // console.log(OrderList,' / 상태확인');
-
     return (
         <>
             <View style={[bg_white]}>
                 <View style={[styles.Order]}>
                     <View style={[flex]}>
-                        <TouchableOpacity style={[styles.wt_3, (Status === 'order_status') ? active_link:'']} onPress={()=>ChgStatus('order_status')}>
-                        {/*<TouchableOpacity style={[styles.wt_3, (active_link)]} onPress={()=>ChgStatus('order_status')}>*/}
-                        {/*    <Text style={[styles.tab_txt,active_txt]}>발주상태</Text>*/}
-                            <Text style={[styles.tab_txt,(Status === 'order_status') ? active_txt:'']}>발주상태</Text>
+                        <TouchableOpacity style={[styles.wt_3, active_link]} onPress={()=>navigation.navigate('발주상태')}>
+                            <Text style={[styles.tab_txt,active_txt]}>발주상태</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.wt_3, (Status === 'pay_status') ? active_link:'']} onPress={()=>ChgStatus('pay_status')}>
-                            <Text style={[styles.tab_txt,(Status === 'pay_status') ? active_txt:'']}>결제상태</Text>
+                        <TouchableOpacity style={[styles.wt_3, ]} onPress={()=>navigation.navigate('결제상태')}>
+                            <Text style={[styles.tab_txt,]}>결제상태</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.wt_3, (Status === 'deli_status') ? active_link:'']} onPress={()=>ChgStatus('deli_status')}>
-                            <Text style={[styles.tab_txt,(Status === 'deli_status') ? active_txt:'']}>배송상태</Text>
+                        <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('배송상태')}>
+                            <Text style={[styles.tab_txt]}>배송상태</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-                <ScrollView>
+                <ScrollView style={{backgroundColor:"#fff", height:"100%"}}>
                     <View style={[styles.bt, styles.bb]}>
                         <View>
                              {OrderList.map((val,idx)=>(

@@ -177,6 +177,8 @@ export default function OrderForm({route,navigation}) {
             ...OrderData,
             [keyValue]:e,
         });
+
+
     }
 
 
