@@ -9,15 +9,16 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    KeyboardAvoidingView,
+    KeyboardAvoidingView, Pressable,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
 // 공통 CSS 추가
-import {container, bg_white, flex_between, flex, input, pe2, pos_center, ios_pb} from '../../common/style/AtStyle';
+import {container, bg_white, flex_between, flex, input, pe2, pos_center, ios_pb, mt2} from '../../common/style/AtStyle';
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
 
 import {AddrMatch, BankCode, EmailDomain, } from "../../util/util";
+import CameraIcon from "../../icons/camera_icon.svg";
 
 
 export default function MemInfo({route, navigation}) {
@@ -35,6 +36,7 @@ export default function MemInfo({route, navigation}) {
         com_name: "",               // 업체명
         com_biz_no: "",             // 사업자 등록번호
         mem_name: "",               // 담당자명
+        rank_name:"",               // 직급
         mem_mobile: "",             // 담당자 연락처
         mem_email1: "",             // 담당자 이메일1
         mem_email2: "",             // 담당자 이메일2
@@ -52,23 +54,8 @@ export default function MemInfo({route, navigation}) {
         pay_bank_code:"",           //은행코드
         pay_bank_no: "",            // 계좌번호
         pay_bank_owner: "",         // 예금주
-    //
-
-
-
-
-
-
-        
-
-        privacy_1       :false,            // 약관
-        privacy_2       :false,            // 개인정보처리방침
-        privacy_3       :false,            // 정보수집
-        privacy_4       :false,            // 홍보 및 마케팅
-        privacy_5       :false,            // 전자금율거래이용약관
         img_file1       :'',            // 사업자등록증 사본
         img_file2       :'',            // 통장사본
-        //
         mem_id_chk      :'N',           // 회원아이디 체크
 
         all_chk         :false,
@@ -97,8 +84,9 @@ export default function MemInfo({route, navigation}) {
                 <ScrollView style={[bg_white]}>
 
                     <View style={[styles.MemInfo]}>
+                        <Text style={styles.MemInfo_txt}>비밀번호 변경</Text>
                         <View style={styles.container}>
-                            <Text style={styles.MemInfo_txt}>비밀번호 변경</Text>
+
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>비밀번호</Text>
@@ -122,10 +110,10 @@ export default function MemInfo({route, navigation}) {
                             {/*============ 변경 비밀번호 ============ */}
                         </View>
 
-                        <View style={[gray_bar]}/>
 
+                        <Text style={styles.MemInfo_txt}>기본정보 변경</Text>
                         <View style={styles.container}>
-                            <Text style={styles.MemInfo_txt}>필수정보 변경</Text>
+
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>지역</Text>
@@ -163,40 +151,37 @@ export default function MemInfo({route, navigation}) {
                             {/*============ 업체명 ============ */}
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
-                                    <Text style={styles.inputTopText}>사업자 등록번호</Text>
-                                    <TextInput style={[input]}
-                                               maxLength={15}
-                                               onChangeText={(com_biz_no) => ChkInput("com_biz_no", com_biz_no)}
-                                               placeholder="12345-51-687891"
-                                               value={MemInfo.com_biz_no}/>
+                                    <Text style={styles.inputTopText}>담당자명 / 직급</Text>
+                                    <View style={flex}>
+                                        <View style={[styles.flex_item_4_half]}>
+                                            <TextInput style={[input]}
+                                                       onChangeText={(mem_name) => ChkInput("mem_name", mem_name)}
+                                                       placeholder="홍길동"
+                                                       value={MemInfo.mem_name}/>
+                                        </View>
+                                        <View style={[styles.flex_item_1]}>
+                                            <Text style={styles.txt_center}>/</Text>
+                                        </View>
+                                        <View style={[styles.flex_item_4_half]}>
+                                            <TextInput style={[input]}
+                                                       onChangeText={(rank_name) => ChkInput("rank_name", rank_name)}
+                                                       placeholder="과장"
+                                                       value={MemInfo.rank_name}/>
+                                        </View>
+                                    </View>
                                 </View>
                             </View>
-                            {/*============ 사업자 등록번호 ============ */}
-                            <View style={styles.formGroup}>
-                                <View style={styles.inputGroup}>
-                                    <Text style={styles.inputTopText}>담당자명</Text>
-                                    <TextInput style={[input]}
-                                               onChangeText={(mem_name) => ChkInput("mem_name", mem_name)}
-                                               placeholder=""
-                                               value={MemInfo.mem_name}/>
-                                </View>
-                            </View>
-                            {/*============ 담당자 연락처 ============ */}
+                            {/*============ 담당자명 / 직급 ============ */}
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>담당자 연락처</Text>
                                     <TextInput style={[input]}
                                                onChangeText={(mem_mobile) => ChkInput("mem_mobile", mem_mobile)}
-                                               placeholder=""
+                                               placeholder="010-1234-5678"
                                                value={MemInfo.mem_mobile}/>
                                 </View>
                             </View>
                             {/*============ 담당자 연락처 ============ */}
-                        </View>
-
-                        <View style={[gray_bar]}/>
-                        <View style={styles.container}>
-                            <Text style={styles.MemInfo_txt}>선택정보 입력/변경</Text>
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>담당자 이메일</Text>
@@ -213,7 +198,7 @@ export default function MemInfo({route, navigation}) {
                                         <View style={[styles.flex_item, styles.flex_item3]}>
                                             <View style={[styles.select_box]}>
                                                 <RNPickerSelect
-                                                     placeholder={{label: "직접입력", value: null}}
+                                                    placeholder={{label: "직접입력", value: null}}
                                                     onValueChange={(mem_email2) => ChkInput('mem_email2', mem_email2)}
                                                     items={EmailDomain}
                                                     useNativeAndroidPickerStyle={false}
@@ -235,6 +220,67 @@ export default function MemInfo({route, navigation}) {
                                 </View>
                             </View>
                             {/*============ 담당자 이메일 ============ */}
+                            <View style={styles.formGroup}>
+                                <Text style={styles.inputTopText}>팩스번호</Text>
+                                <TextInput style={[input]}
+                                           onChangeText={(com_fax) => ChkInput("com_fax", com_fax)}
+                                           placeholder=""
+                                           value={MemInfo.com_fax}/>
+                            </View>
+                            {/*============ 팩스번호 ============ */}
+
+
+
+
+                        </View>
+
+                        <Text style={styles.MemInfo_txt}>사업자 정보</Text>
+                        <View style={styles.container}>
+                            <View style={styles.formGroup}>
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.inputTopText}>사업자 등록번호</Text>
+                                    <TextInput style={[input]}
+                                               maxLength={15}
+                                               onChangeText={(com_biz_no) => ChkInput("com_biz_no", com_biz_no)}
+                                               placeholder="12345-51-687891"
+                                               value={MemInfo.com_biz_no}/>
+                                </View>
+                            </View>
+                            {/*============ 사업자 등록번호 ============ */}
+                            <View style={styles.formGroup}>
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.inputTopText}>업태/종목</Text>
+                                    <View style={flex}>
+                                        <View style={[styles.flex_item_4_half]}>
+                                            <TextInput style={[input]}
+                                                       onChangeText={(biz_cate) => ChkInput("biz_cate", biz_cate)}
+                                                       placeholder=""
+                                                       value={MemInfo.biz_cate}/>
+                                        </View>
+                                        <View style={[styles.flex_item_1]}>
+                                            <Text style={styles.txt_center}>/</Text>
+                                        </View>
+                                        <View style={[styles.flex_item_4_half]}>
+                                            <TextInput style={[input]}
+                                                       onChangeText={(biz_item) => ChkInput("biz_item", biz_item)}
+                                                       placeholder=""
+                                                       value={MemInfo.biz_item}/>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                            {/*============ 업태/종목 ============ */}
+                            <View style={styles.formGroup}>
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.inputTopText}>상호명</Text>
+                                    <TextInput style={[input]}
+                                               onChangeText={(ceo_name) => ChkInput("ceo_name", ceo_name)}
+                                               placeholder=""
+                                               value={MemInfo.ceo_name}/>
+                                </View>
+                            </View>
+                            {/*============ 상호명 ============ */}
+
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>대표자명</Text>
@@ -282,42 +328,6 @@ export default function MemInfo({route, navigation}) {
                             </View>
                             {/*============ 사업장 주소 ============ */}
                             <View style={styles.formGroup}>
-                                <View style={styles.inputGroup}>
-                                    <Text style={styles.inputTopText}>업태/종목</Text>
-                                    <View style={flex}>
-                                        <View style={[styles.flex_item_4_half]}>
-                                            <TextInput style={[input]}
-                                                       onChangeText={(biz_cate) => ChkInput("biz_cate", biz_cate)}
-                                                       placeholder=""
-                                                       value={MemInfo.biz_cate}/>
-                                        </View>
-                                        <View style={[styles.flex_item_1]}>
-                                            <Text style={styles.txt_center}>/</Text>
-                                        </View>
-                                        <View style={[styles.flex_item_4_half]}>
-                                            <TextInput style={[input]}
-                                                       onChangeText={(biz_item) => ChkInput("biz_item", biz_item)}
-                                                       placeholder=""
-                                                       value={MemInfo.biz_item}/>
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                            {/*업태/종목 입력창*/}
-                            {/*<View style={styles.formGroup}>*/}
-                            {/*    <Text style={styles.inputTopText}>대표전화번호</Text>*/}
-                            {/*    <TextInput style={[input]}  placeholder=""   value=""/>*/}
-                            {/*</View>*/}
-                            {/*대표전화번호 입력창*/}
-                            <View style={styles.formGroup}>
-                                <Text style={styles.inputTopText}>팩스번호</Text>
-                                <TextInput style={[input]}
-                                           onChangeText={(com_fax) => ChkInput("com_fax", com_fax)}
-                                           placeholder=""
-                                           value={MemInfo.com_fax}/>
-                            </View>
-                            {/*팩스번호 입력창*/}
-                            <View style={styles.formGroup}>
                                 <Text style={styles.inputTopText}>세금계산서 이메일</Text>
                                 <View style={flex}>
                                     <View style={[styles.flex_item, styles.flex_item1]}>
@@ -351,7 +361,8 @@ export default function MemInfo({route, navigation}) {
                                     </View>
                                 </View>
                             </View>
-                            {/*세금계산서 이메일 입력창*/}
+                            {/*============ 세금계산서 이메일 ============ */}
+
                             <View style={styles.formGroup}>
                                 <Text style={styles.inputTopText}>계좌번호</Text>
                                 <View style={flex}>
@@ -383,7 +394,8 @@ export default function MemInfo({route, navigation}) {
                                     </View>
                                 </View>
                             </View>
-                            {/*계좌번호 입력창*/}
+                            {/*============ 계좌번호 ============ */}
+
                             <View style={styles.formGroup}>
                                 <Text style={styles.inputTopText}>예금주명</Text>
                                 <TextInput style={[input]}
@@ -391,12 +403,42 @@ export default function MemInfo({route, navigation}) {
                                            placeholder=""
                                            value={MemInfo.pay_bank_owner}/>
                             </View>
-                            {/*예금주명 입력창*/}
-                            {/*<View style={styles.formGroup}>*/}
-                            {/*    <Text style={styles.inputTopText}>사업자 등록증 이미지</Text>*/}
-                            {/*    <TextInput style={[input]}  placeholder=""  value=""/>*/}
-                            {/*</View>*/}
-                            {/*사업자 등록증 이미지 입력창*/}
+                            {/*============ 예금주명 ============ */}
+
+                            <View style={styles.formGroup}>
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.inputTopText}>사업자 등록증</Text>
+
+                                    <Pressable style={[styles.upload_btn]}>
+                                        <View  style={[pos_center]} >
+                                            <CameraIcon width={30} height={24}/>
+                                        </View>
+                                    </Pressable>
+                                    <View  style={[mt2,styles.upload_box]} >
+                                        <Image style={styles.upload_img}/>
+                                    </View>
+
+                                </View>
+                            </View>
+                            {/*============ 사업자 등록증 ============ */}
+
+                            <View style={styles.formGroup}>
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.inputTopText}>통장사본</Text>
+
+                                    {/*<Pressable style={[styles.upload_btn]} onPress={(CopyBankbook=>uploadImage('CopyBankbook',CopyBankbook))}>*/}
+                                    {/*    <View  style={[pos_center]} >*/}
+                                    {/*        <CameraIcon width={30} height={24}/>*/}
+                                    {/*    </View>*/}
+                                    {/*</Pressable>*/}
+                                    <View  style={[mt2,styles.upload_box]} >
+                                        {/*<Image style={styles.upload_img} source={{uri: imageUrl.CopyBankbook}}/>*/}
+                                    </View>
+
+                                </View>
+                            </View>
+                            {/*============ 통장사본 ============ */}
+
                         </View>
                     </View>
                 </ScrollView>
@@ -424,11 +466,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     MemInfo_txt: {
+        width:"100%",
         fontSize: 14,
         fontWeight: "600",
         lineHeight: 22,
         color: "#222",
-        paddingBottom: 20,
+        marginBottom: 20,
+        paddingVertical:6,
+        paddingLeft:16,
+        backgroundColor:'#eee',
     },
 
     container: {
