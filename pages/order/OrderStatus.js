@@ -51,13 +51,9 @@ function OrderStatus({route, navigation}) {
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
-    const [Status, setStatus] = useState('order_status');     // 발주상태, 결제상태, 배송상태정의
-    // const [OrderStatus, setOrderList] = useState([]);       // 발주상태 리스트
-    // const [PayStatus, setPayStatus]     = useState([]);       // 결제상태 리스트
-    // const [DeliStatus, setDeliStatus]   = useState([]);       // 배송상태 리스트
     const Update = useIsFocused();
     console.log('전달 2값 / ',Member);
-    const [OrderList, setOrderList] = useState(order_List);     // 발주내역 출력
+    const [OrderList, setOrderList] = useState([]);     // 발주내역 출력
     useEffect(()=>{
         // ======================= db 연결용==================//
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
@@ -69,18 +65,17 @@ function OrderStatus({route, navigation}) {
                 'Content-type': 'multipart/form-data'
             }
         }).then((res)=>{
-            const {result, A_gd_order} = res.data;
+            const {result, A_gd_order, query} = res.data;
             console.log(result);
             if(result === 'OK') {
-                if(Status === 'order_status') {
-                    console.log(A_gd_order,'/ 데이터 추출 확인');
-                    let Order_status = A_gd_order.filter(val=>
-                        val.ord_status === 'order_ready' ||
-                        val.ord_status === 'order_doing' ||
-                        val.ord_status === 'order_done'
-                    )
-                    return setOrderList(Order_status);
-                }
+                console.log(A_gd_order);
+                console.log(query);
+                let Order_status = A_gd_order.filter(val=>
+                    val.ord_status === 'order_ready' ||
+                    val.ord_status === 'order_doing' ||
+                    val.ord_status === 'order_done'
+                )
+                return setOrderList(Order_status);
             } else {
                 console.log('에러');
             }
@@ -90,6 +85,9 @@ function OrderStatus({route, navigation}) {
 
 
     },[Member, Update]);
+
+
+    console.log(OrderList,' / 리스트2');
 
 
     return (
@@ -111,6 +109,7 @@ function OrderStatus({route, navigation}) {
                 <ScrollView style={{backgroundColor:"#fff", height:"100%"}}>
                     <View style={[styles.bt, styles.bb]}>
                         <View>
+
                              {OrderList.map((val,idx)=>(
                                  <>
                                      <View style={[styles.order_list_items]} key={idx}>

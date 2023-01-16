@@ -61,7 +61,7 @@ function Cate2nd({uid,navigation,name}) {
             }
         });
     }, []);
-    //console.log(Cate2nd);
+    console.log(Cate2nd,' / 2차 카테고리2');
     if(Cate2nd !== null) {
         return (
             <>
@@ -116,7 +116,7 @@ export default function MainPage({navigation, route}) {
         }).catch((err) => console.log(err));
     }, []);
 
-    console.log('1차 카테고리', Cate1st);
+    // console.log('1차 카테고리', Cate1st);
 
     return (
         /*
@@ -155,10 +155,6 @@ export default function MainPage({navigation, route}) {
                     timer={1000}
                     indicatorContainerStyle={{top: 0}}
                 />
-
-
-
-
                 <List.AccordionGroup
                     onAccordionPress={(id)=>setExpend(id)}
                     expandedId={expend}

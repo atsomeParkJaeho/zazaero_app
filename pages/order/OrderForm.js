@@ -44,10 +44,10 @@ import {RadioButton} from "react-native-paper";  // language must match config
 import Postcode from '@actbase/react-daum-postcode';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import {AddrMatch, Phone, Time, Time1, Time2} from "../../util/util";
+import {AddrMatch, Phone, Price, Time, Time1, Time2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import RNPickerSelect from "react-native-picker-select";
-import SelectBox from "react-native-multi-selectbox";
+// import SelectBox from "react-native-multi-selectbox";
 
 
 
@@ -56,31 +56,67 @@ export default function OrderForm({route,navigation}) {
 
     console.log('확인1 / ',route.params.order_uid);
     // 유효성 검사
-
     const {order_uid, zonecode, addr1} = route.params;
+    
+    // 카트 정보
+    let Cart = order_uid.map(key=>key.map(val=>val.order_uid));
+    let temp = Cart.reduce((val,idx)=>{
+        return val.concat(idx);
+    });
+    console.log(temp,' / 배열 ');
+    console.log(Cart,' / 배열 ');
+
     const [Member, setMember] = useState();
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
     const ChkFocus = useRef([]);
-    const Update = useIsFocused();
+    const Update   = useIsFocused();
     console.log('전달 2값 / ',Member);
     console.log('우편번호 / ',zonecode);
+    console.log('일반주소 / ',addr1);
 
     // 1-1 나의 장바구니 리스트 출력
+    /**---------------------결제 합계-----------------**/
+    let goodsprice = 0;
+    let price = order_uid.map((key)=>key.map(val=>val.sum_order_price));
+    let total = price.reduce((val,idx)=>{
+        return val.concat(idx);
+    });
+    for (let i = 0; i < total.length; i++) {
+        goodsprice += total[i];
+    }
+    console.log(total.length,'/ 합계수');
+    console.log(total,'/ 금액');
+    console.log(goodsprice,'/ 금액');
+    /**-----------------------결제금액---------------**/
+
+    /**---------------------자재 수량 합계-----------------**/
+    let goods_cnt = 0;
+    let items_cnt = order_uid.map((key)=>key.map(val=>val.order_item_cnt));
+    let item      = items_cnt.reduce((val,idx)=>{
+        return val.concat(idx);
+    });
+    for (let i = 0; i < item.length; i++) {
+        goods_cnt += item[i];
+    }
+    console.log(items_cnt,'/ 아이템 배열');
+    console.log(goods_cnt,'/ 합계수량');
+
+    /**-----------------------결제금액---------------**/
+
 
     // 1. 주문정보 상태 설정
     // const [CartList, setCartList] = useState([]);
     const [modAddr,       setmodAddr]              = useState('add');  // 최근배송지, 신규배송지 상태정의
-    const [mem_info,      set_mem_info]            = useState([]);
     const [OrderTitle,    setOrderTitle]           = useState([]);    // 최근배송지 가져오기
     const [Selected,      setSelected]             = useState([]);    // 최근배송지 가져오기
-    const [Select, setSelect]                      = useState([]);
+    const [Select,        setSelect]               = useState([]);
     const [OrderData, setOrderDate]                = useState({
         act_type                    :"ins_order",           // 주문추가하기 로직
         order_uid                   :order_uid,             // 주문번호
         login_status                :"Y",
-        A_order_uid                 :order_uid,
+        A_order_uid                 :temp,
         mgr_mem_uid                 :Member,
         mem_uid                     :Member,                // 회원 uid
         order_mem_name              :'',                    // 주문자명  / 담당자명
@@ -102,6 +138,9 @@ export default function OrderForm({route,navigation}) {
         deli_mem_mobile             :'',                    // 배송자 전화번호
         make_price                  :'',                    // 제작비
         hope_opt_price              :'',                    // 옵션요청비
+        tot_order_price             :goodsprice,            // 상품합계
+        settleprice                 :goodsprice,            // 상품합계
+
     });
     const [Hope, setHope]           = useState({
         hopeDate    :'',
@@ -111,36 +150,6 @@ export default function OrderForm({route,navigation}) {
 
     /**=============================상태 출력==========================**/
     useEffect(()=>{
-
-        /**=================================================================================**/
-        axios.get('http://49.50.162.86:80/ajax/UTIL_mem_info.php', {
-            params: {
-                act_type : "my_page",
-                mem_uid  : Member,
-            }
-        }).then((res) => {
-            if(res) {
-                const {result, test, mem_info} = res.data;
-                if(result === 'OK') {
-                    console.log('정상2');
-                    // set_mem_info(mem_info);
-                    setOrderDate({
-                        ...OrderData,
-                        order_mem_name      :mem_info.mem_name,
-                        order_mem_mobile    :mem_info.mem_mobile,
-                    })
-                }
-                if(result === 'NG') {
-                    console.log('비정상');
-                }
-            }
-        });
-        /**=============================1. 최근 입력한 공사명을 가져온다==========================**/
-
-        /**===========================2. 장바구니 정보를 가져온다==========================**/
-
-
-
 
         /**=========================3. 다음api로 가져온 정보 에러 방지용==========================**/
         // 주소입력시 업데이트
@@ -152,7 +161,7 @@ export default function OrderForm({route,navigation}) {
             addr1           :addr1,
         });
 
-    },[Member, Update]);
+    },[Update]);
 
     // console.log(CartList,'/ 장바구니 상품');
 
@@ -175,6 +184,8 @@ export default function OrderForm({route,navigation}) {
 
         setOrderDate({
             ...OrderData,
+            mem_uid         :Member,
+            mgr_mem_uid     :Member,
             [keyValue]:e,
         });
 
@@ -234,6 +245,10 @@ export default function OrderForm({route,navigation}) {
                 {
                     text: '확인 ',
                     onPress: () => {
+
+
+                        /**---------------------------------------------------------------------------**/
+                        /**---------------------------------------------------------------------------**/
                         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',OrderData,{
                             headers: {
                                 'Content-type': 'multipart/form-data'
@@ -259,6 +274,7 @@ export default function OrderForm({route,navigation}) {
 
                             }
                         });
+                        /**---------------------------------------------------------------------------**/
                     },
                     style: 'cancel',
                 },
@@ -271,9 +287,9 @@ export default function OrderForm({route,navigation}) {
 
     }
 
-
     console.log('주문정보2     / ',OrderData);
-    console.log('회원정보2      / ',mem_info);
+
+
 
     return (
         <>
@@ -503,7 +519,10 @@ export default function OrderForm({route,navigation}) {
                                     </TouchableWithoutFeedback>
                                 </View>
                             </View>
-
+                        </View>
+                        {/*--------------------------------총 금액--------------------------------*/}
+                        <View>
+                            <Text>{Price(goodsprice)}원</Text>
                         </View>
                     </View>
                 </ScrollView>

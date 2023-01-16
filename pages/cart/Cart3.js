@@ -335,6 +335,7 @@ export default function Cart({route, navigation}) {
                                 title={cate.cfg_val1}
                                 key={idx}
                                 >
+
                                     <View style={[bg_white,container,{ borderBottomWidth: 1,borderColor:"#ddd"}]}>
                                         <View style={[flex,{justifyContent:"space-between",}]}>
                                             <View style={[d_flex]}>

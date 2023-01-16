@@ -371,8 +371,7 @@ export default function Cart({route, navigation}) {
                                                                     </TouchableOpacity>
                                                                 </View>
                                                                 {/*=============상품상세정보===============*/}
-                                                                <View
-                                                                    style={[flex]}>
+                                                                <View style={[flex]}>
                                                                     <View style={[styles.flex_items, styles.flex_items1]}>
                                                                         <Image
                                                                             style={styles.cart_goods_img}
