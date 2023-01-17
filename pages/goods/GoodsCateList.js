@@ -45,7 +45,6 @@ export default function GoodsCateList({route,navigation}) {
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
-
     let {Cate1stUid, Cate2ndUid, name} = route.params; // 카테고리 uid
     console.log(Cate1stUid);
     console.log(Cate2ndUid);
@@ -378,7 +377,7 @@ export default function GoodsCateList({route,navigation}) {
                         }
                     </View>
                     {/*2차카테고리 메뉴 선택*/}
-                    <ScrollView>
+                    <ScrollView style={{marginBottom:100,}}>
                         {/*========================자재목록 출력(반복문)====================*/}
                         {GoodsList.map((val, idx) => (
                             <View style={[]} key={idx}>
@@ -438,8 +437,11 @@ export default function GoodsCateList({route,navigation}) {
                                                 </View>
                                             </View>
                                             <View style={styles.flex_bottom}>
+                                                {/*-----------------------------가이드 안내-----------------------------*/}
                                                 <View style={[wt7]}>
-                                                    <Text style={styles.cate_list_disc} numberOfLines={1}>4일 이내로 발주가능합니다.</Text>
+                                                    <Text style={styles.cate_list_disc} numberOfLines={1}>
+                                                        {(val.goods_guide_name) ? val.goods_guide_name:''}
+                                                    </Text>
                                                 </View>
                                                 <View style={[wt3]}>
                                                     <Text style={[styles.cate_list_price,text_right]}>{Price(val.price)}원</Text>
@@ -451,20 +453,22 @@ export default function GoodsCateList({route,navigation}) {
                                 </View>
                             </View>
                         ))}
+                        {/*<View style={{paddingBottom:100}}><Text></Text></View>*/}
                     </ScrollView>
 
+
                 </View>
+
             </View>
 
             <Footer navigation={navigation}/>
             {/*========상품즐겨찾기 체크시=========*/}
-            <View style={[styles.wish]}>
-                <View style={[styles.wish_box,flex]}>
-                    <Wishlist width={35} height={24} color={'blue'}/>
-                    <Text style={styles.wish_box_txt} >즐겨찾기에 추가되었습니다.</Text>
-                </View>
-
-            </View>
+            {/*<View style={[styles.wish]}>*/}
+            {/*    <View style={[styles.wish_box,flex]}>*/}
+            {/*        <Wishlist width={35} height={24} color={'blue'}/>*/}
+            {/*        <Text style={styles.wish_box_txt} >즐겨찾기에 추가되었습니다.</Text>*/}
+            {/*    </View>*/}
+            {/*</View>*/}
             {/*========상품체크시 노출=========*/}
             {(goForm.length > 0) ? (
                 <>

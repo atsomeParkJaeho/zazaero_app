@@ -51,19 +51,16 @@ import {OnlyNum, Price} from "../../util/util";
 // 장바구니 레이아웃 출력
 export default function Cart({route, navigation}) {
 
-    const [Member, setMember] = useState();
-    const [CartUid, setCartUid] = useState([]);
+    const [Member, setMember]        = useState();
+    const [CartUid, setCartUid]      = useState([]);
+    const [CartList, setCartList]    = useState([]);           // 장바구니 1차 카테고리 출력
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
-    console.log('회원코드 1 / ', Member);
     const Update = useIsFocused();
-    // ========================1. 상태 설정===============
-    const [CartList, setCartList]    = useState([]);           // 장바구니 1차 카테고리 출력
-    const [checked, setChecked]      = useState(false);
-    // ====================2. 출력리스트===========
-    useEffect(() => {
 
+
+    useEffect(() => {
         // //====================장바구니 목록을 출력=================///
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
             act_type        : "get_cart_list_new",
@@ -138,6 +135,7 @@ export default function Cart({route, navigation}) {
         }));
     }
 
+    /**--------------------------체크시 배송정보등록 버튼 활성화----------------------------------**/
     const goFormChk = (uid, cate) => {
         if(cate) {
             setCartUid(cate); // 카테고리 넣기
@@ -159,54 +157,22 @@ export default function Cart({route, navigation}) {
     const goOrderForm = () => {
         let test = list.map((key)=>key.map(val=>{
             if(val.cate_name !== CartUid) {
-                Alert.alert('','중복 카테고리만 가능합니다.');
+                // Alert.alert('','중복 카테고리만 가능합니다.');
                 return false;
             } else {
-                return console.log('test');
-                // return navigation.navigate('배송정보등록',{order_uid:list});
+                // return true;
+                // return console.log('test');
+                return navigation.navigate('배송정보등록',{order_uid:list});
             }
         }));
-        if(test.indexOf())
+        // let result = test.includes(true);
+        
+        
         console.log(test,'/ 테스트');
+        console.log(result,'/ 확인');
     }
 
-    // ====================9. 선택 삭제==============
-    const chkDel = () => {
-        console.log('test');
-        // 1. 체크한 상품만 필터링
-        let goForm = CartList.filter((val) => {
-            const {order_uid} = val;
-            if (val.goods_chk === true) {
-                axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
-                    act_type        : "del_cart",
-                    login_status    : "Y",
-                    mem_uid         : Member,
-                    A_order_uid     : {order_uid},
-                }, {
-                    headers: {
-                        'Content-type': 'multipart/form-data'
-                    }
-                }).then((res) => {
-                    if (res) {
-                        const {result} = res.data;
-                        if (result === 'OK') {
 
-                        } else {
-                            console.log('실패');
-                        }
-                    }
-                });
-            }
-        });
-        console.log('출력 / ', goForm);
-        let temp = CartList.map((val) => {
-            return {...val, goods_cart: !val.goods_cart,};
-        });
-        setCartList(temp);
-        Alert.alert('','상품을 삭제 하였습니다.');
-    }
-    console.log(CartList,'확인 3');
-    console.log(CartUid,'확인 2');
 
 
     /**===========================================선택상품 필터링==================================================**/
@@ -225,7 +191,9 @@ export default function Cart({route, navigation}) {
 
     console.log(cont,' / 확인');
     console.log(list,' / 123123123');
-
+    console.log(CartList,'확인 3');
+    console.log(CartUid,'확인 2');
+    console.log('회원코드 1 / ', Member);
     return (
         <>
             <ScrollView style={[bg_white]}>
@@ -237,6 +205,7 @@ export default function Cart({route, navigation}) {
                                 <>
                                     <List.Accordion style={[container,styles.Accordion_tit]} title={cate.cate_1st_name} key={idx}>
                                         {/*================================카테고리 상품 체크=====================*/}
+                                        {/*
                                         <View style={[bg_white,container,{ borderBottomWidth: 1,borderColor:"#ddd"}]}>
                                             <View style={[flex,{justifyContent:"space-between",}]}>
                                                 <View style={[d_flex]}>
@@ -252,6 +221,7 @@ export default function Cart({route, navigation}) {
                                                 </View>
                                             </View>
                                         </View>
+                                        */}
                                         {cate.A_goods_list.map(val=>(
                                             <>
                                                 {(val.goods_cart === false) && (

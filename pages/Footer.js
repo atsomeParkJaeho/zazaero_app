@@ -19,6 +19,7 @@ const styles = styleSheet.create({
     FooterWrap : {
         flexDirection:"row",
         position:"absolute",
+        // marginTop:100,
         left:0,
         bottom:0,
         backgroundColor:"#fff",

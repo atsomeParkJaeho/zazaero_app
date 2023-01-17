@@ -65,16 +65,26 @@ function Cate2nd({uid,navigation,name}) {
     if(Cate2nd !== null) {
         return (
             <>
-                {Cate2nd.map((val, idx) => (
-                    <>
-                        <View style={{width:"33%", paddingTop:20,}} key={idx}>
-                            <TouchableOpacity onPress={() => {navigation.navigate('상품목록',{Cate1stUid:uid, Cate2ndUid:val.ind_cfg_uid,name:name})}}>
-                                <Image style={styles.ct_img} source={require(`../assets/img/main_0.png`)}/>
-                                <Text style={styles.Accordion_items_link_txt}>{val.cfg_val1}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </>
-                ))}
+                {Cate2nd.map((val, idx) => {
+                    let img_src = 'http://zazaero.com'+val.img_src;
+                    console.log(img_src,'/ 이미지 경로');
+                    return(
+                        <>
+                            <View style={{width: "33%", paddingTop: 20,}} key={idx}>
+                                <TouchableOpacity onPress={() => {
+                                    navigation.navigate('상품목록', {Cate1stUid: uid, Cate2ndUid: val.ind_cfg_uid, name: name})
+                                }}>
+                                    {(img_src) &&
+                                    <Image style={styles.ct_img} source={{uri:img_src}}/>
+                                    }
+                                    {/*<Image style={styles.ct_img} source={req}/>*/}
+                                    <Text style={styles.Accordion_items_link_txt}>{val.cfg_val1}</Text>
+                                    <Text style={styles.Accordion_items_link_txt}>{val.ind_cfg_uid}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </>
+                    );
+                })}
             </>
         );
     }
@@ -222,12 +232,11 @@ export default function MainPage({navigation, route}) {
             </ScrollView>
             <Footer navigation={navigation}/>
             {/*========상품즐겨찾기 체크시=========*/}
-            <View style={[styles.Notification]}>
-                <View style={[styles.Notification_box]}>
-                    <Text style={styles.Notification_box_txt} >로그인 완료</Text>
-                </View>
-
-            </View>
+            {/*<View style={[styles.Notification]}>*/}
+            {/*    <View style={[styles.Notification_box]}>*/}
+            {/*        <Text style={styles.Notification_box_txt} >로그인 완료</Text>*/}
+            {/*    </View>*/}
+            {/*</View>*/}
         </>
     );
 }
