@@ -314,7 +314,9 @@ export default function GoodsSearchList({route,navigation}) {
                                     </View>
                                     <View style={styles.flex_bottom}>
                                         <View style="">
-                                            <Text style={styles.cate_list_disc}>4일 이내로 발주가능합니다.</Text>
+                                            <Text style={styles.cate_list_disc}>
+                                                {val.goods_guide_name}
+                                            </Text>
                                         </View>
                                         <View style="">
                                             <Text style={styles.cate_list_price}>{Price(val.price)}원</Text>

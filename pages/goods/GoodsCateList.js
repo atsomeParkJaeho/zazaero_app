@@ -292,37 +292,45 @@ export default function GoodsCateList({route,navigation}) {
 
     // 6. 장바구니 추가 이벤트
     const goCart = () => {
+
+
+        /**-----1. 장바구니 클릭한 상품 배열을 만든다.--------------**/
         let goForm = GoodsList.filter((val) => val.goods_cart_chk);
-        // 반복문
-        goForm.map(items=>(
-            axios.post('http://49.50.162.86:80/ajax/UTIL_cart.php',{
-                act_type            : 'save_cart',
-                goods_uid           : items.goods_uid,           // 상품 uid
-                mem_uid             : Member,                    // 회원 uid
-                ord_cnt             :  '1'
+        let goods_uid_list = "";
 
-            },{
-                headers: {
-                    'Content-type': 'multipart/form-data'
-                }
-            }).then((res)=>{
-                if(res) {
-                    const {result, order_uid} = res.data;
-                    console.log(result);
-                    if(result === 'OK') {
-                        console.log(order_uid);
-                    } else {
-                        console.log('실패');
-                        return;
-                    }
+        /**-----1. 장바구니 클릭한 상품 배열을 만든다.--------------**/
+        goForm.map(items=> {
+            if (goods_uid_list != "") {
+                goods_uid_list += ",";
+            }
+            goods_uid_list += items.goods_uid;
+        });
+
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+            act_type            :'ins_cart',
+            mem_uid             : Member,
+            goods_uid_list      : goods_uid_list,
+            ord_cnt             : 1,
+        },{
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            if(res) {
+                const {result, order_uid} = res.data;
+                console.log(result);
+                if(result === 'OK') {
+                    console.log(order_uid);
                 } else {
-
+                    console.log('실패');
+                    return;
                 }
-            })
-        ));
+            } else {
+
+            }
+        });
 
         navigation.navigate('장바구니');
-
     }
 
     // 체크한 상품 버튼 생성
@@ -411,13 +419,12 @@ export default function GoodsCateList({route,navigation}) {
                                                         <Text style={[styles.cate_2st_btn_txt,(val.goods_wish_chk) ? {color:"red"}:{color:"#000"}]} numberOfLines={1}>{val.goods_name}</Text>
                                                     </TouchableOpacity>
                                                 </View>
+                                                {/**----------------------장바구니------------------------------**/}
                                                 <View style={[wt2,d_flex,justify_content_end]}>
                                                     {(val.goods_cart_chk) ? (
                                                         // 체크시에 노출
                                                         <View style={[btn_circle, bg_primary]}>
-                                                            <Checkbox style={styles.btn_cart}
-                                                                      value={val.goods_cart_chk}
-                                                                      onValueChange={() => {goChk(val.goods_uid);}}/>
+                                                            <Checkbox style={styles.btn_cart} value={val.goods_cart_chk} onValueChange={() => {goChk(val.goods_uid);}}/>
                                                             <View style={{flex: 1,alignItems: "center",justifyContent: "center"}}>
                                                                 <Chk width={16} height={22}></Chk>
                                                             </View>
@@ -425,10 +432,7 @@ export default function GoodsCateList({route,navigation}) {
                                                     ) : (
                                                         // 체크가 없을시 노출
                                                         <View style={[btn_circle, bg_light]}>
-                                                            <Checkbox style={styles.btn_cart} value={val.goods_cart_chk}
-                                                                      onValueChange={() => {
-                                                                          goChk(val.goods_uid)
-                                                                      }}/>
+                                                            <Checkbox style={styles.btn_cart} value={val.goods_cart_chk} onValueChange={() => {goChk(val.goods_uid)}}/>
                                                             <View style={{flex: 1,alignItems: "center",justifyContent: "center"}}>
                                                                 <CartBag width={16} height={22}></CartBag>
                                                             </View>

@@ -144,6 +144,8 @@ export default function Cart({route, navigation}) {
         } else if(!cate) {
             setCartUid(''); // 카테고리 넣기
         }
+
+
         setCartList(CartList.map((cate) => {
             return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
                         if(val.goods_uid === uid) {
@@ -157,12 +159,26 @@ export default function Cart({route, navigation}) {
     /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
     const goOrderForm = () => {
         let test = list.map((key)=>key.map(val=>{
+
             if(val.cate_name !== CartUid) {
-                // Alert.alert('','중복 카테고리만 가능합니다.');
-                return false;
+                // ;
+                return Alert.alert('','중복 카테고리만 가능합니다.',[
+                    {
+                        text:'확인',
+                        onPress:()=>{
+                            // return console.log('중복값');
+                            return navigation.replace('장바구니');
+                        }
+                    }
+                ]);
             } else {
                 return navigation.navigate('배송정보등록',{order_uid:list});
             }
+
+
+            // else {
+            //
+            // }
         }));
         console.log(test,'/ 테스트');
         console.log(result,'/ 확인');
@@ -174,8 +190,14 @@ export default function Cart({route, navigation}) {
         console.log(uid,'/ 상품uid');
         console.log(type,'/ 이벤트 타입');
         console.log(value,'/ 값');
+
+
+
+
         /**----------------------------상품수량 플러스--------------------------**/
         if(type === 'plus') {
+
+            /**----------------------------상품수량 증가시 뷰화면에서도 적용--------------------------**/
             setCartList(CartList.map((cate) => {
                 return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
                         if(val.goods_uid === uid) {
@@ -185,6 +207,20 @@ export default function Cart({route, navigation}) {
                         }
                     })}
             }));
+            axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+                act_type        : "mod_cart",
+                order_uid       : uid,
+                mem_uid         : Member,
+                // cnt             :
+
+            },{
+                
+            }).then((res)=>{
+                const {result} = res.data;
+                if(result === 'OK') {
+                    
+                }
+            });
         }
         /**----------------------------상품수량 마이너스--------------------------**/
         if(type === 'minus') {
@@ -217,11 +253,7 @@ export default function Cart({route, navigation}) {
 
 
     /**---------------------------------선택한상품 체크 필터링----------------------------------------**/
-    let result = CartList.map(cate=>cate.A_goods_list.map(val=>{
-       if(val.goods_chk) {
-           return val;
-       }
-    }));
+
 
     let list      = CartList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
     let arr       = list.map(val=>val.length);
@@ -231,13 +263,20 @@ export default function Cart({route, navigation}) {
     }
 
     let chk = CartList.map(val=>val.A_goods_list.map(key=>key));
-    console.log(chk);
+    let chk_option = CartList.map(val=>val.A_goods_list.map(key=>key.A_sel_option.map(op=>op.option_cnt)));
 
+
+
+    console.log(chk,' / 장바구니 상품확인');
+    console.log(chk_option,' / 장바구니 옵션상품 확인');
     console.log(cont,' / 확인');
     console.log(list,' / 123123123');
     console.log(CartList,'확인 3');
     console.log(CartUid,'확인 2');
     console.log('회원코드 1 / ', Member);
+
+
+
     return (
         <>
             <ScrollView style={[bg_white]}>
@@ -266,7 +305,10 @@ export default function Cart({route, navigation}) {
                                             </View>
                                         </View>
                                         */}
-                                        {cate.A_goods_list.map(val=>(
+                                        {cate.A_goods_list.map(val=>{
+                                            let goods_cnt = val.A_sel_option.map(cnt=>cnt.option_cnt);
+                                            console.log(goods_cnt);
+                                            return(
                                             <>
                                                 {(val.goods_cart === false) && (
                                                     <View key={val.ind_cfg_uid}
@@ -314,16 +356,14 @@ export default function Cart({route, navigation}) {
                                                                 <View style={[flex_between, styles.pd_20]}>
                                                                     {/*가이드라인*/}
                                                                     <View style="">
-                                                                        <Text style={styles.goods_disc}>
-                                                                            가이드라인
-                                                                            {val.goods_uid}
-                                                                            {val.A_order_uid}
+                                                                        <Text style={(val.goods_guide_name) && styles.goods_disc}>
+                                                                            {(val.goods_guide_name) && val.goods_guide_name}
                                                                         </Text>
                                                                     </View>
                                                                     {/*자재가격*/}
                                                                     <View style="">
                                                                         <Text style={styles.goods_price}>
-                                                                            {Price(val.sum_order_price * val.order_item_cnt)}원
+                                                                            {Price(val.sum_order_price)}원
                                                                         </Text>
                                                                     </View>
                                                                 </View>
@@ -345,12 +385,10 @@ export default function Cart({route, navigation}) {
                                                                         style={[countinput,]}
                                                                         keyboardType="number-pad"
                                                                         onChangeText={(order_item_cnt) => modCart(val.goods_uid, 'order_item_cnt', order_item_cnt)}
-                                                                        defaultValue={`${val.order_item_cnt}`}
-                                                                        value={val.order_item_cnt}
+                                                                        value={`${goods_cnt}`}
                                                                     />
                                                                     {/*=============플러스 버튼============*/}
-                                                                    <TouchableWithoutFeedback
-                                                                        onPress={() => modCart(val.goods_uid, 'plus')}>
+                                                                    <TouchableWithoutFeedback onPress={() => modCart(val.goods_uid, 'plus')}>
                                                                         <View
                                                                             style={[count_btn]}>
                                                                             <View
@@ -364,29 +402,28 @@ export default function Cart({route, navigation}) {
                                                             </View>
                                                         </View>
                                                         {/*==============옵션상품 입력란===============*/}
-                                                        <View style={[flex_between]}>
-                                                            <Text style={styles.Request_txt}>
-                                                                {/*{val.order_option}*/}
-                                                            </Text>
-                                                            <Switch
-                                                                onValueChange={() => CartOption(val.goods_uid)}
-                                                                value={val.goods_option_chk}
-                                                                trackColor={{
-                                                                    false: "#767577",
-                                                                    true: "#4630eb"
-                                                                }}
-                                                                ios_backgroundColor="#3e3e3e"
-                                                                style={[switch_bar]}
-                                                            />
-                                                        </View>
-                                                        {(val.goods_option_chk) && (
-                                                            <TextInput style={[textarea]} multiline={true} numberOfLines={4}/>
+                                                        {(val.cate_3rd_guide_name) && (
+                                                        <>
+                                                            <View style={[flex_between, {paddingTop:15,}]}>
+                                                                <Text style={styles.Request_txt}>
+                                                                    {val.cate_3rd_guide_name}
+                                                                </Text>
+                                                                <Switch onValueChange={() => CartOption(val.goods_uid)} value={val.goods_option_chk}
+                                                                    trackColor={{false: "#767577", true: "#4630eb"}}
+                                                                    ios_backgroundColor="#3e3e3e"
+                                                                    style={[switch_bar]}
+                                                                />
+                                                            </View>
+                                                            {(val.goods_option_chk) && (
+                                                                <TextInput style={[textarea]} multiline={true} numberOfLines={4}/>
+                                                            )}
+                                                        </>
                                                         )}
                                                     </View>
                                                 )}
-
                                             </>
-                                        ))}
+                                            );
+                                        })}
                                     </List.Accordion>
                                 </>
                             ))}

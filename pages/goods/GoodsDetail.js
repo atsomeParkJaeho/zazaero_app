@@ -57,12 +57,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function GoodsDetail({route,navigation}) {
 
+    let {uid} = route.params;
     const [Member, setMember] = useState();
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
 
-    let {uid} = route.params;
     console.log('넘어온값 : '+uid);
     // 수량 데이터 상태 임시
 
