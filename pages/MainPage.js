@@ -41,19 +41,20 @@ function Cate2nd({uid,navigation,name}) {
     console.log('제목 ',name);
     const [Cate2nd, setCate2nd] = useState([]);
     useEffect(() => {
-        let data = {
-            act_type: "goods_cate",
-            ind_cfg_uid: uid,
-        };
-        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php', data, {
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
+            act_type        :"get_cate_list",
+            depth           :"2",           // 2차 카테고리 추출
+            cate_1st_uid    :uid,
+            cate_2nd_img    :"Y",
+        }, {
             headers: {
                 'Content-type': 'multipart/form-data'
             }
         }).then((res) => {
             if (res) {
-                const {result, A_cate_2nd} = res.data;
+                const {result, A_cate} = res.data;
                 if (result === 'OK') {
-                    setCate2nd(A_cate_2nd);
+                    setCate2nd(A_cate);
                 } else {
                     console.log(result);
                     console.log('실패');
@@ -66,7 +67,7 @@ function Cate2nd({uid,navigation,name}) {
         return (
             <>
                 {Cate2nd.map((val, idx) => {
-                    let img_src = 'http://zazaero.com'+val.img_src;
+                    let img_src = 'http://zazaero.com'+val.cate_img;
                     console.log(img_src,'/ 이미지 경로');
                     return(
                         <>
@@ -79,7 +80,7 @@ function Cate2nd({uid,navigation,name}) {
                                     }
                                     {/*<Image style={styles.ct_img} source={req}/>*/}
                                     <Text style={styles.Accordion_items_link_txt}>{val.cfg_val1}</Text>
-                                    <Text style={styles.Accordion_items_link_txt}>{val.ind_cfg_uid}</Text>
+                                    {/*<Text style={styles.Accordion_items_link_txt}>{val.ind_cfg_uid}</Text>*/}
                                 </TouchableOpacity>
                             </View>
                         </>
@@ -94,31 +95,26 @@ function Cate2nd({uid,navigation,name}) {
 // 상품출력 페이지
 export default function MainPage({navigation, route}) {
 
-
     // 1. 1차 카테고리 추출
     const [Cate1st, setCate1st] = useState([]);   // 1차 카테고리 설정
     // 아코디언 설정
     const [expend, setExpend] = useState(`1`);
-    useEffect(()=>{
-        setExpend(`1`);
-    },[]);
 
     useEffect(() => {
-        const data = {
-            act_type: "goods_cate",
-        }
         // 포스트시에 header 셋팅 할것
-        axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php', data, {
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
+            act_type    :"get_cate_list",
+            depth       :"1",           // 1차 카테고리 추출
+        }, {
             headers: {
                 'Content-type': 'multipart/form-data'
             }
         }).then((res) => {
             if (res) {
-                const {result, A_cate_1st} = res.data;
+                const {result, A_cate} = res.data;
                 if (result === 'OK') {
                     // 1. 1차 카테고리를 담는다
-                    setCate1st(A_cate_1st);
-
+                    setCate1st(A_cate);
                 } else {
                     console.log('실패');
                 }
@@ -175,15 +171,14 @@ export default function MainPage({navigation, route}) {
                             <List.Accordion style={[styles.Accordion_tit]}
                             id={`${idx+1}`}
                             title={[val.cfg_val1]}
-                                            titleStyle={{font:50}}
+                            titleStyle={{font:50}}
                             key={val.ind_cfg_uid}
                             >
                                 {/*=================2차 카테고리===============*/}
                                 <View style={[styles.w3,d_flex,{flexWrap:"wrap"}]}>
-                                    <Cate2nd
-                                        navigation={navigation}
-                                        name={val.cfg_val1}
-                                        uid={val.ind_cfg_uid}
+                                    <Cate2nd navigation={navigation}
+                                    name={val.cfg_val1}
+                                    uid={val.ind_cfg_uid}
                                     />
                                 </View>
                             </List.Accordion>

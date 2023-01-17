@@ -60,6 +60,9 @@ export default function Cart({route, navigation}) {
     const Update = useIsFocused();
 
 
+
+
+    /**---------------------------------페이지 진입시 노출----------------------------------------**/
     useEffect(() => {
         // //====================장바구니 목록을 출력=================///
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
@@ -76,6 +79,7 @@ export default function Cart({route, navigation}) {
                 const {result,query ,A_order} = res.data;
                 if (result === 'OK') {
                     setCartList(A_order);
+                    console.log(query,'/ 쿼리');
                 } else {
                     console.log('실패');
                 }
@@ -86,7 +90,7 @@ export default function Cart({route, navigation}) {
 
 
 
-    // ==============3. 장바구니 삭제 설정=================
+    /**---------------------------------장바구니 해당상품 삭제----------------------------------------**/
     const delCart = (order_uid) => {
         console.log(order_uid)
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
@@ -117,11 +121,9 @@ export default function Cart({route, navigation}) {
                 }
             }
         });
-
-
     }
 
-    // ==============5. 옵션비 있을시 체크 설정==================
+    /**---------------------------------옵션요청사항 있을시 체크----------------------------------------**/
     const CartOption = (uid) => {
         setCartList(CartList.map((cate) => {
             return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
@@ -135,7 +137,7 @@ export default function Cart({route, navigation}) {
         }));
     }
 
-    /**--------------------------체크시 배송정보등록 버튼 활성화----------------------------------**/
+    /**---------------------------------체크시 배송정보 등록이동창 활성화----------------------------------------**/
     const goFormChk = (uid, cate) => {
         if(cate) {
             setCartUid(cate); // 카테고리 넣기
@@ -152,30 +154,69 @@ export default function Cart({route, navigation}) {
                     })}
         }));
     }
-
-    // ===================7. 클릭시 배송정보 입력란으로 이동==================
+    /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
     const goOrderForm = () => {
         let test = list.map((key)=>key.map(val=>{
             if(val.cate_name !== CartUid) {
                 // Alert.alert('','중복 카테고리만 가능합니다.');
                 return false;
             } else {
-                // return true;
-                // return console.log('test');
                 return navigation.navigate('배송정보등록',{order_uid:list});
             }
         }));
-        // let result = test.includes(true);
-        
-        
         console.log(test,'/ 테스트');
         console.log(result,'/ 확인');
     }
 
 
+    /**-----------------------------------------장바구니 상품 수량변경--------------------------------------------------**/
+    const modCart = (uid, type, value) => {
+        console.log(uid,'/ 상품uid');
+        console.log(type,'/ 이벤트 타입');
+        console.log(value,'/ 값');
+        /**----------------------------상품수량 플러스--------------------------**/
+        if(type === 'plus') {
+            setCartList(CartList.map((cate) => {
+                return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
+                        if(val.goods_uid === uid) {
+                            return {...val, order_item_cnt:Number(val.order_item_cnt) + 1}
+                        } else {
+                            return val;
+                        }
+                    })}
+            }));
+        }
+        /**----------------------------상품수량 마이너스--------------------------**/
+        if(type === 'minus') {
+            setCartList(CartList.map((cate) => {
+                return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
+                        if(val.goods_uid === uid) {
+                            return {...val, order_item_cnt:(val.order_item_cnt > 1) ? Number(val.order_item_cnt) - 1:1}
+                        } else {
+                            return val;
+                        }
+                    })}
+            }));
+        }
+        /**----------------------------상품수량 수기조절--------------------------**/
+        if(type === 'order_item_cnt') {
+            setCartList(CartList.map((cate) => {
+                return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
+                        if(val.goods_uid === uid) {
+                            return {...val, order_item_cnt:Number(value)}
+                        } else {
+                            return val;
+                        }
+                    })}
+            }));
+        }
+        
+    }
 
 
-    /**===========================================선택상품 필터링==================================================**/
+
+
+    /**---------------------------------선택한상품 체크 필터링----------------------------------------**/
     let result = CartList.map(cate=>cate.A_goods_list.map(val=>{
        if(val.goods_chk) {
            return val;
@@ -188,6 +229,9 @@ export default function Cart({route, navigation}) {
     for (let i = 0; i < arr.length; i++) {
         cont += arr[i];
     }
+
+    let chk = CartList.map(val=>val.A_goods_list.map(key=>key));
+    console.log(chk);
 
     console.log(cont,' / 확인');
     console.log(list,' / 123123123');
@@ -235,15 +279,19 @@ export default function Cart({route, navigation}) {
                                                                     value={val.goods_chk}
                                                                     style={styles.all_check}
                                                                     color={"#4630eb"}/>
-                                                                <TouchableOpacity
-                                                                    onPress={() => {
-                                                                        navigation.navigate('상품상세', {uid: val.goods_uid})
-                                                                    }}>
-                                                                    <Text numberOfLines={1} style={styles.all_check_txt}>
-                                                                        {val.goods_name}
+                                                                {/*숨김처리*/}
+                                                                <Checkbox
+                                                                    onValueChange={() => goFormChk(val.goods_uid,val.cate_name)}
+                                                                    value={val.goods_chk}
+                                                                    style={styles.chk_view}
+                                                                    color={"#4630eb"}
+                                                                />
 
-                                                                    </Text>
-                                                                </TouchableOpacity>
+                                                                <Text numberOfLines={1} style={styles.all_check_txt}>
+                                                                    {val.goods_name}
+
+                                                                </Text>
+
                                                             </View>
                                                             {/*=============삭제버튼============*/}
                                                             <TouchableOpacity
@@ -256,12 +304,11 @@ export default function Cart({route, navigation}) {
                                                             </TouchableOpacity>
                                                         </View>
                                                         {/*=============상품상세정보===============*/}
-                                                        <View
-                                                            style={[flex]}>
+                                                        <View style={[flex]}>
                                                             <View style={[styles.flex_items, styles.flex_items1]}>
-                                                                <Image
-                                                                    style={styles.cart_goods_img}
-                                                                    source={{uri: "http://49.50.162.86:80" + val.list_img_url}}/>
+                                                                <TouchableOpacity onPress={() => {navigation.navigate('상품상세', {uid: val.goods_uid})}}>
+                                                                    <Image style={styles.cart_goods_img} source={{uri: "http://49.50.162.86:80" + val.list_img_url}}/>
+                                                                </TouchableOpacity>
                                                             </View>
                                                             <View style={[styles.flex_items, styles.flex_items2]}>
                                                                 <View style={[flex_between, styles.pd_20]}>
@@ -275,8 +322,9 @@ export default function Cart({route, navigation}) {
                                                                     </View>
                                                                     {/*자재가격*/}
                                                                     <View style="">
-                                                                        <Text
-                                                                            style={styles.goods_price}>{Price(val.sum_order_price * val.order_item_cnt)}원</Text>
+                                                                        <Text style={styles.goods_price}>
+                                                                            {Price(val.sum_order_price * val.order_item_cnt)}원
+                                                                        </Text>
                                                                     </View>
                                                                 </View>
                                                                 <View style={[flex]}>
@@ -317,10 +365,9 @@ export default function Cart({route, navigation}) {
                                                         </View>
                                                         {/*==============옵션상품 입력란===============*/}
                                                         <View style={[flex_between]}>
-                                                            <Text
-                                                                style={styles.Request_txt}>이
-                                                                자재에 모델명, 제작관련 등 요청사항이
-                                                                있으신가요?</Text>
+                                                            <Text style={styles.Request_txt}>
+                                                                {/*{val.order_option}*/}
+                                                            </Text>
                                                             <Switch
                                                                 onValueChange={() => CartOption(val.goods_uid)}
                                                                 value={val.goods_option_chk}
@@ -465,4 +512,10 @@ const styles = StyleSheet.create({
     go_cart:{
         zIndex:100,
     },
+    chk_view:{
+        position:"absolute",
+        opacity:0,
+        zIndex: 10,
+        width:"100%",
+    }
 });

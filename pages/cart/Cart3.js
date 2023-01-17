@@ -221,7 +221,6 @@ export default function Cart({route, navigation}) {
             });
             setCartList(temp);
         }
-
     }
 
     // ==============5. 옵션비 있을시 체크 설정==================
