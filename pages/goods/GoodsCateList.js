@@ -338,6 +338,7 @@ export default function GoodsCateList({route,navigation}) {
         */
         <>
             <View style={[bg_white]}>
+
                 <View style={[styles.GoodsCateList]}>
                     {/*==================2차 카테고리 설정=================*/}
                     <ScrollView style={styles.cate_1st_list} horizontal indicatorStyle={"black"}>
@@ -377,7 +378,7 @@ export default function GoodsCateList({route,navigation}) {
                         }
                     </View>
                     {/*2차카테고리 메뉴 선택*/}
-                    <ScrollView style={{marginBottom:100,}}>
+                    <ScrollView style={[]}>
                         {/*========================자재목록 출력(반복문)====================*/}
                         {GoodsList.map((val, idx) => (
                             <View style={[]} key={idx}>
@@ -453,11 +454,13 @@ export default function GoodsCateList({route,navigation}) {
                                 </View>
                             </View>
                         ))}
-                        {/*<View style={{paddingBottom:100}}><Text></Text></View>*/}
+                        <View style={{paddingBottom:110}}><Text></Text></View>
+
                     </ScrollView>
 
 
                 </View>
+
 
             </View>
 
@@ -501,6 +504,9 @@ export default function GoodsCateList({route,navigation}) {
 }
 
 const styles = StyleSheet.create({
+    cate_1st_list:{
+      height:60,
+    },
     GoodsCateList:{
         paddingBottom: 300,
     },
