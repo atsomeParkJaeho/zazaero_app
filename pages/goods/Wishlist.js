@@ -35,7 +35,7 @@ import {
     bg_light,
     h13,
     text_primary,
-    justify_content_center, text_light, ms1
+    justify_content_center, text_light, ms1, padding_bottom
 } from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 
@@ -319,10 +319,11 @@ export default function Wishlist({route,navigation}) {
                         ))}
 
                     </List.Section>
-
+                    <View style={[styles.padding_bottom]} />
                 </View>
             </ScrollView>
             <Footer navigation={navigation}/>
+
             {/*========상품체크시 노출=========*/}
             {(goForm.length > 0) ? (
                 <>
@@ -356,6 +357,9 @@ export default function Wishlist({route,navigation}) {
 
 
 const styles = StyleSheet.create({
+    padding_bottom:{
+      paddingBottom:100,
+    },
     go_cart: {
         paddingBottom: 36,
         paddingTop: 7,
@@ -467,4 +471,5 @@ const styles = StyleSheet.create({
         position: "absolute",
         zIndex: 10,
     },
+
 });
