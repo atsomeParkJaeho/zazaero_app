@@ -63,7 +63,7 @@ export default function OrderForm({route,navigation}) {
     let temp = Cart.reduce((val,idx)=>{
         return val.concat(idx);
     });
-    console.log(temp,' / 배열 ');
+    console.log(temp,' / 배열 2');
     console.log(Cart,' / 배열 ');
 
     const [Member, setMember] = useState();
