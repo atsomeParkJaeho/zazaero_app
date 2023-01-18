@@ -234,7 +234,7 @@ export default function GoodsSearchList({route,navigation}) {
 
     return (
         <>
-            <ScrollView style={[styles.GoodsCateList, sub_page, min_height]}>
+            <ScrollView style={[styles.GoodsCateList,]}>
                 <View style={[flex,styles.flex_center,{paddingLeft:15,}]}>
                     <View style={[styles.search_input]}>
                         <TextInput style={[input,styles.input_wt]}
@@ -329,7 +329,13 @@ export default function GoodsSearchList({route,navigation}) {
                     </View>
                 ))}
             </ScrollView>
-
+            {/*========상품즐겨찾기 체크시=========*/}
+            <View style={[styles.wish_pop]}>
+                <View style={[styles.wish_box,flex]}>
+                    <Wishlist width={35} height={24} color={'blue'}/>
+                    <Text style={styles.wish_box_txt} >즐겨찾기에 추가되었습니다.</Text>
+                </View>
+            </View>
             {/*========상품체크시 노출=========*/}
             {(goForm.length > 0) ? (
                 <>
@@ -411,8 +417,8 @@ const styles = StyleSheet.create({
     },
     goods_like: {
         position: "absolute",
-        right: "10%",
-        bottom: 10,
+        right: "1%",
+        bottom: 1,
     },
     cate_1st_btn: {
         padding: 12,
@@ -511,5 +517,25 @@ const styles = StyleSheet.create({
     },
     back:{
         width:"10%",
+    },
+    wish_pop: {
+        position: "absolute",
+        left: 50,
+        bottom: Platform.OS === 'ios' ? 50 : 50,
+        zIndex: 50,
+        width: "100%",
+        transform: [{ translateX: 40 }],
+    },
+    wish_box:{
+        width:250,
+        paddingVertical:12,
+        paddingHorizontal:25,
+        backgroundColor: 'rgba(0,0,0, 0.5)',
+        borderRadius:50,
+    },
+    wish_box_txt:{
+        color:"#fff",
+        marginLeft:'auto',
+        marginRight:'auto',
     },
 });

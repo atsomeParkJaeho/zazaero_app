@@ -443,12 +443,12 @@ export default function GoodsCateList({route,navigation}) {
                                             </View>
                                             <View style={styles.flex_bottom}>
                                                 {/*-----------------------------가이드 안내-----------------------------*/}
-                                                <View style={[wt7]}>
+                                                <View style={[wt6]}>
                                                     <Text style={styles.cate_list_disc} numberOfLines={1}>
                                                         {(val.goods_guide_name) ? val.goods_guide_name:''}
                                                     </Text>
                                                 </View>
-                                                <View style={[wt3]}>
+                                                <View style={[wt4]}>
                                                     <Text style={[styles.cate_list_price,text_right]}>{Price(val.price)}원</Text>
                                                 </View>
                                             </View>
@@ -474,6 +474,12 @@ export default function GoodsCateList({route,navigation}) {
             {/*    <View style={[styles.wish_box,flex]}>*/}
             {/*        <Wishlist width={35} height={24} color={'blue'}/>*/}
             {/*        <Text style={styles.wish_box_txt} >즐겨찾기에 추가되었습니다.</Text>*/}
+            {/*    </View>*/}
+            {/*</View>*/}
+            {/*========장바구니 체크시해제시=========*/}
+            {/*<View style={[styles.cart]}>*/}
+            {/*    <View style={[styles.cart_box,flex]}>*/}
+            {/*        <Text style={styles.cart_box_txt} >장바구니에서 삭제되었습니다.</Text>*/}
             {/*    </View>*/}
             {/*</View>*/}
             {/*========상품체크시 노출=========*/}
@@ -509,7 +515,7 @@ export default function GoodsCateList({route,navigation}) {
 
 const styles = StyleSheet.create({
     cate_1st_list:{
-      height:60,
+        height: 55,
     },
     GoodsCateList:{
         paddingBottom: 300,
@@ -593,8 +599,29 @@ const styles = StyleSheet.create({
         borderRadius:50,
     },
     wish_box_txt:{
-        textAlign:"center",
         color:"#fff",
+        marginLeft:'auto',
+        marginRight:'auto',
+    },
+    cart: {
+        position: "absolute",
+        left: 50,
+        bottom: Platform.OS === 'ios' ? 120 : 100,
+        zIndex: 50,
+        width: "100%",
+        transform: [{ translateX: 40 }],
+    },
+    cart_box:{
+        width:250,
+        paddingVertical:12,
+        paddingHorizontal:20,
+        backgroundColor: 'rgba(0,0,0, 0.5)',
+        borderRadius:50,
+    },
+    cart_box_txt:{
+        color:"#fff",
+        marginLeft:'auto',
+        marginRight:'auto',
     },
     cate_2st_btn: {
         padding: 1,
