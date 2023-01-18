@@ -635,7 +635,7 @@ export default function OrderForm({route,navigation}) {
                 </ScrollView>
                 {/*============배송정보 입력시 활성화=============*/}
 
-                <View style={[bg_gray, {paddingTop:6, paddingBottom:38, position:"absolute", left:0, bottom:0, width:"100%"}]}>
+                <View style={[bg_gray, {paddingTop:6, paddingBottom: Platform.OS === 'ios' ? 38 : 20, position:"absolute", left:0, bottom:0, width:"100%"}]}>
                     <TouchableOpacity onPress={goForm}>
                         <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
                             <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
