@@ -30,9 +30,22 @@ import {
     justify_content_between,
     ms1,
     ms2,
-    bg_light, pb2, pos_center
+    bg_light,
+    pb2,
+    pos_center,
+    btn_primary,
+    p1,
+    text_center,
+    text_white,
+    h12,
+    h18,
+    padding_bottom,
+    text_danger,
+    h16,
+    h14,
+    mb1, flex_between_bottom, flex_end, fw500, justify_content_end, h13, textarea, pe1, me2, text_primary, wt3, wt7
 } from '../../common/style/AtStyle';
-import {sub_page, gary_bar} from '../../common/style/SubStyle';
+import {sub_page, gary_bar, gray_bar} from '../../common/style/SubStyle';
 import axios from "axios";
 import {FormStyle} from "./FormStyle";
 import CalendarStrip from 'react-native-calendar-strip';
@@ -44,9 +57,10 @@ import {RadioButton} from "react-native-paper";  // language must match config
 import Postcode from '@actbase/react-daum-postcode';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import {AddrMatch, Phone, Price, Time, Time1, Time2} from "../../util/util";
+import {AddrMatch, Phone, Price, Time, Time1, Time2, cancel_List, cancel_d_List} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import RNPickerSelect from "react-native-picker-select";
+import goodsthum1 from "../../assets/img/goods_thum1.jpg";
 // import SelectBox from "react-native-multi-selectbox";
 
 
@@ -57,7 +71,7 @@ export default function OrderForm({route,navigation}) {
     console.log('확인1 / ',route.params.order_uid);
     // 유효성 검사
     const {order_uid, zonecode, addr1} = route.params;
-    
+
     // 카트 정보
     let Cart = order_uid.map(key=>key.map(val=>val.order_uid));
     let temp = Cart.reduce((val,idx)=>{
@@ -106,8 +120,8 @@ export default function OrderForm({route,navigation}) {
     /**-----------------------결제금액---------------**/
 
 
-    // 1. 주문정보 상태 설정
-    // const [CartList, setCartList] = useState([]);
+        // 1. 주문정보 상태 설정
+        // const [CartList, setCartList] = useState([]);
     const [modAddr,       setmodAddr]              = useState('add');  // 최근배송지, 신규배송지 상태정의
     const [OrderTitle,    setOrderTitle]           = useState([]);    // 최근배송지 가져오기
     const [Selected,      setSelected]             = useState([]);    // 최근배송지 가져오기
@@ -196,100 +210,100 @@ export default function OrderForm({route,navigation}) {
 
     /**=============================이벤트 액션 구간=============================**/
 
-    // 6. 발주신청
+        // 6. 발주신청
     const goForm = () => {
-        console.log('주문');
+            console.log('주문');
 
-        if(OrderData.order_title === '') {
-            Alert.alert('','공사명을 입력해주세요');
-            ChkFocus.current[0].focus();
-            return;
-        }
-        if(OrderData.zonecode === '') {
-            Alert.alert('','우편번호를 입력해주세요');
-            ChkFocus.current[1].focus();
-            return;
-        }
-        if(OrderData.addr1 === '') {
-            Alert.alert('','주소를 입력해주세요.');
-            ChkFocus.current[2].focus();
-            return;
-        }
-        if(OrderData.addr2 === '') {
-            Alert.alert('','상세주소를 입력해주세요.');
-            ChkFocus.current[3].focus();
-            return;
-        }
-        if(OrderData.hope_deli_date === '') {
-            Alert.alert('','희망배송일을 선택해주세요.');
-            ChkFocus.current[4].focus();
-            return;
-        }
+            if(OrderData.order_title === '') {
+                Alert.alert('','공사명을 입력해주세요');
+                ChkFocus.current[0].focus();
+                return;
+            }
+            if(OrderData.zonecode === '') {
+                Alert.alert('','우편번호를 입력해주세요');
+                ChkFocus.current[1].focus();
+                return;
+            }
+            if(OrderData.addr1 === '') {
+                Alert.alert('','주소를 입력해주세요.');
+                ChkFocus.current[2].focus();
+                return;
+            }
+            if(OrderData.addr2 === '') {
+                Alert.alert('','상세주소를 입력해주세요.');
+                ChkFocus.current[3].focus();
+                return;
+            }
+            if(OrderData.hope_deli_date === '') {
+                Alert.alert('','희망배송일을 선택해주세요.');
+                ChkFocus.current[4].focus();
+                return;
+            }
 
-        if(OrderData.hope_deli_time === '') {
-            Alert.alert('','희망배송시간을 입력해주세요.');
-            ChkFocus.current[5].focus();
-            return;
-        }
-        if(OrderData.recv_phone === '') {
-            Alert.alert('','현장인도자 연락처를 입력해주세요.');
-            ChkFocus.current[6].focus();
-            return;
-        }
+            if(OrderData.hope_deli_time === '') {
+                Alert.alert('','희망배송시간을 입력해주세요.');
+                ChkFocus.current[5].focus();
+                return;
+            }
+            if(OrderData.recv_phone === '') {
+                Alert.alert('','현장인도자 연락처를 입력해주세요.');
+                ChkFocus.current[6].focus();
+                return;
+            }
 
-        Alert.alert(
-            '',
-            '주문하시겠습니까?',
-            [
-                {text: '취소', onPress: () => {}, style: 'destructive'},
-                {
-                    text: '확인 ',
-                    onPress: () => {
+            Alert.alert(
+                '',
+                '주문하시겠습니까?',
+                [
+                    {text: '취소', onPress: () => {}, style: 'destructive'},
+                    {
+                        text: '확인 ',
+                        onPress: () => {
 
 
-                        /**---------------------------------------------------------------------------**/
-                        /**---------------------------------------------------------------------------**/
-                        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',OrderData,{
-                            headers: {
-                                'Content-type': 'multipart/form-data'
-                            }
-                        }).then((res)=>{
-                            if(res) {
-                                const {result, order_no} = res.data;
-                                console.log(result);
-                                if(result === 'OK') {
-                                    console.log(order_no);
-                                    let msg = `주문이 완료되었습니다. \n 주문번호 : ${order_no}`;
-                                    return Alert.alert('',msg,[{
-                                        text:"확인",
-                                        onPress:()=>{
-                                            navigation.replace('발주내역');
-                                        }
-                                    }]);
-                                } else {
-                                    console.log('실패');
-                                    return;
+                            /**---------------------------------------------------------------------------**/
+                            /**---------------------------------------------------------------------------**/
+                            axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',OrderData,{
+                                headers: {
+                                    'Content-type': 'multipart/form-data'
                                 }
-                            } else {
+                            }).then((res)=>{
+                                if(res) {
+                                    const {result, order_no} = res.data;
+                                    console.log(result);
+                                    if(result === 'OK') {
+                                        console.log(order_no);
+                                        let msg = `주문이 완료되었습니다. \n 주문번호 : ${order_no}`;
+                                        return Alert.alert('',msg,[{
+                                            text:"확인",
+                                            onPress:()=>{
+                                                navigation.replace('발주내역');
+                                            }
+                                        }]);
+                                    } else {
+                                        console.log('실패');
+                                        return;
+                                    }
+                                } else {
 
-                            }
-                        });
-                        /**---------------------------------------------------------------------------**/
+                                }
+                            });
+                            /**---------------------------------------------------------------------------**/
+                        },
+                        style: 'cancel',
                     },
-                    style: 'cancel',
+                ],
+                {
+                    cancelable: true,
+                    onDismiss: () => {},
                 },
-            ],
-            {
-                cancelable: true,
-                onDismiss: () => {},
-            },
-        );
+            );
 
-    }
+        }
 
     console.log('주문정보2     / ',OrderData);
 
-
+    const [CanceDlList, setOrderList] = useState(cancel_d_List);     // 발주내역 출력
 
     return (
         <>
@@ -342,13 +356,13 @@ export default function OrderForm({route,navigation}) {
                                 <View style={[FormStyle.FormGroupItems]}>
                                     <Text style={[FormStyle.FormLabel]}>공사명</Text>
                                     <TextInput style={[input,{flex:1}]}
-                                   placeholder="공사명"
-                                   value={OrderData.order_title}
-                                   onChangeText={(order_title)=>goInput("order_title",order_title)}
-                                   ref={value => (ChkFocus.current[0] = value)}
-                                   onSubmitEditing={()=>ChkFocus.current[1].focus()}
-                                   returnKeyType="next"
-                                   blurOnSubmit={false}
+                                               placeholder="공사명"
+                                               value={OrderData.order_title}
+                                               onChangeText={(order_title)=>goInput("order_title",order_title)}
+                                               ref={value => (ChkFocus.current[0] = value)}
+                                               onSubmitEditing={()=>ChkFocus.current[1].focus()}
+                                               returnKeyType="next"
+                                               blurOnSubmit={false}
                                     />
                                 </View>
                                 {/*==============배송지 주소===============*/}
@@ -357,14 +371,14 @@ export default function OrderForm({route,navigation}) {
                                     <View style={[d_flex,align_items_center]}>
                                         {/*우편번호*/}
                                         <TextInput style={[input,{flex:1,marginRight:16},bg_light]}
-                                       editable={false}
-                                       placeholder="우편번호"
-                                       value={zonecode}
-                                       onChangeText={(zonecode)=>goInput("zonecode",zonecode)}
-                                       ref={value => (ChkFocus.current[0] = value)}
-                                       onSubmitEditing={()=>ChkFocus.current[1].focus()}
-                                       returnKeyType="next"
-                                       blurOnSubmit={false}
+                                                   editable={false}
+                                                   placeholder="우편번호"
+                                                   value={zonecode}
+                                                   onChangeText={(zonecode)=>goInput("zonecode",zonecode)}
+                                                   ref={value => (ChkFocus.current[0] = value)}
+                                                   onSubmitEditing={()=>ChkFocus.current[1].focus()}
+                                                   returnKeyType="next"
+                                                   blurOnSubmit={false}
                                         />
                                         {/*주소찾기*/}
                                         <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"배송정보등록", order_uid:order_uid})}>
@@ -394,7 +408,7 @@ export default function OrderForm({route,navigation}) {
                                                placeholder="상세주소"
                                                value={OrderData.addr2}
                                                ref={value => (ChkFocus.current[3] = value)}
-                                               // onSubmitEditing={()=>ChkFocus.current[4].focus()}
+                                        // onSubmitEditing={()=>ChkFocus.current[4].focus()}
                                                returnKeyType="done"
                                     />
                                 </View>
@@ -489,6 +503,18 @@ export default function OrderForm({route,navigation}) {
                         </View>
                         {/*==============현장인도자 연락처==============*/}
                         <View style={[FormStyle.FormGroup]}>
+                            {/*==============현장인도자 성명==============*/}
+                            <View style={[FormStyle.FormGroupItems]}>
+                                <View>
+                                    <Text style={[FormStyle.FormLabel]}>현장인도자 성명</Text>
+                                    <TextInput style={[input,{flex:1}]}
+                                               onChangeText={(recv_name)=>goInput("recv_name",recv_name)}
+                                               placeholder="예 ) 홍길동"
+                                               value={Phone(OrderData.recv_name)}
+                                               ref={value => (ChkFocus.current[5] = value)}
+                                    />
+                                </View>
+                            </View>
                             {/*==============현장인도자 연락처==============*/}
                             <View style={[FormStyle.FormGroupItems]}>
                                 <View>
@@ -520,6 +546,87 @@ export default function OrderForm({route,navigation}) {
                                 </View>
                             </View>
                         </View>
+                        {/*--------------------------------상품목록--------------------------------*/}
+                        <View style={[styles.goodsList]}>
+                            <View style={[styles.goodsList_title]}>
+                                <View style={[container, {borderBottomWidth: 2}]}>
+                                    <Text style={[h18]}>자재목록</Text>
+                                </View>
+                                <View style={[styles.goodsListMap]}>
+                                    {CanceDlList.map((val, i) => (
+                                        <>
+                                            <View style={[styles.CancelDetail_list_items]} key={i}>
+                                                <View style={[container]}>
+                                                    <View style={[flex]}>
+                                                        <View style={[wt3]}>
+                                                            <Text style={[h14, ]}>상품명 : </Text>
+                                                        </View>
+                                                        <View style={[wt7]}>
+                                                            <Text style={[h14, ]}>{val.title}</Text>
+                                                        </View>
+                                                    </View>
+                                                    <View style={[flex]}>
+                                                        <View style={[wt3]}>
+                                                            <Text style={[h14, ]}>단가 : </Text>
+                                                        </View>
+                                                        <View style={[wt7]}>
+                                                            <Text style={[h14, ]}>{val.price} 원</Text>
+                                                        </View>
+                                                    </View>
+                                                    <View style={[flex]}>
+                                                        <View style={[wt3]}>
+                                                            <Text style={[h14, ]}>수량 : </Text>
+                                                        </View>
+                                                        <View style={[wt7]}>
+                                                            <Text style={[h14]}>{val.count} 개</Text>
+                                                        </View>
+                                                    </View>
+                                                    <View style={[flex]}>
+                                                        <View style={[wt3]}>
+                                                            <Text style={[h14, ]}>총금액 : </Text>
+                                                        </View>
+                                                        <View style={[wt7]}>
+                                                            <Text style={[h16]}> {val.total_price} 원</Text>
+                                                        </View>
+                                                    </View>
+
+                                                </View>
+                                            </View>
+                                        </>
+                                    ))}
+                                </View>
+                                <View style={gray_bar}/>
+
+                                <View style="">
+                                    <View style={container}>
+                                        <Text style={[h18]}>발주 금액</Text>
+                                    </View>
+                                    <View style={[container, bg_light]}>
+                                        <View style={[d_flex, justify_content_end, pe1]}>
+                                            <View style="">
+                                                
+                                                <View style={[flex, justify_content_end, mb1]}>
+                                                    <Text style={[h14, styles.color1, me2]}>총 자재 수량</Text>
+                                                    <Text style={[h14]}>55개 </Text>
+                                                </View>
+                                                {/*자재 가격*/}
+                                               
+
+                                                <View style={[flex, justify_content_end]}>
+                                                    <Text style={[h14, styles.color1, me2]}>총 자재 가격</Text>
+                                                    <Text style={[h16, text_primary]}>1,300,000 원</Text>
+                                                </View>
+                                                {/*총 결제금액*/}
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                                {/*결제정보*/}
+
+                                <View style={[padding_bottom]}/>
+                            </View>
+                            {/*취소상세*/}
+                        </View>
                         {/*--------------------------------총 금액--------------------------------*/}
                         <View>
                             <Text>{Price(goodsprice)}원</Text>
@@ -528,7 +635,7 @@ export default function OrderForm({route,navigation}) {
                 </ScrollView>
                 {/*============배송정보 입력시 활성화=============*/}
 
-                <View style={[bg_gray, {paddingTop:6, paddingBottom:38, position:"absolute", left:0, bottom:0, width:"100%"}]}>
+                <View style={[bg_gray, {paddingTop:6, paddingBottom: Platform.OS === 'ios' ? 38 : 20, position:"absolute", left:0, bottom:0, width:"100%"}]}>
                     <TouchableOpacity onPress={goForm}>
                         <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
                             <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
@@ -569,5 +676,8 @@ const styles = StyleSheet.create({
         borderRadius:50,
         backgroundColor:"#3D40E0",
     },
-
+    CancelDetail_list_items:{
+        borderBottomWidth:1,
+        borderColor:"#EDEDF1",
+    },
 });
