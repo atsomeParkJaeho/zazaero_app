@@ -327,8 +327,6 @@ export default function Cart({route, navigation}) {
         cont += arr[i];
     }
 
-    console.log(CartUid,' / 카테고리 중복 체크기');
-    console.log(CartList,' asdfasdfasdfasdfsdf2');
 
     return (
         <>
