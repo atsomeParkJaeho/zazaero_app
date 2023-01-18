@@ -39,7 +39,7 @@ import {
     count_btn,
     pos_center,
     count_btn_txt,
-    wt1, wt9, text_center
+    wt1, wt9, text_center, mt1
 } from '../../common/style/AtStyle';
 import {sub_page, gary_bar, sub_container} from '../../common/style/SubStyle';
 
@@ -126,7 +126,7 @@ export default function GoodsDetail({route,navigation}) {
         }).catch((error)=>{console.log(error)});
         // // 내 즐겨찾기에 등록된 상품 필터링하기
     }
-    
+
 
     // ====================4. 수량증가 설정==================
     const goodsCnt = (type, value) => {
@@ -251,96 +251,96 @@ export default function GoodsDetail({route,navigation}) {
     return (
         <>
             <KeyboardAvoidingView style={[styles.avoidingView]} behavior={Platform.select({ios: 'padding'})}>
-            <ScrollView style={[bg_white]}>
-                <View style={[styles.GoodsDetail]}>
-                    <View style={[container]}>
-                        <View style={[styles.goods_iamge_box]}>
-                            <Image style={styles.goods_image} source={{uri:"http://www.zazaero.com"+GoodsDetail.list_img_url}}/>
-                        </View>
-                        {/*상품이미지*/}
-                        <View style={[styles.GoodsDetail_info]}>
-
-                            <WrappedText  textStyle={[styles.GoodsDetail_title,]}>
-                                {GoodsDetail.goods_name}
-                            </WrappedText>
-
-                            {/*상품명*/}
-                            <View style={[flex]}>
-                                <View style={[styles.wt25]}>
-                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>판매가</Text>
-                                </View>
-                                <View style={[styles.wt75]}>
-                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                        {Price(GoodsDetail.price) } 원
-                                    </Text>
-                                </View>
+                <ScrollView style={[bg_white]}>
+                    <View style={[styles.GoodsDetail]}>
+                        <View style={[container]}>
+                            <View style={[styles.goods_iamge_box]}>
+                                <Image style={styles.goods_image} source={{uri:"http://www.zazaero.com"+GoodsDetail.list_img_url}}/>
                             </View>
-                            {/*판매가*/}
-                            <View style={[flex,styles.border_b]}>
-                                <View style={[styles.wt25]}>
-                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재안내</Text>
-                                </View>
-                                <View style={[styles.wt75]}>
-                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>4일 이상 소요 </Text>
-                                </View>
-                            </View>
-                            {/*자재안내*/}
-                            <View style={[flex_between_top,mt3]}>
-                                <View style="">
-                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>수량</Text>
-                                    <View style={[flex]}>
-                                        {/*===============마이너스 수량==================*/}
-                                        {/*=============마이너스 버튼==========*/}
-                                        <TouchableWithoutFeedback
-                                            onPress={() => goodsCnt('minus')}>
-                                            <View style={[count_btn]}>
-                                                <View style={[pos_center]}>
-                                                    <Text
-                                                        style={[count_btn_txt]}>－</Text>
-                                                </View>
-                                            </View>
-                                        </TouchableWithoutFeedback>
-                                        {/*============수량=================*/}
-                                        <TextInput style={[countinput,]}
-                                                   onChangeText={(my_cart_cnt) => goodsCnt('my_cart_cnt',my_cart_cnt)}
-                                                   value={`${GoodsDetail.my_cart_cnt}`}
-                                        />
-                                        {/*=============플러스 버튼============*/}
-                                        <TouchableWithoutFeedback
-                                            onPress={() => goodsCnt('plus')}>
-                                            <View style={[count_btn]}>
-                                                <View style={[pos_center]}>
-                                                    <Text
-                                                        style={[count_btn_txt]}>＋</Text>
-                                                </View>
-                                            </View>
-                                        </TouchableWithoutFeedback>
+                            {/*상품이미지*/}
+                            <View style={[styles.GoodsDetail_info]}>
+                                <WrappedText  textStyle={[styles.GoodsDetail_title]}>
+                                    {GoodsDetail.goods_name}
+                                </WrappedText>
+                                {/*상품명*/}
+                                <View style={[flex,mt1]}>
+                                    <View style={[styles.wt25]}>
+                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>판매가</Text>
                                     </View>
+                                    <View style={[styles.wt75]}>
+                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                            {Price(GoodsDetail.price) } 원
+                                        </Text>
+                                    </View>
+                                </View>
+                                {/*판매가*/}
+                                <View style={[flex,styles.border_b]}>
+                                    <View style={[styles.wt25]}>
+                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재안내</Text>
+                                    </View>
+                                    <View style={[styles.wt75]}>
+                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                            4일 이상 소요
+                                        </Text>
+                                    </View>
+                                </View>
+                                {/*자재안내*/}
+                                <View style={[flex_between_top,mt3]}>
+                                    <View style="">
+                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>수량</Text>
+                                        <View style={[flex]}>
+                                            {/*===============마이너스 수량==================*/}
+                                            {/*=============마이너스 버튼==========*/}
+                                            <TouchableWithoutFeedback
+                                                onPress={() => goodsCnt('minus')}>
+                                                <View style={[count_btn]}>
+                                                    <View style={[pos_center]}>
+                                                        <Text
+                                                            style={[count_btn_txt]}>－</Text>
+                                                    </View>
+                                                </View>
+                                            </TouchableWithoutFeedback>
+                                            {/*============수량=================*/}
+                                            <TextInput style={[countinput,]}
+                                                       onChangeText={(my_cart_cnt) => goodsCnt('my_cart_cnt',my_cart_cnt)}
+                                                       value={`${GoodsDetail.my_cart_cnt}`}
+                                            />
+                                            {/*=============플러스 버튼============*/}
+                                            <TouchableWithoutFeedback
+                                                onPress={() => goodsCnt('plus')}>
+                                                <View style={[count_btn]}>
+                                                    <View style={[pos_center]}>
+                                                        <Text
+                                                            style={[count_btn_txt]}>＋</Text>
+                                                    </View>
+                                                </View>
+                                            </TouchableWithoutFeedback>
+                                        </View>
 
 
+                                    </View>
+                                    <View style="">
+                                        <Text style={[styles.GoodsDetail_info_txt]}>총금액</Text>
+                                        <Text style={[styles.GoodsDetail_total_price]}>
+                                            {Price(GoodsDetail.price * GoodsDetail.my_cart_cnt)} 원
+                                        </Text>
+                                    </View>
                                 </View>
-                                <View style="">
-                                    <Text style={[styles.GoodsDetail_info_txt]}>총금액</Text>
-                                    <Text style={[styles.GoodsDetail_total_price]}>
-                                        {Price(GoodsDetail.price * GoodsDetail.my_cart_cnt)} 원
-                                    </Text>
-                                </View>
+                                {/*수량*/}
+
                             </View>
-                            {/*수량*/}
-
+                            {/*상품정보*/}
+                            <View style={[styles.GoodsDetail_more_image,mt5]}>
+                                {/*<Text style={[styles.GoodsDetail_more_image_txt]}>추가 이미지</Text>*/}
+                                <RenderHtml source={source}/>
+                            </View>
+                            {/*추가 이미지*/}
                         </View>
-                        {/*상품정보*/}
-                        <View style={[styles.GoodsDetail_more_image,mt5]}>
-                            {/*<Text style={[styles.GoodsDetail_more_image_txt]}>추가 이미지</Text>*/}
-                            <RenderHtml source={source}/>
-                        </View>
-                        {/*추가 이미지*/}
                     </View>
-                </View>
-            </ScrollView>
-            <View style={[styles.bottom_btn]}>
-                <View style={[flex]}>
-                    <View style={[styles.wt1_5]}>
+                </ScrollView>
+                <View style={[styles.bottom_btn]}>
+                    <View style={[flex]}>
+                        <View style={[styles.wt1_5]}>
                             <TouchableOpacity style={[styles.wish]}  onPress={()=>goWish(GoodsDetail.goods_uid)}>
                                 {(GoodsDetail.my_zzim_flag === 'Y') ? (
                                     <>
@@ -352,21 +352,28 @@ export default function GoodsDetail({route,navigation}) {
                                     </>
                                 )}
                             </TouchableOpacity>
-                    </View>
-                    <View style={[styles.wt8_5]}>
-                        <View style={[flex_around]}>
-                            <TouchableOpacity style={styles.btn} onPress={() => goForm('cart',GoodsDetail.goods_uid)}>
-                                <Text style={[btn_primary,styles.center,styles.boottom_btn]}>장바구니 담기</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>
-                                <Text style={[btn_black,styles.center,styles.boottom_btn]}>장바구니 가기</Text>
-                            </TouchableOpacity>
+                        </View>
+                        <View style={[styles.wt8_5]}>
+                            <View style={[flex_around]}>
+                                <TouchableOpacity style={styles.btn} onPress={() => goForm('cart',GoodsDetail.goods_uid)}>
+                                    <Text style={[btn_primary,styles.center,styles.boottom_btn]}>장바구니 담기</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>
+                                    <Text style={[btn_black,styles.center,styles.boottom_btn]}>장바구니 가기</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 </View>
-            </View>
-            {/*장바구니/구매*/}
-            <View style={[styles.ios_pb]} />
+                {/*장바구니/구매*/}
+                <View style={[styles.ios_pb]} />
+                {/*========상품즐겨찾기 체크시=========*/}
+                <View style={[styles.wish_pop]}>
+                    <View style={[styles.wish_box,flex]}>
+                        <Wishlist width={35} height={24} color={'blue'}/>
+                        <Text style={styles.wish_box_txt} >즐겨찾기에 추가되었습니다.</Text>
+                    </View>
+                </View>
             </KeyboardAvoidingView>
         </>
     );
@@ -486,7 +493,6 @@ const styles = StyleSheet.create({
     },
     wt8_5:{
         width:"85%",
-
     },
     wish:{
         flex:1,
@@ -495,5 +501,25 @@ const styles = StyleSheet.create({
     },
     ios_pb:{
         paddingBottom: Platform.OS === 'ios' ? 17 : 0,
+    },
+    wish_pop: {
+        position: "absolute",
+        left: 50,
+        bottom: Platform.OS === 'ios' ? 100 : 100,
+        zIndex: 50,
+        width: "100%",
+        transform: [{ translateX: 40 }],
+    },
+    wish_box:{
+        width:250,
+        paddingVertical:12,
+        paddingHorizontal:25,
+        backgroundColor: 'rgba(0,0,0, 0.5)',
+        borderRadius:50,
+    },
+    wish_box_txt:{
+        color:"#fff",
+        marginLeft:'auto',
+        marginRight:'auto',
     },
 });
