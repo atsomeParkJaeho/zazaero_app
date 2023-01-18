@@ -68,7 +68,7 @@ function Cate2nd({uid,navigation,name}) {
             <>
                 {Cate2nd.map((val, idx) => {
                     let img_src = 'http://zazaero.com'+val.cate_img;
-                    console.log(img_src,'/ 이미지 경로');
+                    console.log(img_src,'/ 이미지 456경로');
                     return(
                         <>
                             <View style={{width: "33%", paddingTop: 20,}} key={idx}>
