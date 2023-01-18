@@ -52,13 +52,12 @@ import {OnlyNum, Price} from "../../util/util";
 export default function Cart({route, navigation}) {
 
     const [Member, setMember]        = useState();
-    const [CartUid, setCartUid]      = useState([]);
+    const [CartUid, setCartUid]      = useState(``);
     const [CartList, setCartList]    = useState([]);           // 장바구니 1차 카테고리 출력
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
     const Update = useIsFocused();
-
 
 
 
@@ -86,12 +85,12 @@ export default function Cart({route, navigation}) {
             }
         });
 
-    }, [Member, Update]);
+    }, [Update, Member]);
 
 
 
     /**---------------------------------장바구니 해당상품 삭제----------------------------------------**/
-    const delCart = (order_uid) => {
+    const delCart = (order_uid,goods_uid) => {
         console.log(order_uid)
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
             act_type        : "del_cart",
@@ -109,8 +108,8 @@ export default function Cart({route, navigation}) {
                     Alert.alert('', '삭제완료 하였습니다.');
                     setCartList(CartList.map((cate) => {
                         return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
-                                if(val.order_uid === order_uid) {
-                                    return {...val, goods_cart:!val.goods_cart}
+                                if(val.goods_uid === goods_uid) {
+                                    return {...val, goods_cart:!val.goods_cart, goods_chk:false,}
                                 } else {
                                     return val;
                                 }
@@ -133,8 +132,8 @@ export default function Cart({route, navigation}) {
                         return val;
                     }
                 })}
-
         }));
+
     }
 
     /**---------------------------------체크시 배송정보 등록이동창 활성화----------------------------------------**/
@@ -144,8 +143,6 @@ export default function Cart({route, navigation}) {
         } else if(!cate) {
             setCartUid(''); // 카테고리 넣기
         }
-
-
         setCartList(CartList.map((cate) => {
             return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
                         if(val.goods_uid === uid) {
@@ -156,103 +153,138 @@ export default function Cart({route, navigation}) {
                     })}
         }));
     }
-    /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
-    const goOrderForm = () => {
-        let test = list.map((key)=>key.map(val=>{
-
-            if(val.cate_name !== CartUid) {
-                // ;
-                return Alert.alert('','중복 카테고리만 가능합니다.',[
-                    {
-                        text:'확인',
-                        onPress:()=>{
-                            // return console.log('중복값');
-                            return navigation.replace('장바구니');
-                        }
-                    }
-                ]);
-            } else {
-                return navigation.navigate('배송정보등록',{order_uid:list});
-            }
-
-
-            // else {
-            //
-            // }
-        }));
-        console.log(test,'/ 테스트');
-        console.log(result,'/ 확인');
-    }
 
 
     /**-----------------------------------------장바구니 상품 수량변경--------------------------------------------------**/
-    const modCart = (uid, type, value) => {
-        console.log(uid,'/ 상품uid');
-        console.log(type,'/ 이벤트 타입');
-        console.log(value,'/ 값');
-
-
-
+    const modCart = (goods_uid, order_uid, type, value, goods_price) => {
+        console.log(goods_uid);
+        console.log(order_uid);
+        console.log(type);
+        console.log(value);
+        console.log(goods_price);
 
         /**----------------------------상품수량 플러스--------------------------**/
         if(type === 'plus') {
-
+            let cnt = Number(value) + 1;
+            let price = Number(goods_price) ;
+            console.log(cnt);
+            console.log('플러스');
             /**----------------------------상품수량 증가시 뷰화면에서도 적용--------------------------**/
             setCartList(CartList.map((cate) => {
                 return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
-                        if(val.goods_uid === uid) {
-                            return {...val, order_item_cnt:Number(val.order_item_cnt) + 1}
+                        if(val.goods_uid === goods_uid) {
+                            return {...val, A_sel_option:val.A_sel_option.map(cnt=>{
+                                return {
+                                    ...cnt,
+                                    option_cnt      :Number(cnt.option_cnt) + 1,
+                                }
+                                })}
                         } else {
                             return val;
                         }
                     })}
             }));
-            axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-                act_type        : "mod_cart",
-                order_uid       : uid,
-                mem_uid         : Member,
-                // cnt             :
-
-            },{
-                
-            }).then((res)=>{
-                const {result} = res.data;
-                if(result === 'OK') {
-                    
-                }
-            });
+            goForm(cnt, price, order_uid, goods_uid);
         }
+
         /**----------------------------상품수량 마이너스--------------------------**/
         if(type === 'minus') {
+            let cnt = Number(value) - 1;
+            let price = Number(goods_price) ;
+            console.log(cnt);
+            console.log('마이너스');
             setCartList(CartList.map((cate) => {
                 return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
-                        if(val.goods_uid === uid) {
-                            return {...val, order_item_cnt:(val.order_item_cnt > 1) ? Number(val.order_item_cnt) - 1:1}
+                        if(val.goods_uid === goods_uid) {
+                            return {...val, A_sel_option:val.A_sel_option.map(cnt=>{
+                                    return {
+                                        ...cnt,
+                                        option_cnt      :(cnt.option_cnt > 1) ? Number(cnt.option_cnt)-1 : 1,
+                                    }
+                                })}
                         } else {
                             return val;
                         }
                     })}
             }));
+            goForm(cnt, price, order_uid, goods_uid);
         }
         /**----------------------------상품수량 수기조절--------------------------**/
         if(type === 'order_item_cnt') {
+            console.log('수기입력');
             setCartList(CartList.map((cate) => {
                 return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
-                        if(val.goods_uid === uid) {
-                            return {...val, order_item_cnt:Number(value)}
+                        if(val.goods_uid === goods_uid) {
+                            return {...val, A_sel_option:val.A_sel_option.map(cnt=>{
+                                    return {...cnt, option_cnt:Number(value)}
+                                })}
                         } else {
                             return val;
                         }
                     })}
             }));
         }
-        
+    }
+    /**----------------------------업데이트 내용 적용--------------------------**/
+    const goForm = (goods_cnt, goods_price, order_uid, goods_uid) => {
+        let cnt   = (goods_cnt > 1) ? Number(goods_cnt) : 1;
+        let total = Number(goods_price) * cnt;
+        console.log(cnt);
+        console.log(goods_price);
+        console.log('합계 / ',total);
+
+        /**----------------------------업데이트 내용 적용--------------------------**/
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
+            act_type        : "mod_cart",
+            mem_uid         : Member,
+            login_status    : "Y",
+            cnt             : cnt,
+            goods_price     : Number(goods_price),
+            order_uid       : order_uid,
+            goods_uid       : goods_uid,
+        }, {
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res) => {
+            if (res) {
+                const {result} = res.data;
+                if (result === 'OK') {
+                    console.log('적용완료 / ');
+                } else {
+                    console.log('실패');
+                }
+            }
+        });
+
     }
 
+    /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
+    const goOrderForm = () => {
+        // 중복상품 제어용 카테고리 cateUid
+        let temp = CartList.map(cate=>cate.A_goods_list.filter(val=>(val.goods_chk === true)));
+        let total = temp.reduce((val,idx)=>{
+            return val.concat(idx);
+        });
+        let result = total.map(val=>val.cate_name);
+        let find = result.indexOf(CartUid);
 
+        if(find !== 0) {
+            Alert.alert('','동일 카테고리면 선택 가능합니다.');
+            setCartList(CartList.map((cate) => {
+                return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
+                        return {...val, goods_chk:false}
+                    })}
+            }));
 
+            return false;
+        }
 
-    /**---------------------------------선택한상품 체크 필터링----------------------------------------**/
+        console.log(total);
+
+        return navigation.navigate('배송정보등록',{order_uid:total});;
+    }
+
 
 
     let list      = CartList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
@@ -261,20 +293,6 @@ export default function Cart({route, navigation}) {
     for (let i = 0; i < arr.length; i++) {
         cont += arr[i];
     }
-
-    let chk = CartList.map(val=>val.A_goods_list.map(key=>key));
-    let chk_option = CartList.map(val=>val.A_goods_list.map(key=>key.A_sel_option.map(op=>op.option_cnt)));
-
-
-
-    console.log(chk,' / 장바구니 상품확인');
-    console.log(chk_option,' / 장바구니 옵션상품 확인');
-    console.log(cont,' / 확인');
-    console.log(list,' / 123123123');
-    console.log(CartList,'확인 3');
-    console.log(CartUid,'확인 2');
-    console.log('회원코드 1 / ', Member);
-
 
 
     return (
@@ -287,27 +305,15 @@ export default function Cart({route, navigation}) {
                             {CartList.map((cate,idx)=>(
                                 <>
                                     <List.Accordion style={[container,styles.Accordion_tit]} title={cate.cate_1st_name} key={idx}>
-                                        {/*================================카테고리 상품 체크=====================*/}
-                                        {/*
-                                        <View style={[bg_white,container,{ borderBottomWidth: 1,borderColor:"#ddd"}]}>
-                                            <View style={[flex,{justifyContent:"space-between",}]}>
-                                                <View style={[d_flex]}>
-                                                    <Checkbox onValueChange={(all) => goFormChk(`All`,`${cate.cfg_val1}`,all)} style={styles.all_check}
-                                                              color={"#4630eb"}
-                                                    />
-                                                    <Text  style={[ms1]}>전체선택</Text>
-                                                </View>
-                                                <View style={[d_flex]}>
-                                                    <TouchableOpacity onPress={()=>ChkDelCart(`${cate.cfg_val1}`)}>
-                                                        <Text  style={[ms1,text_gray]}>선택상품 삭제</Text>
-                                                    </TouchableOpacity>
-                                                </View>
-                                            </View>
-                                        </View>
-                                        */}
                                         {cate.A_goods_list.map(val=>{
-                                            let goods_cnt = val.A_sel_option.map(cnt=>cnt.option_cnt);
-                                            console.log(goods_cnt);
+                                            /**------------------------------------------------------**/
+
+                                            let goods_cnt = val.A_sel_option.map(cnt=>cnt.option_cnt);      // 상품 수량
+                                            let goods_price = val.A_sel_option.map(cnt=>cnt.option_price);  // 상품 원가격
+                                            // console.log(goods_cnt);
+                                            // console.log(goods_price);
+
+                                            /**------------------------------------------------------**/
                                             return(
                                             <>
                                                 {(val.goods_cart === false) && (
@@ -337,7 +343,7 @@ export default function Cart({route, navigation}) {
                                                             </View>
                                                             {/*=============삭제버튼============*/}
                                                             <TouchableOpacity
-                                                                onPress={() => delCart(val.order_uid)}>
+                                                                onPress={() => delCart(val.order_uid,val.goods_uid)}>
                                                                 <View style="">
                                                                     <Icon name="close"
                                                                           size={25}
@@ -363,14 +369,15 @@ export default function Cart({route, navigation}) {
                                                                     {/*자재가격*/}
                                                                     <View style="">
                                                                         <Text style={styles.goods_price}>
-                                                                            {Price(val.sum_order_price)}원
+                                                                            {Price(`${goods_price * goods_cnt}`)}원
+                                                                            {/*{Price(val.)}원*/}
                                                                         </Text>
                                                                     </View>
                                                                 </View>
                                                                 <View style={[flex]}>
                                                                     {/*=============마이너스 버튼==========*/}
                                                                     <TouchableWithoutFeedback
-                                                                        onPress={() => modCart(val.goods_uid, 'minus')}>
+                                                                        onPress={() => modCart(val.goods_uid, val.order_uid,'minus',goods_cnt, goods_price)}>
                                                                         <View
                                                                             style={[count_btn]}>
                                                                             <View
@@ -384,11 +391,13 @@ export default function Cart({route, navigation}) {
                                                                     <TextInput
                                                                         style={[countinput,]}
                                                                         keyboardType="number-pad"
-                                                                        onChangeText={(order_item_cnt) => modCart(val.goods_uid, 'order_item_cnt', order_item_cnt)}
+                                                                        onChangeText={(order_item_cnt) => modCart(val.goods_uid, val.order_uid, 'order_item_cnt', order_item_cnt, goods_price)}
                                                                         value={`${goods_cnt}`}
+                                                                        returnKeyType="done"
+                                                                        onSubmitEditing={()=>goForm(goods_cnt, goods_price, val.order_uid, val.goods_uid)}
                                                                     />
                                                                     {/*=============플러스 버튼============*/}
-                                                                    <TouchableWithoutFeedback onPress={() => modCart(val.goods_uid, 'plus')}>
+                                                                    <TouchableWithoutFeedback onPress={() => modCart(val.goods_uid, val.order_uid, 'plus',goods_cnt, goods_price)}>
                                                                         <View
                                                                             style={[count_btn]}>
                                                                             <View
