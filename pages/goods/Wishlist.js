@@ -65,7 +65,7 @@ export default function Wishlist({route,navigation}) {
     });
     const Update = useIsFocused();
 
-    console.log('즐겨찾기');
+    console.log('즐겨찾기2');
 
     // ==========1. 상태정의 리스트
     const [WishList, setWishList]       = useState([]);     // 즐겨찾기 상태정의
