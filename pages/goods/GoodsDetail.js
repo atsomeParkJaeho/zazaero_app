@@ -444,10 +444,6 @@ const styles = StyleSheet.create({
         borderColor:"#ddd",
         borderBottomWidth:1,
     },
-    input_wt:{
-        width:"auto",
-        textAlign:"center",
-    },
     GoodsDetail_total_price:{
         fontSize: Platform.OS === 'ios' ? 24 : 23,
         lineHeight:27,
@@ -458,24 +454,6 @@ const styles = StyleSheet.create({
         backgroundColor:"#999",
         color:"#fff",
         padding:5,
-    },
-    goods_image_more:{
-        width: "100%",
-    },
-    button: {
-        alignItems: "center",
-        backgroundColor: "#eee",
-        padding: 8,
-        borderWidth:1,
-        borderTopLeftRadius:100,
-        borderTopRightRadius:100,
-        borderBottomLeftRadius:100,
-        borderBottomRightRadius:100,
-        borderColor:"#eee",
-    },
-    button_txt:{
-        fontSize: Platform.OS === 'ios' ? 14 : 13,
-        fontWeight:"500",
     },
     btn:{
         width:"50%",
