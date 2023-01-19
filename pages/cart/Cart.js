@@ -349,7 +349,7 @@ export default function Cart({route, navigation}) {
     let result = CartList.map(cate=> {
         return {...cate, A_goods_list:cate.A_goods_list.filter((val)=>val.goods_cart === false)}
     });
-    // console.log(result,'/ 필터링 리스트');
+    console.log(result,'/ 필터링 리스트');
 
 
     return (
