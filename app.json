@@ -30,14 +30,15 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.koreajason.expozazeroapp",
-      "buildNumber": "3"
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/zazero_icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.koreajason.expozazeroapp"
+      "package": "com.koreajason.expozazeroapp",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"

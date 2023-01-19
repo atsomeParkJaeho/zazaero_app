@@ -43,7 +43,20 @@ import {
     text_danger,
     h16,
     h14,
-    mb1, flex_between_bottom, flex_end, fw500, justify_content_end, h13, textarea, pe1, me2, text_primary, wt3, wt7
+    mb1,
+    flex_between_bottom,
+    flex_end,
+    fw500,
+    justify_content_end,
+    h13,
+    textarea,
+    pe1,
+    me2,
+    text_primary,
+    wt3,
+    wt7,
+    mb2,
+    text_gray
 } from '../../common/style/AtStyle';
 import {sub_page, gary_bar, gray_bar} from '../../common/style/SubStyle';
 import axios from "axios";
@@ -68,7 +81,7 @@ import goodsthum1 from "../../assets/img/goods_thum1.jpg";
 
 export default function OrderForm({route,navigation}) {
 
-    
+
 
     /**--------------------------------------필수 정보사항--------------------------------------------------**/
     const {order_uid, addr1, zonecode} = route.params;
@@ -77,9 +90,10 @@ export default function OrderForm({route,navigation}) {
         setMember(value);
     });
     /**--------------------------------------상태값 셋팅--------------------------------------------------**/
-    const [CartList, setCartList]                  = useState([]);      // 장바구니 상태 정의
-    const [modAddr, setmodAddr] = useState(`add`); // 신규, 기존 배송지 선택 상태 정의
-    const [Hope, setHope]           = useState({
+    const [CartList, setCartList]         = useState([]);      // 장바구니 상태 정의
+    const [modAddr, setmodAddr]           = useState(`add`); // 신규, 기존 배송지 선택 상태 정의
+    const [DeliList, setDeliList]         = useState([]);   // 배송지 리스트
+    const [Hope, setHope]                 = useState({
         hopeDate    :'',
         hopeTime    :'',
     });
@@ -87,35 +101,21 @@ export default function OrderForm({route,navigation}) {
     /**--------------------------------------주문서 셋팅--------------------------------------------------**/
     const [OrderData, setOrderDate]                = useState({
         act_type                    :"ins_order",           // 주문추가하기 로직
-        order_uid                   :'',             // 주문번호
-        login_status                :'',
-        A_order_uid                 :'',
-        mgr_mem_uid                 :'',
-        mem_uid                     :'',                // 회원 uid
-        order_mem_name              :'',                    // 주문자명  / 담당자명
-        order_mem_mobile            :'',                    // 주문자 휴대전화번호
-        recv_name                   :'',                    // 현장인도자
-        recv_phone                  :'',                    // 현장인도자 전화번호
-        recv_mobile                 :'',                    // 현장인도자 핸드폰번호
-        com_name                    :'',                    // 회사명
-        ceo_name                    :'',                    // 대표자명
-        biz_no                      :'',                    // 사업자번호
-        order_title                 :'',                    //  공사명
-        hope_deli_date              :'',                    // 희망배송일
-        hope_deli_time              :'',                    // 희망배송시간
-        zonecode                    :'',              // 배송지 우편번호
-        addr1                       :'',                 // 배송지 주소1
-        addr2                       :'',                    // 배송지 주소2 상세주소
-        deli_price                  :'',                    // 배송비
-        deli_mem_name               :'',                    // 배송자명
-        deli_mem_mobile             :'',                    // 배송자 전화번호
-        make_price                  :'',                    // 제작비
-        hope_opt_price              :'',                    // 옵션요청비
-        tot_order_price             :'',            // 상품합계
-        settleprice                 :'',            // 상품합계
-
+        mem_uid                     :Member,                // 회원 uid
+        order_title                 :'',    // 회원 uid
+        zonecode                    :'',    // 우편번호
+        addr1                       :'',    // 주소
+        addr2                       :'',    // 상세주소
+        hope_deli_date              :'',    // 희망배송일
+        hope_deli_time              :'',    // 희망배송시간
+        order_mem_name              :'',    // 주문자명
+        recv_name                   :'',    // 받는사람명
+        order_memo                  :'',    // 배송메모
+        settleprice                 :'',    // 상품가격
+        goodsprice                  :'',    // 회원 uid
+        deli_price                  :'',    // 회원 uid
     });
-    
+
     /**---------------------------------주문 uid 추출 하기---------------------------------------------------**/
 
     /**---------------------------------다음 api 셋팅---------------------------------------------------**/
@@ -127,6 +127,28 @@ export default function OrderForm({route,navigation}) {
             zonecode        :zonecode,
             addr1           :addr1,
         });
+    }
+    /**---------------------------------입력한 배송지 검색---------------------------------------------------**/
+    const getDeliList = () => {
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+            act_type        : "get_deli_addr_list",
+            mem_uid         :Member,
+        },{
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            if (res) {
+                // console.log(res.data);
+                const {result, A_deli_info} = res.data;
+                if (result === 'OK') {
+                    setDeliList(A_deli_info);
+                } else {
+                    console.log('실패');
+                }
+            }
+        });
+
     }
     /**---------------------------------장바구니 정보 유틸에서 출력---------------------------------------------------**/
     const getCartList = () => {
@@ -151,13 +173,13 @@ export default function OrderForm({route,navigation}) {
             }
         });
 
+
     }
-
-
     /**---------------------------------페이지 진입시 노출---------------------------------------------------**/
     useEffect(() => {
-        daumApi();
-        getCartList();
+        daumApi();  // 다음 api
+        getCartList();  // 장바구니
+        getDeliList();  // 최근배송지
     },[Update,Member]);
 
     /**---------------------------------입력폼 입력---------------------------------------------------**/
@@ -166,142 +188,77 @@ export default function OrderForm({route,navigation}) {
 
         if(keyValue === 'zonecode') {setOrderDate({...OrderData, zonecode:e,});}
 
-        setOrderDate({...OrderData, mem_uid         :Member, mgr_mem_uid     :Member, [keyValue]:e,});
+        setOrderDate({...OrderData, mem_uid:Member, mgr_mem_uid:Member, [keyValue]:e,});
     }
 
-    
-    /**---------------------------------주문하기---------------------------------------------------**/
-    const goForm = () => {
-        
-    }
-
-    const goOrder = () => {
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',OrderData,{
+    /**---------------------------------배송지 삭제---------------------------------------------------**/
+    const delDeli = (uid) => {
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+            act_type        : "del_deli_addr",
+            mem_uid         :Member,
+            gmd_sno         :uid,
+        },{
             headers: {
                 'Content-type': 'multipart/form-data'
             }
         }).then((res)=>{
-            if(res) {
-                const {result, order_no} = res.data;
-                console.log(result);
-                if(result === 'OK') {
-                    console.log(order_no);
-                    let msg = `주문이 완료되었습니다. \n 주문번호 : ${order_no}`;
-                    return Alert.alert('',msg,[{
-                        text:"확인",
-                        onPress:()=>{
-                            navigation.replace('발주내역');
-                        }
-                    }]);
+            if (res) {
+                const {result} = res.data;
+                if (result === 'OK') {
+                    let temp = DeliList.filter(val=>(val.gmd_sno !== uid) && val);
+                    setDeliList(temp);
+                    return Alert.alert('','배송지를 삭제하였습니다.');
                 } else {
                     console.log('실패');
-                    return;
                 }
-            } else {
-
             }
         });
     }
 
-    /**--------------------------------------------------------------------------------------------------------------------------**/
-    if(order_uid !== undefined) {
-        return (
-            <>
-                <KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding'})}>
-                    {/**----------------------------------------------신규배송지 입력---------------------------------------------------**/}
-                    <ScrollView style={[bg_white,]}>
-                        <View style={{paddingBottom:110,}}>
-                            <View style={[FormStyle.FormGroup]}>
-                                <View>
-                                    <Text style={[FormStyle.FormTitle]}>배송지 입력</Text>
-                                </View>
-                                {/**----------------------------------------------신규, 기존 배송지 선택--------------------------------------------------**/}
-                                <View>
-                                    <View style={[FormStyle.FormGroupItems]}>
-                                        <OrderAddress/>
-                                    </View>
-                                </View>
-                                {/**----------------------------------------------배송지 입력--------------------------------------------------**/}
-                                {(modAddr === 'mod') && (
-                                    <>
-                                        <Text>기존 배송지 검색</Text>
-                                    </>
-                                )}
-                                <OrderTitle/>
-                            </View>
-                            {/**----------------------------------------------희망배송일 선택--------------------------------------------------**/}
-                            <View>
-                                {/*==============제목==============*/}
-                                <View style={[d_flex, align_items_center, FormStyle.FormDate, {justifyContent:"space-between"}]}>
-                                    {/*체크박스*/}
-                                    <Text style={[FormStyle.FormDateLabel]}>도착일</Text>
-                                    <Text style={[FormStyle.FormDateLabel]}></Text>
-                                </View>
-                                {/*==============캘린더==============*/}
-                                <View style={[FormStyle.FormGroup, {paddingTop:5, paddingBottom: 5,}]}>
-                                    <CalendarStrip
-                                        scrollable
-                                        onDateSelected={(Date)=> {
-                                            setHope({
-                                                ...Hope,
-                                                hopeDate: String(Date.format('M' + '월' + 'D' + '일')),
-                                            });
-                                            setOrderDate({
-                                                ...OrderData,
-                                                hope_deli_date: String(Date.format('YYYY-MM-DD')),
-                                            });
-                                        }
-                                        }
-                                        minDate={`2020-12-31`}
-                                        maxDate={`2024-12-31`}
-                                        style={{height:150, paddingTop: 20, paddingBottom: 10}}
-                                        daySelectionAnimation={{
-                                            type:"background",
-                                            highlightColor:"#3D40E0",
-                                        }}
-                                        highlightDateNameStyle={{color:"#fff",fontSize:12, paddingBottom:5,}}
-                                        highlightDateNumberStyle={{color:"#fff",fontSize:16,}}
-                                        weekendDateNameStyle={{color:"#452"}}
-                                        dateNameStyle={{fontSize:12, color:"#666", paddingBottom:5,}}
-                                        dateNumberStyle={{fontSize:16}}
+    /**---------------------------------주문하기---------------------------------------------------**/
+    const goForm = () => {
+        /**-------------------------1. 입력창 체크 루틴-----------------------------**/
+        let order_data = OrderData;
+        if(order_data.order_mem_name) {
+            Alert.alert('','없습니다.');
+            return false;
+        }
+        if(order_data.order_mem_name) {
+            Alert.alert('','없습니다.');
+            return false;
+        }
+        if(order_data.order_mem_name) {
+            Alert.alert('','없습니다.');
+            return false;
+        }
+        if(order_data.order_mem_name) {
+            Alert.alert('','없습니다.');
+            return false;
+        }
+        if(order_data.order_mem_name) {
+            Alert.alert('','없습니다.');
+            return false;
+        }
 
-                                    />
-                                </View>
-                                {/**----------------------------------------------희망배송시간 선택--------------------------------------------------**/}
-                                <View>
-                                    <HopeTime/>
-                                </View>
-                                {/**----------------------------------------------현장인도자 정보--------------------------------------------------**/}
-                                <View style={[FormStyle.FormGroup]}>
-                                    <OrderMemInfo/>
-                                </View>
-                                {/**----------------------------------------------상품목록--------------------------------------------------**/}
-                                <View>
-                                    <OrderCartList/>
-                                </View>
-                                {/**----------------------------------------------총금액--------------------------------------------------**/}
-                                <View>
-                                    <OrderTotalPrice/>
-                                </View>
-                            </View>
-                        </View>
-                    </ScrollView>
-                    {/**----------------------------------------------발주신청--------------------------------------------------**/}
-                    <View style={[bg_gray, {paddingTop:6, paddingBottom:38, position:"absolute", left:0, bottom:0, width:"100%"}]}>
-                        <TouchableOpacity onPress={goForm}>
-                            <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
-                                <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
-                            </View>
-                            <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
-                                발주요청
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
 
-                </KeyboardAvoidingView>
-            </>
-        );
+        /**-------------------------2. 최종입력창--------------------------------**/
+        Alert.alert('','주문하시겠습니까?',[
+            // left
+            {text:'취소',
+            style: 'destructive',
+            onPress:()=>{}
+            },
+            // right
+            {text:'확인',
+            onPress:()=>{goOrder();}
+            },
+        ])
     }
+
+    const goOrder = () => {
+        console.log('주문완료');
+    }
+
 
     /**------------------------------신규배송지, 기존배송지 선택-------------------------------**/
     function OrderAddress() {
@@ -338,19 +295,91 @@ export default function OrderForm({route,navigation}) {
             </>
         );
     }
+    /**--------------------------------기존 배송지 선택----------------------------------**/
+    function OrderSearch() {
+        const [Show, setShow]         = useState(false);    // 검색창 노출 여부
+
+        return(
+            <>
+                <Text style={[mb1]}>기존 배송지 검색</Text>
+                <View style={[styles.ord_tit_list_search,mb2]}>
+                    <View style={[styles.select_box]}>
+                        <TouchableOpacity onPress={()=>{setShow(!Show)}}>
+                            <View style={[styles.border]}>
+                                {/**---------------------------선택주소 노출--------------------------------**/}
+                                <Text style={[]}>{DeliList[0].gmd_address}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <View style={[styles.select_icon_box]}>
+                            <Text style={[styles.select_icon]}>▼</Text>
+                        </View>
+                    </View>
+                    {/**---------------------------클릭시 노출--------------------------------**/}
+                    {(Show) && (
+                        <View style={[styles.ord_tit_list_box]}>
+                            <TextInput style={[input,{flex:1,marginRight:16},mb1]} placeholder="공사명 입력"
+                            // onChangeText={(zonecode)=>goInput("zonecode",zonecode)}
+                            // returnKeyType="next"
+                            // blurOnSubmit={false}
+                            />
+                            <View style={[styles.ord_tit_list]}>
+                                {/**---------------------------반복문 구간--------------------------------**/}
+                                {DeliList.map(val=>(
+                                    <>
+                                        <View style={[styles.Recent_search_list_item]}>
+                                            <View style={flex_between}>
+                                                <View>
+                                                    <TouchableOpacity onPress={()=>goSearch(val.find_txt)}>
+                                                        <Text style={[h14,styles.txt_color2]}>
+                                                            {val.gmd_address}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <View>
+                                                    <View style={[flex,justify_content_end]}>
+                                                        <Text style={[h14,text_gray]}>
+                                                            {val.gmd_regdate}
+                                                        </Text>
+                                                        <TouchableOpacity style={ms2} onPress={()=>delDeli(val.gmd_sno)}>
+                                                            <Text style={[h14,styles.txt_color]}>X</Text>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </>
+                                ))}
+
+
+                            </View>
+                        </View>
+                    )}
+
+                </View>
+            </>
+        );
+    }
     /**------------------------------공사명, 배송지 입력-------------------------------**/
     function OrderTitle() {
+
+        let goInput = (key, value) => {
+            setOrderDate({
+                ...OrderData,
+                [key]:value,
+            });
+        }
+
         return (
             <>
                 {/*==============공사명===============*/}
                 <View style={[FormStyle.FormGroupItems]}>
                     <Text style={[FormStyle.FormLabel]}>공사명</Text>
                     <TextInput style={[input,{flex:1}]}
-                               placeholder="공사명"
-                               value={OrderData.order_title}
-                               onChangeText={(order_title)=>goInput("order_title",order_title)}
-                               returnKeyType="next"
-                               blurOnSubmit={false}
+                       placeholder="공사명"
+                       value={OrderData.order_title}
+                       onChangeText={(order_title)=>goInput("order_title",order_title)}
+                       // returnKeyType="next"
+                       // blurOnSubmit={false}
                     />
                 </View>
                 {/*==============배송지 주소===============*/}
@@ -413,22 +442,7 @@ export default function OrderForm({route,navigation}) {
                 {/*==============시간입력==============*/}
                 <View style={[FormStyle.FormGroup]}>
                     <View style={[d_flex, align_items_center]}>
-                        <View style={[styles.formSelect,{flex:0.3, marginRight:10,}]}>
-                            <RNPickerSelect
-                                placeholder={{label:"오전,오후", value:null}}
-                                onValueChange={(hope_deli_time) => goInput('hope_deli_time',hope_deli_time)}
-                                items={Time1}
-                                useNativeAndroidPickerStyle={false}
-                                style={{
-                                    placeholder:{color:'gray'},
-                                    inputAndroid : styles.input,
-                                    inputAndroidContainer : styles.inputContainer,
-                                    inputIOS: styles.input,
-                                    inputIOSContainer : styles.inputContainer,
-                                }}
-                            />
-                        </View>
-                        <View style={[styles.formSelect,{flex:0.7}]}>
+                        <View style={[styles.formSelect,{flex:1}]}>
                             <RNPickerSelect
                                 placeholder={{label:"시간을 선택해주세요.", value:null}}
                                 onValueChange={(hope_deli_time) => goInput('hope_deli_time',hope_deli_time)}
@@ -570,18 +584,20 @@ export default function OrderForm({route,navigation}) {
     }
     /**-----------------------------------------------총금액------------------------------------------------------**/
     function OrderTotalPrice() {
-        // 자재 총 수량
+
         let total_cnt_arr   = order_uid.map(cate=>cate.A_sel_option.map(val=>Number(val.option_cnt)));
-        let total_price_arr = order_uid.map(cate=>cate.sum_order_price);
+        let total_price_arr = CartList.map(cate=>cate.sum_order_price);
         let total_cnt = total_cnt_arr.reduce((val,idx)=>{
             return val.concat(idx);
         });
+
         let goods_total_cnt = 0;
         let goods_total_price = 0;
         for (let i = 0; i < total_cnt_arr.length; i++) {
             goods_total_cnt   += total_cnt[i];
             goods_total_price += total_price_arr[i];
         }
+
         return(
             <>
                 <View style="">
@@ -609,10 +625,136 @@ export default function OrderForm({route,navigation}) {
             </>
         );
     }
+
+
+    /**--------------------------------------------------------------------------------------------------------------------------**/
+    console.log(OrderData,' / 주문정보')
+    return (
+        <>
+            <KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding'})}>
+                {/**----------------------------------------------신규배송지 입력---------------------------------------------------**/}
+                <ScrollView style={[bg_white,]}>
+                    <View style={{paddingBottom: 110,}}>
+                        <View style={[FormStyle.FormGroup]}>
+                            <View>
+                                <Text style={[FormStyle.FormTitle]}>배송지 입력</Text>
+                            </View>
+                            {/**----------------------------------------------신규, 기존 배송지 선택--------------------------------------------------**/}
+                            <View>
+                                <View style={[FormStyle.FormGroupItems]}>
+                                    <OrderAddress/>
+                                </View>
+                            </View>
+                            {/**----------------------------------------------기존배송지 선택시 노출--------------------------------------------------**/}
+                            {(modAddr === 'mod') && (
+                                <>
+                                    <OrderSearch/>
+                                </>
+                            )}
+                            {/**----------------------------------------------배송지 입력--------------------------------------------------**/}
+                            <OrderTitle/>
+                        </View>
+                        {/**----------------------------------------------희망배송일 선택--------------------------------------------------**/}
+                        <View>
+                            {/*==============제목==============*/}
+                            <View
+                                style={[d_flex, align_items_center, FormStyle.FormDate, {justifyContent: "space-between"}]}>
+                                {/*체크박스*/}
+                                <Text style={[FormStyle.FormDateLabel]}>도착일</Text>
+                                <Text style={[FormStyle.FormDateLabel]}></Text>
+                            </View>
+                            {/*==============캘린더==============*/}
+                            <View style={[FormStyle.FormGroup, {paddingTop: 5, paddingBottom: 5,}]}>
+                                <CalendarStrip
+                                    scrollable
+                                    onDateSelected={(Date) => {
+                                        setHope({
+                                            ...Hope,
+                                            hopeDate: String(Date.format('M' + '월' + 'D' + '일')),
+                                        });
+                                        setOrderDate({
+                                            ...OrderData,
+                                            hope_deli_date: String(Date.format('YYYY-MM-DD')),
+                                        });
+                                    }
+                                    }
+                                    minDate={`2020-12-31`}
+                                    maxDate={`2024-12-31`}
+                                    style={{height: 150, paddingTop: 20, paddingBottom: 10}}
+                                    daySelectionAnimation={{
+                                        type: "background",
+                                        highlightColor: "#3D40E0",
+                                    }}
+                                    highlightDateNameStyle={{color: "#fff", fontSize: 12, paddingBottom: 5,}}
+                                    highlightDateNumberStyle={{color: "#fff", fontSize: 16,}}
+                                    weekendDateNameStyle={{color: "#452"}}
+                                    dateNameStyle={{fontSize: 12, color: "#666", paddingBottom: 5,}}
+                                    dateNumberStyle={{fontSize: 16}}
+
+                                />
+                            </View>
+                            {/**----------------------------------------------희망배송시간 선택--------------------------------------------------**/}
+                            <View>
+                                <HopeTime/>
+                            </View>
+                            {/**----------------------------------------------현장인도자 정보--------------------------------------------------**/}
+                            <View style={[FormStyle.FormGroup]}>
+                                <OrderMemInfo/>
+                            </View>
+                            {/**----------------------------------------------상품목록--------------------------------------------------**/}
+                            <View>
+                                <OrderCartList/>
+                            </View>
+                            {/**----------------------------------------------총금액--------------------------------------------------**/}
+                            <View>
+                                <OrderTotalPrice/>
+                            </View>
+                        </View>
+                    </View>
+                </ScrollView>
+                {/**----------------------------------------------발주신청--------------------------------------------------**/}
+                <View style={[bg_gray, {
+                    paddingTop: 6,
+                    paddingBottom: 38,
+                    position: "absolute",
+                    left: 0,
+                    bottom: 0,
+                    width: "100%"
+                }]}>
+                    <TouchableOpacity onPress={goForm}>
+                        <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
+                            <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
+                        </View>
+                        <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
+                            발주요청
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+
+            </KeyboardAvoidingView>
+        </>
+    );
 }
+
 const styles = StyleSheet.create({
-
-
+    border:{
+        borderWidth:1,
+        borderColor:"#EDEDF1",
+        paddingVertical:12,
+        paddingHorizontal:12,
+        borderRadius:5,
+    },
+    ord_tit_list_box:{
+        paddingHorizontal:10,
+        paddingVertical:12,
+        borderLeftWidth:1,
+        borderRightWidth:1,
+        borderBottomWidth:1,
+        borderColor:"#EDEDF1",
+    },
+    Recent_search_list_item:{
+        paddingVertical:5,
+    },
     formSelect : {
         borderWidth: 1,
         borderColor:"#e6e6e6",
@@ -640,5 +782,16 @@ const styles = StyleSheet.create({
     CancelDetail_list_items:{
         borderBottomWidth:1,
         borderColor:"#EDEDF1",
+    },
+    select_box:{
+        position:"relative",
+    },
+    select_icon_box:{
+        position: "absolute",
+        top: 0,
+        right: 10,
+        bottom: 0,
+        justifyContent: "center",
+        alignItems: "center",
     },
 });

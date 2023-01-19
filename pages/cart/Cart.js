@@ -302,9 +302,6 @@ export default function Cart({route, navigation}) {
             });
 
             setCartList(temp);
-
-
-
         }
     }
 
@@ -319,20 +316,15 @@ export default function Cart({route, navigation}) {
         let find = result.indexOf(CartUid);
 
         if(find !== 0) {
-
             Alert.alert('','동일 카테고리면 선택 가능합니다.');
             setCartList(CartList.map((cate) => {
                 return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
                         return {...val, goods_chk:false}
                     })}
             }));
-
             return false;
-
         } else {
-
             return navigation.navigate('배송정보등록',{order_uid:total});;
-
         }
 
         console.log(total);
