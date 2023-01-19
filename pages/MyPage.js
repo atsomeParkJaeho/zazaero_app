@@ -98,6 +98,21 @@ export default function MyPage({navigation, route}) {
                                 </View>
                             </TouchableOpacity>
                         </View>
+                        <View style={styles.mypageListItem}>
+                            <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
+                                navigation.navigate('공사현황목록')
+                            }}>
+                                <View style={styles.flex}>
+                                    <View style={styles.mypageListItemTitle}>
+                                        <Text style={styles.mypageList_name}>공사현황조회</Text>
+                                    </View>
+                                    <View style={styles.mypageListItemIcon}>
+                                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
+                                        <Text style={styles.mypageList_name}> > </Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
 
                         <View style={styles.mypageListItem}>
                             <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
