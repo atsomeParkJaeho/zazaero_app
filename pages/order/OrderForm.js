@@ -68,6 +68,8 @@ import goodsthum1 from "../../assets/img/goods_thum1.jpg";
 
 export default function OrderForm({route,navigation}) {
 
+    
+
     /**--------------------------------------필수 정보사항--------------------------------------------------**/
     const {order_uid, addr1, zonecode} = route.params;
     const [Member, setMember]          = useState();
@@ -115,6 +117,9 @@ export default function OrderForm({route,navigation}) {
         settleprice                 :'',            // 상품합계
 
     });
+    
+    /**---------------------------------주문 uid 추출 하기---------------------------------------------------**/
+
     /**---------------------------------다음 api 셋팅---------------------------------------------------**/
     const daumApi = () => {
         setOrderDate({
@@ -127,14 +132,19 @@ export default function OrderForm({route,navigation}) {
     }
     /**---------------------------------장바구니 정보 유틸에서 출력---------------------------------------------------**/
     const getCartList = () => {
+        let order_result_uid = order_uid.map(val=>val.order_uid);
+
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
             act_type        : "get_order_ready",
+            // mem_uid         : Member,
+            order_uid       : order_result_uid,         // 배열로감
         }, {
             headers: {
                 'Content-type': 'multipart/form-data'
             }
         }).then((res) => {
             if (res) {
+                console.log(res.data);
                 const {result} = res.data;
                 if (result === 'OK') {
 
@@ -143,21 +153,16 @@ export default function OrderForm({route,navigation}) {
                 }
             }
         });
+
     }
 
     /**---------------------------------페이지 진입시 노출---------------------------------------------------**/
     useEffect(() => {
-
         daumApi();
         getCartList();
-
     },[Update]);
 
-
-
-
-
-    console.log(OrderData, '/ 주문정보 ');
+    // console.log(OrderData, '/ 주문정보 ');
     return (
         <>
 

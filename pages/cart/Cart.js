@@ -90,7 +90,7 @@ export default function Cart({route, navigation}) {
                     setCartList(A_order);
                     // console.log(query,'/ 쿼리');
                 } else {
-                    console.log('실패');
+                    console.log('실패2');
                 }
             }
         });
