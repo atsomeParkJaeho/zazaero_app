@@ -9,7 +9,8 @@ import {
     TextInput,
     TouchableWithoutFeedback,
     Alert,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    useWindowDimensions
 } from 'react-native';
 
 import RenderHtml from 'react-native-render-html';
@@ -39,7 +40,7 @@ import {
     count_btn,
     pos_center,
     count_btn_txt,
-    wt1, wt9, text_center, mt1
+    wt1, wt9, text_center, mt1, bg_danger
 } from '../../common/style/AtStyle';
 import {sub_page, gary_bar, sub_container} from '../../common/style/SubStyle';
 
@@ -50,6 +51,7 @@ import WishlistNon from "../../icons/ico_heart_nc.svg";
 import Wishlist from "../../icons/ico_heart_c.svg";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import RenderHTML from "react-native-render-html";
 
 
 
@@ -242,11 +244,16 @@ export default function GoodsDetail({route,navigation}) {
     const source = {
         html: GoodsDetail.summary_contents
     };
+    const tagsStyles = {
+        img: {
 
+        },
+
+    };
 
     console.log('상품정보 확인 / ',GoodsDetail);
 
-
+    const { width } = useWindowDimensions();
 
     return (
         <>
@@ -332,7 +339,7 @@ export default function GoodsDetail({route,navigation}) {
                             {/*상품정보*/}
                             <View style={[styles.GoodsDetail_more_image,mt5]}>
                                 {/*<Text style={[styles.GoodsDetail_more_image_txt]}>추가 이미지</Text>*/}
-                                <RenderHtml source={source}/>
+                                <RenderHtml source={source} contentWidth={380} tagsStyles={tagsStyles}/>
                             </View>
                             {/*추가 이미지*/}
                         </View>
@@ -380,6 +387,10 @@ export default function GoodsDetail({route,navigation}) {
 }
 
 const styles = StyleSheet.create({
+    RenderHtml:{
+        backgroundColor:"blue",
+        display:"none",
+    },
     avoidingView: {
         flex: 1,
     },
