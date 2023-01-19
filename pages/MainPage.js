@@ -76,7 +76,7 @@ function Cate2nd({uid,navigation,name}) {
                                     navigation.navigate('상품목록', {Cate1stUid: uid, Cate2ndUid: val.ind_cfg_uid, name: name})
                                 }}>
                                     {(img_src) &&
-                                    <Image style={styles.ct_img} source={{uri:img_src}}/>
+                                        <Image style={styles.ct_img} source={{uri:img_src}}/>
                                     }
                                     {/*<Image style={styles.ct_img} source={req}/>*/}
                                     <Text style={styles.Accordion_items_link_txt}>{val.cfg_val1}</Text>
@@ -169,16 +169,16 @@ export default function MainPage({navigation, route}) {
                     {Cate1st.map((val, idx) => (
                         <>
                             <List.Accordion style={[styles.Accordion_tit]}
-                            id={`${idx+1}`}
-                            title={[val.cfg_val1]}
-                            titleStyle={{font:50}}
-                            key={val.ind_cfg_uid}
+                                            id={`${idx+1}`}
+                                            title={[val.cfg_val1]}
+                                            titleStyle={{font:50}}
+                                            key={val.ind_cfg_uid}
                             >
                                 {/*=================2차 카테고리===============*/}
                                 <View style={[styles.w3,d_flex,{flexWrap:"wrap"}]}>
                                     <Cate2nd navigation={navigation}
-                                    name={val.cfg_val1}
-                                    uid={val.ind_cfg_uid}
+                                             name={val.cfg_val1}
+                                             uid={val.ind_cfg_uid}
                                     />
                                 </View>
                             </List.Accordion>
@@ -238,106 +238,20 @@ export default function MainPage({navigation, route}) {
 
 
 const styles = StyleSheet.create({
-
-    main_wrap: {
-        paddingBottom: 200,
-        marginBottom: 100,
-        backgroundColor: "#fff",
-    },
-
     top_inner: {
         paddingVertical: 20,
         paddingHorizontal: 16,
-
         backgroundColor: "#fff",
     },
-    main_logo: {
-        width: 65,
-        height: 20,
-    },
-    me_10: {
-        marginRight: 8,
-    },
-    top_innertwo: {
-        flexDirection: "row",
-        justifyContent: "space-around",
-    },
     title: {
-        //폰트 사이즈
         fontSize: 20,
-        //폰트 두께
         fontWeight: '700',
-        //위 공간으로 부터 이격
         marginTop: 50,
-        //왼쪽 공간으로 부터 이격'
         marginLeft: 20
     },
-    logoimg: {
-        //컨텐츠의 넓이 값
-        width: 65,
-        //컨텐츠의 높이 값
-        height: 20,
-    },
-    mainImage: {
-        //컨텐츠의 넓이 값
-        width: '100%',
-        //컨텐츠의 높이 값
-        height: 200,
-        //컨텐츠의 모서리 구부리기
-        borderRadius: 0,
-        marginTop: 20,
-        //컨텐츠 자체가 앱에서 어떤 곳에 위치시킬지 결정(정렬기능)
-        //각 속성의 값들은 공식문서에 고대로~ 나와 있음
-        alignSelf: "center"
-    },
-    middleContainer: {
-        marginTop: 20,
-        marginLeft: 10,
-        height: 60
-    },
-    middleButton01: {
-        width: 100,
-        height: 50,
-        padding: 15,
-        backgroundColor: "#fdc453",
-        borderColor: "deeppink",
-        borderRadius: 15,
-        margin: 7
-    },
-    middleButton02: {
-        width: 100,
-        height: 50,
-        padding: 15,
-        backgroundColor: "#fe8d6f",
-        borderRadius: 15,
-        margin: 7
-    },
-    middleButton03: {
-        width: 100,
-        height: 50,
-        padding: 15,
-        backgroundColor: "#9adbc5",
-        borderRadius: 15,
-        margin: 7
-    },
-    middleButton04: {
-        width: 100,
-        height: 50,
-        padding: 15,
-        backgroundColor: "#f886a8",
-        borderRadius: 15,
-        margin: 7
-    },
-    middleButtonText: {
-        color: "#fff",
-        fontWeight: "700",
-        //텍스트의 현재 위치에서의 정렬
-        textAlign: "center"
-    },
-
-
     main_footer: {
         backgroundColor: "#F9F9FB",
+        marginBottom: Platform.OS === 'ios' ? 100 : 80,
     },
     main_footer_flex: {
         flexDirection: "row",
@@ -364,9 +278,6 @@ const styles = StyleSheet.create({
         color: "#999",
         padding: 3,
     },
-    Section: {
-        marginBottom: 0,
-    },
     Accordion_tit: {
         backgroundColor: "#fff",
         borderBottomWidth: 8,
@@ -377,17 +288,12 @@ const styles = StyleSheet.create({
         borderBottomWidth: 8,
         borderColor: "#EDEDF1"
     },
-    Accordion_itemsflex: {
-        flexDirection: "row",
-        flexWrap: "wrap",
-        alignItems: "center",
-    },
     w3: {
+        backgroundColor: "#fff",
         flex:1,
         paddingBottom: 12,
         borderBottomWidth: 8,
         borderColor: "#EDEDF1"
-
     },
     ct_img: {
         width: 60,
@@ -395,7 +301,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginLeft: 'auto',
         marginRight: 'auto',
-
     },
     Accordion_items_link_txt: {
         textAlign: "center",
@@ -403,24 +308,5 @@ const styles = StyleSheet.create({
         lineHeight: 24,
         color: "#222",
         letterSpacing: -1,
-    },
-    Notification: {
-        position: "absolute",
-        left: "50%",
-        bottom: Platform.OS === 'ios' ? 120 : 100,
-        zIndex: 50,
-        width: "100%",
-        transform: [{ translateX: -100 }],
-    },
-    Notification_box:{
-        width:200,
-        paddingVertical:12,
-        paddingHorizontal:25,
-        backgroundColor: 'rgba(0,0,0, 0.5)',
-        borderRadius:50,
-    },
-    Notification_box_txt:{
-        textAlign:"center",
-        color:"#fff",
     },
 });

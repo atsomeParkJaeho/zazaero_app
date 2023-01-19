@@ -317,9 +317,8 @@ export default function Wishlist({route,navigation}) {
                                 </List.Accordion>
                             </>
                         ))}
-
                     </List.Section>
-                    <View style={[styles.padding_bottom]} />
+
                 </View>
             </ScrollView>
             <Footer navigation={navigation}/>
@@ -357,8 +356,8 @@ export default function Wishlist({route,navigation}) {
 
 
 const styles = StyleSheet.create({
-    padding_bottom:{
-      paddingBottom:100,
+    Section:{
+      marginBottom: Platform.OS === 'ios' ? 110 : 90,
     },
     go_cart: {
         paddingBottom: 36,
@@ -376,23 +375,10 @@ const styles = StyleSheet.create({
     all_check_txt:{
         marginLeft:5,
     },
-    goods_cart_del_btn:{
-        fontSize:12,
-        color:"#a0aec0",
-    },
     Accordion_tit:{
         backgroundColor:"#f9f9fb",
         borderBottomWidth:1,
         borderColor:"#ededf1",
-    },
-    Accordion_items:{
-        paddingVertical:10,
-        paddingHorizontal:16,
-        paddingLeft:16,
-    },
-    flex:{
-        flexDirection:"row",
-        alignItems:"flex-start",
     },
     flex_item1:{
         width:"25%",
@@ -417,13 +403,6 @@ const styles = StyleSheet.create({
         right:"0%",
         bottom:"1%",
     },
-    cate_2st_list:{
-        flexDirection:"row",
-        flexWrap:"wrap",
-        alignItems:"center",
-        borderTopWidth:2,
-        borderColor:"#ddd",
-    },
     cate_2st_btn:{
         padding:6,
         width:"33.3333%",
@@ -438,18 +417,6 @@ const styles = StyleSheet.create({
         paddingVertical:26,
         borderBottomWidth:1,
         borderColor:"#ddd",
-    },
-    goods_like_icon:{
-        width:21,
-        height:18,
-    },
-    cart_btn:{
-        width:36,
-        lineHeight:36,
-        fontSize: Platform.OS === 'ios' ? 18 : 17,
-        backgroundColor:"#ededf1",
-        color:"#696a81",
-        borderRadius:50,
     },
     flex_bottom:{
         flexDirection:"row",
