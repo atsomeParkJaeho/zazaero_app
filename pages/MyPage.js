@@ -10,6 +10,9 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Footer from "./Footer";
 
+import ArrowRight from '../icons/arrow_r.svg'
+
+
 export default function MyPage({navigation, route}) {
 
 
@@ -80,7 +83,7 @@ export default function MyPage({navigation, route}) {
                                     </View>
                                     <View style={styles.mypageListItemIcon}>
                                         {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                                        <Text style={styles.mypageList_name}> > </Text>
+                                        <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -93,7 +96,7 @@ export default function MyPage({navigation, route}) {
                                     </View>
                                     <View style={styles.mypageListItemIcon}>
                                         {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                                        <Text style={styles.mypageList_name}> > </Text>
+                                        <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -108,7 +111,7 @@ export default function MyPage({navigation, route}) {
                                     </View>
                                     <View style={styles.mypageListItemIcon}>
                                         {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                                        <Text style={styles.mypageList_name}> > </Text>
+                                        <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -124,7 +127,7 @@ export default function MyPage({navigation, route}) {
                                     </View>
                                     <View style={styles.mypageListItemIcon}>
                                         {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                                        <Text style={styles.mypageList_name}> > </Text>
+                                        <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -139,7 +142,7 @@ export default function MyPage({navigation, route}) {
                                     </View>
                                     <View style={styles.mypageListItemIcon}>
                                         {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                                        <Text style={styles.mypageList_name}> > </Text>
+                                        <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -154,7 +157,7 @@ export default function MyPage({navigation, route}) {
                                     </View>
                                     <View style={styles.mypageListItemIcon}>
                                         {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                                        <Text style={styles.mypageList_name}> > </Text>
+                                        <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -169,7 +172,7 @@ export default function MyPage({navigation, route}) {
                                     </View>
                                     <View style={styles.mypageListItemIcon}>
                                         {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                                        <Text style={styles.mypageList_name}> > </Text>
+                                        <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
                                     </View>
                                 </View>
                             </TouchableOpacity>
