@@ -363,6 +363,12 @@ export const OnlyEng = (text) => {
     return String(text).replace(/[^A-Za-z0-9]/ig, '');
 }
 
+export const DateChg = (text) => {
+    let today = new Date(text);
+    let dateFormat1 = today.getFullYear() + '년 ' + (today.getMonth()+1) + '월 ' + today.getDate() + '일 ';
+    return String(dateFormat1);
+}
+
 export const bankAccount = ["자재로(이정완)_국민은행 1234-23-5968714"];
 
 
