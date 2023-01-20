@@ -73,7 +73,7 @@ import {
     btn_outline_black,
     h14,
     h15,
-    wt8, bg_light, justify_content_end, pe1, mb1, me2, h20,
+    wt8, bg_light, justify_content_end, pe1, mb1, me2, h20, pt1,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 import Main_logo from "../../icons/main_logo.svg";
@@ -425,8 +425,6 @@ export default function OrderDtail({route,navigation}) {
                         </View>
                     </View>
                     {/*============================결제정보==========================*/}
-                    {/*===============결제 완료시에만 노출한다==========================*/}
-                    {(OrderDetail.ord_status === 'pay_done') && (
                     <View style="">
                         <View style={container}>
                             <Text style={[h18]}>결제 정보</Text>
@@ -454,6 +452,11 @@ export default function OrderDtail({route,navigation}) {
                                         <Text style={[h14]}>{Price(OrderDetail.deli_price)}원</Text>
                                     </View>
                                     {/*배송비*/}
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>포인트 결제</Text>
+                                        <Text style={[h14,text_danger]}>- 500,000 원</Text>
+                                    </View>
+                                    {/*배송비*/}
                                     <View style={[flex,justify_content_end]}>
                                         <Text style={[h14,styles.color1,me2]}>총 결제금액</Text>
                                         <Text style={[h16,text_primary]}>{Price(OrderDetail.settleprice)}원</Text>
@@ -463,15 +466,32 @@ export default function OrderDtail({route,navigation}) {
                             </View>
                         </View>
                     </View>
-                    )}
-                    {/*===============결제대기시에만  노출한다==========================*/}
-                    {/*=================결제정보========================*/}
-                    {(OrderDetail.ord_status === 'pay_ready') && (
+                    {/**/}
                     <View style={container}>
+                        <View style={[pb2]}>
+                            <Text style={[h18,mb2]}>포인트 결제</Text>
+                            <View style={[flex,mb1]}>
+                                <Text style={[h14]}>보유포인트 : </Text>
+                                <Text style={[h14,text_primary]}>500,000원</Text>
+                            </View>
+                            <View style={[flex]}>
+                                <View style={[wt7]}>
+                                    <TextInput style={[input]}
+                                               placeholder="금액입력"
+                                    />
+                                </View>
+                                <View style={[wt3,ps1]}>
+                                    <TouchableOpacity onPress={()=>setPayMement('bank')} style={[bg_gray,pt1,pb1]}>
+                                        <Text style={[h14,text_center]}>전액사용</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
                         <Text style={[h18,mb2]}>결제유형</Text>
                         {/*=============결제 유형선택=================*/}
+
                         <View style={[flex,pb2]}>
-                            {/*============신규공사========*/}
+                            {/*====================*/}
                             <TouchableOpacity onPress={()=>setPayMement('bank')}>
                                 <View style={[flex]}>
                                     <View style={[styles.border_Circle]}>
@@ -484,7 +504,7 @@ export default function OrderDtail({route,navigation}) {
                                     <Text style={[styles.Chk, {paddingLeft: 5}]}>무통장결제</Text>
                                 </View>
                             </TouchableOpacity>
-                            {/*===========기존공사===============*/}
+                            {/*===============무통장결제 결제 선택시 노출============*/}
                             <TouchableOpacity onPress={()=>setPayMement('card')}>
                                 <View style={[flex,ms2]}>
                                     <View style={[styles.border_Circle]}>
@@ -497,40 +517,49 @@ export default function OrderDtail({route,navigation}) {
                                     <Text style={[styles.Chk, {paddingLeft: 5}]}>카드결제</Text>
                                 </View>
                             </TouchableOpacity>
+                            {/*===============카드 결제 선택시 노출============*/}
                         </View>
-                        {/*===============카드 결제 선택시 노출============*/}
+                        
                         {(PayMement === 'card') && (
-                        <>
-                            <View>
-                                <TouchableOpacity style="" >
-                                    <Text style={[styles.btn,btn_outline_primary,{textAlign:"center"}]}>결제하기</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </>
+                            <>
+                                <View>
+                                    <TouchableOpacity style="" >
+                                        <Text style={[styles.btn,btn_outline_primary,{textAlign:"center"}]}>결제하기</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
                         )}
                         {/*===============무통장 입금시 노출===============*/}
                         {(PayMement === 'bank') && (
-                        <>
-                            <View style={[d_flex,{marginBottom:15,}]}>
-                                <View style={{width:"30%",marginRight:10,}}>
-                                    <TextInput style={[input]}
-                                     placeholder="예금주"
-                                    />
+                            <>
+                                <View style={[d_flex,{marginBottom:15,}]}>
+                                    <View style={{width:"30%",marginRight:10,}}>
+                                        <TextInput style={[input]}
+                                                   placeholder="예금주"
+                                        />
+                                    </View>
+                                    <View style={{width:"70%"}}>
+                                        <TextInput style={[input]}
+                                                   placeholder=""
+                                        />
+                                    </View>
                                 </View>
-                                <View style={{width:"70%"}}>
-                                    <TextInput style={[input]}
-                                    placeholder=""
-                                    />
+                                <View>
+                                    <TouchableOpacity style="" >
+                                        <Text style={[styles.btn,btn_outline_primary,{textAlign:"center"}]}>결제하기</Text>
+                                    </TouchableOpacity>
                                 </View>
-                            </View>
-                            <View>
-                                <TouchableOpacity style="" >
-                                    <Text style={[styles.btn,btn_outline_primary,{textAlign:"center"}]}>결제하기</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </>
+                            </>
                         )}
                     </View>
+                    {/*===============결제 완료시에만 노출한다==========================*/}
+                    {(OrderDetail.ord_status === 'pay_done') && (
+                    <></>
+                    )}
+                    {/*===============결제대기시에만  노출한다==========================*/}
+                    {/*=================결제정보========================*/}
+                    {(OrderDetail.ord_status === 'pay_ready') && (
+                    <></>
                     )}
 
 
