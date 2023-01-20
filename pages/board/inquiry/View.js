@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, useWindowDimensions,Dimensions } from 'react-native'
+import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, useWindowDimensions} from 'react-native'
 import logo from "../../../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
 import axios from "axios";
 import RenderHTML from "react-native-render-html";
-import {bg_white} from "../../../common/style/AtStyle";
+import {bg_gray, bg_primary, bg_white, h14, pb1, pt1, text_center, text_white} from "../../../common/style/AtStyle";
 
 export default function NoticeView({route, navigation}){
     console.log('상세내용');
@@ -27,17 +27,6 @@ export default function NoticeView({route, navigation}){
         });
     },[]);
 
-
-
-    const source = {
-        html: NoticeView.bd_contents
-    };
-    const tagsStyles = {
-        p:{
-            margin:0,
-        },
-    };
-
     console.log(NoticeView);
 
     return(
@@ -56,8 +45,21 @@ export default function NoticeView({route, navigation}){
                     {/*=============상세내용===============*/}
                     <View style={styles.NoticeView_disc}>
                         <View style={styles.NoticeView_disc_in}>
-                           <RenderHTML source={source} contentWidth={350} containerStyle={[styles.RenderHTML]} tagsStyles={tagsStyles}/>
+                            <RenderHTML source={{html:`${NoticeView.bd_contents}`}}/>
                         </View>
+                        {(NoticeView.bd_reply) ? (
+                            <>
+                                <View style={styles.reply}>
+                                    <Text style={styles.NoticeView_title}>답변내용</Text>
+                                    <View style={styles.reply_box}>
+                                        <Text style={[h14,styles.reply_txt]}>{NoticeView.bd_reply}</Text>
+                                    </View>
+                                </View>
+                            </>
+                        ):(
+                            <></>
+                        )}
+
                     </View>
                 </View>
             </ScrollView>
@@ -87,7 +89,10 @@ const styles = StyleSheet.create({
     NoticeView_disc_in:{
         marginTop:20,
     },
-    RenderHTML:{
-        color:'red',
-    },
+    reply_box:{
+        backgroundColor:"#eee",
+        paddingVertical:16,
+        paddingHorizontal:10,
+        borderRadius:5,
+    }
 })
