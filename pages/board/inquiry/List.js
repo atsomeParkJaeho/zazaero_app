@@ -3,7 +3,17 @@ import { StyleSheet, Button, CheckBox,  Text, TextInput, View, Image, TouchableO
 
 
 // 공통 CSS 추가
-import {container, bg_white,flex_between,flex} from '../../../common/style/AtStyle';
+import {
+    container,
+    bg_white,
+    flex_between,
+    flex,
+    wt7,
+    wt3,
+    bg_gray,
+    text_center,
+    bg_primary, text_white, pt2, pt1, pb1, h14
+} from '../../../common/style/AtStyle';
 import {sub_page} from '../../../common/style/SubStyle';
 import axios from "axios";
 
@@ -31,7 +41,7 @@ export default function InquiryList({navigation,route}) {
             }
         });
     }, []);
-    console.log(InqList);
+    console.log('1:1문의 리스트목록',InqList);
     return (
         <>
             <ScrollView style={bg_white}>
@@ -53,15 +63,37 @@ export default function InquiryList({navigation,route}) {
                         <>
                             {InqList.map((val,idx)=>(
                                 <View style={styles.mypageListItem} key={idx}>
-                                    <TouchableOpacity onPress={() => navigation.navigate('공지사항상세',{bd_uid:val.bd_uid})}>
-                                        {/*===========제목=========*/}
-                                        <View style={styles.mypageListItemTitle}>
-                                            <Text style={styles.mypageList_name}>{val.bd_title}</Text>
+                                    <TouchableOpacity onPress={() => navigation.navigate('1:1문의상세',{bd_uid:val.bd_uid})}>
+                                        <View style={[flex]} >
+                                            <View style={[wt7]} >
+                                                {/*===========제목=========*/}
+                                                <View style={styles.mypageListItemTitle}>
+                                                    <Text style={styles.mypageList_name}>{val.bd_title}</Text>
+                                                </View>
+                                                {/*===========날짜============*/}
+                                                <View style={styles.mypageListItemRegDate}>
+                                                    <Text style={styles.mypageList_name2}>{val.reg_date}</Text>
+                                                </View>
+                                            </View>
+                                            <View style={[wt3]} >
+                                                {(val.bd_reply) ? (
+                                                    <>
+                                                        <View style={[bg_primary,pt1,pb1,styles.round1]}>
+                                                            <Text style={[text_center,text_white,h14]}>답변완료</Text>
+                                                        </View>
+                                                    </>
+                                                ):(
+                                                    <>
+                                                        <View style={[bg_gray,pt1,pb1,styles.round1]}>
+                                                            <Text style={[text_center,text_white,h14]}>답변대기</Text>
+                                                        </View>
+                                                    </>
+                                                )}
+                                                
+                                            </View>
                                         </View>
-                                        {/*===========날짜============*/}
-                                        <View style={styles.mypageListItemIcon}>
-                                            <Text style={styles.mypageList_name2}>{val.reg_date}</Text>
-                                        </View>
+
+
                                     </TouchableOpacity>
                                 </View>
                             ))}
@@ -87,7 +119,6 @@ export default function InquiryList({navigation,route}) {
 }
 
 const styles = StyleSheet.create({
-
     InquiryTab_item:{
         width:"50%",
     },
@@ -108,105 +139,10 @@ const styles = StyleSheet.create({
         borderBottomWidth:5,
         borderColor:"#3D40E0"
     },
-
-    container: {
-        backgroundColor: "#fff",
-    },
-    top_inner: {
-        marginTop: 50,
-        paddingLeft: 12,
-        paddingRight: 12,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    me_10: {
-        marginRight: 8,
-    },
-    top_innertwo: {
-        flexDirection: "row",
-        justifyContent: "space-around",
-    },
-    toptitle: {
-        fontSize: 18,
-        fontWeight: "700",
-        color: "#222",
-    },
-    mypageinfo: {
-        paddingLeft: 12,
-        paddingRight: 12,
-        padding: 16,
-        borderBottomWidth: 8,
-        borderColor: '#ededf1',
-
-    },
-    mypageList_name: {
-        fontSize: 20,
-        color: "#08052f",
-        fontFamily: "Amatic-Bold",
-        fontWeight: "700",
-    },
-    id: {
-        marginStart: 6,
-        fontSize: 17,
-        color: "#08052f",
-        fontWeight: "700",
-    },
-    title: {
-        fontSize: 30,
-        fontWeight: "700",
-        color: "#fff",
-        paddingLeft: 30,
-        paddingTop: 100,
-        paddingRight: 30
-    },
-    textContainer: {
-
-        backgroundColor: "#fff",
-        marginTop: 12,
-        borderRadius: 30,
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    aboutImage: {
-        width: 150,
-        height: 150,
-        borderRadius: 30
-    },
-    desc01: {
-        textAlign: "center",
-        fontSize: 20,
-        fontWeight: "700",
-        paddingLeft: 22,
-        paddingRight: 22
-
-    },
-    desc02: {
-        textAlign: "center",
-        fontSize: 15,
-        fontWeight: "700",
-        padding: 22
-    },
-    button: {
-        backgroundColor: "orange",
-        padding: 20,
-        borderRadius: 15
-    },
-    buttonText: {
-        color: "#fff",
-        fontSize: 15,
-        fontWeight: "700"
-    },
     mypageListItem: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-    },
-    mypageList: {
-        marginTop: 30,
-    },
-    mypageListItem: {
-
         paddingTop: 16,
         paddingBottom: 16,
         paddingLeft: 20,
@@ -222,4 +158,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#b1b2c3',
     },
+    round1:{
+        borderRadius:5,
+    }
 })
