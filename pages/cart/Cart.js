@@ -70,6 +70,12 @@ export default function Cart({route, navigation}) {
     const Update = useIsFocused();
 
 
+    /**---------------------------장바구니 옵션 요청 테스트------------------------**/
+    const [OptionTest, setOptionTest] = useState({
+        text:'',
+    });
+    
+    console.log(OptionTest,'/ 입력값');
 
     /**---------------------------------페이지 진입시 노출----------------------------------------**/
     useEffect(() => {
@@ -87,7 +93,15 @@ export default function Cart({route, navigation}) {
             if (res) {
                 const {result,query ,A_order} = res.data;
                 if (result === 'OK') {
-                    setCartList(A_order);
+                    let temp = A_order.map((cate)=>{
+                        return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
+                            return {...val, A_sel_option:val.A_sel_option.map((sel)=>{
+                                return {...sel, req_memo:''}
+                                })}
+                            })}
+                    })
+
+                    setCartList(temp);
                     // console.log(query,'/ 쿼리');
                 } else {
                     console.log('실패2');
@@ -305,6 +319,36 @@ export default function Cart({route, navigation}) {
         }
     }
 
+    const InputMemo = (key, value, uid) => {
+        console.log(key);
+        console.log(value);
+        console.log(uid);
+        setCartList(CartList.map((cate) => {
+            return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
+                    return {...val, A_sel_option:val.A_sel_option.map((cnt)=>{
+                        if(cnt.order_item_uid === uid) {
+                            return {...cnt , req_memo:value}
+                        } else {
+                            return cnt;
+                        }
+                        })}
+                })}
+        }));
+
+    }
+
+
+    /**-------------------------------- 옵션 요청사항 입력시 저장 이벤트----------------------------------------**/
+    const ReqMemo = (uid,req_memo) => {
+        console.log('상품 아이템 uid / ',uid);
+        console.log('상품 메모 / ',req_memo);
+    }
+
+    let test = CartList.map(cate=>cate.A_goods_list.map(val=>val));
+    console.log(test,'/ 테스트 배열');
+
+
+
     /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
     const goOrderForm = () => {
         // 중복상품 제어용 카테고리 cateUid
@@ -328,8 +372,18 @@ export default function Cart({route, navigation}) {
         }
 
         console.log(total);
-
     }
+
+    const goInput = (key, value) => {
+        setOptionTest({
+            text:value,
+        })
+    }
+
+    const goTest = () => {
+        console.log('실행');
+    }
+
 
     let list      = CartList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
     let arr       = list.map(val=>val.length);
@@ -358,8 +412,7 @@ export default function Cart({route, navigation}) {
                                         let cate_chk = cate.A_goods_list.filter(val=>val.goods_chk === true);
                                         let cart_cnt = cate.A_goods_list.filter(val=>val.goods_cart === false);
                                         let Chk_flag = (cate_chk.length === cart_cnt.length);
-                                        // console.log(cart_cnt.length, '/ 카테 장바구니 체크 수량');
-                                        // console.log(cate_chk.length,' / 카테고리 장바구니 전체 수량');
+
 
                                         if(cart_cnt.length > 0) {
                                             return (
@@ -395,8 +448,12 @@ export default function Cart({route, navigation}) {
                                                             /**------------------------------------------------------**/
                                                             let goods_cnt = val.A_sel_option.map(cnt => cnt.option_cnt);      // 상품 수량
                                                             let goods_price = val.A_sel_option.map(cnt => cnt.option_price);  // 상품 원가격
+                                                            let AT_order_item = val.A_sel_option.map(cnt=>cnt.order_item_uid)  // 상품 아이템 uid
+                                                            let req_memo = val.A_sel_option.map(cnt=>cnt.req_memo)  // 상품 아이템 uid
                                                             /**------------------------------------------------------**/
-                                                            
+
+                                                            console.log(req_memo);
+
                                                             return (
                                                                 <>
                                                                     <View style={[styles.pb_2, {padding: 15, borderColor: "#e0e0e0"}]}>
@@ -519,9 +576,14 @@ export default function Cart({route, navigation}) {
                                                                                     />
                                                                                 </View>
                                                                                 {(val.goods_option_chk) && (
-                                                                                    <TextInput style={[textarea]}
-                                                                                               multiline={true}
-                                                                                               numberOfLines={4}/>
+                                                                                    <TextInput
+                                                                                        onChangeText={(OptionMemo)=>InputMemo('memo',OptionMemo,AT_order_item)}
+                                                                                        style={[textarea]}
+                                                                                        value={req_memo}
+                                                                                        onBlur={()=>ReqMemo(AT_order_item,`${req_memo}`)}
+                                                                                        multiline={true}
+                                                                                        numberOfLines={4}
+                                                                                    />
                                                                                 )}
                                                                             </>
                                                                         )}

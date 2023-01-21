@@ -177,7 +177,6 @@ export default function OrderForm({route,navigation}) {
     }
     /**---------------------------------페이지 진입시 노출---------------------------------------------------**/
     useEffect(() => {
-        // daumApi();  // 다음 api
         getCartList();  // 장바구니
         getDeliList();  // 최근배송지
     },[Update,Member]);
@@ -221,9 +220,7 @@ export default function OrderForm({route,navigation}) {
     }
 
     /**--------------------------------------------------------------------------------------------------------------------------**/
-    // console.log(OrderData,' / 주문정보')
 
-    // console.log(InputFocus.current[0]);
     return (
         <>
             <KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding'})}>
