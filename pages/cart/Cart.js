@@ -319,34 +319,9 @@ export default function Cart({route, navigation}) {
         }
     }
 
-    const InputMemo = (key, value, uid) => {
-        console.log(key);
-        console.log(value);
-        console.log(uid);
-        setCartList(CartList.map((cate) => {
-            return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
-                    return {...val, A_sel_option:val.A_sel_option.map((cnt)=>{
-                        if(cnt.order_item_uid === uid) {
-                            return {...cnt , req_memo:value}
-                        } else {
-                            return cnt;
-                        }
-                        })}
-                })}
-        }));
-
-    }
-
-
-    /**-------------------------------- 옵션 요청사항 입력시 저장 이벤트----------------------------------------**/
-    const ReqMemo = (uid,req_memo) => {
-        console.log('상품 아이템 uid / ',uid);
-        console.log('상품 메모 / ',req_memo);
-    }
 
     let test = CartList.map(cate=>cate.A_goods_list.map(val=>val));
-    console.log(test,'/ 테스트 배열');
-
+    // console.log(test,'/ 테스트 배열');
 
 
     /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
@@ -374,14 +349,54 @@ export default function Cart({route, navigation}) {
         console.log(total);
     }
 
-    const goInput = (key, value) => {
-        setOptionTest({
-            text:value,
+
+    /**---------------------------------옵션메모 입력----------------------------------------**/
+    const goInput = (key,value,AT_order_item_uid) => {
+        console.log(key+' / '+value+' / '+AT_order_item_uid);
+        let temp = CartList.map((cate)=>{
+            return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
+                    return {...val, A_sel_option:val.A_sel_option.map((sel)=>{
+                        if(Number(sel.order_item_uid) === Number(AT_order_item_uid)) {
+                            return {...sel, [key]:value};
+                        } else {
+                            return sel;
+                        }
+                        })}
+                })}
         })
+        setCartList(temp);
     }
 
-    const goTest = () => {
-        console.log('실행');
+
+    /**---------------------------------옵션요청메모 저장----------------------------------------**/
+    const ReqMemo = (AT_order_item_uid,value) => {
+        // console.log(key);
+        console.log(value);
+        console.log(AT_order_item_uid);
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
+               act_type         :'save_req_memo',
+               login_status     :'Y',
+               mem_uid          :Member,
+               order_item_uid   :AT_order_item_uid,
+               req_memo         :value,
+
+        }, {
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res) => {
+            if (res) {
+                console.log(res.data);
+                const {result} = res.data;
+                if (result === 'OK') {
+                    console.log('적용완료 / ');
+                } else {
+                    console.log(res.data);
+                    console.log('실패 / ');
+                }
+            }
+        });
+
     }
 
 
@@ -395,7 +410,7 @@ export default function Cart({route, navigation}) {
     let result = CartList.map(cate=> {
         return {...cate, A_goods_list:cate.A_goods_list.filter((val)=>val.goods_cart === false)}
     });
-    console.log(result,'/ 필터링 리스트');
+    // console.log(result,'/ 필터링 리스트');
 
 
     return (
@@ -448,11 +463,11 @@ export default function Cart({route, navigation}) {
                                                             /**------------------------------------------------------**/
                                                             let goods_cnt = val.A_sel_option.map(cnt => cnt.option_cnt);      // 상품 수량
                                                             let goods_price = val.A_sel_option.map(cnt => cnt.option_price);  // 상품 원가격
-                                                            let AT_order_item = val.A_sel_option.map(cnt=>cnt.order_item_uid)  // 상품 아이템 uid
-                                                            let req_memo = val.A_sel_option.map(cnt=>cnt.req_memo)  // 상품 아이템 uid
-                                                            /**------------------------------------------------------**/
+                                                            let AT_order_item_uid = val.A_sel_option.map(cnt=>cnt.order_item_uid)  // 상품 아이템 uid
+                                                            let req_memo =  val.A_sel_option.map(cnt=>cnt.req_memo);
 
-                                                            console.log(req_memo);
+                                                            let test = val.A_sel_option.map(cnt=>cnt);
+                                                            console.log(test);
 
                                                             return (
                                                                 <>
@@ -501,8 +516,7 @@ export default function Cart({route, navigation}) {
                                                                                            source={{uri: "http://49.50.162.86:80" + val.list_img_url}}/>
                                                                                 </TouchableOpacity>
                                                                             </View>
-                                                                            <View
-                                                                                style={[styles.flex_items, styles.flex_items2]}>
+                                                                            <View style={[styles.flex_items, styles.flex_items2]}>
                                                                                 <View style={[flex_between, styles.pd_20]}>
                                                                                     {/*가이드라인*/}
                                                                                     <View style="">
@@ -577,10 +591,10 @@ export default function Cart({route, navigation}) {
                                                                                 </View>
                                                                                 {(val.goods_option_chk) && (
                                                                                     <TextInput
-                                                                                        onChangeText={(OptionMemo)=>InputMemo('memo',OptionMemo,AT_order_item)}
+                                                                                        onChangeText={(req_memo)=>goInput('req_memo',req_memo,AT_order_item_uid)}
                                                                                         style={[textarea]}
                                                                                         value={req_memo}
-                                                                                        onBlur={()=>ReqMemo(AT_order_item,`${req_memo}`)}
+                                                                                        onBlur={()=>ReqMemo(AT_order_item_uid,req_memo)}
                                                                                         multiline={true}
                                                                                         numberOfLines={4}
                                                                                     />

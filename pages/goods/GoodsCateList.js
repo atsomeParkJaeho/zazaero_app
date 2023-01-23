@@ -290,7 +290,6 @@ export default function GoodsCateList({route, navigation}) {
     // 6. 장바구니 추가 이벤트
     const goCart = () => {
 
-
         /**-----1. 장바구니 클릭한 상품 배열을 만든다.--------------**/
         let goForm = GoodsList.filter((val) => val.goods_cart_chk);
         let goods_uid_list = "";

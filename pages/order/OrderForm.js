@@ -9,7 +9,7 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    KeyboardAvoidingView, DatePickerIOS, TouchableWithoutFeedback, Alert
+    KeyboardAvoidingView, DatePickerIOS, TouchableWithoutFeedback, Alert, Switch
 } from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list'
 // 공통 CSS 추가
@@ -56,7 +56,7 @@ import {
     wt3,
     wt7,
     mb2,
-    text_gray
+    text_gray, flex_between_top, mt1, fw300, count_btn, count_btn_txt, countinput, mt2, switch_bar
 } from '../../common/style/AtStyle';
 import {sub_page, gary_bar, gray_bar} from '../../common/style/SubStyle';
 import axios from "axios";
@@ -74,6 +74,7 @@ import {AddrMatch, Phone, Price, Time, Time1, Time2, cancel_List, cancel_d_List,
 import {useIsFocused} from "@react-navigation/native";
 import RNPickerSelect from "react-native-picker-select";
 import goodsthum1 from "../../assets/img/goods_thum1.jpg";
+import CloseBtn from "../../icons/close_btn.svg";
 // import SelectBox from "react-native-multi-selectbox";
 
 
@@ -226,7 +227,7 @@ export default function OrderForm({route,navigation}) {
             <KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding'})}>
                 {/**----------------------------------------------신규배송지 입력---------------------------------------------------**/}
                 <ScrollView style={[bg_white,]}>
-                    <View style={{paddingBottom: 110,}}>
+                    <View>
                         <View style={[FormStyle.FormGroup]}>
                             <View>
                                 <Text style={[FormStyle.FormTitle]}>배송지 입력</Text>
@@ -562,6 +563,8 @@ export default function OrderForm({route,navigation}) {
     }
     /**-----------------------------------------------자재목록--------------------------------------------------**/
     function OrderCartList() {
+
+
         return(
             <>
                 <View style={[container, {borderBottomWidth: 1,borderColor:"#e6e6e6",}]}>
@@ -572,53 +575,41 @@ export default function OrderForm({route,navigation}) {
                     {/**-----------------반복문 구간---------------------------------------**/}
                     {CartList.map(val=>{
                         if(val.goods_name !== null) {
+                            let goods_cnt = val.A_sel_option.map(cnt => cnt.option_cnt);      // 상품 수량
+                            let goods_price = val.A_sel_option.map(cnt => cnt.option_price);  // 상품 원가격
+
+                            console.log(val,'/ 확인2');
+
                             return(
                                 <>
-                                    <View style={[styles.CancelDetail_list_items]} >
-                                        <View style={[container]}>
-                                            <View style={[flex]}>
-                                                <View style={[wt3]}>
-                                                    <Text style={[h14, ]}>상품명 : </Text>
+                                    {/**-----------------자재명---------------------------------------**/}
+                                    <View style={[styles.pb_2, {padding: 15, borderWidth: "#e0e0e0"}]}>
+                                        <View style={[flex_between]}>
+                                            <Text numberOfLines={1} style={styles.all_check_txt}>{val.goods_name}</Text>
+                                        </View>
+                                    </View>
+                                    {/**-----------------자재이미지---------------------------------------**/}
+                                    <View style={[flex]}>
+                                        <View style={[styles.flex_items, styles.flex_items1]}>
+                                            <Image style={styles.cart_goods_img} source={{uri: "http://49.50.162.86:80" + val.list_img_url}}/>
+                                        </View>
+                                        <View style={[styles.flex_items, styles.flex_items2]}>
+                                            <View style={[flex_between, styles.pd_20]}>
+                                                {/*가이드라인*/}
+                                                <View style="">
+                                                    <Text
+                                                        style={(val.goods_guide_name) && styles.goods_disc}>
+                                                        {(val.goods_guide_name) && val.goods_guide_name}
+                                                    </Text>
                                                 </View>
-                                                <View style={[wt7]}>
-                                                    <Text style={[h14, ]}>{val.goods_name}</Text>
-                                                </View>
-                                            </View>
-                                            {/**--------------------------------옵션--------------------------------**/}
-                                            {val.A_sel_option.map(items=>{
-
-                                                return(
-                                                    <>
-                                                        <View style={[flex]}>
-                                                            <View style={[wt3]}>
-                                                                <Text style={[h14, ]}>단가 : </Text>
-                                                            </View>
-                                                            <View style={[wt7]}>
-                                                                <Text style={[h14, ]}>{Price(items.option_price)} 원</Text>
-                                                            </View>
-                                                        </View>
-                                                        <View style={[flex]}>
-                                                            <View style={[wt3]}>
-                                                                <Text style={[h14, ]}>수량 : </Text>
-                                                            </View>
-                                                            <View style={[wt7]}>
-                                                                <Text style={[h14]}>{items.option_cnt} 개</Text>
-                                                            </View>
-                                                        </View>
-                                                    </>
-                                                );
-                                            })}
-
-                                            {/**--------------------------------주문가격--------------------------------**/}
-                                            <View style={[flex]}>
-                                                <View style={[wt3]}>
-                                                    <Text style={[h14, ]}>총금액 : </Text>
-                                                </View>
-                                                <View style={[wt7]}>
-                                                    <Text style={[h16]}>{Price(val.sum_order_price)} 원</Text>
+                                                {/*자재가격*/}
+                                                <View style="">
+                                                    <Text style={styles.goods_price}>
+                                                        {Price(`${goods_price * goods_cnt}`)}원
+                                                        {/*{Price(val.)}원*/}
+                                                    </Text>
                                                 </View>
                                             </View>
-
                                         </View>
                                     </View>
                                 </>
@@ -839,6 +830,7 @@ export default function OrderForm({route,navigation}) {
 }
 
 const styles = StyleSheet.create({
+
     border:{
         borderWidth:1,
         borderColor:"#EDEDF1",
@@ -862,7 +854,17 @@ const styles = StyleSheet.create({
         borderColor:"#e6e6e6",
         padding:10,
     },
-
+    cate_list_Thumbnail_box:{
+        paddingTop:"100%",
+    },
+    cate_list_Thumbnail: {
+        paddingTop:"100%",
+        position: "absolute",
+        width: "100%",
+        borderRadius:10,
+        borderWidth:1,
+        borderColor:"#eee",
+    },
     modalStyle:{
         color:"#333",
         // backgroundColor:"rgba(255,255,255,0.5)",
@@ -896,4 +898,89 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
+    CartIcon:{
+        borderWidth:1,
+        borderColor:"#fff",
+    },
+    all_check:{
+        borderRadius:5,
+    },
+    all_check_txt:{
+        marginLeft:5,
+    },
+    goods_cart_del_btn:{
+        fontSize:12,
+        color:"#a0aec0",
+    },
+    Accordion_tit:{
+        backgroundColor:"#f9f9fb",
+        borderBottomWidth:1,
+        borderColor:"#ededf1",
+    },
+    Accordion_items:{
+        paddingVertical:10,
+        paddingHorizontal:16,
+        paddingLeft:16,
+    },
+    pd_18:{
+        paddingBottom:18,
+    },
+    pd_20:{
+        paddingBottom:20,
+    },
+    flex_items1:{
+        width:"30%",
+    },
+    flex_items2:{
+        width:"70%",
+    },
+    cart_goods_img:{
+        borderRadius:5,
+        width:90,
+        height:80,
+    },
+    goods_disc:{
+        fontSize:14,
+        color:"#4549e0",
+    },
+    goods_price:{
+        fontSize:22,
+        color:"#222",
+        letterSpacing:-1,
+    },
+    input: {
+        width:"auto",
+        height: 36,
+        margin: 0,
+        borderWidth: 1,
+        paddingVertical:7,
+        paddingHorizontal: 18,
+        borderColor:"#ededf1",
+        fontSize:12,
+        color:"#000",
+        textAlign:"center",
+    },
+    button: {
+        alignItems: "center",
+        backgroundColor: "#fff",
+        padding: 8,
+        borderWidth:1,
+        borderColor:"#eee",
+    },
+    button_txt:{
+        fontSize:12,
+        fontWeight:"600",
+    },
+    Request_txt:{
+        fontSize:13,
+    },
+    go_cart:{
+        zIndex:100,
+    },
+    chk_view:{
+        position:"absolute",
+        opacity:0,
+        zIndex: 10,
+        width:"100%",
+    }
 });
