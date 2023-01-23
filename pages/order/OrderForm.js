@@ -149,7 +149,7 @@ export default function OrderForm({route,navigation}) {
     /**---------------------------------장바구니 정보 유틸에서 출력---------------------------------------------------**/
     const getCartList = () => {
         let order_result_uid = order_uid.map(val=>Number(val.order_uid));
-        console.log(order_result_uid);
+        // console.log(order_result_uid);
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
             act_type        : "get_order_ready",
             mem_uid         : Member,
@@ -256,11 +256,9 @@ export default function OrderForm({route,navigation}) {
     }
 
 
-    console.log('상품목록 is : ' + JSON.stringify(CartList));
-
 
     /**--------------------------------------------------------------------------------------------------------------------------**/
-    console.log(OrderData,' / 주문정보')
+    // console.log(OrderData,' / 주문정보')
   
     return (
         <>
@@ -647,6 +645,8 @@ export default function OrderForm({route,navigation}) {
                     {/**-----------------반복문 구간---------------------------------------**/}
                     {CartList.map(val=>{
                         if(val.goods_name !== null) {
+
+                            let img_src = val.list_img_url;
                             return(
                                 <>
                                     <View style={[styles.CancelDetail_list_items]} >
@@ -654,12 +654,12 @@ export default function OrderForm({route,navigation}) {
                                             <Text style={[h14,mb1]}>{val.goods_name}</Text>
                                             {/**--------------------------------옵션--------------------------------**/}
                                             {val.A_sel_option.map(items=>{
-
+                                                console.log(img_src);
                                                 return(
                                                     <>
                                                         <View style={[flex_between_bottom]}>
                                                             <View style={[flex_end]}>
-                                                                {/*<Image style={styles.goods_thum} source={}/>*/}
+                                                                <Image style={[styles.goods_thum]} source={{uri: 'http://www.zazaero.com' + img_src}}/>
                                                                 <View style={ms2}>
                                                                     <Text style={[h14,fw500]}>수량</Text>
                                                                     <Text style={[h14]}>{items.option_cnt} 개</Text>
@@ -680,55 +680,7 @@ export default function OrderForm({route,navigation}) {
                                         </View>
                                     </View>
                                 </>
-                                // <>
-                                //     <View style={[styles.CancelDetail_list_items]} >
-                                //         <View style={[container]}>
-                                //             <View style={[flex]}>
-                                //                 <View style={[wt3]}>
-                                //                     <Text style={[h14, ]}>상품명 : </Text>
-                                //                 </View>
-                                //                 <View style={[wt7]}>
-                                //                     <Text style={[h14, ]}>{val.goods_name}</Text>
-                                //                 </View>
-                                //             </View>
-                                //             {/**--------------------------------옵션--------------------------------**/}
-                                //             {val.A_sel_option.map(items=>{
-                                //
-                                //                 return(
-                                //                     <>
-                                //                         <View style={[flex]}>
-                                //                             <View style={[wt3]}>
-                                //                                 <Text style={[h14, ]}>단가 : </Text>
-                                //                             </View>
-                                //                             <View style={[wt7]}>
-                                //                                 <Text style={[h14, ]}>{Price(items.option_price)} 원</Text>
-                                //                             </View>
-                                //                         </View>
-                                //                         <View style={[flex]}>
-                                //                             <View style={[wt3]}>
-                                //                                 <Text style={[h14, ]}>수량 : </Text>
-                                //                             </View>
-                                //                             <View style={[wt7]}>
-                                //                                 <Text style={[h14]}>{items.option_cnt} 개</Text>
-                                //                             </View>
-                                //                         </View>
-                                //                     </>
-                                //                 );
-                                //             })}
-                                //
-                                //             {/**--------------------------------주문가격--------------------------------**/}
-                                //             <View style={[flex]}>
-                                //                 <View style={[wt3]}>
-                                //                     <Text style={[h14, ]}>총금액 : </Text>
-                                //                 </View>
-                                //                 <View style={[wt7]}>
-                                //                     <Text style={[h16]}>{Price(val.sum_order_price)} 원</Text>
-                                //                 </View>
-                                //             </View>
-                                //
-                                //         </View>
-                                //     </View>
-                                // </>
+
                             )
                         }
 
@@ -787,6 +739,11 @@ export default function OrderForm({route,navigation}) {
 }
 
 const styles = StyleSheet.create({
+    goods_thum:{
+        width:50,
+        height:50,
+    },
+
     border:{
         borderWidth:1,
         borderColor:"#EDEDF1",

@@ -93,15 +93,15 @@ export default function Cart({route, navigation}) {
             if (res) {
                 const {result,query ,A_order} = res.data;
                 if (result === 'OK') {
-                    let temp = A_order.map((cate)=>{
-                        return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
-                            return {...val, A_sel_option:val.A_sel_option.map((sel)=>{
-                                return {...sel, req_memo:''}
-                                })}
-                            })}
-                    })
+                    // let temp = A_order.map((cate)=>{
+                    //     return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
+                    //         return {...val, A_sel_option:val.A_sel_option.map((sel)=>{
+                    //             return {...sel, req_memo:''}
+                    //             })}
+                    //         })}
+                    // })
 
-                    setCartList(temp);
+                    setCartList(A_order);
                     // console.log(query,'/ 쿼리');
                 } else {
                     console.log('실패2');
@@ -158,10 +158,11 @@ export default function Cart({route, navigation}) {
         setCartList(CartList.map((cate) => {
             return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
                     if(val.goods_uid === uid) {
-                        return {...val, goods_option_chk:!val.goods_option_chk}
-                    } else {
-                        return val;
+                        return {...val, A_sel_option:val.A_sel_option.map((cnt)=>{
+                            return {...cnt, goods_option_chk:!cnt.goods_option_chk}
+                            })}
                     }
+                    return val;
                 })}
         }));
 
@@ -369,16 +370,20 @@ export default function Cart({route, navigation}) {
 
 
     /**---------------------------------옵션요청메모 저장----------------------------------------**/
-    const ReqMemo = (AT_order_item_uid,value) => {
-        // console.log(key);
-        console.log(value);
-        console.log(AT_order_item_uid);
+    const ReqMemo = (uid,value) => {
+        // console.log(req_memo,' / req_memo');
+        // console.log(AT_order_item_uid,' / order_item_uid');
+
+        let req_memo          = String(value);
+        let AT_order_item_uid = String(uid);
+
+
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
                act_type         :'save_req_memo',
                login_status     :'Y',
                mem_uid          :Member,
                order_item_uid   :AT_order_item_uid,
-               req_memo         :value,
+               req_memo         :req_memo,
 
         }, {
             headers: {
@@ -387,8 +392,9 @@ export default function Cart({route, navigation}) {
         }).then((res) => {
             if (res) {
                 console.log(res.data);
-                const {result} = res.data;
+                const {result, query} = res.data;
                 if (result === 'OK') {
+                    console.log(query,' / 쿼리');
                     console.log('적용완료 / ');
                 } else {
                     console.log(res.data);
@@ -410,8 +416,6 @@ export default function Cart({route, navigation}) {
     let result = CartList.map(cate=> {
         return {...cate, A_goods_list:cate.A_goods_list.filter((val)=>val.goods_cart === false)}
     });
-    // console.log(result,'/ 필터링 리스트');
-
 
     return (
         <>
@@ -465,9 +469,14 @@ export default function Cart({route, navigation}) {
                                                             let goods_price = val.A_sel_option.map(cnt => cnt.option_price);  // 상품 원가격
                                                             let AT_order_item_uid = val.A_sel_option.map(cnt=>cnt.order_item_uid)  // 상품 아이템 uid
                                                             let req_memo =  val.A_sel_option.map(cnt=>cnt.req_memo);
+                                                            let opt_chk = val.A_sel_option.map(cnt=>cnt.goods_option_chk);
 
                                                             let test = val.A_sel_option.map(cnt=>cnt);
+
                                                             console.log(test);
+                                                            let temp = String(opt_chk);
+                                                            let memochk = String(req_memo);
+
 
                                                             return (
                                                                 <>
@@ -537,8 +546,7 @@ export default function Cart({route, navigation}) {
                                                                                     {/*=============마이너스 버튼==========*/}
                                                                                     <TouchableWithoutFeedback
                                                                                         onPress={() => modCart(val.goods_uid, val.order_uid, 'minus', goods_cnt, goods_price)}>
-                                                                                        <View
-                                                                                            style={[count_btn]}>
+                                                                                        <View style={[count_btn]}>
                                                                                             <View
                                                                                                 style={[pos_center]}>
                                                                                                 <Text
@@ -558,12 +566,9 @@ export default function Cart({route, navigation}) {
                                                                                     {/*=============플러스 버튼============*/}
                                                                                     <TouchableWithoutFeedback
                                                                                         onPress={() => modCart(val.goods_uid, val.order_uid, 'plus', goods_cnt, goods_price)}>
-                                                                                        <View
-                                                                                            style={[count_btn]}>
-                                                                                            <View
-                                                                                                style={[pos_center]}>
-                                                                                                <Text
-                                                                                                    style={[count_btn_txt]}>＋</Text>
+                                                                                        <View style={[count_btn]}>
+                                                                                            <View style={[pos_center]}>
+                                                                                                <Text style={[count_btn_txt]}>＋</Text>
                                                                                             </View>
                                                                                         </View>
                                                                                     </TouchableWithoutFeedback>
@@ -580,7 +585,7 @@ export default function Cart({route, navigation}) {
                                                                                     </Text>
                                                                                     <Switch
                                                                                         onValueChange={() => CartOption(val.goods_uid)}
-                                                                                        value={val.goods_option_chk}
+                                                                                        value={(temp === 'true' || memochk !== '')}
                                                                                         trackColor={{
                                                                                             false: "#767577",
                                                                                             true: "#4630eb"
@@ -589,11 +594,11 @@ export default function Cart({route, navigation}) {
                                                                                         style={[switch_bar]}
                                                                                     />
                                                                                 </View>
-                                                                                {(val.goods_option_chk) && (
+                                                                                {(temp === 'true' || memochk !== '') && (
                                                                                     <TextInput
                                                                                         onChangeText={(req_memo)=>goInput('req_memo',req_memo,AT_order_item_uid)}
                                                                                         style={[textarea]}
-                                                                                        value={req_memo}
+                                                                                        value={`${req_memo}`}
                                                                                         onBlur={()=>ReqMemo(AT_order_item_uid,req_memo)}
                                                                                         multiline={true}
                                                                                         numberOfLines={4}
