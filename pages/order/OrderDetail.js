@@ -73,7 +73,7 @@ import {
     btn_outline_black,
     h14,
     h15,
-    wt8, bg_light, justify_content_end, pe1, mb1, me2, h20, text_gray, flex_between_bottom, flex_end, h13,
+    wt8, bg_light, justify_content_end, pe1, mb1, me2, h20, text_gray, flex_between_bottom, flex_end, h13, text_right,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 import Main_logo from "../../icons/main_logo.svg";
@@ -94,8 +94,6 @@ import axios from "axios";
 import OrderStatus from "./OrderStatus";
 import orderStatus from "./OrderStatus";
 import RNPickerSelect from "react-native-picker-select";
-
-
 
 
 export default function OrderDtail({route,navigation}) {
@@ -413,6 +411,17 @@ export default function OrderDtail({route,navigation}) {
                                                                 <Text style={[h16]}>{Price(val.sum_order_price)} 원</Text>
                                                                 {/*총금액*/}
                                                             </View>
+
+                                                        </View>
+                                                        <View style={[mt1]}>
+                                                            <View style={[]}>
+                                                                <Text style={[h13,text_right]}>요청금액 : <Text style={[text_danger]}>120,000 원</Text></Text>
+                                                            </View>
+                                                            {/*옵션요청가격*/}
+                                                            <View style={[]}>
+                                                                <Text style={[h13]}>자재별 요청메모 적힌 내용 표시 자재별 요청메모 적힌 내용 표시자재별 요청메모 적힌 내용 표시</Text>
+                                                            </View>
+                                                            {/*옵션요청글*/}
                                                         </View>
                                                     </>
                                                 );
