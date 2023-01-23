@@ -267,9 +267,6 @@ export default function OrderForm({route,navigation}) {
                 <ScrollView style={[bg_white,]}>
                     <View style={{paddingBottom: 110,}}>
                         <View style={[FormStyle.FormGroup]}>
-                            <View>
-                                <Text style={[FormStyle.FormTitle]}>배송지 입력</Text>
-                            </View>
                             {/**----------------------------------------------신규, 기존 배송지 선택--------------------------------------------------**/}
                             <View>
                                 <View style={[FormStyle.FormGroupItems]}>
@@ -285,7 +282,7 @@ export default function OrderForm({route,navigation}) {
                             {/**----------------------------------------------배송지 입력--------------------------------------------------**/}
                             {/*==============공사명===============*/}
                             <View style={[FormStyle.FormGroupItems]}>
-                                <Text style={[FormStyle.FormLabel]}>공사명</Text>
+                                {/*<Text style={[FormStyle.FormLabel]}>공사명</Text>*/}
                                 <TextInput style={[input,{flex:1}]}
                                 placeholder="공사명"
                                 value={OrderData.order_title}
@@ -413,6 +410,7 @@ export default function OrderForm({route,navigation}) {
                             <View>
                                 <OrderCartList/>
                             </View>
+
                             {/**----------------------------------------------총금액--------------------------------------------------**/}
                             <View>
                                 <OrderTotalPrice/>
@@ -442,6 +440,8 @@ export default function OrderForm({route,navigation}) {
             </KeyboardAvoidingView>
         </>
     );
+
+
 
 
 
@@ -645,7 +645,6 @@ export default function OrderForm({route,navigation}) {
                     {/**-----------------반복문 구간---------------------------------------**/}
                     {CartList.map(val=>{
                         if(val.goods_name !== null) {
-
                             let img_src = val.list_img_url;
                             return(
                                 <>

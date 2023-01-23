@@ -73,7 +73,7 @@ import {
     btn_outline_black,
     h14,
     h15,
-    wt8, bg_light, justify_content_end, pe1, mb1, me2, h20, text_gray,
+    wt8, bg_light, justify_content_end, pe1, mb1, me2, h20, text_gray, flex_between_bottom, flex_end, h13,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 import Main_logo from "../../icons/main_logo.svg";
@@ -164,6 +164,8 @@ export default function OrderDtail({route,navigation}) {
     // console.log(OrderData,' / 주문정보');
     // console.log(OrderGoodsList,' / 주문자재정보');
     // console.log(InputFocus.current[0]);
+    
+    
     return (
         <>
             <KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding'})}>
@@ -350,9 +352,9 @@ export default function OrderDtail({route,navigation}) {
                             <View>
                                 <GoodsList/>
                             </View>
-                            {/**----------------------------------------------결제요청--------------------------------------------------**/}
-                            <View>
-
+                            {/**----------------------------------------------자재추가, 결제요청, 환불신청, 주문취소--------------------------------------------------**/}
+                            <View style={[container]}>
+                                <OrderChk/>
                             </View>
                             {/**----------------------------------------------반품시에만 노출한다--------------------------------------------------**/}
                             <View>
@@ -371,6 +373,8 @@ export default function OrderDtail({route,navigation}) {
         </>
     );
 
+
+
     /**-----------------------------------------------자재목록--------------------------------------------------**/
     function GoodsList() {
         return(
@@ -383,93 +387,109 @@ export default function OrderDtail({route,navigation}) {
                     {/**-----------------반복문 구간---------------------------------------**/}
                     {OrderGoodsList.map(val=>{
                         if(val.goods_name !== null) {
-
-                            /**-----------상품수량 변수설정--------------**/
-                            let goods_cnt = val.A_sel_option.map(cnt => cnt.option_cnt);      // 상품 수량
-                            let goods_price = val.A_sel_option.map(cnt => cnt.option_price);  // 상품 원가격
-
+                            let img_src = val.list_img_url;
                             return(
                                 <>
-                                    <View style={[styles.order_goods_list_items,]}>
+                                    <View style={[styles.CancelDetail_list_items]} >
                                         <View style={[container]}>
-                                            <View style={[flex_between_top]}>
-                                                <View style={flex_top}>
-                                                    <Image style={styles.cart_goods_img} source={{uri: "http://49.50.162.86:80" + val.list_img_url}}/>
-                                                    <View style={[ms1]}>
-                                                        {/*<Text>{val.goods_uid}</Text>*/}
-                                                        {/**-----------------------자재명----------------------------**/}
-                                                        <Text style={[mt1]}>{val.goods_name}</Text>
-                                                        <Text style={[h12,mt1,text_primary,fw300]}></Text>
-                                                    </View>
-                                                </View>
-                                                <View style={[]}>
-                                                    <TouchableWithoutFeedback >
-                                                        <CloseBtn  width={15} height={15} style={[mt1,styles.icon]}/>
-                                                    </TouchableWithoutFeedback>
-                                                </View>
-                                            </View>
-                                            <View style={[flex_between,mt1]}>
-                                                {/**----------------------------수량조절----------------------------**/}
-                                                <View style={flex}>
-                                                    <TouchableWithoutFeedback >
-                                                        <View style={[count_btn]}>
-                                                            <View style={[pos_center]}>
-                                                                <Text style={[count_btn_txt]}>－</Text>
+                                            <Text style={[h14,mb1]}>{val.goods_name}</Text>
+                                            {/**--------------------------------옵션--------------------------------**/}
+                                            {val.A_sel_option.map(items=>{
+                                                console.log(img_src);
+                                                return(
+                                                    <>
+                                                        <View style={[flex_between_bottom]}>
+                                                            <View style={[flex_end]}>
+                                                                <Image style={[styles.goods_thum]} source={{uri: 'http://www.zazaero.com' + img_src}}/>
+                                                                <View style={ms2}>
+                                                                    <Text style={[h14,fw500]}>수량</Text>
+                                                                    <Text style={[h14]}>{items.option_cnt} 개</Text>
+                                                                </View>
+
+                                                            </View>
+                                                            <View style={justify_content_end}>
+                                                                <Text style={[h13]}>( 단가 : {Price(items.option_price)} 원)</Text>
+                                                                {/*단가*/}
+                                                                <Text style={[h16]}>{Price(val.sum_order_price)} 원</Text>
+                                                                {/*총금액*/}
                                                             </View>
                                                         </View>
-                                                    </TouchableWithoutFeedback>
-                                                    <TextInput style={[countinput,]}
-                                                               value={`${goods_cnt}`}
-                                                    />
-                                                    <TouchableWithoutFeedback >
-                                                        <View style={[count_btn]}>
-                                                            <View style={[pos_center]}>
-                                                                <Text style={[count_btn_txt]}>＋</Text>
-                                                            </View>
-                                                        </View>
-                                                    </TouchableWithoutFeedback>
-                                                </View>
-                                                {/**----------------------------상품가격----------------------------**/}
-                                                <View style="">
-                                                    {/*<Text style={[h12,]}>( 판매가: 원 )</Text>*/}
-                                                    <Text style={[h16,fw500,styles.text_r]}> {Price(goods_price * goods_cnt) }원</Text>
-                                                </View>
-                                            </View>
-                                            <View style={[mt2,flex_between]}>
-                                                <Text style={styles.Request_txt}>이 자재에 모델명, 제작관련 등 요청사항이 있으신가요?</Text>
-                                                <Switch
-                                                    trackColor={{ false: "#767577", true: "#4630eb" }}
-                                                    // thumbColor={isEnabled ? "#fff" : "#f4f3f4"}
-                                                    ios_backgroundColor="#3e3e3e"
-                                                    style={[switch_bar]}
-                                                />
-                                            </View>
-                                            <TextInput style={textarea}   multiline={true} numberOfLines={4}    placeholder="" />
-                                            <Text style={[mt1,h12,styles.text_r]}>요청사항 금액 : <Text style={[h12,,text_danger]}> </Text></Text>
+                                                    </>
+                                                );
+                                            })}
+
                                         </View>
-                                        <View style={[styles.border_b1]} />
                                     </View>
                                 </>
+
                             )
                         }
 
                     })}
                 </View>
                 <View style={gray_bar}/>
-                <View style={[container]}>
-                    <View style={[flex_around]}>
-                        <TouchableOpacity style="" >
-                            <Text style={[styles.btn,btn_outline_primary]}>자재추가</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style="" onPress={()=>goDel()}>
-                            <Text style={[styles.btn,btn_outline_danger]}>전체취소</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
+            </>
+        );
+    }
+
+    /**-----------------------------------------------자재추가, 결제요청, 환불신청, 주문취소--------------------------------------------------**/
+    function OrderChk() {
+        console.log(OrderData.ord_status)
+        return(
+            <>
+                {/**------------------------------발주신청, 발주검수중일시 노출------------------------------------**/}
+                {(OrderData.ord_status === 'order_ready') && (
+                    <>
+                        <View style={[flex_around]}>
+                            <TouchableOpacity>
+                                <Text style={[styles.btn,btn_outline_primary]}>자재추가</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style="" onPress={()=>goDel()}>
+                                <Text style={[styles.btn,btn_outline_danger]}>전체취소</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </>
+                )}
+
+                {/**------------------------------발주검수완료, 결제대기시 노출------------------------------------**/}
+                {(OrderData.ord_status === 'order_done' || OrderData.ord_status === 'pay_ready' || OrderData.ord_status === 'deli_ready') && (
+                    <>
+                        <View style={[flex_around]}>
+                            <TouchableOpacity>
+                                <Text style={[styles.btn,btn_outline_primary]}>자재추가</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style="" onPress={()=>goDel()}>
+                                <Text style={[styles.btn,btn_outline_danger]}>전체취소</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={[flex_around]}>
+                            <TouchableOpacity>
+                                <Text style={[styles.btn,btn_outline_primary]}>결제요청</Text>
+                            </TouchableOpacity>
+                        </View>
+                        {/**------------------------------결제유형 선택------------------------------------**/}
+
+                    </>
+                )}
+                {/**------------------------------배송중, 배송완료시에 노출------------------------------------**/}
+                {(OrderData.ord_status === 'deli_doing' || OrderData.ord_status === 'deli_done') && (
+                    <>
+                        <View style={[flex_around]}>
+                            <TouchableOpacity>
+                                <Text style={[styles.btn,btn_outline_primary]}>반품요청</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style="" onPress={()=>goDel()}>
+                                <Text style={[styles.btn,btn_outline_danger]}>환불신청</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </>
+                )}
 
             </>
         );
     }
+    
     /**-----------------------------------------------총금액------------------------------------------------------**/
     function OrderTotalPrice() {
 
@@ -487,40 +507,54 @@ export default function OrderDtail({route,navigation}) {
                         <View style={[d_flex,justify_content_end,pe1]}>
                             <View style="">
                                 {/**----------------------발주신청일--------------------------**/}
-                                <View style={[flex,justify_content_end,mb1]}>
-                                    <Text style={[h14,styles.color1,me2]}>발주신청일</Text>
-                                    <Text style={[h14]}>{OrderData.order_date}</Text>
-                                </View>
+                                {(OrderData.order_date) && (
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>발주신청일</Text>
+                                        <Text style={[h14]}>{OrderData.order_date}</Text>
+                                    </View>
+                                )}
+                                
                                 {/**----------------------결제요청일(* 발주검수 완료후 결제대기시에 노출한다.)--------------------------**/}
-                                <View style={[flex,justify_content_end,mb1]}>
-                                    <Text style={[h14,styles.color1,me2]}>결제요청일</Text>
-                                    <Text style={[h14]}>{OrderData.order_date}</Text>
-                                </View>
+                                {(OrderData.pay_date) && (
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>결제완료일</Text>
+                                        <Text style={[h14]}>{OrderData.pay_date}</Text>
+                                    </View>
+                                )}
                                 {/**----------------------자재 가격--------------------------**/}
-                                <View style={[flex,justify_content_end,mb1]}>
-                                    <Text style={[h14,styles.color1,me2]}>자재 가격</Text>
-                                    <Text style={[h14]}>원</Text>
-                                </View>
+                                {(OrderData.goodsprice) && (
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>자재가격</Text>
+                                        <Text style={[h14]}>{Price(OrderData.goodsprice)}원</Text>
+                                    </View>
+                                )}
+                             
                                 {/**----------------------요청옵션비--------------------------**/}
-                                <View style={[flex,justify_content_end,mb1]}>
-                                    <Text style={[h14,styles.color1,me2]}>요청옵션비</Text>
-                                    {/*<Text style={[h14]}>{(OrderData.make_price) && Price(OrderData.make_price)}원</Text>*/}
-                                </View>
+                                {(OrderData.hope_opt_price) && (
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>옵션요청비</Text>
+                                        <Text style={[h14]}>{Price(OrderData.hope_opt_price)}원</Text>
+                                    </View>
+                                )}
                                 {/**----------------------배송비--------------------------**/}
-                                <View style={[flex,justify_content_end,mb1]}>
-                                    <Text style={[h14,styles.color1,me2]}>배송비</Text>
-                                    <Text style={[h14]}>{(OrderData.deli_price) && Price(OrderData.deli_price)}원</Text>
-                                </View>
+                                {(OrderData.deli_price) && (
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>배송비</Text>
+                                        <Text style={[h14]}>{Price(OrderData.deli_price)}원</Text>
+                                    </View>
+                                )}
                                 {/**----------------------포인트 사용--------------------------**/}
                                 <View style={[flex,justify_content_end,mb1]}>
                                     <Text style={[h14,styles.color1,me2]}>포인트</Text>
                                     <Text style={[h14]}>원</Text>
                                 </View>
                                 {/**----------------------총결제 금액--------------------------**/}
-                                <View style={[flex,justify_content_end]}>
-                                    <Text style={[h14,styles.color1,me2]}>총 결제금액</Text>
-                                    <Text style={[h16,text_primary]}>원</Text>
-                                </View>
+                                {(OrderData.settleprice) && (
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>총 결제금액</Text>
+                                        <Text style={[h16,text_primary]}>{Price(OrderData.settleprice)}원</Text>
+                                    </View>
+                                )}
 
                             </View>
                         </View>
@@ -559,6 +593,18 @@ export default function OrderDtail({route,navigation}) {
 }
 
 const styles = StyleSheet.create({
+
+
+
+    btn_fix:{
+        flex:1,
+    },
+
+    goods_thum:{
+        width:50,
+        height:50,
+    },
+
     border:{
         borderWidth:1,
         borderColor:"#EDEDF1",
