@@ -105,7 +105,7 @@ export default function Login({navigation, route}) {
 
                 }
                 if (result === 'NG_info') {
-                    alert('해당계정이 없습니다.');
+                    Alert.alert('해당계정이 없습니다.');
 
                 }
             }

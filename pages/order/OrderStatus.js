@@ -141,7 +141,7 @@ function OrderStatus({route, navigation}) {
                                                  </View>
                                                  <View style={[styles.wt7]}>
                                                      <Text
-                                                         style={[styles.Desired_Delivery_Date_val, h14]}>{val.hope_deli_date} 도착예정</Text>
+                                                         style={[styles.Desired_Delivery_Date_val, h14]}>{val.hope_deli_date} {val.hope_deli_time} 도착예정</Text>
                                                  </View>
                                              </View>
                                              {/*희망배송일*/}
@@ -171,14 +171,6 @@ function OrderStatus({route, navigation}) {
                                                      </TouchableOpacity>
                                                  </View>
                                                  <View style={[flex]}>
-                                                     {/*<Text style={[h14]}>결제상태</Text>*/}
-                                                     {/*(val.pay_status == 'ready') ? (
-                                                         <Text
-                                                             style={[ text_danger,btn_outline_danger,ps1,pe1, h14]}>결제대기</Text>
-                                                     ) : (
-                                                         <Text
-                                                             style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>결제완료</Text>
-                                                     )*/}
                                                      <Text style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>
                                                          {ordStatus(`${val.ord_status}`)}
                                                      </Text>

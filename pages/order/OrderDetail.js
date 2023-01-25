@@ -131,8 +131,6 @@ export default function OrderDtail({route,navigation}) {
             const {result, gd_order} = res.data;
             console.log(res.data);
             if(result === 'OK') {
-                // console.log(gd_order,'오리지널 주문');
-                // setOrderDate();
                 setOrderDate(gd_order);
                 setOrderGoodsList(gd_order.A_order);
             } else {
@@ -141,29 +139,27 @@ export default function OrderDtail({route,navigation}) {
         });
     }
 
-    // console.log(OrderGoodsList,' / 주문자재 데이터');
-
-    /**---------------------------------주문자재 정보 유틸에서 출력----------------------------------------------**/
+    /**------------------------------------------------------주문자재 정보 유틸에서 출력----------------------------------------------**/
     const getOrderGoods = () => {
 
     }
-    /**---------------------------------페이지 진입시 노출---------------------------------------------------**/
+
+
+    /**--------------------------------------------------------페이지 진입시 노출---------------------------------------------------**/
     useEffect(() => {
         getOrderGoods();  // 주문목록 출력
         getOrderInfo();   // 주문정보 출력
     },[Update,Member]);
 
-    /**---------------------------------입력폼 입력---------------------------------------------------**/
+    /**--------------------------------------------------------------입력폼 입력---------------------------------------------------**/
     const goInput = (keyValue, e) => {
 
     }
 
     /**--------------------------------------------------------------------------------------------------------------------------**/
-    // console.log(OrderData,' / 주문정보');
-    // console.log(OrderGoodsList,' / 주문자재정보');
-    // console.log(InputFocus.current[0]);
-    
-    
+
+
+
     return (
         <>
             <KeyboardAvoidingView style={styles.avoidingView} behavior={Platform.select({ios: 'padding'})}>
@@ -241,7 +237,7 @@ export default function OrderDtail({route,navigation}) {
                             <View
                                 style={[d_flex, align_items_center, FormStyle.FormDate, {justifyContent: "space-between"}]}>
                                 {/*체크박스*/}
-                                <Text style={[FormStyle.FormDateLabel]}>도착일</Text>
+                                <Text style={[FormStyle.FormDateLabel]}>희망배송일</Text>
                                 <Text style={[FormStyle.FormDateLabel]}>
                                     {(OrderData.hope_deli_date) && DateChg(OrderData.hope_deli_date)}
                                 </Text>
@@ -373,6 +369,7 @@ export default function OrderDtail({route,navigation}) {
 
 
 
+
     /**-----------------------------------------------자재목록--------------------------------------------------**/
     function GoodsList() {
         return(
@@ -393,7 +390,6 @@ export default function OrderDtail({route,navigation}) {
                                             <Text style={[h14,mb1]}>{val.goods_name}</Text>
                                             {/**--------------------------------옵션--------------------------------**/}
                                             {val.A_sel_option.map(items=>{
-                                                console.log(img_src);
                                                 return(
                                                     <>
                                                         <View style={[flex_between_bottom]}>
@@ -408,18 +404,19 @@ export default function OrderDtail({route,navigation}) {
                                                             <View style={justify_content_end}>
                                                                 <Text style={[h13]}>( 단가 : {Price(items.option_price)} 원)</Text>
                                                                 {/*단가*/}
-                                                                <Text style={[h16]}>{Price(val.sum_order_price)} 원</Text>
+                                                                <Text style={[h16,text_right]}>{Price(val.sum_order_price)} 원</Text>
                                                                 {/*총금액*/}
                                                             </View>
 
                                                         </View>
                                                         <View style={[mt1]}>
                                                             <View style={[]}>
-                                                                <Text style={[h13,text_right]}>요청금액 : <Text style={[text_danger]}>120,000 원</Text></Text>
+                                                                <Text style={[h13,text_right]}>요청금액 : <Text style={[text_danger]}>0원</Text></Text>
                                                             </View>
                                                             {/*옵션요청가격*/}
                                                             <View style={[]}>
-                                                                <Text style={[h13]}>자재별 요청메모 적힌 내용 표시 자재별 요청메모 적힌 내용 표시자재별 요청메모 적힌 내용 표시</Text>
+                                                                <Text style={[h13]}>{val.goods_guide_name}</Text>
+                                                                <Text style={[h13]}>{items.req_memo}</Text>
                                                             </View>
                                                             {/*옵션요청글*/}
                                                         </View>
@@ -443,7 +440,7 @@ export default function OrderDtail({route,navigation}) {
 
     /**-----------------------------------------------자재추가, 결제요청, 환불신청, 주문취소--------------------------------------------------**/
     function OrderChk() {
-        console.log(OrderData.ord_status)
+
         return(
             <>
                 {/**------------------------------발주신청, 발주검수중일시 노출------------------------------------**/}
