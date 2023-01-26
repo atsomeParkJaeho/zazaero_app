@@ -18,11 +18,9 @@ import {useNavigationState} from "@react-navigation/native";
 const styles = styleSheet.create({
     FooterWrap : {
         flexDirection:"row",
-        position:"absolute",
-        // marginTop:100,
-        left:0,
-        bottom:0,
         backgroundColor:"#fff",
+        paddingTop: 10,
+        paddingBottom:5,
         borderTopLeftRadius:15,
         borderTopRightRadius:15,
         ...Platform.select({
@@ -36,6 +34,10 @@ const styles = styleSheet.create({
                 shadowRadius: 10,
             },
             android: {
+                position:"absolute",
+                bottom:0,
+                left:0,
+                width:"100%",
                 elevation: 20,
             },
         }),
@@ -53,7 +55,7 @@ const styles = styleSheet.create({
         flex:1,
         alignItems:"center",
         justifyContent:"center",
-        paddingBottom: 6,
+        paddingBottom: 15,
     }
 
 });
@@ -62,143 +64,113 @@ const styles = styleSheet.create({
 
 function Footer({navigation,pages}) {
 
-    const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    })
-
-
-    console.log('푸터');
-
-    console.log('회원코드 / ' + Member);
 
     const routes = useNavigationState(state => state.routes)
     const currentRoute = routes[routes.length -1].name
-    console.log('페이지 이름: ',currentRoute)
 
-    let test = 'test';
+    console.log(currentRoute);
 
     return(
         <>
             <View style={styles.FooterWrap}>
+                {/**---------------------메인페이지--------------------**/}
                 <View style={[styles.Tabs, styles.TextCenter]}>
                     <TouchableOpacity onPress={()=>{navigation.navigate('메인페이지')}}>
-                        {(currentRoute === '메인페이지') ? (
-                            <>
-                                <View style={styles.SvgIcons}>
+                        <View style={styles.SvgIcons}>
+                            {(currentRoute === '메인페이지') ? (
+                                <>
                                     <HomeLogoAt width={22} height={18}/>
-                                </View>
-                                <View>
-                                    <Text style={[text_center,text_primary,fw500]}>홈</Text>
-                                </View>
-                            </>
-
-                        ):(
-                            <>
-                                <View style={styles.SvgIcons}>
+                                </>
+                            ):(
+                                <>
                                     <HomeLogo width={22} height={18} />
-                                </View>
-                                <View>
-                                    <Text style={styles.TextCenter}>홈</Text>
-                                </View>
-                            </>
-                        ) }
+                                </>
+                            )}
+
+                        </View>
+                        <View>
+                            <Text style={[text_center,(currentRoute === '메인페이지') &&  text_primary,fw500]}>홈</Text>
+                        </View>
                     </TouchableOpacity>
                 </View>
+                {/**---------------------즐겨찾기--------------------**/}
                 <View style={[styles.Tabs,]}>
                     <TouchableOpacity onPress={()=>{navigation.navigate('즐겨찾기')}}>
-                        {(currentRoute === '즐겨찾기') ? (
-                            <>
-                                <View style={styles.SvgIcons}>
-                                    <WishAt width={22} height={18}/>
-                                </View>
-                                <View>
-                                    <Text style={[text_center,text_primary,fw500]}>즐겨찾기</Text>
-                                </View>
-                            </>
-
-                        ):(
-                            <>
-                                <View style={styles.SvgIcons}>
+                        <View style={styles.SvgIcons}>
+                            {(currentRoute === '즐겨찾기') ? (
+                                <>
                                     <Wish width={22} height={18}/>
-                                </View>
-                                <View>
-                                    <Text style={[text_center]}>즐겨찾기</Text>
-                                </View>
-                            </>
-                        ) }
-                    </TouchableOpacity>
-                </View>
-                <View style={[styles.Tabs,]}>
-                    <TouchableOpacity onPress={()=>{navigation.navigate('장바구니',{mem_uid:Member})}}>
-                        {(currentRoute === '장바구니') ? (
-                            <>
-                                <View style={styles.SvgIcons}>
-                                    <CartAt width={22} height={18}/>
-                                </View>
-                                <View>
-                                    <Text style={[text_center,text_primary,fw500]}>장바구니</Text>
-                                </View>
-                            </>
+                                </>
+                            ):(
+                                <>
+                                    <Wish width={22} height={18}/>
+                                </>
+                            )}
 
-                        ):(
-                            <>
-                                <View style={styles.SvgIcons}>
-                                    <Cart width={22} height={18}/>
-                                </View>
-                                <View>
-                                    <Text style={[text_center]}>장바구니</Text>
-                                </View>
-                            </>
-                        ) }
+                        </View>
+                        <View>
+                            <Text style={[text_center,(currentRoute === '즐겨찾기') &&  text_primary,fw500]}>즐겨찾기</Text>
+                        </View>
                     </TouchableOpacity>
                 </View>
+                {/**---------------------장바구니--------------------**/}
+                <View style={[styles.Tabs,]}>
+                    <TouchableOpacity onPress={()=>{navigation.navigate('장바구니')}}>
+                        <View style={styles.SvgIcons}>
+                            {(currentRoute === '장바구니') ? (
+                                <>
+                                    <CartAt width={22} height={18}/>
+                                </>
+                            ):(
+                                <>
+                                    <Cart width={22} height={18}/>
+                                </>
+                            )}
+
+                        </View>
+                        <View>
+                            <Text style={[text_center,(currentRoute === '장바구니') &&  text_primary,fw500]}>장바구니</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                {/**---------------------발주상태--------------------**/}
                 <View style={[styles.Tabs,]}>
                     <TouchableOpacity onPress={()=>{navigation.navigate('발주상태')}}>
-                        {(currentRoute === '발주상태' || currentRoute === '결제상태' || currentRoute === '배송상태') ? (
-                            <>
-                                <View style={styles.SvgIcons}>
+                        <View style={styles.SvgIcons}>
+                            {(currentRoute === '발주상태') ? (
+                                <>
                                     <OrderListAt width={22} height={18}/>
-                                </View>
-                                <View>
-                                    <Text style={[text_center,text_primary,fw500]}>발주내역</Text>
-                                </View>
-                            </>
-
-                        ):(
-                            <>
-                                <View style={styles.SvgIcons}>
+                                </>
+                            ):(
+                                <>
                                     <OrderList width={22} height={18}/>
-                                </View>
-                                <View>
-                                    <Text style={[text_center]}>발주내역</Text>
-                                </View>
-                            </>
-                        ) }
+                                </>
+                            )}
+
+                        </View>
+                        <View>
+                            <Text style={[text_center,(currentRoute === '발주상태') &&  text_primary,fw500]}>발주상태</Text>
+                        </View>
                     </TouchableOpacity>
                 </View>
+                {/**---------------------마이페이지--------------------**/}
                 <View style={[styles.Tabs,]}>
                     <TouchableOpacity onPress={()=>{navigation.navigate('마이페이지')}}>
-                        {(currentRoute === '마이페이지') ? (
-                            <>
-                                <View style={styles.SvgIcons}>
+                        <View style={styles.SvgIcons}>
+                            {(currentRoute === '마이페이지') ? (
+                                <>
                                     <MypageAt width={22} height={18}/>
-                                </View>
-                                <View>
-                                    <Text style={[text_center,text_primary,fw500]}>마이페이지</Text>
-                                </View>
-                            </>
-
-                        ):(
-                            <>
-                                <View style={styles.SvgIcons}>
+                                </>
+                            ):(
+                                <>
                                     <Mypage width={22} height={18}/>
-                                </View>
-                                <View>
-                                    <Text style={[text_center]}>마이페이지</Text>
-                                </View>
-                            </>
-                        ) }
+                                </>
+                            )}
+
+                        </View>
+                        <View>
+                            <Text style={[text_center,(currentRoute === '마이페이지') &&  text_primary,fw500]}>마이페이지</Text>
+                        </View>
                     </TouchableOpacity>
                 </View>
             </View>

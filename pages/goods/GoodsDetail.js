@@ -309,8 +309,9 @@ export default function GoodsDetail({route,navigation}) {
                                             </TouchableWithoutFeedback>
                                             {/*============수량=================*/}
                                             <TextInput style={[countinput,]}
-                                                       onChangeText={(my_cart_cnt) => goodsCnt('my_cart_cnt',my_cart_cnt)}
-                                                       value={`${GoodsDetail.my_cart_cnt}`}
+                                            onChangeText={(my_cart_cnt) => goodsCnt('my_cart_cnt',my_cart_cnt)}
+                                            value={`${GoodsDetail.my_cart_cnt}`}
+                                            keyboardType="number-pad"
                                             />
                                             {/*=============플러스 버튼============*/}
                                             <TouchableWithoutFeedback
@@ -375,12 +376,12 @@ export default function GoodsDetail({route,navigation}) {
                 {/*장바구니/구매*/}
                 <View style={[styles.ios_pb]} />
                 {/*========상품즐겨찾기 체크시=========*/}
-                <View style={[styles.wish_pop]}>
-                    <View style={[styles.wish_box,flex]}>
-                        <Wishlist width={35} height={24} color={'blue'}/>
-                        <Text style={styles.wish_box_txt} >즐겨찾기에 추가되었습니다.</Text>
-                    </View>
-                </View>
+                {/*<View style={[styles.wish_pop]}>*/}
+                {/*    <View style={[styles.wish_box,flex]}>*/}
+                {/*        <Wishlist width={35} height={24} color={'blue'}/>*/}
+                {/*        <Text style={styles.wish_box_txt} >즐겨찾기에 추가되었습니다.</Text>*/}
+                {/*    </View>*/}
+                {/*</View>*/}
             </KeyboardAvoidingView>
         </>
     );

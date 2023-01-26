@@ -67,6 +67,7 @@ export default function Cart({route, navigation}) {
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
+    const [TotalPrice, setTotalPrice] = useState(``);
     const Update = useIsFocused();
 
 
@@ -93,14 +94,6 @@ export default function Cart({route, navigation}) {
             if (res) {
                 const {result,query ,A_order} = res.data;
                 if (result === 'OK') {
-                    // let temp = A_order.map((cate)=>{
-                    //     return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
-                    //         return {...val, A_sel_option:val.A_sel_option.map((sel)=>{
-                    //             return {...sel, req_memo:''}
-                    //             })}
-                    //         })}
-                    // })
-
                     setCartList(A_order);
                     // console.log(query,'/ 쿼리');
                 } else {
@@ -168,7 +161,10 @@ export default function Cart({route, navigation}) {
 
     }
     /**---------------------------------체크시 배송정보 등록이동창 활성화----------------------------------------**/
-    const goFormChk = (uid, cate) => {
+    const goFormChk = (uid, cate, price) => {
+
+        console.log(price,'/ 가격');
+
         if(cate) {
             setCartUid(cate); // 카테고리 넣기
         } else if(!cate) {
@@ -183,6 +179,8 @@ export default function Cart({route, navigation}) {
                     }
                 })}
         }));
+
+
     }
     /**----------------------------업데이트 내용 적용--------------------------**/
     const goForm = (goods_cnt, goods_price, order_uid, goods_uid) => {
@@ -211,9 +209,10 @@ export default function Cart({route, navigation}) {
             }
         }).catch(err=>console.log(err));
     }
-
     /**-----------------------------------------장바구니 상품 수량변경--------------------------------------------------**/
     const modCart = (goods_uid, order_uid, type, value, goods_price) => {
+
+
         /**----------------------------상품수량 플러스--------------------------**/
         if(type === 'plus') {
             let cnt = Number(value) + 1;
@@ -234,10 +233,12 @@ export default function Cart({route, navigation}) {
                     })}
             }));
             goForm(cnt, price, order_uid, goods_uid);
-
         }
 
         /**----------------------------상품수량 마이너스--------------------------**/
+
+
+
         if(type === 'minus') {
             let cnt = Number(value) - 1;
             let price = Number(goods_price) ;
@@ -272,9 +273,13 @@ export default function Cart({route, navigation}) {
             }));
         }
     }
+    const allMod = (type, cate_uid, cate_name, price) => {
 
+        console.log('합계 가격 / ',type);
+        console.log('합계 가격 / ',cate_uid);
+        console.log('합계 가격 / ',cate_name);
+        console.log('합계 가격 / ',price);
 
-    const allMod = (type, cate_uid, cate_name) => {
         if(type === 'All') {
             setCartUid(cate_name);
             setCartList(CartList.map((item)=>{
@@ -287,6 +292,7 @@ export default function Cart({route, navigation}) {
                 }
             }));
         }
+
         /**-------------------------------2. 전체삭제----------------------------------**/
         if(type === 'Del') {
             // console.log(cate_name,cate_uid,type+'/ 카테고리 명, 카테고리 uid, 타입');
@@ -319,12 +325,8 @@ export default function Cart({route, navigation}) {
             setCartList(temp);
         }
     }
-
-
     let test = CartList.map(cate=>cate.A_goods_list.map(val=>val));
     // console.log(test,'/ 테스트 배열');
-
-
     /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
     const goOrderForm = () => {
         // 중복상품 제어용 카테고리 cateUid
@@ -347,10 +349,7 @@ export default function Cart({route, navigation}) {
             return navigation.navigate('배송정보등록',{order_uid:total});;
         }
 
-        console.log(total);
     }
-
-
     /**---------------------------------옵션메모 입력----------------------------------------**/
     const goInput = (key,value,AT_order_item_uid) => {
         console.log(key+' / '+value+' / '+AT_order_item_uid);
@@ -367,16 +366,11 @@ export default function Cart({route, navigation}) {
         })
         setCartList(temp);
     }
-
-
     /**---------------------------------옵션요청메모 저장----------------------------------------**/
     const ReqMemo = (uid,value) => {
-        // console.log(req_memo,' / req_memo');
-        // console.log(AT_order_item_uid,' / order_item_uid');
 
         let req_memo          = String(value);
         let AT_order_item_uid = String(uid);
-
 
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
                act_type         :'save_req_memo',
@@ -406,16 +400,36 @@ export default function Cart({route, navigation}) {
     }
 
 
-    let list      = CartList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
-    let arr       = list.map(val=>val.length);
-    let cont      = 0;
-    for (let i = 0; i < arr.length; i++) {
-        cont += arr[i];
+    /**----------------------------------------------수량 모달창--------------------------------------------------------------**/
+
+    const CntModal = () => {
+
+        //
+
+        return(
+            <>
+                <View style={styles.modal}>
+                    <Text>수량입력</Text>
+                </View>
+            </>
+        );
     }
 
+
+    let list              = CartList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
+    let cart_chk          = list.map(val=>val.length);
+    // 수량
+    let list_goods_cnt    = 0;
+
+    for (let i = 0; i < cart_chk.length; i++) {
+        list_goods_cnt   += cart_chk[i];
+    }
+
+    /**-----------------------------------------------------------------------------------------------------------------**/
     let result = CartList.map(cate=> {
         return {...cate, A_goods_list:cate.A_goods_list.filter((val)=>val.goods_cart === false)}
     });
+    /**-----------------------------------------------------------------------------------------------------------------**/
 
     return (
         <>
@@ -432,6 +446,13 @@ export default function Cart({route, navigation}) {
                                         let cart_cnt = cate.A_goods_list.filter(val=>val.goods_cart === false);
                                         let Chk_flag = (cate_chk.length === cart_cnt.length);
 
+                                        /**--------------------------------------------------------------**/
+                                        let goods_chk_price = cate_chk.map(cate=>cate.A_sel_option.map(val=>Number(val.option_cnt * val.option_price)));
+                                        let total_price = 0;
+                                        for (let i = 0; i < goods_chk_price.length; i++) {
+                                            total_price   += Number(goods_chk_price[i]);
+                                        }
+                                        /**--------------------------------------------------------------**/
 
                                         if(cart_cnt.length > 0) {
                                             return (
@@ -445,12 +466,12 @@ export default function Cart({route, navigation}) {
                                                             <View style={[flex, {justifyContent: "space-between",}]}>
                                                                 <View style={[d_flex]}>
                                                                     <Checkbox style={styles.all_check} color={"#4630eb"}
-                                                                              onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`)}
+                                                                              onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`,`${total_price}`)}
                                                                               value={Chk_flag}
                                                                     />
 
                                                                     <Checkbox style={styles.chk_view} color={"#4630eb"}
-                                                                              onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`)}
+                                                                              onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`,`${total_price}`)}
                                                                     />
                                                                     <Text style={[ms1]}>전체선택</Text>
                                                                 </View>
@@ -465,15 +486,14 @@ export default function Cart({route, navigation}) {
 
                                                         {cate.A_goods_list.map(val => {
                                                             /**------------------------------------------------------**/
-                                                            let goods_cnt = val.A_sel_option.map(cnt => cnt.option_cnt);      // 상품 수량
-                                                            let goods_price = val.A_sel_option.map(cnt => cnt.option_price);  // 상품 원가격
-                                                            let AT_order_item_uid = val.A_sel_option.map(cnt=>cnt.order_item_uid)  // 상품 아이템 uid
-                                                            let req_memo =  val.A_sel_option.map(cnt=>cnt.req_memo);
-                                                            let opt_chk = val.A_sel_option.map(cnt=>cnt.goods_option_chk);
+                                                            let goods_cnt           = val.A_sel_option.map(cnt => cnt.option_cnt);      // 상품 수량
+                                                            let goods_price         = val.A_sel_option.map(cnt => cnt.option_price);  // 상품 원가격
+                                                            let AT_order_item_uid   = val.A_sel_option.map(cnt=>cnt.order_item_uid)  // 상품 아이템 uid
+                                                            let req_memo            = val.A_sel_option.map(cnt=>cnt.req_memo);
+                                                            let opt_chk             = val.A_sel_option.map(cnt=>cnt.goods_option_chk);
+                                                            let test                = val.A_sel_option.map(cnt=>cnt);
 
-                                                            let test = val.A_sel_option.map(cnt=>cnt);
-
-                                                            console.log(test);
+                                                            console.log(test,' / 배열 확인');
                                                             let temp = String(opt_chk);
                                                             let memochk = String(req_memo);
 
@@ -485,24 +505,21 @@ export default function Cart({route, navigation}) {
                                                                         <View style={[flex_between, styles.pd_18]}>
                                                                             <View style={[flex, wt8]}>
                                                                                 <Checkbox
-                                                                                    onValueChange={() => goFormChk(val.goods_uid, val.cate_name)}
+                                                                                    onValueChange={() => goFormChk(val.goods_uid, val.cate_name, total_price)}
                                                                                     value={val.goods_chk}
                                                                                     style={styles.all_check}
                                                                                     color={"#4630eb"}/>
                                                                                 {/*숨김처리*/}
                                                                                 <Checkbox
-                                                                                    onValueChange={() => goFormChk(val.goods_uid, val.cate_name)}
+                                                                                    onValueChange={() => goFormChk(val.goods_uid, val.cate_name, total_price )}
                                                                                     value={val.goods_chk}
                                                                                     style={styles.chk_view}
                                                                                     color={"#4630eb"}
                                                                                 />
 
-                                                                                <Text numberOfLines={1}
-                                                                                      style={styles.all_check_txt}>
+                                                                                <Text numberOfLines={2} style={styles.all_check_txt}>
                                                                                     {val.goods_name}
-
                                                                                 </Text>
-
                                                                             </View>
                                                                             {/*=============삭제버튼============*/}
                                                                             <TouchableOpacity
@@ -555,13 +572,16 @@ export default function Cart({route, navigation}) {
                                                                                         </View>
                                                                                     </TouchableWithoutFeedback>
                                                                                     {/*============수량=================*/}
+                                                                                    <TouchableOpacity onPress={CntModal}>
+                                                                                        <Text>asdfsdf</Text>
+                                                                                    </TouchableOpacity>
                                                                                     <TextInput
                                                                                         style={[countinput,]}
                                                                                         keyboardType="number-pad"
                                                                                         onChangeText={(order_item_cnt) => modCart(val.goods_uid, val.order_uid, 'order_item_cnt', order_item_cnt, goods_price)}
                                                                                         value={`${goods_cnt}`}
                                                                                         returnKeyType="done"
-                                                                                        onSubmitEditing={() => goForm(goods_cnt, goods_price, val.order_uid, val.goods_uid)}
+                                                                                        onBlur={()=>goForm(goods_cnt, goods_price, val.order_uid, val.goods_uid)}
                                                                                     />
                                                                                     {/*=============플러스 버튼============*/}
                                                                                     <TouchableWithoutFeedback
@@ -636,7 +656,8 @@ export default function Cart({route, navigation}) {
                     </View>
                 </View>
             </ScrollView>
-            {(cont > 0) ? (
+            <Footer navigation={navigation}/>
+            {(list_goods_cnt > 0) ? (
                 <>
                     <View style={[styles.go_cart, bg_primary, {paddingBottom: 36, paddingTop: 7,}]}>
                         <TouchableOpacity onPress={goOrderForm}>
@@ -648,12 +669,12 @@ export default function Cart({route, navigation}) {
                                     marginRight: 10,
                                     backgroundColor: "#fff"
                                 }}>
-                                    <Text style={{textAlign: "center", color: "#333",}}>{cont}</Text>
+                                    <Text style={{textAlign: "center", color: "#333",}}>{list_goods_cnt}</Text>
                                 </View>
-                                <Text style={text_light}>장바구니 가기</Text>
+                                <Text style={text_light}>총 0원</Text>
                             </View>
                             <Text style={[{textAlign: "center", color: "#FFF", fontSize: 18,}, text_light]}>
-                                수량 및 추가정보 입력
+                                배송정보입력
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -662,9 +683,12 @@ export default function Cart({route, navigation}) {
                 <>
                 </>
             )}
-            <Footer navigation={navigation}/>
+
         </>
     );
+
+
+
 
 
 
@@ -673,6 +697,24 @@ export default function Cart({route, navigation}) {
 
 
 const styles = StyleSheet.create({
+    modal:{
+        borderWidth:1,
+        borderColor:"#333",
+        width:"100%",
+        height:"100%",
+        positions:"absolute",
+        left:0,
+        top:0,
+        zIndex:99,
+
+    },
+    Cart:{
+        paddingBottom:70,
+    },
+
+    CartWrap:{
+        paddingBottom:300,
+    },
     CartIcon:{
         borderWidth:1,
         borderColor:"#fff",
@@ -756,7 +798,13 @@ const styles = StyleSheet.create({
         marginBottom:20,
     },
     go_cart:{
+        paddingTop:100,
+        height:100,
         zIndex:100,
+        position: "absolute",
+        left:0,
+        bottom:0,
+        width:"100%",
     },
     chk_view:{
         position:"absolute",

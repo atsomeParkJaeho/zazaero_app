@@ -70,7 +70,7 @@ import {RadioButton} from "react-native-paper";  // language must match config
 import Postcode from '@actbase/react-daum-postcode';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import {AddrMatch, Phone, Price, Time, Time1, Time2, cancel_List, cancel_d_List, DateChg} from "../../util/util";
+import {AddrMatch, Phone, Price, Time, Time1, Time2, cancel_List, cancel_d_List, DateChg, DateChg2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import RNPickerSelect from "react-native-picker-select";
 import goodsthum1 from "../../assets/img/goods_thum1.jpg";
@@ -222,7 +222,9 @@ export default function OrderForm({route,navigation}) {
     }
 
     /**--------------------------------------------------------------------------------------------------------------------------**/
-
+    // 오늘날짜 출력
+    let today = new Date();
+    console.log(DateChg2(today));
 
     return (
         <>
@@ -325,7 +327,7 @@ export default function OrderForm({route,navigation}) {
                                         });
                                     }
                                     }
-                                    minDate={`2020-12-31`}
+                                    minDate={`${today}`}
                                     maxDate={`2024-12-31`}
                                     style={{height: 150, paddingTop: 20, paddingBottom: 10}}
                                     daySelectionAnimation={{
@@ -623,7 +625,7 @@ export default function OrderForm({route,navigation}) {
     function OrderTotalPrice() {
 
         let total_cnt_arr   = order_uid.map(cate=>cate.A_sel_option.map(val=>Number(val.option_cnt)));
-        let total_cnt = total_cnt_arr.reduce((val,idx)=>{
+        let total_cnt       = total_cnt_arr.reduce((val,idx)=>{
             return val.concat(idx);
         });
         let goods_total_cnt = 0;

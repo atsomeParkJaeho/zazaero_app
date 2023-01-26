@@ -129,6 +129,7 @@ export default function MainPage({navigation, route}) {
           return 구문 안에서는 {슬래시 + * 방식으로 주석
         */
         <>
+            {/**----------------------------------------해더----------------------------------------**/}
             <View style={styles.top_inner}>
                 <View style={[flex_between]}>
                     <View style="">
@@ -146,6 +147,7 @@ export default function MainPage({navigation, route}) {
                     </View>
                 </View>
             </View>
+            {/**----------------------------------------바디----------------------------------------**/}
             <ScrollView style={styles.main_wrap}>
                 <ImageSlider
                     data={[
@@ -225,6 +227,8 @@ export default function MainPage({navigation, route}) {
                     </View>
                 </View>
             </ScrollView>
+            {/**----------------------------------------푸터----------------------------------------**/}
+
             <Footer navigation={navigation}/>
             {/*========상품즐겨찾기 체크시=========*/}
             {/*<View style={[styles.Notification]}>*/}

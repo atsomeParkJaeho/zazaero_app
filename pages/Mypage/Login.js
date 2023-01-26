@@ -100,7 +100,6 @@ export default function Login({navigation, route}) {
                 const {result, mem_uid} = res.data;
                 if (result === 'OK') {
                     AsyncStorage.setItem('member', mem_uid);
-                    //reloadAsync();
                     navigation.replace('메인페이지');
 
                 }
