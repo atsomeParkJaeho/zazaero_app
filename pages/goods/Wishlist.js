@@ -159,6 +159,54 @@ export default function Wishlist({route,navigation}) {
                 })}
         }));
     }
+    /**---------------------------------자재추가 이벤트----------------------------------------**/
+    const AddGoods = () => {
+        // 테이블 AT_order, gd_order, AT_order_item
+
+        let {gd_order_uid} = route.params;
+
+        console.log(gd_order_uid);
+
+        /**------------------------------1. 체크한상품 필터링------------------------**/
+        let temp = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
+        let Add_goods = temp.reduce((val,idx)=>{
+            return val.concat(idx);
+        });
+
+        console.log(Add_goods);
+
+        Add_goods.map(val=>{
+            /**------------------------------2. db로 보내기-----------------------------**/
+            axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+                act_type        : "ins_order_goods",
+                gd_order_uid    : gd_order_uid,
+                goods_uid       : val.goods_uid
+            },{
+                headers: {
+                    'Content-type': 'multipart/form-data'
+                }
+            }).then((res)=>{
+                if(res) {
+                    const {result} = res.data;
+                    console.log(result);
+                    if(result === 'OK') {
+                        console.log('연결');
+                    } else {
+                        console.log('실패');
+                    }
+                }
+            });
+        })
+
+
+
+        /**------------------------------3. 완료 액션후 페이지 이동------------------------**/
+        
+        Alert.alert('','자재 추가가 완료되었습니다.');
+        navigation.pop();
+        
+    }
+
 
     /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
     const goOrderForm = () => {
@@ -220,7 +268,9 @@ export default function Wishlist({route,navigation}) {
     /**------------------------------장바구니 선택 항목 필터링------------------------------**/
 
     
-    
+
+
+
     return (
         <>
             <ScrollView style={[bg_white]}>
@@ -270,15 +320,27 @@ export default function Wishlist({route,navigation}) {
                                                                                         <View
                                                                                             style={[flex_between, align_items_center, pb2]}>
                                                                                             <View style={[wt8]}>
-                                                                                                <TouchableOpacity style=""
-                                                                                                                  onPress={() => {
-                                                                                                                      navigation.navigate('상품상세', {uid: val.goods_uid})
-                                                                                                                  }}>
-                                                                                                    {/*========상품명========*/}
-                                                                                                    <Text
-                                                                                                        style={[styles.cate_2st_btn_txt, (val.goods_wish_chk_chk) ? {color: "red"} : {color: "#000"}]}
-                                                                                                        numberOfLines={1}>{val.goods_name}</Text>
-                                                                                                </TouchableOpacity>
+
+                                                                                                {(route.params) ? (
+                                                                                                    <>
+                                                                                                        <TouchableOpacity style="" onPress={() => {navigation.navigate('상품상세', {uid: val.goods_uid})}}>
+                                                                                                            {/*========상품명========*/}
+                                                                                                            <Text
+                                                                                                                style={[styles.cate_2st_btn_txt, (val.goods_wish_chk_chk) ? {color: "red"} : {color: "#000"}]}
+                                                                                                                numberOfLines={1}>{val.goods_name}</Text>
+                                                                                                        </TouchableOpacity>
+                                                                                                    </>
+                                                                                                ):(
+                                                                                                    <>
+                                                                                                        <TouchableOpacity style="" onPress={() => {navigation.navigate('상품상세', {uid: val.goods_uid})}}>
+                                                                                                            {/*========상품명========*/}
+                                                                                                            <Text
+                                                                                                                style={[styles.cate_2st_btn_txt, (val.goods_wish_chk_chk) ? {color: "red"} : {color: "#000"}]}
+                                                                                                                numberOfLines={1}>{val.goods_name}</Text>
+                                                                                                        </TouchableOpacity>
+                                                                                                    </>
+                                                                                                )}
+
                                                                                             </View>
                                                                                             <View
                                                                                                 style={[wt2, d_flex, justify_content_end]}>
@@ -366,11 +428,13 @@ export default function Wishlist({route,navigation}) {
             <Footer navigation={navigation}/>
 
             {/*========상품체크시 노출=========*/}
-            {(cont > 0) ? (
+
+            {(route.params) ? (
                 <>
                     <View style={[styles.go_cart, bg_primary, {paddingBottom: 36, paddingTop: 7,}]}>
-                        <TouchableOpacity onPress={goOrderForm}>
+                        <TouchableOpacity onPress={AddGoods}>
                             <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
+                                <Text style={text_light}>총 </Text>
                                 <View style={{
                                     width: 20,
                                     height: 20,
@@ -380,18 +444,45 @@ export default function Wishlist({route,navigation}) {
                                 }}>
                                     <Text style={{textAlign: "center", color: "#333",}}>{cont}</Text>
                                 </View>
-                                <Text style={text_light}>장바구니 가기</Text>
+                                <Text style={text_light}> 개</Text>
                             </View>
                             <Text style={[{textAlign: "center", color: "#FFF", fontSize: 18,}, text_light]}>
-                                수량 및 추가정보 입력
+                                자재추가하기
                             </Text>
                         </TouchableOpacity>
                     </View>
                 </>
-            ) : (
+            ):(
                 <>
+                    {(cont > 0) ? (
+                        <>
+                            <View style={[styles.go_cart, bg_primary, {paddingBottom: 36, paddingTop: 7,}]}>
+                                <TouchableOpacity onPress={goOrderForm}>
+                                    <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
+                                        <View style={{
+                                            width: 20,
+                                            height: 20,
+                                            borderRadius: 50,
+                                            marginRight: 10,
+                                            backgroundColor: "#fff"
+                                        }}>
+                                            <Text style={{textAlign: "center", color: "#333",}}>{cont}</Text>
+                                        </View>
+                                        <Text style={text_light}>장바구니 가기</Text>
+                                    </View>
+                                    <Text style={[{textAlign: "center", color: "#FFF", fontSize: 18,}, text_light]}>
+                                        수량 및 추가정보 입력
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        </>
+                    ) : (
+                        <>
+                        </>
+                    )}
                 </>
             )}
+
 
         </>
     );

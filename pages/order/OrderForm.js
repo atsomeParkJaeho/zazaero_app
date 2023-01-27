@@ -327,6 +327,7 @@ export default function OrderForm({route,navigation}) {
                                         });
                                     }
                                     }
+                                    startingDate={`${today}`}
                                     minDate={`${today}`}
                                     maxDate={`2024-12-31`}
                                     style={{height: 150, paddingTop: 20, paddingBottom: 10}}

@@ -12,7 +12,7 @@ import {
     Switch, Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {List} from 'react-native-paper';
+import {List, Modal, Portal, Provider} from 'react-native-paper';
 import Checkbox from 'expo-checkbox';
 
 // 공통 CSS 추가
@@ -400,20 +400,7 @@ export default function Cart({route, navigation}) {
     }
 
 
-    /**----------------------------------------------수량 모달창--------------------------------------------------------------**/
 
-    const CntModal = () => {
-
-        //
-
-        return(
-            <>
-                <View style={styles.modal}>
-                    <Text>수량입력</Text>
-                </View>
-            </>
-        );
-    }
 
 
     let list              = CartList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
@@ -572,17 +559,12 @@ export default function Cart({route, navigation}) {
                                                                                         </View>
                                                                                     </TouchableWithoutFeedback>
                                                                                     {/*============수량=================*/}
-                                                                                    <TouchableOpacity onPress={CntModal}>
-                                                                                        <Text>asdfsdf</Text>
+                                                                                    {/**-----상품 uid, 주문 uid 추가----**/}
+                                                                                    <TouchableOpacity style={[countinput]}>
+                                                                                        <Text style={[text_center]}>
+                                                                                            {goods_cnt}
+                                                                                        </Text>
                                                                                     </TouchableOpacity>
-                                                                                    <TextInput
-                                                                                        style={[countinput,]}
-                                                                                        keyboardType="number-pad"
-                                                                                        onChangeText={(order_item_cnt) => modCart(val.goods_uid, val.order_uid, 'order_item_cnt', order_item_cnt, goods_price)}
-                                                                                        value={`${goods_cnt}`}
-                                                                                        returnKeyType="done"
-                                                                                        onBlur={()=>goForm(goods_cnt, goods_price, val.order_uid, val.goods_uid)}
-                                                                                    />
                                                                                     {/*=============플러스 버튼============*/}
                                                                                     <TouchableWithoutFeedback
                                                                                         onPress={() => modCart(val.goods_uid, val.order_uid, 'plus', goods_cnt, goods_price)}>
@@ -686,28 +668,25 @@ export default function Cart({route, navigation}) {
 
         </>
     );
-
-
-
-
-
+    /**----------------------------------------------수량 모달창--------------------------------------------------------------**/
 
 }
 
 
 
 const styles = StyleSheet.create({
+
     modal:{
-        borderWidth:1,
-        borderColor:"#333",
         width:"100%",
         height:"100%",
-        positions:"absolute",
+        borderColor:"red",
+        position:"absolute",
+        zIndex:100,
+        backgroundColor:"#333",
         left:0,
         top:0,
-        zIndex:99,
-
     },
+
     Cart:{
         paddingBottom:70,
     },

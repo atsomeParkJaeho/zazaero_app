@@ -41,7 +41,7 @@ import {useIsFocused} from "@react-navigation/native";
 export default function SignUp({route, navigation}) {
 
 
-   
+
 
     // 1. 상태정의
     const Chkinput = useRef([]);                // 입력값 위치 설정
@@ -58,11 +58,11 @@ export default function SignUp({route, navigation}) {
         zonecode        :'',            // 우편번호
         addr1           :'',            // 주소
         addr2           :'',            // 상세주소
-        privacy_1       :false,            // 약관
-        privacy_2       :false,            // 개인정보처리방침
-        privacy_3       :false,            // 정보수집
-        privacy_4       :false,            // 홍보 및 마케팅
-        privacy_5       :false,            // 전자금율거래이용약관
+        privacy_1       :false,         // 약관
+        privacy_2       :false,         // 개인정보처리방침
+        privacy_3       :false,         // 정보수집
+        privacy_4       :false,         // 홍보 및 마케팅
+        privacy_5       :false,         // 전자금율거래이용약관
         img_file1       :'',            // 사업자등록증 사본
         img_file2       :'',            // 통장사본
         //
@@ -71,8 +71,12 @@ export default function SignUp({route, navigation}) {
         all_chk         :false,
     });
 
-
-
+    //권한 요청을 위한 hooks
+    const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
+    const [imageUrl, setimageUrl] = useState({
+        Businesslicense :'',    //사업자등록증
+        CopyBankbook    :'',    //통장사본
+    });
     useEffect(()=>{
         if(route.params) {
             let {zonecode, addr1} = route.params;
@@ -93,6 +97,52 @@ export default function SignUp({route, navigation}) {
         })
     }
 
+
+    const uploadImage = async (keyValue) => {
+        //권한 확인 코드 : 권한 없으면 물어보고, 승인하지 않으면 함수종료
+        if (!status.granted){
+            const permission = await requestPermission();
+            if (!permission.granted){
+                return null;
+            }
+        }
+        //이미지 업로드 가능
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing : false,
+            quality: 1,
+            aspect:[1,1]
+        });
+        if (result.cancelled){
+            return null; //이미지 업로드 취소한 경우
+        }
+        //이미지 업로드 결과 및 이미지 경로 업데이트
+        console.log('keyvalue : '+keyValue);
+        console.log('이미지경로 : '+ result.uri);
+        if (keyValue === 'img_file1') {
+            setSignUp({
+                ...SignUp,
+                img_file1    : result.uri,
+            });
+        }
+        if (keyValue === 'img_file2') {
+            setSignUp({
+                ...SignUp,
+                img_file2    : result.uri,
+            });
+        }
+
+
+        // 서버에 요청 보내기
+        const localUri = result.uri;
+        const filename = localUri.split('/').pop();
+        const match = /\.(\w+)$/.exec(filename ?? '');
+        const type = match ? `image/${match[1]}` : `image`;
+        const formData = new FormData();
+        formData.append('image', { uri: localUri, name: filename, type });
+        console.log(formData._parts);
+
+    }
 
     // 3. 닉네임 중복확인
     const chkName = () => {
@@ -171,24 +221,24 @@ export default function SignUp({route, navigation}) {
             Alert.alert('',`8자 이상 입력해주세요.`);
             return Chkinput.current[2].focus();
         }
-        if(SignUp.mem_id_chk === 'N') {             // 아이디 중복체크
+        if(!SignUp.mem_id_chk) {             // 아이디 중복체크
             Alert.alert('',`아이디 중복체크를 확인해주세요.`);
             return Chkinput.current[2].focus();
         }
         // 체크루틴
-        if(SignUp.mem_id === '') {  /*아이디 */
+        if(!SignUp.mem_id) {  /*아이디 */
             Alert.alert('',`아이디를 입력해주세요.`);
             return Chkinput.current[0].focus();
         }
-        if(SignUp.mem_id_chk === 'N') {  // 아이디 중복체크
+        if(!SignUp.mem_id_chk) {  // 아이디 중복체크
             Alert.alert('',`아이디 중복체크를 해주세요.`);
             return Chkinput.current[0].focus();
         }
-        if(SignUp.mem_pw === '') {  // 비밀번호
+        if(!SignUp.mem_pw) {  // 비밀번호
             Alert.alert('',`비밀번호를 입력해주세요.`);
             return Chkinput.current[1].focus();
         }
-        if(SignUp.mem_pw_chk === '') {  // 비밀번호 확인
+        if(!SignUp.mem_pw_chk) {  // 비밀번호 확인
             Alert.alert('',`비밀번호 확인을 입력해주세요.`);
             return Chkinput.current[2].focus();
         }
@@ -203,51 +253,63 @@ export default function SignUp({route, navigation}) {
             return Chkinput.current[2].focus();
         }
 
-        if(SignUp.com_name === '') {  // 업체명
+        if(!SignUp.com_name) {  // 업체명
             Alert.alert('',`업체명을 입력해주세요.`);
             return Chkinput.current[3].focus();
         }
-        if(SignUp.com_biz_no === '') {  // 사업자 등록증
+        if(!SignUp.com_biz_no) {  // 사업자 등록증
             Alert.alert('',`사업자 등록증을 입력해주세요.`);
             return Chkinput.current[4].focus();
         }
-        if(SignUp.zonecode === '') {  // 우편번호
+        if(!SignUp.zonecode) {  // 우편번호
             Alert.alert('',`우편번호를 입력해주세요.`);
             return Chkinput.current[5].focus();
         }
-        if(SignUp.addr1 === '') {  // 주소
+        if(!SignUp.addr1) {  // 주소
             Alert.alert('',`주소를 입력해주세요.`);
             return Chkinput.current[6].focus();
         }
-        if(SignUp.addr2 === '') {  // 상세주소
+        if(!SignUp.road_address) { // 지역코드
+            Alert.alert('','지역을 선택해주세요');
+            return Chkinput.current[6].focus();
+        }
+
+        if(!SignUp.addr2) {  // 상세주소
             Alert.alert('',`상세주소를 입력해주세요.`);
             return Chkinput.current[7].focus();
         }
-        if(SignUp.mem_name === '') {  // 담당자명
+
+        if(!SignUp.mem_name) {  // 담당자명
             Alert.alert('',`담당자명을 입력해주세요.`);
             return Chkinput.current[8].focus();
         }
-        if(SignUp.mem_mobile === '') {  // 담당자 연락처
+
+        if(!SignUp.mem_mobile) {  // 담당자 연락처
             Alert.alert('',`담당자 연락처를 입력해주세요.`);
             return Chkinput.current[9].focus();
         }
-        if(SignUp.privacy_1 === false) {  // 서비스 이용약관
 
+        if(SignUp.privacy_1 === false) {  // 서비스 이용약관
             return Alert.alert('',`서비스 이용약관을 체크해주세요.`);
         }
-        if(SignUp.privacy_2 === false) {  // 개인정보처리방침 동의
 
+        if(SignUp.privacy_2 === false) {  // 개인정보처리방침 동의
             return Alert.alert('',`개인정정보처리방침을 동의하지 않으셨습니다.`);
         }
-        if(SignUp.privacy_3 === false) {  // 전자금융거래 이용약관
 
+        if(SignUp.privacy_3 === false) {  // 전자금융거래 이용약관
             return Alert.alert('',`전자금융거래를 체크하지 않으셨습니다.`);
         }
-        if(SignUp.privacy_4 === false) {  // 제3자 개인정보수집동의
 
+        if(SignUp.privacy_4 === false) {  // 제3자 개인정보수집동의
             return Alert.alert('',`제3자 개인정보수집동의 체크하지 않으셨습니다.`);
         }
-        
+
+
+        /**--------------------------첨부파일 요청---------------------------------------**/
+
+
+
 
         axios.post('http://49.50.162.86:80/ajax/UTIL_mem_reg.php',{
             act_type         :'mem_reg',
@@ -261,7 +323,6 @@ export default function SignUp({route, navigation}) {
             zonecode         :SignUp.zonecode,      // 우편번호
             addr1            :SignUp.addr1,         // 주소
             addr2            :SignUp.addr2,         // 상세주소
-            //
             img_file1        :SignUp.img_file1,     // 사업자등록증사본
             img_file2        :SignUp.img_file2,     // 통장사본
 
@@ -471,39 +532,41 @@ export default function SignUp({route, navigation}) {
                                 />
                             </View>
                         </View>
-                        {/*사업장 주소 입력창*/}
+                        {/*사업자 등록증 업로드*/}
                         <View style={styles.formGroup}>
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>사업자 등록증</Text>
 
-                                <Pressable style={[styles.upload_btn]}>
+                                <Pressable style={[styles.upload_btn]} onPress={(img_file1=>uploadImage('img_file1',img_file1))}>
                                     <View  style={[pos_center]} >
                                         <CameraIcon width={30} height={24}/>
                                     </View>
                                 </Pressable>
-                                <View  style={[mt2,styles.upload_box]} >
-                                    <Image style={styles.upload_img}/>
-                                </View>
 
-                            </View>
-                        </View>
-                        {/*사업자 등록증 업로드*/}
-                        <View style={styles.formGroup}>
-                            <View style={styles.inputGroup}>
-                                <Text style={styles.inputTopText}>통장사본</Text>
-
-                                {/*<Pressable style={[styles.upload_btn]} onPress={(CopyBankbook=>uploadImage('CopyBankbook',CopyBankbook))}>*/}
-                                {/*    <View  style={[pos_center]} >*/}
-                                {/*        <CameraIcon width={30} height={24}/>*/}
-                                {/*    </View>*/}
-                                {/*</Pressable>*/}
                                 <View  style={[mt2,styles.upload_box]} >
-                                    {/*<Image style={styles.upload_img} source={{uri: imageUrl.CopyBankbook}}/>*/}
+                                    <Image style={styles.upload_img} source={{uri: SignUp.img_file1}}/>
                                 </View>
 
                             </View>
                         </View>
                         {/*통장사본 업로드*/}
+                        <View style={styles.formGroup}>
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.inputTopText}>통장사본</Text>
+
+                                <Pressable style={[styles.upload_btn]} onPress={(img_file2=>uploadImage('img_file2',img_file2))}>
+                                    <View  style={[pos_center]} >
+                                        <CameraIcon width={30} height={24}/>
+                                    </View>
+                                </Pressable>
+
+                                <View  style={[mt2,styles.upload_box]} >
+                                    <Image style={styles.upload_img} source={{uri: SignUp.img_file2}}/>
+                                </View>
+
+                            </View>
+                        </View>
+
                     </View>
 
                     <View style={[gray_bar]}/>

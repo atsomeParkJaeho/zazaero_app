@@ -382,9 +382,9 @@ export const bankAccount = ["자재로(이정완)_국민은행 1234-23-5968714"]
 // 주문상태 정의 함수화
 
 export const ordStatus = (key) => {
-    if(key === 'order_ready')       {return '발주신청'; }
-    if(key === 'order_doing')       {return '발주검수중'; }
-    if(key === 'order_done')        {return '발주검수완료'; }
+    if(key === 'ord_ready')         {return '발주신청'; }
+    if(key === 'ord_doing')         {return '발주검수중'; }
+    if(key === 'ord_done')          {return '발주검수완료'; }
     if(key === 'pay_try')           {return '결제시도'; }
     if(key === 'pay_err')           {return '결제에러'; }
     if(key === 'pay_ready')         {return '결제대기'; }

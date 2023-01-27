@@ -387,7 +387,7 @@ export default function OrderDtail({route,navigation}) {
                                 <>
                                     <View style={[styles.CancelDetail_list_items]} >
                                         <View style={[container]}>
-                                            <Text style={[h14,mb1]}>{val.goods_name}</Text>
+                                            <Text style={[h14,mb1]}>{val.goods_name} {val.goods_uid}</Text>
                                             {/**--------------------------------옵션--------------------------------**/}
                                             {val.A_sel_option.map(items=>{
                                                 return(
@@ -409,6 +409,8 @@ export default function OrderDtail({route,navigation}) {
                                                             </View>
 
                                                         </View>
+                                                        {/*옵션요청글이 있을시 노출한다 */}
+
                                                         <View style={[mt1]}>
                                                             <View style={[]}>
                                                                 <Text style={[h13,text_right]}>요청금액 : <Text style={[text_danger]}>0원</Text></Text>
@@ -441,13 +443,17 @@ export default function OrderDtail({route,navigation}) {
     /**-----------------------------------------------자재추가, 결제요청, 환불신청, 주문취소--------------------------------------------------**/
     function OrderChk() {
 
+        /**----------------------------------클릭시 즐겨찾기 페이지 이동-------------------------------------------**/
+
+
+
         return(
             <>
                 {/**------------------------------발주신청, 발주검수중일시 노출------------------------------------**/}
-                {(OrderData.ord_status === 'order_ready') && (
+                {(OrderData.ord_status === 'ord_ready') && (
                     <>
                         <View style={[flex_around]}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={()=>navigation.navigate('즐겨찾기',{ord_status:`ord_ready`,gd_order_uid:gd_order_uid})}>
                                 <Text style={[styles.btn,btn_outline_primary]}>자재추가</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style="" onPress={()=>goDel()}>
@@ -458,7 +464,7 @@ export default function OrderDtail({route,navigation}) {
                 )}
 
                 {/**------------------------------발주검수완료, 결제대기시 노출------------------------------------**/}
-                {(OrderData.ord_status === 'order_done' || OrderData.ord_status === 'pay_ready' || OrderData.ord_status === 'deli_ready') && (
+                {(OrderData.ord_status === 'ord_done' || OrderData.ord_status === 'pay_ready' || OrderData.ord_status === 'deli_ready') && (
                     <>
                         <View style={[flex_around]}>
                             <TouchableOpacity>
@@ -501,7 +507,7 @@ export default function OrderDtail({route,navigation}) {
 
         /**----------------총 결제금액은 자재가격 + 요청옵션비 + 배송비 + 포인트----------------**/
         let goods_total_price = OrderGoodsList.map(val=>val.sum_order_price);
-        console.log(goods_total_price);
+        let test              = OrderGoodsList.map(val=>val.A_sel_option);
 
         return(
             <>

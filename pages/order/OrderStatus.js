@@ -66,16 +66,16 @@ function OrderStatus({route, navigation}) {
             }
         }).then((res)=>{
             const {result, A_gd_order, query} = res.data;
-            console.log(result);
+            console.log(result,'/ 확인');
             if(result === 'OK') {
                 console.log(A_gd_order);
                 console.log(query);
-                let Order_status = A_gd_order.filter(val=>
-                    val.ord_status === 'order_ready' ||
-                    val.ord_status === 'order_doing' ||
-                    val.ord_status === 'order_done'
-                )
-                return setOrderList(Order_status);
+                // let Order_status = A_gd_order.filter(val=>
+                //     val.ord_status === 'order_ready' ||
+                //     val.ord_status === 'order_doing' ||
+                //     val.ord_status === 'order_done'
+                // )
+                return setOrderList(A_gd_order);
             } else {
                 console.log('에러');
             }
@@ -87,7 +87,7 @@ function OrderStatus({route, navigation}) {
     },[Member, Update]);
 
 
-    console.log(OrderList,' / 리스트2');
+    console.log(OrderList,' / 리스트22');
 
 
     return (

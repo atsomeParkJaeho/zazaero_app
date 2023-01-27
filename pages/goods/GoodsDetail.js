@@ -126,6 +126,9 @@ export default function GoodsDetail({route,navigation}) {
                 console.log(result);
             }
         }).catch((error)=>{console.log(error)});
+
+
+
         // // 내 즐겨찾기에 등록된 상품 필터링하기
     }
 
