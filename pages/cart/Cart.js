@@ -211,8 +211,6 @@ export default function Cart({route, navigation}) {
     }
     /**-----------------------------------------장바구니 상품 수량변경--------------------------------------------------**/
     const modCart = (goods_uid, order_uid, type, value, goods_price) => {
-
-
         /**----------------------------상품수량 플러스--------------------------**/
         if(type === 'plus') {
             let cnt = Number(value) + 1;
@@ -234,10 +232,7 @@ export default function Cart({route, navigation}) {
             }));
             goForm(cnt, price, order_uid, goods_uid);
         }
-
         /**----------------------------상품수량 마이너스--------------------------**/
-
-
 
         if(type === 'minus') {
             let cnt = Number(value) - 1;
@@ -273,6 +268,8 @@ export default function Cart({route, navigation}) {
             }));
         }
     }
+
+
     const allMod = (type, cate_uid, cate_name, price) => {
 
         console.log('합계 가격 / ',type);
@@ -325,7 +322,6 @@ export default function Cart({route, navigation}) {
             setCartList(temp);
         }
     }
-    let test = CartList.map(cate=>cate.A_goods_list.map(val=>val));
     // console.log(test,'/ 테스트 배열');
     /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
     const goOrderForm = () => {
@@ -504,7 +500,7 @@ export default function Cart({route, navigation}) {
                                                                                     color={"#4630eb"}
                                                                                 />
 
-                                                                                <Text numberOfLines={2} style={styles.all_check_txt}>
+                                                                                <Text numberOfLines={1} style={styles.all_check_txt}>
                                                                                     {val.goods_name}
                                                                                 </Text>
                                                                             </View>

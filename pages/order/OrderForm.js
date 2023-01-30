@@ -250,7 +250,6 @@ export default function OrderForm({route,navigation}) {
                             <View style={[FormStyle.FormGroupItems]}>
                                 <Text style={[FormStyle.FormLabel]}>공사명</Text>
                                 <TextInput style={[input,{flex:1}]}
-
                                            placeholder="공사명"
                                            value={OrderData.order_title}
                                            onChangeText={(order_title)=>goInput("order_title",order_title)}
@@ -735,8 +734,6 @@ export default function OrderForm({route,navigation}) {
             console.log(order_data,'/ 발주양식 완료');
 
             let msg = '';
-            // msg += '\n 회원 uid :'      +order_data.mem_uid;
-            // msg += '\n 상품 uid :'      +order_data.A_order_uid;
             msg += '\n 주문자 성명 :'    +order_data.recv_name;
             msg += '\n 공사명 :'    +order_data.order_title;
             msg += '\n 주문자 전화번호 :' +order_data.recv_phone;
@@ -749,7 +746,6 @@ export default function OrderForm({route,navigation}) {
             msg += '\n 결제금액 : '      +order_data.settleprice;
             msg += '\n 자재금액 : '      +order_data.tot_order_price;
 
-            // Alert.alert('',msg);
             console.log(msg);
 
 
@@ -765,7 +761,8 @@ export default function OrderForm({route,navigation}) {
                     if (result === 'OK') {
                         return Alert.alert('발주요청이 완료되었습니다.',msg,[
                             {text:'확인',
-                                onPress:()=>{navigation.replace('발주상태')}
+                                onPress:()=>{navigation.replace('발주상태')
+                            }
                             },
                         ]);
 
@@ -774,6 +771,8 @@ export default function OrderForm({route,navigation}) {
                     }
                 }
             });
+
+
             /**-------------------------------배송지 저장-----------------------------------------**/
             axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
                 act_type        :"save_deli_addr",

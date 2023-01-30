@@ -289,7 +289,7 @@ export default function Wishlist({route,navigation}) {
                                                 <>
                                                     <List.Accordion title={cate.cate_1st_name} style={[container, styles.Accordion_tit]}>
                                                         {cate.A_goods_list.map(val => {
-                                                            // console.log(val,'/ 배열 확인');
+
                                                             if (val.goods_wish) {
                                                                 return (
                                                                     <>
@@ -300,17 +300,13 @@ export default function Wishlist({route,navigation}) {
                                                                                     paddingLeft: 15,
                                                                                     paddingRight: 15,
                                                                                 }]}>
-                                                                                    <View
-                                                                                        style={[styles.flex_item, styles.flex_item1]}>
+                                                                                    <View style={[styles.flex_item, styles.flex_item1]}>
                                                                                         <View style={[styles.cate_list_Thumbnail_box]}>
                                                                                             <Image style={styles.cate_list_Thumbnail} source={{uri: 'http://www.zazaero.com' + val.list_img}}/>
                                                                                             <View style={styles.goods_like}>
                                                                                                 {/*=============찜하기=================*/}
-                                                                                                <TouchableOpacity
-                                                                                                    onPress={() => delWish(val.goods_uid)}>
-                                                                                                    <WishIcon width={35}
-                                                                                                              height={24}
-                                                                                                              color={'blue'}/>
+                                                                                                <TouchableOpacity onPress={() => delWish(val.goods_uid)}>
+                                                                                                    <WishIcon width={35} height={24} color={'blue'}/>
                                                                                                 </TouchableOpacity>
                                                                                             </View>
                                                                                         </View>
@@ -323,7 +319,7 @@ export default function Wishlist({route,navigation}) {
 
                                                                                                 {(route.params) ? (
                                                                                                     <>
-                                                                                                        <TouchableOpacity style="" onPress={() => {navigation.navigate('상품상세', {uid: val.goods_uid})}}>
+                                                                                                        <TouchableOpacity style="" onPress={() => {navigation.navigate('상품상세', {uid: val.goods_uid, ord_status:route.params.gd_order_uid})}}>
                                                                                                             {/*========상품명========*/}
                                                                                                             <Text
                                                                                                                 style={[styles.cate_2st_btn_txt, (val.goods_wish_chk_chk) ? {color: "red"} : {color: "#000"}]}

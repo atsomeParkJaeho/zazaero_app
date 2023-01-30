@@ -132,6 +132,46 @@ export default function GoodsDetail({route,navigation}) {
         // // 내 즐겨찾기에 등록된 상품 필터링하기
     }
 
+    /**--------------------------------------------------------------------------------------**/
+    const goAdd = (type, goods_uid) => {
+        if(type === 'order') {
+            console.log('상세 자재추가 액션');
+            Alert.alert('','자재를 추가하시겠습니까?',[
+                {
+                    text:'확인',
+                    onPress:()=>{InsOrderGoods(goods_uid)},
+                },
+                {
+                    text:'취소',
+                    onPress:()=>{},
+                }
+            ]);
+            
+        }
+    }
+    /**-----------------------------------------주문서에 자재 추가---------------------------------------------**/
+    const InsOrderGoods = (goods_uid) => {
+
+        Alert.alert('','자재를 추가하였습니다.');
+        console.log(goods_uid);
+
+        /*
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+
+        },{
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            const {result} = res.data;
+            if(result === 'OK') {
+
+            } else {
+
+            }
+        })
+        */
+    }
 
     // ====================4. 수량증가 설정==================
     const goodsCnt = (type, value) => {
@@ -258,6 +298,8 @@ export default function GoodsDetail({route,navigation}) {
 
     const { width } = useWindowDimensions();
 
+    console.log(route.params.ord_status);
+
     return (
         <>
             <KeyboardAvoidingView style={[styles.avoidingView]} behavior={Platform.select({ios: 'padding'})}>
@@ -349,33 +391,54 @@ export default function GoodsDetail({route,navigation}) {
                         </View>
                     </View>
                 </ScrollView>
-                <View style={[styles.bottom_btn]}>
-                    <View style={[flex]}>
-                        <View style={[styles.wt1_5]}>
-                            <TouchableOpacity style={[styles.wish]}  onPress={()=>goWish(GoodsDetail.goods_uid)}>
-                                {(GoodsDetail.my_zzim_flag === 'Y') ? (
-                                    <>
-                                        <Wishlist width={35} height={24} />
-                                    </>
-                                ):(
-                                    <>
-                                        <WishlistNon width={35} height={24} />
-                                    </>
-                                )}
-                            </TouchableOpacity>
-                        </View>
-                        <View style={[styles.wt8_5]}>
-                            <View style={[flex_around]}>
-                                <TouchableOpacity style={styles.btn} onPress={() => goForm('cart',GoodsDetail.goods_uid)}>
-                                    <Text style={[btn_primary,styles.center,styles.boottom_btn]}>장바구니 담기</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>
-                                    <Text style={[btn_black,styles.center,styles.boottom_btn]}>장바구니 가기</Text>
-                                </TouchableOpacity>
+
+                {(route.params.ord_status) ? (
+                    <>
+                        <View style={[styles.bottom_btn]}>
+                            <View style={[flex]}>
+                                <View style={{width:"100%"}}>
+                                    <View style={[flex_around]}>
+                                        <TouchableOpacity style={{width:"100%"}} onPress={() => goAdd('order',GoodsDetail.goods_uid)}>
+                                            <Text style={[btn_primary,styles.center,]}>자재추가하기</Text>
+                                        </TouchableOpacity>
+
+                                    </View>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                </View>
+                    </>
+                ):(
+                    <>
+                        <View style={[styles.bottom_btn]}>
+                            <View style={[flex]}>
+                                <View style={[styles.wt1_5]}>
+                                    <TouchableOpacity style={[styles.wish]}  onPress={()=>goWish(GoodsDetail.goods_uid)}>
+                                        {(GoodsDetail.my_zzim_flag === 'Y') ? (
+                                            <>
+                                                <Wishlist width={35} height={24} />
+                                            </>
+                                        ):(
+                                            <>
+                                                <WishlistNon width={35} height={24} />
+                                            </>
+                                        )}
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={[styles.wt8_5]}>
+                                    <View style={[flex_around]}>
+                                        <TouchableOpacity style={styles.btn} onPress={() => goForm('cart',GoodsDetail.goods_uid)}>
+                                            <Text style={[btn_primary,styles.center,styles.boottom_btn]}>장바구니 담기</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>
+                                            <Text style={[btn_black,styles.center,styles.boottom_btn]}>장바구니 가기</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </>
+                )}
+                
                 {/*장바구니/구매*/}
                 <View style={[styles.ios_pb]} />
                 {/*========상품즐겨찾기 체크시=========*/}
