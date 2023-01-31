@@ -149,28 +149,30 @@ export default function GoodsDetail({route,navigation}) {
             
         }
     }
+
+    console.log(route.params.gd_order_uid);
     /**-----------------------------------------주문서에 자재 추가---------------------------------------------**/
     const InsOrderGoods = (goods_uid) => {
-
-        Alert.alert('','자재를 추가하였습니다.');
-        console.log(goods_uid);
-
-        /*
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-
+            act_type        : "ins_order_goods",
+            goods_uid       : goods_uid,
+            gd_order_uid    : route.params.gd_order_uid,
+            cnt             : GoodsDetail.my_cart_cnt,
         },{
             headers: {
                 'Content-type': 'multipart/form-data'
             }
         }).then((res)=>{
-            const {result} = res.data;
-            if(result === 'OK') {
-
-            } else {
-
+            if(res) {
+                const {result} = res.data;
+                console.log(result);
+                if(result === 'OK') {
+                    Alert.alert('','자재를 추가하였습니다.');
+                } else {
+                    console.log('실패');
+                }
             }
-        })
-        */
+        });
     }
 
     // ====================4. 수량증가 설정==================

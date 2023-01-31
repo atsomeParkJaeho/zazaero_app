@@ -180,7 +180,8 @@ export default function Wishlist({route,navigation}) {
             axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
                 act_type        : "ins_order_goods",
                 gd_order_uid    : gd_order_uid,
-                goods_uid       : val.goods_uid
+                goods_uid       : val.goods_uid,
+                cnt             : 1,
             },{
                 headers: {
                     'Content-type': 'multipart/form-data'
@@ -196,10 +197,7 @@ export default function Wishlist({route,navigation}) {
                     }
                 }
             });
-        })
-
-
-
+        });
         /**------------------------------3. 완료 액션후 페이지 이동------------------------**/
         
         Alert.alert('','자재 추가가 완료되었습니다.');

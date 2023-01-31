@@ -69,12 +69,6 @@ function OrderStatus({route, navigation}) {
             console.log(result,'/ 확인');
             if(result === 'OK') {
                 console.log(A_gd_order);
-                console.log(query);
-                // let Order_status = A_gd_order.filter(val=>
-                //     val.ord_status === 'order_ready' ||
-                //     val.ord_status === 'order_doing' ||
-                //     val.ord_status === 'order_done'
-                // )
                 return setOrderList(A_gd_order);
             } else {
                 console.log('에러');
