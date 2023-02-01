@@ -47,15 +47,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function OrderStatus({route, navigation}) {
 
+
+    /**-------------------기본 회원정보 셋팅-----------------------**/
     const [Member, setMember] = useState();
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
     const Update = useIsFocused();
-    console.log('전달 2값 / ',Member);
     const [OrderList, setOrderList] = useState([]);     // 발주내역 출력
-    useEffect(()=>{
-        // ======================= db 연결용==================//
+    console.log('전달 2값 / ',Member);
+    /**-----------------------------주문서정보 출력----------------------------**/
+    const getOrderStatus = () => {
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
             act_type        :"get_order_list",
             login_status    :"Y",
@@ -69,20 +71,22 @@ function OrderStatus({route, navigation}) {
             console.log(result,'/ 확인');
             if(result === 'OK') {
                 console.log(A_gd_order);
-                return setOrderList(A_gd_order);
+
+                let temp = A_gd_order.filter(val=>val.ord_status === 'ord_ready' || val.ord_status === 'ord_doing')
+
+
+                return setOrderList(temp);
             } else {
                 console.log('에러');
             }
         });
-
-        //======================== 임시====================//
-
-
+    }
+    /**---------------------------출력리스트----------------------------------**/
+    useEffect(()=>{
+        getOrderStatus();
     },[Member, Update]);
 
-
     console.log(OrderList,' / 리스트22');
-
 
     return (
         <>

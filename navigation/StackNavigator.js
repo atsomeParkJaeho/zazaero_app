@@ -61,8 +61,7 @@ import DeliDetailIng from "../pages/order/DeliDetailIng";
 import DeliDetailDone from "../pages/order/DeliDetailDone";
 import Postcode from "@actbase/react-daum-postcode/lib/app.native";
 import DaumPostCode from "../util/DaumPostCode";
-
-
+import Payment from "../util/ImportPay";
 
 
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
@@ -177,6 +176,8 @@ const StackNavigator = () => {
                 <Stack.Screen name="하단" component={Footer}/>
                 {/*다음 주소 api 추가*/}
                 <Stack.Screen name="주소검색" component={DaumPostCode}/>
+                {/**--------------------아임포트 결제 모듈 추가-------------------------**/}
+                <Stack.Screen name="카드결제" component={Payment}/>
 
             </Stack.Navigator>
         </>

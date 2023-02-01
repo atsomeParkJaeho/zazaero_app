@@ -254,23 +254,43 @@ export default function OrderDtail({route,navigation}) {
         /**--------------------------------카드결제-----------------------------------**/
         if(type === 'card') {
             // 카드결제
+            Alert.alert('','결제하시겠습니까?',
+                [
+                    {
+                        text:'취소',
+                        onPress:()=>{
+
+                        },
+                    },
+
+                    {
+                        text:'확인',
+                        onPress:()=>{
+                            donePay(type);
+                        },
+                    },
+
+                ]
+            );
         }
 
     }
 
     const donePay = (type) => {
-
         /**----------------1. 자재합계가격을 넣는다.------------------------------------**/
         let Settlekindprice = 0;
         Settlekindprice += Number(OrderData.goodsprice);
         Settlekindprice += Number(OrderData.deli_price);
         Settlekindprice += Number(OrderData.tot_opt_price);
 
-        console.log(type);
-        console.log(Settlekindprice);
-        console.log(gd_order_uid,'/ 주문 uid');
-        console.log(OrderData.bankAccount,' / 무통장 코드');
-        console.log(OrderData.bankSender,' / 예금주명');
+
+        let devcode = '';
+        devcode += type+'\n';
+        devcode += Settlekindprice+'\n';
+        devcode += OrderData.bankAccount+'\n';
+        devcode += OrderData.bankSender+'\n';
+
+        console.log(devcode,'/코드');
         
         /**------------2. settlekindprice 결제합계 금액만 넘긴다-----------------**/
         if(type === 'bank') {
@@ -320,11 +340,11 @@ export default function OrderDtail({route,navigation}) {
         if(type === 'card') {
 
         }
-
     }
 
     console.log(OrderData.bankAccount,' / 은행코드');
     console.log(OrderData.bankSender,'  / 예금주명');
+    console.log(OrderData.settlekind,'  / 결제');
 
     return (
         <>
@@ -539,6 +559,18 @@ export default function OrderDtail({route,navigation}) {
                                     <Text style={[styles.btn,btn_outline_danger]}>전체취소</Text>
                                 </TouchableOpacity>
                             </View>
+
+                        </View>
+                        {/**----------------------------------------------반품시에만 노출한다--------------------------------------------------**/}
+                        <View>
+
+                        </View>
+                        {/**----------------------------------------------총금액--------------------------------------------------**/}
+                        <View>
+                            <OrderTotalPrice/>
+                        </View>
+                        {/**-----------------------------------------결제대기시 노출 시킨다.--------------------------------------------**/}
+                        <View style={[styles.payView]}>
                             {(OrderData.ord_status === 'pay_ready') && (
                                 <>
                                     {/*무통장, 카드결제 선택*/}
@@ -572,53 +604,56 @@ export default function OrderDtail({route,navigation}) {
                                             </TouchableOpacity>
                                         </View>
                                     </View>
-                                    {/*무통장 입금시 출력*/}
+                                    {/**--------------------------무통장 입금시 출력------------------------------------------------**/}
                                     {(PayMement === 'bank') && (
-                                        <View style={[mb2]}>
-                                            {/*은행선택*/}
-                                            <View style={[input,{flex:1, marginBottom:15,}]}>
-                                                <RNPickerSelect
-                                                    items={BankCode}
-                                                    placeholder={{label:"은행을 선택해주세요.", value:null}}
-                                                    value={OrderData.bankAccount}
-                                                    onValueChange={(bankAccount)=>goInput('bankAccount',bankAccount)}
-                                                    useNativeAndroidPickerStyle={false}
-                                                    style={{
-                                                        placeholder:{color:'gray'},
-                                                        inputAndroid : styles.input,
-                                                        inputAndroidContainer : styles.inputContainer,
-                                                        inputIOS: styles.input,
-                                                        inputIOSContainer : styles.inputContainer,
-                                                    }}
-                                                />
+                                        <>
+                                            <View style={[mb2]}>
+                                                {/*은행선택*/}
+                                                <View style={[input,{flex:1, marginBottom:15,}]}>
+                                                    <RNPickerSelect
+                                                        items={BankCode}
+                                                        placeholder={{label:"은행을 선택해주세요.", value:null}}
+                                                        value={OrderData.bankAccount}
+                                                        onValueChange={(bankAccount)=>goInput('bankAccount',bankAccount)}
+                                                        useNativeAndroidPickerStyle={false}
+                                                        style={{
+                                                            placeholder:{color:'gray'},
+                                                            inputAndroid : styles.input,
+                                                            inputAndroidContainer : styles.inputContainer,
+                                                            inputIOS: styles.input,
+                                                            inputIOSContainer : styles.inputContainer,
+                                                        }}
+                                                    />
+                                                </View>
+                                                {/*예금주 입력*/}
+                                                <View style={{flex:1}}>
+                                                    <TextInput style={[input,{width:"100%"}]}
+                                                               placeholder="예금주명"
+                                                               value={OrderData.bankSender}
+                                                               onChangeText={(bankSender)=>goInput('bankSender',bankSender)}
+                                                    />
+                                                </View>
                                             </View>
-                                            {/*예금주 입력*/}
-                                            <View style={{flex:1}}>
-                                                <TextInput style={[input,{width:"100%"}]}
-                                                placeholder="예금주명"
-                                                value={OrderData.bankSender}
-                                                onChangeText={(bankSender)=>goInput('bankSender',bankSender)}
-                                                />
+                                            <View style={[flex_around]}>
+                                                <TouchableOpacity style={styles.payMement} onPress={()=>goPay(PayMement)}>
+                                                    <Text style={[styles.btn, text_center, btn_outline_primary]}>결제하기</Text>
+                                                </TouchableOpacity>
                                             </View>
-
-                                        </View>
+                                        </>
                                     )}
-                                    {/*최종결제 버튼*/}
-                                    <View style={[flex_around]}>
-                                        <TouchableOpacity style={styles.payMement} onPress={()=>goPay(PayMement)}>
-                                            <Text style={[styles.btn, text_center, btn_outline_primary]}>결제하기</Text>
-                                        </TouchableOpacity>
-                                    </View>
+                                    {/**--------------------------카드결제시 출력------------------------------------------------**/}
+                                    {(PayMement === 'card') && (
+                                        <>
+                                            <View style={[flex_around]}>
+                                                <TouchableOpacity style={styles.payMement} onPress={()=>goPay(PayMement)}>
+                                                    <Text style={[styles.btn, text_center, btn_outline_primary]}>결제하기</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </>
+                                    )}
+
                                 </>
                             )}
-                        </View>
-                        {/**----------------------------------------------반품시에만 노출한다--------------------------------------------------**/}
-                        <View>
-
-                        </View>
-                        {/**----------------------------------------------총금액--------------------------------------------------**/}
-                        <View>
-                            <OrderTotalPrice/>
                         </View>
                     </View>
                 </View>
@@ -722,9 +757,13 @@ export default function OrderDtail({route,navigation}) {
                                         <View style={[container]}>
                                             <View style={[d_flex, align_items_center, mb1,flex_between]}>
                                                 <Text style={[h14]}>{val.goods_name}</Text>
-                                                <TouchableOpacity onPress={()=>DelOrder()}>
-                                                    <Text>삭제</Text>
-                                                </TouchableOpacity>
+                                                {(Mod) && (
+                                                    <>
+                                                        <TouchableOpacity onPress={()=>DelOrder()}>
+                                                            <Text>삭제</Text>
+                                                        </TouchableOpacity>
+                                                    </>
+                                                )}
                                             </View>
                                             {/**--------------------------------옵션--------------------------------**/}
                                             {val.A_sel_option.map(items=>{
@@ -940,6 +979,12 @@ const styles = StyleSheet.create({
     payMement:{
        width:"100%",
     },
+
+    payView:{
+        padding:15,
+        paddingBottom:30,
+    },
+
     btn_fix:{
         flex:1,
     },
