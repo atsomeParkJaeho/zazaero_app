@@ -376,6 +376,9 @@ export const DateChg2 = (text) => {
 }
 
 
+export const IMPcode = 'imp45563562';
+
+
 export const bankAccount = ["자재로(이정완)_국민은행 1234-23-5968714"];
 
 

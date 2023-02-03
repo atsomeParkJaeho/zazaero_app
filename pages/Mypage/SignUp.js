@@ -37,7 +37,6 @@ import axios from "axios";
 import {AddrMatch, bizNum, Minlangth, OnlyEng, Phone, PwChk, regId, regPW} from "../../util/util";
 import CameraIcon from "../../icons/camera_icon.svg";
 import {useIsFocused} from "@react-navigation/native";
-
 export default function SignUp({route, navigation}) {
 
 

@@ -11,6 +11,7 @@
   "dependencies": {
     "@actbase/react-daum-postcode": "^1.0.4",
     "@expo/webpack-config": "^0.17.2",
+    "@ouroboros/react-native-picker": "^0.2.1",
     "@powerdesigninc/react-native-prompt": "^0.1.2",
     "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-native-community/checkbox": "^0.5.14",
@@ -19,9 +20,10 @@
     "@react-navigation/material-top-tabs": "^6.5.1",
     "@react-navigation/native": "^6.0.16",
     "@react-navigation/stack": "^6.3.7",
+    "@tanstack/react-query": "^4.24.4",
     "@tighten/react-native-time-input": "^1.0.3",
-    "accordion-collapse-react-native": "^1.1.1",
     "AsyncStorage": "^0.1.5",
+    "accordion-collapse-react-native": "^1.1.1",
     "axios": "^1.2.1",
     "dropdown-picker": "^0.0.1",
     "expo": "~47.0.7",
@@ -68,6 +70,9 @@
     "react-native-webview": "^11.26.1",
     "react-native-wrapped-text": "^1.2.2",
     "yarn": "^1.22.19"
+  },
+  "resolutions": {
+    "react-native-picker-select/@react-native-picker/picker": "^2.4.8"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
