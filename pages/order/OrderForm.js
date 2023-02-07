@@ -81,8 +81,6 @@ import goodsthum1 from "../../assets/img/goods_thum1.jpg";
 
 export default function OrderForm({route,navigation}) {
 
-
-
     /**--------------------------------------필수 정보사항--------------------------------------------------**/
     const {order_uid, addr1, zonecode} = route.params;
     let order_result_uid = order_uid.map(val=>Number(val.order_uid));
@@ -115,6 +113,7 @@ export default function OrderForm({route,navigation}) {
         tot_order_price     :'',                              // 자재 총 가격
         deli_type           :'',                              // 착불, 선불
         deli_price          :'',                              // 배송비
+        work_uid           :'',                              // 공사명 uid
         save_point          :'',                              // 적립 포인트
         point_use           :'',                              // 사용 포인트
     });
@@ -162,7 +161,6 @@ export default function OrderForm({route,navigation}) {
                 const {result, A_order} = res.data;
                 if (result === 'OK') {
                     setCartList(A_order);
-
                     let total_price_arr = A_order.map(cate=>cate.sum_order_price);
                     let goods_total_price = 0;
                     for (let i = 0; i < total_price_arr.length; i++) {
@@ -474,7 +472,7 @@ export default function OrderForm({route,navigation}) {
 
         let find = DeliList.filter(text=>(text.gmd_address.includes(Search) && text));
 
-        const goSearch = (gmd_zonecode, gmd_address, gmd_address_sub, gmd_title) => {
+        const goSearch = (gmd_zonecode, gmd_address, gmd_address_sub, gmd_title, work_uid) => {
 
             route.params.zonecode = gmd_zonecode;
             route.params.addr1 = gmd_address;
@@ -484,6 +482,7 @@ export default function OrderForm({route,navigation}) {
                 zonecode        :gmd_zonecode,
                 addr1           :gmd_address,
                 order_title     :gmd_title,
+                work_uid        :work_uid,
             });
 
             setOrderDate({
@@ -492,6 +491,7 @@ export default function OrderForm({route,navigation}) {
                 addr1           :gmd_address,
                 addr2           :gmd_address_sub,
                 order_title     :gmd_title,
+                work_uid        :work_uid,
             });
 
         }
@@ -534,7 +534,7 @@ export default function OrderForm({route,navigation}) {
                                                 <View style={[styles.Recent_search_list_item]}>
                                                     <View style={flex_between}>
                                                         <View>
-                                                            <TouchableOpacity onPress={() => goSearch(val.gmd_zonecode, val.gmd_address, val.gmd_address_sub, val.gmd_title)}>
+                                                            <TouchableOpacity onPress={() => goSearch(val.gmd_zonecode, val.gmd_address, val.gmd_address_sub, val.gmd_title, val.work_uid)}>
                                                                 <Text style={[h14, styles.txt_color2]}>
                                                                     {val.gmd_title}
                                                                 </Text>
@@ -560,7 +560,6 @@ export default function OrderForm({route,navigation}) {
                             </ScrollView>
                         </View>
                     )}
-
                 </View>
             </>
         );
@@ -745,6 +744,7 @@ export default function OrderForm({route,navigation}) {
             msg += '\n 배송메모 : '       +order_data.order_memo;
             msg += '\n 결제금액 : '      +order_data.settleprice;
             msg += '\n 자재금액 : '      +order_data.tot_order_price;
+            msg += '\n 공사명 uid : '      +order_data.work_uid;
 
             console.log(msg);
 
