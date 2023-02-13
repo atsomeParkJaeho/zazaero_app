@@ -63,7 +63,7 @@ import {
     h13,
     text_right,
     justify_content_between,
-    btn_danger, btn_primary,
+    btn_danger, btn_primary, textarea,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 import Main_logo from "../../icons/main_logo.svg";
@@ -84,6 +84,7 @@ import axios from "axios";
 import OrderStatus from "./OrderStatus";
 import orderStatus from "./OrderStatus";
 import RNPickerSelect from "react-native-picker-select";
+import Checkbox from "expo-checkbox";
 // import {rgb} from "yarn/lib/cli";
 
 
@@ -128,6 +129,8 @@ export default function OrderDtail({route,navigation}) {
     const Update = useIsFocused();
     /**------------------------------------------------------카드결제완료시 db 로그 전송.----------------------------------------------**/
 
+
+
     /**-------------------------------------------주문정보 출력-------------------------------------------------------------------------**/
     const getOrderInfo = () => {
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
@@ -143,7 +146,20 @@ export default function OrderDtail({route,navigation}) {
             if(result === 'OK') {
 
                 setOrderDate(gd_order);
-                setOrderGoodsList(gd_order.A_order);
+
+
+
+                let temp = gd_order.A_order.map((val)=>{
+                    return {
+                        ...val,
+                        goods_chk:false,
+                        goods_del:false,
+                    }
+                });
+
+                console.log(temp,'/ 검색확인');
+                setOrderGoodsList(temp);
+
 
                 if(addr1) {
                     setOrderDate({
@@ -167,6 +183,7 @@ export default function OrderDtail({route,navigation}) {
 
     /*수정완료 클릭시 변경사항 저장*/
     const FormMod = () => {
+        /**-------------------------발주서 정보 변경시------------------------------**/
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
             act_type             :"save_recv_info",
             gd_order_uid         :gd_order_uid,
@@ -191,54 +208,41 @@ export default function OrderDtail({route,navigation}) {
                 console.log('에러');
             }
         });
-    }
 
-
-    /**--------------------------수정시 저장(주문정보)--------------------------**/
-    const modOrderInfo = (key,value) => {
-        console.log('로그 업데이트');
-
-        if(key === 'hope_deli_date') {
-            setOrderDate({
-                ...OrderData,
-                hope_deli_date:value,
-            })
-        }
-
-        if(key === 'hope_deli_time') {
-            setOrderDate({
-                ...OrderData,
-                hope_deli_time:value,
-            })
-        }
-
-        let hope_deli_date = (key === 'hope_deli_date') ? (value):OrderData.hope_deli_date
-        let hope_deli_time = (key === 'hope_deli_time') ? (value):OrderData.hope_deli_time
-
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-            act_type             :"save_recv_info",
-            gd_order_uid         :gd_order_uid,
-            recv_mobile          :OrderData.recv_mobile,
-            recv_name            :OrderData.recv_name,
-            hope_deli_date       :hope_deli_date,
-            hope_deli_time       :hope_deli_time,
-            addr1                :OrderData.addr1,
-            addr2                :OrderData.addr2,
-            zonecode             :OrderData.zonecode,
-
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
+        /**-------------------------------------------------------**/
+        let order_item = OrderGoodsList.map(cate=>cate.A_sel_option.map(val=>{
+            return {
+                order_item_uid  :Number(val.order_item_uid),
+                cnt             :Number(val.option_cnt),
             }
-        }).then((res)=>{
-            const {result} = res.data;
-            if(result === 'OK') {
-                console.log('성공');
-            } else {
-                console.log('실패',result)
-            }
+        }));
+
+        let temp = order_item.reduce((val,idx)=>{
+            return val.concat(idx);
         });
+
+        temp.map(val=>
+            axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+                act_type             :"chg_order_item_cnt",
+                order_item_uid       :val.order_item_uid,
+                cnt                  :val.cnt,
+            },{
+                headers: {
+                    'Content-type': 'multipart/form-data'
+                }
+            }).then((res)=>{
+                const {result} = res.data;
+                if(result === 'OK') {
+                    console.log('저장완료');
+                } else {
+                    console.log('에러');
+                }
+            })
+        );
     }
+
+
+
 
 
     /**----------------------------------------은행계좌정보 출력---------------------------------------------**/
@@ -338,6 +342,7 @@ export default function OrderDtail({route,navigation}) {
     }
 
     const modCart = (goods_uid, order_uid, type, value, goods_price) => {
+
         /**----------------------------상품수량 플러스--------------------------**/
         if(type === 'plus') {
             let cnt     = Number(value) + 1;
@@ -371,6 +376,7 @@ export default function OrderDtail({route,navigation}) {
             });
             setOrderGoodsList(temp);
         }
+
         /**----------------------------상품수량 수기조절--------------------------**/
         if(type === 'order_item_cnt') {
             /*안드로이드는 안되는 현상 있음*/
@@ -403,7 +409,7 @@ export default function OrderDtail({route,navigation}) {
         devcode += OrderData.bankSender+'\n';
 
         console.log(devcode,'/코드');
-        
+
         /**------------2. settlekindprice 결제합계 금액만 넘긴다-----------------**/
         if(type === 'bank') {
 
@@ -422,7 +428,6 @@ export default function OrderDtail({route,navigation}) {
                 }
             }).then((res)=>{
                 const {result} = res.data;
-                // console.log(res.data);
                 if(result === 'OK') {
                     console.log('성공');
                 } else {
@@ -491,12 +496,102 @@ export default function OrderDtail({route,navigation}) {
 
         }
 
-
     }
-    // 주문취소 로직
+    /**----------------------선택 주문취소-----------------------------------**/
     const goCancel = () => {
+        // 1. 체크한 자재를 필터링한다
+        let temp = OrderGoodsList.filter(val=>val.goods_chk === true);
+        // 2. 필터링한 상품을 재배열한다
+        console.log(temp,'/ 체크한 상품 배열 출력');
+
+        Alert.alert('','선택한 자재를 취소하시겠습니까?',[
+            {
+                text:'취소',
+                onPress:()=>{}
+            },
+            {
+                text:'확인',
+                onPress:()=>{
+                    delGoods();
+                    Alert.alert('','삭제완료 하였습니다.');
+                }
+            }
+        ]);
+
 
     }
+    /**------------------------------전체삭제----------------------------**/
+    const allCancel = () => {
+        let temp = OrderGoodsList.map(val=>{
+            return {...val, goods_chk:true}
+        });
+
+        setOrderGoodsList(temp);
+
+        Alert.alert('','선택한 자재를 취소하시겠습니까?',[
+            {
+                text:'취소',
+                onPress:()=>{}
+            },
+            {
+                text:'확인',
+                onPress:()=>{
+                    delGoods();
+                    Alert.alert('','삭제완료 하였습니다.');
+                }
+            }
+        ]);
+
+    }
+
+    const delGoods = () => {
+        let temp = OrderGoodsList.map(val=>{
+            if(val.goods_chk === true) {
+                return {...val, goods_del:true}
+            } else {
+                return val;
+            }
+        });
+        setOrderGoodsList(temp);
+
+        /*
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+            act_type             :"order_pay",
+        },{
+            headers: {
+                'Content-type': 'multipart/form-data'
+            }
+        }).then((res)=>{
+            const {result} = res.data;
+            if(result === 'OK') {
+                console.log('성공');
+            } else {
+                console.log('실패');
+            }
+        });
+        */
+    }
+
+
+    // 자재 체크 로직
+    const modChk = (goods_uid) => {
+
+        console.log('반응');
+
+        let temp = OrderGoodsList.map((val)=>{
+            if(val.goods_uid === goods_uid) {
+                return {
+                    ...val,
+                    goods_chk:!val.goods_chk,
+                }
+            } else {
+                return val;
+            }
+        });
+        console.log(temp);
+        setOrderGoodsList(temp);
+    }
+
 
     const cntPopup = (goods_uid, order_uid, option_cnt) => {
         // 팝업 노출
@@ -509,8 +604,8 @@ export default function OrderDtail({route,navigation}) {
 
     }
 
-    function Popup({goods_uid,order_uid,option_cnt}) {
 
+    function Popup({goods_uid,order_uid,option_cnt}) {
         const [cntData, setCntData] = useState({
             goods_uid   :goods_uid,
             order_uid   :order_uid,
@@ -543,7 +638,7 @@ export default function OrderDtail({route,navigation}) {
             <>
                 <View style={[styles.PopupViewbg]}>
                     <View style={[styles.PopupView]}>
-                        
+
                         <View style={{paddingBottom:20,}}>
                             <Text style={{fontSize:17}}>수량변경</Text>
                         </View>
@@ -551,6 +646,7 @@ export default function OrderDtail({route,navigation}) {
                         <View style={{paddingBottom:15,}}>
                             <TextInput
                             style={[input]}
+                            keyboardType="number-pad"
                             onChangeText={(text)=>cntCart(text)}
                             />
                         </View>
@@ -613,13 +709,13 @@ export default function OrderDtail({route,navigation}) {
                         <View style={[d_flex,align_items_center]}>
                             {/*우편번호*/}
                             <TextInput style={[input,{flex:1},bg_light]}
-                                       editable={false}
-                                       placeholder="우편번호"
-                                       value={(zonecode) ? (zonecode):(OrderData.zonecode)}
-                                       onChangeText={(zonecode)=>goInput("zonecode",zonecode)}
-                                       returnKeyType="next"
-                                       blurOnSubmit={false}
-                                       ref={el => (InputFocus.current[1] = el)}
+                            editable={false}
+                            placeholder="우편번호"
+                            value={(zonecode) ? (zonecode):(OrderData.zonecode)}
+                            onChangeText={(zonecode)=>goInput("zonecode",zonecode)}
+                            returnKeyType="next"
+                            blurOnSubmit={false}
+                            ref={el => (InputFocus.current[1] = el)}
                             />
                             {/*주소찾기*/}
                             {(Mod) && (
@@ -648,13 +744,12 @@ export default function OrderDtail({route,navigation}) {
                     {/**----------------------------------------------상세주소--------------------------------------------------**/}
                     <View>
                         <TextInput style={[input,{flex:1}]}
-                       onChangeText={(addr2)=>goInput("addr2",addr2)}
-                       placeholder="상세주소"
-                       value={OrderData.addr2}
-                       returnKeyType="done"
-                       editable={Mod}
-                       onBlur={modOrderInfo}
-                       ref={el => (InputFocus.current[3] = el)}
+                           onChangeText={(addr2)=>goInput("addr2",addr2)}
+                           placeholder="상세주소"
+                           value={OrderData.addr2}
+                           returnKeyType="done"
+                           editable={Mod}
+                           ref={el => (InputFocus.current[3] = el)}
                         />
                     </View>
                     {/*다음 api 주소 팝업*/}
@@ -683,7 +778,7 @@ export default function OrderDtail({route,navigation}) {
                                     }
                                     // startingDate={OrderData.hope_deli_date}
                                     startingDate={`${OrderData.hope_deli_date}`}
-                                    minDate={`${OrderData.hope_deli_date}`}
+                                    minDate={`${Date}`}
                                     maxDate={`2024-12-31`}
                                     style={{height: 150, paddingTop: 20, paddingBottom: 10}}
                                     daySelectionAnimation={{type: "background", highlightColor: "#3D40E0",}}
@@ -715,7 +810,7 @@ export default function OrderDtail({route,navigation}) {
                                     <View style={[styles.formSelect,{flex:1}]}>
                                         <RNPickerSelect
                                             placeholder={{label:"시간을 선택해주세요.", value:null}}
-                                            onValueChange={(hope_deli_time) => modOrderInfo(`hope_deli_time`,hope_deli_time)}
+                                            onValueChange={(hope_deli_time) => goInput(`hope_deli_time`,hope_deli_time)}
                                             items={Time2}
                                             value={OrderData.hope_deli_time}
                                             useNativeAndroidPickerStyle={false}
@@ -746,7 +841,6 @@ export default function OrderDtail({route,navigation}) {
                             placeholder="예 ) 홍길동"
                             value={OrderData.recv_name}
                             ref={el => (InputFocus.current[4] = el)}
-                            onBlur={()=>modOrderInfo}
                             />
                         </View>
                         {/*==============현장인도자 연락처==============*/}
@@ -754,13 +848,13 @@ export default function OrderDtail({route,navigation}) {
                             <View>
                                 <Text style={[FormStyle.FormLabel]}>현장인도자 연락처</Text>
                                 <TextInput style={[input,{flex:1}]}
+                                keyboardType="number-pad"
                                 editable={Mod}
                                 onChangeText={(recv_mobile)=>goInput("recv_mobile",recv_mobile)}
                                 placeholder="예 ) 010-XXXX-XXXX"
                                 maxLength={13}
-                                value={OrderData.recv_mobile}
+                                value={Phone(OrderData.recv_mobile)}
                                 ref={el => (InputFocus.current[5] = el)}
-                                onBlur={()=>modOrderInfo}
                                 />
                             </View>
                         </View>
@@ -775,7 +869,6 @@ export default function OrderDtail({route,navigation}) {
                                     numberOfLines={4}
                                     value={OrderData.order_memo}
                                     placeholder="배송요청사항"
-                                    onBlur={()=>modOrderInfo}
                                     />
                                 </TouchableWithoutFeedback>
                             </View>
@@ -793,17 +886,23 @@ export default function OrderDtail({route,navigation}) {
                     {(
                         OrderData.ord_status === 'ord_ready' ||
                         OrderData.ord_status === 'ord_done'  ||
-                        OrderData.ord_status === 'pay_ready' 
-
+                        OrderData.ord_status === 'pay_ready'
                     ) && (
-                        <View style={[flex_around, mb2]}>
-                            <TouchableOpacity onPress={()=>{Alert.alert('','준비중입니다.')}}>
-                                <Text style={[styles.btn,btn_outline_primary]}>자재추가</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <Text style={[styles.btn,btn_outline_danger]}>전체취소</Text>
-                            </TouchableOpacity>
-                        </View>
+                        <>
+                            <View style={[flex_around, mb2]}>
+                                <TouchableOpacity onPress={goCancel}>
+                                    <Text style={[styles.btn,btn_outline_danger]}>선택취소</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={allCancel}>
+                                    <Text style={[styles.btn,btn_outline_danger]}>전체취소</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={[flex_around, mb2]}>
+                                <TouchableOpacity>
+                                    <Text style={[styles.btn,btn_outline_primary]}>자재추가</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </>
                     )}
 
                     {/**------------------------------------부분반품, 전체반품------------------------------------**/}
@@ -914,7 +1013,9 @@ export default function OrderDtail({route,navigation}) {
 
     /**-----------------------------------------------자재목록--------------------------------------------------**/
     function GoodsList() {
-        let A_sel_option = OrderGoodsList.map(val=>val.A_sel_option);
+
+        let result = OrderGoodsList.filter(val=>val.goods_del === false);
+
         /**-----------------------------------------장바구니 상품 수량변경--------------------------------------------------**/
         return(
             <>
@@ -924,25 +1025,43 @@ export default function OrderDtail({route,navigation}) {
                 {/**-----------------자재목록---------------------------------------**/}
                 <View>
                     {/**-----------------반복문 구간---------------------------------------**/}
-                    {OrderGoodsList.map(val=>{
+                    {result.map(val=>{
                         if(val.goods_name !== null) {
                             let img_src = val.list_img_url;
+                            console.log(val.goods_chk,' 확인');
+
                             return(
                                 <>
                                     <View style={[styles.CancelDetail_list_items]} >
                                         <View style={[container]}>
                                             <View style={[d_flex, align_items_center, mb1,flex_between]}>
-                                                <Text style={[h14]}>{val.goods_name}</Text>
+                                                {/*체크박스*/}
                                                 {(Mod) && (
                                                     <>
-                                                        <TouchableOpacity onPress={()=>OrderCancel(`part`)}>
-                                                            <Text style={text_danger}>삭제</Text>
-                                                        </TouchableOpacity>
+                                                        <Checkbox style={styles.chk_view} color={"#4630eb"}
+                                                        value={val.goods_chk}
+                                                        onValueChange={()=>modChk(val.goods_uid)}
+                                                        />
+                                                        <View style={{flex:0.1}}>
+                                                            <Checkbox style={styles.all_check} color={"#4630eb"}
+                                                           value={val.goods_chk}
+                                                           onValueChange={()=>modChk(val.goods_uid)}
+                                                            />
+                                                        </View>
                                                     </>
                                                 )}
+                                                <View style={{flex:1}}>
+                                                    {/*상품명*/}
+                                                    <Text style={[h14]}>{val.goods_name}</Text>
+                                                </View>
                                             </View>
                                             {/**--------------------------------옵션--------------------------------**/}
                                             {val.A_sel_option.map(items=>{
+
+                                                let goods_price = items.option_price;
+                                                let goods_cnt   = items.option_cnt;
+                                                let order_item_uid = items.order_item_uid;
+
                                                 return(
                                                     <>
                                                         <View style={[flex_between_bottom]}>
@@ -998,7 +1117,7 @@ export default function OrderDtail({route,navigation}) {
                                                             <View style={justify_content_end}>
                                                                 <Text style={[h13]}>( 단가 : {Price(items.option_price)} 원)</Text>
                                                                 {/*단가*/}
-                                                                <Text style={[h16,text_right]}>{Price(val.sum_order_price)} 원</Text>
+                                                                <Text style={[h16,text_right]}>{Price(goods_price * goods_cnt)} 원</Text>
                                                                 {/*총금액*/}
                                                             </View>
                                                         </View>
@@ -1012,6 +1131,13 @@ export default function OrderDtail({route,navigation}) {
                                                                     {/*옵션요청가격*/}
                                                                     <View style={[]}>
                                                                         <Text style={[h13]}>{val.goods_guide_name}</Text>
+                                                                        <TextInput
+                                                                            onChangeText={(req_memo)=>goInput('req_memo',req_memo,order_item_uid)}
+                                                                            style={[textarea]}
+                                                                            value={`${items.req_memo}`}
+                                                                            multiline={true}
+                                                                            numberOfLines={4}
+                                                                        />
                                                                         <Text style={[h13]}>{items.req_memo}</Text>
                                                                     </View>
                                                                     {/*옵션요청글*/}
@@ -1150,6 +1276,21 @@ export default function OrderDtail({route,navigation}) {
 }
 
 const styles = StyleSheet.create({
+
+    all_check:{
+        borderRadius:5,
+    },
+
+    all_check_txt:{
+        marginLeft:5,
+    },
+
+    chk_view:{
+        position:"absolute",
+        opacity:0,
+        zIndex: 99,
+        width:"100%",
+    },
 
     PopupViewbtn:{
         width:"48%",

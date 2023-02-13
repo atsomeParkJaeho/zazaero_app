@@ -449,12 +449,11 @@ export default function Cart({route, navigation}) {
                                                             <View style={[flex, {justifyContent: "space-between",}]}>
                                                                 <View style={[d_flex]}>
                                                                     <Checkbox style={styles.all_check} color={"#4630eb"}
-                                                                              onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`,`${total_price}`)}
-                                                                              value={Chk_flag}
+                                                                    onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`,`${total_price}`)}
+                                                                    value={Chk_flag}
                                                                     />
-
                                                                     <Checkbox style={styles.chk_view} color={"#4630eb"}
-                                                                              onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`,`${total_price}`)}
+                                                                    onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`,`${total_price}`)}
                                                                     />
                                                                     <Text style={[ms1]}>전체선택</Text>
                                                                 </View>
