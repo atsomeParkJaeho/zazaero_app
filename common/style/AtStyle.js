@@ -229,8 +229,8 @@ export const d_flex = {flexDirection:"row",}
 export const justify_content_start = { justifyContent:"flex-start" }
 export const justify_content_end = {justifyContent:"flex-end"}
 export const justify_content_center = {justifyContent: "center"}
-export const justify_content_between = {justifyContent: "between"}
-export const justify_content_around = {justifyContent: "around"}
+export const justify_content_between = {justifyContent: "space-between"}
+export const justify_content_around = {justifyContent: "space-around"}
 export const justify_content_evenly = {justifyContent: "space-evenly"}
 
 export const align_items_start = {alignItems: "flex-start"}

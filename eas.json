@@ -17,6 +17,14 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appName": "zazero",
+        "ascApiKeyIssuerId": "65de0dc2-a669-4f5d-af53-5f8b10aea994",
+        "ascApiKeyPath": "./AuthKey_RG6LG75M9N.p8",
+        "appleId": "cs@starchium.com",
+        "ascAppId": "1662058333"
+      }
+    }
   }
 }

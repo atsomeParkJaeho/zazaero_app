@@ -396,6 +396,17 @@ export const ordStatus = (key) => {
     if(key === 'deli_doing')        {return '배송중'; }
     if(key === 'deli_done')         {return '배송완료'; }
 }
+export const payStatus = (key) => {
+    if(key === 'ready')         {return '입금대기'; }
+    if(key === 'try')           {return '결제시도'; }
+    if(key === 'err')           {return '결제실패'; }
+    if(key === 'done')          {return '결제완료'; }
+}
+export const deliStatus = (key) => {
+    if(key === 'ready')         {return '배송대기'; }
+    if(key === 'doing')         {return '배송진행'; }
+    if(key === 'done')          {return '배송완료'; }
+}
 
 
 export const Time1 = [

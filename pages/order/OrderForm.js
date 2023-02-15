@@ -95,12 +95,15 @@ export default function OrderForm({route,navigation}) {
     const [modAddr, setmodAddr]           = useState(`add`); // 신규, 기존 배송지 선택 상태 정의
     const [DeliList, setDeliList]         = useState([]);   // 배송지 리스트
     const Update = useIsFocused();
+    const ostype = Platform.OS;
+
     /**--------------------------------------주문서 셋팅--------------------------------------------------**/
     const [OrderData, setOrderDate]                = useState({
         act_type            :'ins_order',
         mem_uid             :Member,                          // 회원 uid
         mgr_mem_uid         :Member,                          // 회원 uid
         A_order_uid         :order_result_uid,                // 주문 uid
+        os_type             :ostype,                          // 기기 os
         recv_name           :'',                              // 현장인도자 성명
         recv_phone          :'',                              // 현자인도자 전화번호
         zonecode            :'',                              // 우편번호

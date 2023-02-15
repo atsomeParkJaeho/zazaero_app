@@ -20,47 +20,63 @@ function Payment({ route,navigation }) {
 
     console.log(log);
 
-    function callback(response) {
-        console.log('결제2 성공 /', response);
-        const {imp_uid} = response;
-        axios.post('http://49.50.162.86:80/ajax/UTIL_order.php',{
-            act_type        :'pay_result',
-            success         :'T',
-            gd_order_uid    :gd_order_uid,
-            order_no        :order_no,
-            imp_uid         :imp_uid,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
-            const {result, gd_order} = res.data;
-            if(result === 'OK') {
-                let msg = '';
-                msg += '결제가 완료되었습니다. '+gd_order+'\n';
-                msg += 'imp_uid '+imp_uid+'\n';
-                msg += '콜백 로그  '+response+'\n';
+    function callback(res) {
+        console.log('결제 성공 /', res);
+        const {imp_uid, success} = res;
+        if(success) {
+            let success = "T";
+            axios.post('http://49.50.162.86:80/ajax/UTIL_order.php',{
+                act_type        :"pay_result",
+                gd_order_uid    :gd_order_uid,
+                order_no        :order_no,
+                imp_uid         :imp_uid,
 
-                Alert.alert('',msg);
+            },{
+                headers: {
+                    'Content-type': 'multipart/form-data'
+                },
+            }).then((res)=>{
+                if(res) {
+                    let {result} = res.data;
+                    if(result === 'OK') {
+                        Alert.alert('','결제가 완료되었습니다.\n');
+                        return navigation.goBack();
+                    }
+                }
+            });
+        } else {
+            axios.post('http://49.50.162.86:80/ajax/UTIL_order.php',{
+                act_type        :"pay_try_cancel",
+                gd_order_uid    :gd_order_uid,
+            },{
+                headers: {
+                    'Content-type': 'multipart/form-data'
+                },
+            }).then((res)=>{
+                if(res) {
+                    let {result} = res.data;
+                    if(result === 'OK') {
+                        Alert.alert('',res.error_msg);
+                    }
+                }
+            });
+        }
 
-            } else {
-
-            }
-        });
 
     }
 
     const data = {
         pg                      :'kcp',
         pay_method              :'card',
-        name                    :'test',
+        name                    :order_title,
         merchant_uid            :order_no,
-        amount                  :'1000',
+        amount                  :settleprice,
         buyer_name              :order_mem_name,
         buyer_tel               :order_mem_mobile,
         buyer_addr              :addr1+' '+addr2,
         buyer_postcode          :zonecode,
         app_scheme              :'자재로',
+        m_redirect_url          :"http://49.50.162.86:80/contents/order/order_result_mobile.php?gd_order_uid="+gd_order_uid+"&order_no="+order_no,
     };
 
     return(

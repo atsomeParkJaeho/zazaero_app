@@ -26,7 +26,7 @@ import {
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
 // 샘플데이터
-import {order_List, ordStatus} from "../../util/util";
+import {deliStatus, order_List, ordStatus} from "../../util/util";
 import axios from "axios";
 import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -59,8 +59,11 @@ function DeliStatus({route, navigation}) {
             const {result, A_gd_order} = res.data;
             console.log(result);
             if(result === 'OK') {
-                let temp = A_gd_order.filter(val=>val.ord_status === 'deli_ready' || val.ord_status === 'deli_doing' || val.ord_status === 'deli_done');
-                return setOrderList(temp);
+                let temp = A_gd_order.filter(val=>val.ord_status === 'pay_done' || val.ord_status === 'deli_ready' || val.ord_status === 'deli_doing' || val.ord_status === 'deli_done');
+                let desc = temp.sort((a,b)=>{
+                    return new Date(b.order_date) - new Date(a.order_date);
+                });
+                return setOrderList(desc);
             } else {
                 console.log('에러');
             }
@@ -161,16 +164,8 @@ function DeliStatus({route, navigation}) {
                                                         </TouchableOpacity>
                                                     </View>
                                                     <View style={[flex]}>
-                                                        {/*<Text style={[h14]}>결제상태</Text>*/}
-                                                        {/*(val.pay_status == 'ready') ? (
-                                                         <Text
-                                                             style={[ text_danger,btn_outline_danger,ps1,pe1, h14]}>결제대기</Text>
-                                                     ) : (
-                                                         <Text
-                                                             style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>결제완료</Text>
-                                                     )*/}
                                                         <Text style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>
-                                                            {ordStatus(`${val.ord_status}`)}
+                                                            {deliStatus(`${val.deli_status}`)}
                                                         </Text>
                                                     </View>
                                                 </View>
@@ -194,6 +189,13 @@ export default DeliStatus;
 
 
 const styles = StyleSheet.create({
+
+    CancelBtn:{
+        borderWidth:1,
+        borderColor:"#333",
+        fontSize:17,
+    },
+
     wt_3: {
         flex: 0.5,
         borderBottomWidth: 1,

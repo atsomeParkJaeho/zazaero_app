@@ -57,19 +57,18 @@ function PayStatus({route, navigation}) {
             const {result, A_gd_order} = res.data;
             console.log(result);
             if(result === 'OK') {
-                let temp = A_gd_order.filter(val=>val.ord_status === 'pay_ready' || val.ord_status === 'order_done')
-                return setOrderList(temp);
+                let temp = A_gd_order.filter(val=>val.ord_status === 'pay_ready' || val.ord_status === 'order_done' || val.ord_status === 'pay_try');
+                let desc = temp.sort((a,b)=>{
+                    return new Date(b.order_date) - new Date(a.order_date);
+                });
+                return setOrderList(desc);
             } else {
                 console.log('에러');
             }
         });
-
         //======================== 임시====================//
 
-
     },[Member]);
-    // console.log('확인3 / ',OrderList.length);
-    // console.log('확인3 / ',OrderList);
     return (
         <>
             {/*상단*/}

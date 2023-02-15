@@ -39,7 +39,7 @@ import {
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
 // 샘플데이터
-import {order_List, ordStatus} from "../../util/util";
+import {DateChg, order_List, ordStatus} from "../../util/util";
 import axios from "axios";
 import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -71,8 +71,11 @@ function OrderStatus({route, navigation}) {
             console.log(result,'/ 확인');
             if(result === 'OK') {
                 console.log(A_gd_order);
-                let temp = A_gd_order.filter(val=>val.ord_status === 'ord_ready' || val.ord_status === 'ord_doing')
-                return setOrderList(temp);
+                let temp = A_gd_order.filter(val=>val.ord_status === 'ord_ready' || val.ord_status === 'ord_doing');
+                let desc = temp.sort((a,b)=>{
+                    return new Date(b.order_date) - new Date(a.order_date);
+                });
+                return setOrderList(desc);
             } else {
                 console.log('에러');
             }
@@ -138,7 +141,7 @@ function OrderStatus({route, navigation}) {
                                             </View>
                                             <View style={[styles.wt7]}>
                                                 <Text
-                                                    style={[styles.Desired_Delivery_Date_val, h14]}>{val.hope_deli_date} {val.hope_deli_time} 도착예정</Text>
+                                                    style={[styles.Desired_Delivery_Date_val, h14]}>{DateChg(val.hope_deli_date)} {val.hope_deli_time} 도착예정</Text>
                                             </View>
                                         </View>
                                         {/**-------------------------배송지----------------------------**/}
