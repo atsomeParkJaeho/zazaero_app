@@ -74,6 +74,7 @@ import {AddrMatch, Phone, Price, Time, Time1, Time2, cancel_List, cancel_d_List,
 import {useIsFocused} from "@react-navigation/native";
 import RNPickerSelect from "react-native-picker-select";
 import goodsthum1 from "../../assets/img/goods_thum1.jpg";
+import {InsOrder, SaveDeliAddr} from "./UTIL_order";
 // import SelectBox from "react-native-multi-selectbox";
 
 
@@ -226,6 +227,9 @@ export default function OrderForm({route,navigation}) {
     // 오늘날짜 출력
     let today = new Date();
     console.log(DateChg2(today));
+
+    console.log(OrderData);
+    console.log(DeliList);
 
     return (
         <>
@@ -380,6 +384,7 @@ export default function OrderForm({route,navigation}) {
                                     <View style={[FormStyle.FormGroupItems]}>
                                         <Text style={[FormStyle.FormLabel]}>현장인도자 성명</Text>
                                         <TextInput style={[input,{flex:1}]}
+
                                                    onChangeText={(recv_name)=>goInput("recv_name",recv_name)}
                                                    placeholder="예 ) 홍길동"
                                                    value={OrderData.recv_name}
@@ -394,6 +399,7 @@ export default function OrderForm({route,navigation}) {
                                                        onChangeText={(recv_phone)=>goInput("recv_phone",recv_phone)}
                                                        placeholder="예 ) 010-XXXX-XXXX"
                                                        maxLength={13}
+                                                       keyboardType="number-pad"
                                                        value={Phone(OrderData.recv_phone)}
                                                        ref={el => (InputFocus.current[5] = el)}
                                             />
@@ -733,9 +739,7 @@ export default function OrderForm({route,navigation}) {
 
         const goOrder = (order_data) => {
 
-            console.log(order_data,'/ 발주양식 완료');
-
-            let msg = '';
+            let msg = '발주신청이 완료되었습니다.';
             msg += '\n 주문자 성명 :'    +order_data.recv_name;
             msg += '\n 공사명 :'    +order_data.order_title;
             msg += '\n 주문자 전화번호 :' +order_data.recv_phone;
@@ -747,62 +751,44 @@ export default function OrderForm({route,navigation}) {
             msg += '\n 배송메모 : '       +order_data.order_memo;
             msg += '\n 결제금액 : '      +order_data.settleprice;
             msg += '\n 자재금액 : '      +order_data.tot_order_price;
-            msg += '\n 공사명 uid : '      +order_data.work_uid;
-
-            console.log(msg);
-
-
-            /**-------------------------------주문 저장-----------------------------------------**/
-            axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', order_data,{
-                headers: {
-                    'Content-type': 'multipart/form-data'
-                }
-            }).then((res)=>{
-                if (res) {
-                    console.log(res.data);
-                    const {result} = res.data;
-                    if (result === 'OK') {
-                        return Alert.alert('발주요청이 완료되었습니다.',msg,[
-                            {text:'확인',
-                                onPress:()=>{navigation.replace('발주상태')
-                            }
-                            },
-                        ]);
-
-                    } else {
-                        console.log('실패');
-                    }
-                }
-            });
+            msg += '\n 공사명_uid : '      +order_data.work_uid;
 
 
             /**-------------------------------배송지 저장-----------------------------------------**/
-            axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
-                act_type        :"save_deli_addr",
-                mem_uid         :Member,
-                recv_phone      :order_data.recv_phone,
-                order_title     :order_data.order_title,
-                zonecode        :order_data.zonecode,
-                addr1           :order_data.addr1,
-                addr2           :order_data.addr2,
-
-            },{
-                headers: {
-                    'Content-type': 'multipart/form-data'
-                }
-            }).then((res)=>{
-                if (res) {
-                    console.log(res.data);
-                    const {result} = res.data;
-                    if (result === 'OK') {
-                        console.log('배송지 저장')
+            SaveDeliAddr(Member, order_data).then((res)=>{
+                if(res) {
+                    const {result, work_uid} = res.data;
+                    if(result === 'OK') {
+                        InsOrder(order_data, Member, work_uid).then((res)=>{
+                            if(res) {
+                                const {result} = res.data;
+                                if(result === 'OK') {
+                                    Alert.alert('',msg,[{
+                                        text:'확인',
+                                        onPress:()=>{navigation.replace('발주상태')}
+                                    }]);
+                                } else {
+                                    Alert.alert('','에러');
+                                }
+                            }
+                        });
                     } else {
-                        console.log('실패');
+                        InsOrder(order_data, Member).then((res)=>{
+                            if(res) {
+                                const {result} = res.data;
+                                if(result === 'OK') {
+                                    Alert.alert('',msg,[{
+                                        text:'확인',
+                                        onPress:()=>{navigation.replace('발주상태')}
+                                    }]);
+                                } else {
+                                    Alert.alert('','에러');
+                                }
+                            }
+                        });
                     }
                 }
             });
-
-
         }
 
         return(
