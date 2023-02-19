@@ -59,7 +59,12 @@ function DeliStatus({route, navigation}) {
             const {result, A_gd_order} = res.data;
             console.log(result);
             if(result === 'OK') {
-                let temp = A_gd_order.filter(val=>val.ord_status === 'pay_done' || val.ord_status === 'deli_ready' || val.ord_status === 'deli_doing' || val.ord_status === 'deli_done');
+                let temp = A_gd_order.filter(val=>
+                    val.ord_status === 'pay_done' ||
+                    val.ord_status === 'deli_ready' ||
+                    val.ord_status === 'deli_doing' ||
+                    val.ord_status === 'deli_done'
+                );
                 let desc = temp.sort((a,b)=>{
                     return new Date(b.order_date) - new Date(a.order_date);
                 });

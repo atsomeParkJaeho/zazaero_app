@@ -145,6 +145,27 @@ export const payDoneCancel = async (Member, OrderData) => {
     return res;
 }
 
+export const PayTry = async (OrderData, type) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type             :"pay_try",
+        gd_order_uid         :OrderData.gd_order_uid,
+        settlekind           :type,
+        bankAccount          :OrderData.bankAccount,
+        bankSender           :OrderData.bankSender,
+        order_no             :OrderData.order_no,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
+}
+
+
+
+
+
 
 
 

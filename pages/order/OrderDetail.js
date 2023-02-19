@@ -93,7 +93,7 @@ import {
     getAppInfo,
     getOrderInfo,
     OrderMod,
-    payDoneCancel
+    payDoneCancel, PayTry, payTry
 } from "./UTIL_order";
 // import {rgb} from "yarn/lib/cli";
 
@@ -230,119 +230,39 @@ export default function OrderDtail({route,navigation}) {
     }
 
     /**--------------------------------------------------------------------------------------------------------------------------**/
-    const goPay = (type) => {
-        console.log(type,'/ 결제 타입');
-        /**--------------------------------무통장입금-----------------------------------**/
-        if(type === 'bank') {
-            /**--------------------1. 결제 체크 루틴----------------**/
+    const goPay = () => {
+        if(PayMement === 'bank') {
             if(OrderData.bankAccount === "0")     { return Alert.alert('','입금계좌를 선택해주세요.')}
             if(!OrderData.bankSender)             { return Alert.alert('','예금주명을 입력해주세요.')}
-            /**--------------------2. 무통장결제 완료체크----------------**/
-            // 무통장입금
-            Alert.alert('','결제하시겠습니까?',
-                [
-                    {
-                        text:'취소',
-                        onPress:()=>{
-
-                        },
-                    },
-
-                    {
-                        text:'확인',
-                        onPress:()=>{
-                            donePay(type);
-                        },
-                    },
-
-                ]
-            );
         }
 
-        /**--------------------------------카드결제-----------------------------------**/
-        if(type === 'card') {
-            // 카드결제
-            Alert.alert('','결제하시겠습니까?',
-                [
-                    {
-                        text:'취소',
-                        onPress:()=>{
-
-                        },
-                    },
-
-                    {
-                        text:'확인',
-                        onPress:()=>{
-                            donePay(type);
-                        },
-                    },
-
-                ]
-            );
-        }
-
+        Alert.alert('','결제하시겠습니까?',
+            [
+                {text:'취소', onPress:()=>{},},
+                {text:'확인', onPress:()=>{donePay();},},
+            ]
+        );
     }
 
-    const donePay = (type) => {
-        /**----------------1. 자재합계가격을 넣는다.------------------------------------**/
-
-        let Settlekindprice = 0;
-        Settlekindprice += Number(OrderData.goodsprice);
-        Settlekindprice += Number(OrderData.deli_price);
-        Settlekindprice += Number(OrderData.tot_opt_price);
-
-        let devcode = '';
-        devcode += '결제가 완료되었습니다. \n';
-        devcode += '결제 타입 : '+type+'\n';
-        devcode += '결제 총 금액 : '+Settlekindprice+'\n';
-        devcode += '입금계좌 : '+OrderData.bankAccount+'\n';
-        devcode += '입금자 명 : '+OrderData.bankSender+'\n';
-
-        console.log(devcode,'/코드');
-
-
-        axios.post('http://49.50.162.86:80/ajax/UTIL_order.php',{
-            act_type        :"pay_try",
-            gd_order_uid    :gd_order_uid,
-            settlekind      :type,
-            bankAccount     :OrderData.bankAccount,
-            bankSender      :OrderData.bankSender,
-            order_no        :OrderData.order_no,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            },
-        }).then((res)=>{
-            const {result} = res.data;
-            if(result === 'OK') {
-                console.log('연결성공');
-            }
-        }).done((data)=>{
-            if(type === 'bank') {
-                console.log('무통장 결제');
-                Alert.alert('',devcode);
-                return navigation.goBack();
-            }
-
-            if(type === 'card') {
-                let data = {
-                    gd_order_uid        :gd_order_uid,
-                    order_title         :OrderData.order_title,
-                    settleprice         :Settlekindprice,
-                    order_no            :OrderData.order_no,
-                    order_mem_name      :OrderData.recv_name,
-                    order_mem_mobile    :OrderData.recv_mobile,
-                    addr1               :OrderData.addr1,
-                    addr2               :OrderData.addr2,
-                    zonecode            :OrderData.zonecode,
+    const donePay = () => {
+        let msg = '결제가 완료되었습니다.';
+        let N_btn = {text:"확인", onPress:()=>{navigation.replace('배송상태')}};
+        if(PayMement === 'bank') {
+            PayTry(OrderData, PayMement).then((res)=>{
+                if(res) {
+                    const {result} = res.data;
+                    if (result === 'OK') {
+                        Alert.alert('',msg,[N_btn]);
+                    }
                 }
-                // 결제창 이동
-                navigation.navigate('카드결제',data);
-            }
-
-        });
+            });
+        } else {
+            /*카드결제창으로 이동*/
+            navigation.navigate('카드결제',{OrderData:OrderData});
+        }
     }
+
+
 
 
 
@@ -425,92 +345,6 @@ export default function OrderDtail({route,navigation}) {
         }
 
     }
-
-
-    /**-------------------------------주문취소창---------------------------------------**/
-    const OrderCancel = (cancel_type, AT_order_uid, goods_uid) => {
-        if(cancel_type === 'All') {
-            Alert.alert('','전체취소 하시겠습니까?',[
-                {
-                    text:'취소',
-                    onPress:()=>{
-
-                    },
-                },
-
-                {
-                    text:'확인',
-                    onPress:()=>{
-                        goCancel();
-                    },
-                }
-
-            ]);
-        }
-
-        if(cancel_type === 'part') {
-
-        }
-
-    }
-    /**----------------------선택 주문취소-----------------------------------**/
-    const goCancel = () => {
-        // 1. 체크한 자재를 필터링한다
-        let temp = OrderGoodsList.filter(val=>val.goods_chk === true);
-        // 2. 필터링한 상품을 재배열한다
-        console.log(temp,'/ 체크한 상품 배열 출력');
-
-        Alert.alert('','선택한 자재를 취소하시겠습니까?',[
-            {
-                text:'취소',
-                onPress:()=>{}
-            },
-            {
-                text:'확인',
-                onPress:()=>{
-                    delGoods();
-                    Alert.alert('','삭제완료 하였습니다.');
-                }
-            }
-        ]);
-
-    }
-    /**------------------------------전체삭제----------------------------**/
-    const allCancel = () => {
-        let temp = OrderGoodsList.map(val=>{
-            return {...val, goods_chk:true}
-        });
-
-        setOrderGoodsList(temp);
-
-        Alert.alert('','선택한 자재를 취소하시겠습니까?',[
-            {
-                text:'취소',
-                onPress:()=>{}
-            },
-            {
-                text:'확인',
-                onPress:()=>{
-                    delGoods();
-                    Alert.alert('','삭제완료 하였습니다.');
-                }
-            }
-        ]);
-
-    }
-
-    const delGoods = () => {
-        let temp = OrderGoodsList.map(val=>{
-            if(val.goods_chk === true) {
-                return {...val, goods_del:true}
-            } else {
-                return val;
-            }
-        });
-        setOrderGoodsList(temp);
-
-    }
-
 
     // 자재 체크 로직
     const modChk = (goods_uid) => {
@@ -609,7 +443,7 @@ export default function OrderDtail({route,navigation}) {
             </>
         );
     }
-    console.log(OrderData);
+    console.log(OrderData,'/');
     return(
         <>
             {/**----------------수량 조절 팝업------------**/}
@@ -883,7 +717,7 @@ export default function OrderDtail({route,navigation}) {
                                                 </View>
                                             </View>
                                             <View style={[flex_around]}>
-                                                <TouchableOpacity style={styles.payMement} onPress={()=>goPay(PayMement)}>
+                                                <TouchableOpacity style={styles.payMement} onPress={goPay}>
                                                     <Text style={[styles.btn, text_center, btn_outline_primary]}>결제하기</Text>
                                                 </TouchableOpacity>
                                             </View>
@@ -893,7 +727,7 @@ export default function OrderDtail({route,navigation}) {
                                     {(PayMement === 'card') && (
                                         <>
                                             <View style={[flex_around]}>
-                                                <TouchableOpacity style={styles.payMement} onPress={()=>goPay(PayMement)}>
+                                                <TouchableOpacity style={styles.payMement} onPress={goPay}>
                                                     <Text style={[styles.btn, text_center, btn_outline_primary]}>결제하기</Text>
                                                 </TouchableOpacity>
                                             </View>
@@ -913,20 +747,9 @@ export default function OrderDtail({route,navigation}) {
     function PayReadyCancelTab() {
         const AlldelOrder = () => {
             Alert.alert('','전체취소 하시겠습니까?',[
-                {
-                    text:"취소",
-                    onPress:()=>{
-
-                    }
-                },
-                {
-                    text:"확인",
-                    onPress:()=>{
-                        temp();
-                    }
-                }
+                {text:"취소", onPress:()=>{}},
+                {text:"확인", onPress:()=>{temp();}}
             ]);
-
             let temp = () => {
                 AllgdOrderDel(OrderData, Member).then((res)=>{
                     if(res) {
@@ -940,28 +763,16 @@ export default function OrderDtail({route,navigation}) {
             }
         }
 
-
         const ChkdelOrder = () => {
             let result = OrderGoodsList.filter(val=>val.goods_chk);
             let order_uid = result.map(val=>val.order_uid);
-
             if(OrderGoodsList.length === 1) { return Alert.alert('','전체취소를 버튼을 클릭해주세요.') }
             if(OrderGoodsList.length === result.length) { return Alert.alert('','전체취소를 버튼을 클릭해주세요.') }
             if(result.length === 0) { return Alert.alert('','자재를 선택해주세요.') }
 
             Alert.alert('','선택하신 자재를 취소하시겠습니까?',[
-                {
-                    text:"취소",
-                    onPress:()=>{
-
-                    }
-                },
-                {
-                    text:"확인",
-                    onPress:()=>{
-                        temp();
-                    }
-                }
+                {text:"취소", onPress:()=>{}},
+                {text:"확인", onPress:()=>{temp();}}
             ]);
 
             let temp = () => {
@@ -969,7 +780,6 @@ export default function OrderDtail({route,navigation}) {
                     const {result} = res.data;
                     if(result === 'OK') {
                         Alert.alert('','자재를 삭제하였습니다.');
-
                         let temp = OrderGoodsList.map(val=>{
                             if(val.goods_chk === true) {
                                 return {...val, goods_del:true}
@@ -978,15 +788,10 @@ export default function OrderDtail({route,navigation}) {
                             }
                         });
                         let temp2 = temp.filter(val=>val.goods_del === false);
-
                         setOrderGoodsList(temp2);
                     }
                 });
-
-
-
             }
-
         }
 
 
@@ -1024,7 +829,6 @@ export default function OrderDtail({route,navigation}) {
             }
 
             if(type === 'All') {
-
                 payDoneCancel(Member, OrderData).then((res)=>{
                     if(res) {
                         const {result} = res.data;
@@ -1037,7 +841,6 @@ export default function OrderDtail({route,navigation}) {
                         }
                     }
                 });
-
             }
         }
 
@@ -1085,8 +888,6 @@ export default function OrderDtail({route,navigation}) {
     /**-----------------------------------------------자재목록--------------------------------------------------**/
     function GoodsList() {
         let result = OrderGoodsList.filter(val=>val.goods_del === false);
-
-
         /**-----------------------------------------장바구니 상품 수량변경--------------------------------------------------**/
         return(
             <>
@@ -1120,11 +921,9 @@ export default function OrderDtail({route,navigation}) {
                                             </View>
                                             {/**--------------------------------옵션--------------------------------**/}
                                             {val.A_sel_option.map(items=>{
-
                                                 let goods_price     = items.option_price;
                                                 let goods_cnt       = items.option_cnt;
                                                 let order_item_uid  = items.order_item_uid;
-
                                                 const reqMemo = (key, value, uid) =>{
                                                     let temp = OrderGoodsList.map((cate)=>{
                                                         return {...cate, A_sel_option:cate.A_sel_option.map(val=>{
@@ -1137,8 +936,6 @@ export default function OrderDtail({route,navigation}) {
                                                     });
                                                     setOrderGoodsList(temp);
                                                 }
-
-
                                                 return(
                                                     <>
                                                         <View style={[flex_between_bottom]}>

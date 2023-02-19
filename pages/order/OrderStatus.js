@@ -71,7 +71,12 @@ function OrderStatus({route, navigation}) {
             console.log(result,'/ 확인');
             if(result === 'OK') {
                 console.log(A_gd_order);
-                let temp = A_gd_order.filter(val=>val.ord_status === 'ord_ready' || val.ord_status === 'ord_doing');
+                let temp = A_gd_order.filter(
+                    val=>
+                        val.ord_status === 'ord_ready'  ||
+                        val.ord_status === 'ord_doing'
+
+                );
                 let desc = temp.sort((a,b)=>{
                     return new Date(b.order_date) - new Date(a.order_date);
                 });

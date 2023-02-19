@@ -57,6 +57,7 @@ import axios from "axios";
 import {useIsFocused} from "@react-navigation/native";
 import {OnlyNum, Price} from "../../util/util";
 import CartIcon from "../../icons/uncart.svg";
+import {goDelCart, getCartList, goodsUpdate, save_req_memo} from "./UTIL_cart";
 
 // 장바구니 레이아웃 출력
 export default function Cart({route, navigation}) {
@@ -67,35 +68,17 @@ export default function Cart({route, navigation}) {
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
-    const [TotalPrice, setTotalPrice] = useState(``);
     const Update = useIsFocused();
 
-
-    /**---------------------------장바구니 옵션 요청 테스트------------------------**/
-    const [OptionTest, setOptionTest] = useState({
-        text:'',
-    });
-    
-    console.log(OptionTest,'/ 입력값');
 
     /**---------------------------------페이지 진입시 노출----------------------------------------**/
     useEffect(() => {
         // //====================장바구니 목록을 출력=================///
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
-            act_type        : "get_cart_list_new",
-            login_status    : "Y",
-            mem_uid         : Member,
-
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        getCartList(Member).then((res) => {
             if (res) {
-                const {result,query ,A_order} = res.data;
+                const {result ,A_order} = res.data;
                 if (result === 'OK') {
                     setCartList(A_order);
-                    // console.log(query,'/ 쿼리');
                 } else {
                     console.log('실패2');
                 }
@@ -104,46 +87,33 @@ export default function Cart({route, navigation}) {
 
     }, [Update, Member]);
 
+    console.log(CartList);
+
     /**---------------------------------장바구니 해당상품 삭제----------------------------------------**/
     const delCart = (order_uid,goods_uid) => {
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
-            act_type        : "del_cart",
-            login_status    : "Y",
-            mem_uid         : Member,
-            A_order_uid     : {order_uid},
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        /**---------1. db에서 삭제-----**/
+        goDelCart(Member, order_uid).then((res) => {
             if (res) {
                 const {result} = res.data;
                 if (result === 'OK') {
-                    // console.log('성공');
                 } else {
                     console.log('실패');
                 }
             }
         });
 
-        /**-------------1. 배열 상태 변경-----------------------------**/
+        /**---------2. 어플에서 삭제-----**/
         let temp = CartList.map((cate) => {
                         return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
                                 if(val.goods_uid === goods_uid) {
-                                    return {...val, goods_cart:true, goods_chk:false,}
+                                    return {...val, goods_del:true, goods_chk:false,}
                                 } else {
                                     return val;
                                 }
                             })}
                     });
         setCartList(temp);
-
-        if(goods_uid === 'not') {
-
-        } else {
-            Alert.alert('', '삭제완료 하였습니다.');
-        }
-
+        ``
     }
 
     /**---------------------------------옵션요청사항 있을시 체크----------------------------------------**/
@@ -162,9 +132,7 @@ export default function Cart({route, navigation}) {
     }
     /**---------------------------------체크시 배송정보 등록이동창 활성화----------------------------------------**/
     const goFormChk = (uid, cate, price) => {
-
         console.log(price,'/ 가격');
-
         if(cate) {
             setCartUid(cate); // 카테고리 넣기
         } else if(!cate) {
@@ -180,31 +148,15 @@ export default function Cart({route, navigation}) {
                 })}
         }));
 
-
     }
     /**----------------------------업데이트 내용 적용--------------------------**/
     const goForm = (goods_cnt, goods_price, order_uid, goods_uid) => {
         let cnt   = (goods_cnt > 1) ? Number(goods_cnt) : 1;
         /**----------------------------업데이트 내용 적용--------------------------**/
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
-            act_type        : "mod_cart",
-            mem_uid         : Member,
-            login_status    : "Y",
-            cnt             : cnt,
-            goods_price     : Number(goods_price),
-            order_uid       : order_uid,
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        goodsUpdate(Member, cnt, goods_price, order_uid, goods_uid).then((res) => {
             if (res) {
                 const {result} = res.data;
                 if (result === 'OK') {
-                    // console.log('적용완료 / ');
-                } else {
-                    console.log(res.data);
-                    // console.log('실패/123123123');
                 }
             }
         }).catch(err=>console.log(err));
@@ -271,12 +223,6 @@ export default function Cart({route, navigation}) {
 
 
     const allMod = (type, cate_uid, cate_name, price) => {
-
-        console.log('합계 가격 / ',type);
-        console.log('합계 가격 / ',cate_uid);
-        console.log('합계 가격 / ',cate_name);
-        console.log('합계 가격 / ',price);
-
         if(type === 'All') {
             setCartUid(cate_name);
             setCartList(CartList.map((item)=>{
@@ -289,39 +235,27 @@ export default function Cart({route, navigation}) {
                 }
             }));
         }
-
-        /**-------------------------------2. 전체삭제----------------------------------**/
-        if(type === 'Del') {
-            // console.log(cate_name,cate_uid,type+'/ 카테고리 명, 카테고리 uid, 타입');
-
-            /*1. 선택한 카테고리-> 체크한 자재만*/
-
-            let result = CartList.map(cate=>(cate.cate_1st_uid === cate_uid) && cate.A_goods_list.map(val=>(val.goods_chk === true && val.goods_cart === false) && val.order_uid));
-            let fix    = result.filter(val=>val !== false && val);
-            let test = fix.reduce((val,idx)=>{
-                return val.concat();
-            });
-            let chk = test.filter(uid=>(uid !== false) && uid);
-
-            chk.map(uid=>delCart(uid,`not`));
-
-
-            let temp = CartList.map((cate) => {
-                if(cate.cate_1st_uid === cate_uid) {
-                    return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
-                            if(val.goods_chk === true) {
-                                return {...val, goods_cart:true, goods_chk:false}
-                            }
-                            return val;
-                        })}
-                } else {
-                    return cate;
-                }
-            });
-
-            setCartList(temp);
-        }
     }
+
+    const ChkDel = (cate_1st_uid) => {
+        /* 1. 체크한 **/
+        let temp = CartList.map((item)=>{
+            if(item.cate_1st_uid === cate_1st_uid) {
+                return {...item, A_goods_list:item.A_goods_list.map((val)=>{
+                    if(val.goods_chk) {
+                        return {...val, goods_del:true}
+                    } else {
+                        return val;
+                    }
+                    })}
+            } else {
+                return item;
+            }
+        });
+        let result = temp.filter(items=>items.A_goods_list.map(val=>val.goods_del === false));
+    }
+
+
     // console.log(test,'/ 테스트 배열');
     /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
     const goOrderForm = () => {
@@ -364,22 +298,9 @@ export default function Cart({route, navigation}) {
     }
     /**---------------------------------옵션요청메모 저장----------------------------------------**/
     const ReqMemo = (uid,value) => {
-
         let req_memo          = String(value);
         let AT_order_item_uid = String(uid);
-
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
-               act_type         :'save_req_memo',
-               login_status     :'Y',
-               mem_uid          :Member,
-               order_item_uid   :AT_order_item_uid,
-               req_memo         :req_memo,
-
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        save_req_memo(Member, AT_order_item_uid, req_memo).then((res) => {
             if (res) {
                 console.log(res.data);
                 const {result, query} = res.data;
@@ -396,27 +317,34 @@ export default function Cart({route, navigation}) {
     }
 
 
-
-
-
-    let list              = CartList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
-    let cart_chk          = list.map(val=>val.length);
-    // 수량
-    let list_goods_cnt    = 0;
-
-    for (let i = 0; i < cart_chk.length; i++) {
-        list_goods_cnt   += cart_chk[i];
-    }
-
     /**-----------------------------------------------------------------------------------------------------------------**/
     let result = CartList.map(cate=> {
-        return {...cate, A_goods_list:cate.A_goods_list.filter((val)=>val.goods_cart === false)}
+        return {...cate, A_goods_list:cate.A_goods_list.filter((val)=>val.goods_del === false)}
     });
     /**-----------------------------------------------------------------------------------------------------------------**/
 
+
+    let list              = CartList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
+    let cart_chk_price    = list.map(cate=>cate.map(val=>val.A_sel_option.map(items=>{
+        return Number(items.option_price * items.option_cnt);
+    })));
+    let cart_chk          = list.map(val=>val.length);
+    let list_goods_cnt    = 0;
+    let list_goods_price  = 0;
+    for (let i = 0; i < cart_chk.length; i++) {
+        list_goods_cnt   += cart_chk[i];
+        list_goods_price += Number(cart_chk_price[i]);
+    }
+
+    console.log(list_goods_cnt);
+    console.log(list_goods_price);
+
+
+
+
+
     return (
         <>
-
             <KeyboardAvoidingView style={{height:"100%"}} behavior={Platform.select({ios: 'padding'})}>
                 <ScrollView style={[bg_white]}>
                     <View style={[styles.Cart]}>
@@ -428,7 +356,7 @@ export default function Cart({route, navigation}) {
                                             {result.map((cate,idx)=> {
                                                 // goods_chk true 갯수 선택
                                                 let cate_chk = cate.A_goods_list.filter(val=>val.goods_chk === true);
-                                                let cart_cnt = cate.A_goods_list.filter(val=>val.goods_cart === false);
+                                                let cart_cnt = cate.A_goods_list.filter(val=>val.goods_del === false);
                                                 let Chk_flag = (cate_chk.length === cart_cnt.length);
 
                                                 /**--------------------------------------------------------------**/
@@ -450,18 +378,12 @@ export default function Cart({route, navigation}) {
                                                                 }]}>
                                                                     <View style={[flex, {justifyContent: "space-between",}]}>
                                                                         <View style={[d_flex]}>
-                                                                            <Checkbox style={styles.all_check} color={"#4630eb"}
-                                                                                      onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`,`${total_price}`)}
-                                                                                      value={Chk_flag}
-                                                                            />
-                                                                            <Checkbox style={styles.chk_view} color={"#4630eb"}
-                                                                                      onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`,`${total_price}`)}
-                                                                            />
+                                                                            <Checkbox style={styles.all_check} color={"#4630eb"} onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`,`${total_price}`)} value={Chk_flag}/>
+                                                                            <Checkbox style={styles.chk_view} color={"#4630eb"} onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`,`${total_price}`)}/>
                                                                             <Text style={[ms1]}>전체선택</Text>
                                                                         </View>
                                                                         <View style={[d_flex]}>
-                                                                            <TouchableOpacity
-                                                                                onPress={() => allMod(`Del`,cate.cate_1st_uid, `${cate.cate_1st_name}`)}>
+                                                                            <TouchableOpacity onPress={()=>ChkDel(cate.cate_1st_uid)}>
                                                                                 <Text style={[ms1, text_gray]}>선택상품 삭제</Text>
                                                                             </TouchableOpacity>
                                                                         </View>
@@ -476,8 +398,6 @@ export default function Cart({route, navigation}) {
                                                                     let req_memo            = val.A_sel_option.map(cnt=>cnt.req_memo);
                                                                     let opt_chk             = val.A_sel_option.map(cnt=>cnt.goods_option_chk);
                                                                     let test                = val.A_sel_option.map(cnt=>cnt);
-
-                                                                    console.log(test,' / 배열 확인');
                                                                     let temp = String(opt_chk);
                                                                     let memochk = String(req_memo);
 
@@ -506,12 +426,9 @@ export default function Cart({route, navigation}) {
                                                                                         </Text>
                                                                                     </View>
                                                                                     {/*=============삭제버튼============*/}
-                                                                                    <TouchableOpacity
-                                                                                        onPress={() => delCart(val.order_uid, val.goods_uid)}>
+                                                                                    <TouchableOpacity onPress={() => delCart(val.order_uid, val.goods_uid)}>
                                                                                         <View style="">
-                                                                                            <Icon name="close"
-                                                                                                  size={25}
-                                                                                                  color="#000"/>
+                                                                                            <Icon name="close" size={25} color="#000"/>
                                                                                         </View>
                                                                                     </TouchableOpacity>
                                                                                 </View>
@@ -636,7 +553,8 @@ export default function Cart({route, navigation}) {
                         </View>
                 </ScrollView>
                 <Footer navigation={navigation}/>
-                {(list_goods_cnt > 0) ? (
+                {
+                    (list_goods_cnt > 0) && (
                     <>
                         <View style={[styles.go_cart, bg_primary, {paddingBottom: 36, paddingTop: 7,}]}>
                             <TouchableOpacity onPress={goOrderForm}>
@@ -650,7 +568,7 @@ export default function Cart({route, navigation}) {
                                     }}>
                                         <Text style={{textAlign: "center", color: "#333",}}>{list_goods_cnt}</Text>
                                     </View>
-                                    <Text style={text_light}>총 0원</Text>
+                                    <Text style={text_light}>총 수량</Text>
                                 </View>
                                 <Text style={[{textAlign: "center", color: "#FFF", fontSize: 18,}, text_light]}>
                                     배송정보입력
@@ -658,10 +576,9 @@ export default function Cart({route, navigation}) {
                             </TouchableOpacity>
                         </View>
                     </>
-                ) : (
-                    <>
-                    </>
-                )}
+                )
+
+                }
             </KeyboardAvoidingView>
 
 

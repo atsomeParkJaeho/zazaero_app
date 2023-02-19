@@ -2,82 +2,59 @@ import IMP from 'iamport-react-native';
 import {IMPcode} from "./util";
 import {View, Text, StyleSheet, Alert} from 'react-native';
 import axios from "axios";
+import {pay_done_log, pay_result, pay_try_cancel} from "./UTIL_pay";
+
+
+
+
 
 function Payment({ route,navigation }) {
 
-    const {order_title,gd_order_uid, order_no, settleprice, order_mem_name, order_mem_mobile, addr1, addr2, zonecode} = route.params
-
-    let log = '';
-    log += '주문 uid : '+gd_order_uid+'\n';
-    log += '공사명 : '+order_title+'\n';
-    log += '결제금액 : '+settleprice+'\n';
-    log += '주문번호 : '+order_no+'\n';
-    log += '현장인도자 성명 : '+order_mem_name+'\n';
-    log += '현장인도자 연락처 : '+order_mem_mobile+'\n';
-    log += '주소 1 :'+addr1+'\n';
-    log += '주소 2 :'+addr2+'\n';
-    log += '우편번호 :'+zonecode+'\n';
-
-    console.log(log);
-
-    function callback(res) {
-        console.log('결제 성공 /', res);
-        const {imp_uid, success} = res;
-        if(success) {
-            let success = "T";
-            axios.post('http://49.50.162.86:80/ajax/UTIL_order.php',{
-                act_type        :"pay_result",
-                gd_order_uid    :gd_order_uid,
-                order_no        :order_no,
-                imp_uid         :imp_uid,
-
-            },{
-                headers: {
-                    'Content-type': 'multipart/form-data'
-                },
-            }).then((res)=>{
-                if(res) {
-                    let {result} = res.data;
-                    if(result === 'OK') {
-                        Alert.alert('','결제가 완료되었습니다.\n');
-                        return navigation.goBack();
-                    }
-                }
-            });
-        } else {
-            axios.post('http://49.50.162.86:80/ajax/UTIL_order.php',{
-                act_type        :"pay_try_cancel",
-                gd_order_uid    :gd_order_uid,
-            },{
-                headers: {
-                    'Content-type': 'multipart/form-data'
-                },
-            }).then((res)=>{
-                if(res) {
-                    let {result} = res.data;
-                    if(result === 'OK') {
-                        Alert.alert('',res.error_msg);
-                    }
-                }
-            });
-        }
-
-
-    }
+    const {OrderData} = route.params;
+    console.log(OrderData,'/데이터 확인123123');
 
     const data = {
         pg                      :'kcp',
         pay_method              :'card',
-        name                    :order_title,
-        merchant_uid            :order_no,
-        amount                  :settleprice,
-        buyer_name              :order_mem_name,
-        buyer_tel               :order_mem_mobile,
-        buyer_addr              :addr1+' '+addr2,
-        buyer_postcode          :zonecode,
+        name                    :OrderData.order_title,
+        merchant_uid            :OrderData.order_no,
+        amount                  :OrderData.settleprice,
+        buyer_name              :OrderData.recv_name,
+        buyer_tel               :OrderData.recv_mobile,
+        buyer_addr              :OrderData.addr1+' '+OrderData.addr2,
+        buyer_postcode          :OrderData.zonecode,
         app_scheme              :'자재로',
-        m_redirect_url          :"http://49.50.162.86:80/contents/order/order_result_mobile.php?gd_order_uid="+gd_order_uid+"&order_no="+order_no,
     };
+
+    console.log(data);
+
+    function callback(rsp) {
+        const {imp_uid, success, merchant_uid} = rsp;
+        if(success) {
+            pay_result(imp_uid, OrderData).then((res)=>{
+                if(res) {
+                    const {result} = res.data;
+                    if(result === 'OK') {
+                        Alert.alert('','결제가 완료되었습니다.');
+                    }
+                }
+            }).done(res=>{
+                pay_done_log(imp_uid, merchant_uid, OrderData).then((res)=>{
+                    if(res) {
+                        const {result} = res.data;
+                        if(result === 'OK') {
+                           console.log('페이지 이동');
+                        }
+                    }
+                });
+            });
+
+        } else {
+
+        }
+
+        navigation.replace('배송상태');
+    }
 
     return(
         <>
@@ -93,9 +70,13 @@ function Payment({ route,navigation }) {
 
 
 
+
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
 });
+
+
 

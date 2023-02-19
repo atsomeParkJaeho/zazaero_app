@@ -57,11 +57,16 @@ function PayStatus({route, navigation}) {
             const {result, A_gd_order} = res.data;
             console.log(result);
             if(result === 'OK') {
-                let temp = A_gd_order.filter(val=>val.pay_status === 'err' || val.ord_status === 'pay_ready' || val.ord_status === 'order_done' || val.ord_status === 'pay_try' || val.ord_status === 'pay_err');
+                let temp = A_gd_order.filter(val=>
+                    val.ord_status === 'pay_ready' ||
+                    val.ord_status === 'pay_try'   ||
+                    val.ord_status === 'pay_err'
+                );
                 let desc = temp.sort((a,b)=>{
                     return new Date(b.order_date) - new Date(a.order_date);
                 });
                 return setOrderList(desc);
+
             } else {
                 console.log('에러');
             }

@@ -52,6 +52,7 @@ import Wishlist from "../../icons/ico_heart_c.svg";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RenderHTML from "react-native-render-html";
+import {get_goods_info, ins_cart, save_wish} from "./UTIL_goods";
 
 
 
@@ -64,26 +65,15 @@ export default function GoodsDetail({route,navigation}) {
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
-
-    console.log('넘어온값 : '+uid);
-    // 수량 데이터 상태 임시
-
     // ===========1. 상품상세정보 상태 정의======
     const [GoodsDetail,setGoodsDetail] = useState([]);
+    const [GoodsCnt, setGoodsCnt] = useState(1);
 
     // ============2. 상품출력===============
     useEffect(()=>{
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
-            act_type    :   "get_goods_info",
-            goods_uid   :   uid,
-            mem_uid     :   Member,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data',
-            }
-        }).then((res)=>{
+        get_goods_info(Member, uid).then((res)=>{
             if(res) {
-                const {result, goods_info, my_cart_cnt} = res.data;
+                const {result, goods_info} = res.data;
                 if(result === 'OK') {
                     setGoodsDetail({...goods_info, my_cart_cnt:1})
 
@@ -95,17 +85,8 @@ export default function GoodsDetail({route,navigation}) {
     },[Member]);
 
     // 5. 즐겨찾기 액션
-    const goWish = (uid) => {
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
-            act_type        :"set_my_zzim",
-            login_status    :"Y",
-            mem_uid         :Member,
-            link_uid        :uid,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
+    const goWish = (link_uid) => {
+        save_wish(Member, link_uid).then((res)=>{
             console.log(res.data);
             if(res) {
                 const {result} = res.data;
@@ -126,10 +107,6 @@ export default function GoodsDetail({route,navigation}) {
                 console.log(result);
             }
         }).catch((error)=>{console.log(error)});
-
-
-
-        // // 내 즐겨찾기에 등록된 상품 필터링하기
     }
 
     /**--------------------------------------------------------------------------------------**/
@@ -137,32 +114,16 @@ export default function GoodsDetail({route,navigation}) {
         if(type === 'order') {
             console.log('상세 자재추가 액션');
             Alert.alert('','자재를 추가하시겠습니까?',[
-                {
-                    text:'확인',
-                    onPress:()=>{InsOrderGoods(goods_uid)},
-                },
-                {
-                    text:'취소',
-                    onPress:()=>{},
-                }
+                {text:'확인', onPress:()=>{InsOrderGoods(goods_uid)},},
+                {text:'취소', onPress:()=>{},}
             ]);
-            
         }
     }
 
     console.log(route.params.gd_order_uid);
     /**-----------------------------------------주문서에 자재 추가---------------------------------------------**/
     const InsOrderGoods = (goods_uid) => {
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-            act_type        : "ins_order_goods",
-            goods_uid       : goods_uid,
-            gd_order_uid    : route.params.gd_order_uid,
-            cnt             : GoodsDetail.my_cart_cnt,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
+        ins_cart(Member, goods_uid).then((res)=>{
             if(res) {
                 const {result} = res.data;
                 console.log(result);
@@ -177,33 +138,17 @@ export default function GoodsDetail({route,navigation}) {
 
     // ====================4. 수량증가 설정==================
     const goodsCnt = (type, value) => {
-        let test = setGoodsDetail({
-            ...GoodsDetail,
-            my_cart_cnt:1,
-        });
-
         if(type === 'minus') {
             console.log('마이너스');
-            setGoodsDetail({
-                ...GoodsDetail,
-                my_cart_cnt:Number((GoodsDetail.my_cart_cnt < 1) ? (GoodsDetail.my_cart_cnt):(GoodsDetail.my_cart_cnt -=1)),
-            });
+            setGoodsCnt((0 > GoodsCnt) ? 1:GoodsCnt - 1);
         }
-
         if(type === 'plus') {
             console.log('플러스');
-            setGoodsDetail({
-                ...GoodsDetail,
-                my_cart_cnt:Number(GoodsDetail.my_cart_cnt+=1),
-            });
+            setGoodsCnt(GoodsCnt + 1);
         }
-
         if(type === 'my_cart_cnt') {
             console.log('직접입력');
-            setGoodsDetail({
-                ...GoodsDetail,
-                my_cart_cnt:Number(value),
-            });
+            setGoodsCnt(Number(value));
         }
     }
 
@@ -219,30 +164,17 @@ export default function GoodsDetail({route,navigation}) {
                     {
                         text: '확인 ',
                         onPress: () => {
-                            axios.post('http://49.50.162.86:80/ajax/UTIL_cart.php',{
-                                act_type            : 'save_cart',
-                                goods_uid           : uid,           // 상품 uid
-                                mem_uid             : Member,                    // 회원 uid
-                                ord_cnt             :  '1'
-                            },{
-                                headers: {
-                                    'Content-type': 'multipart/form-data'
-                                }
-                            }).then((res)=>{
+                            ins_cart(Member, uid, GoodsCnt).then((res)=>{
                                 if(res) {
-                                    const {result, order_uid} = res.data;
-                                    console.log(result);
+                                    const {result} = res.data;
                                     if(result === 'OK') {
-                                        console.log(order_uid);
+
                                     } else {
                                         console.log('실패');
                                         return;
                                     }
-                                } else {
-
                                 }
                             })
-
                             Alert.alert('','장바구니에 추가하였습니다.');
                         },
                         style: 'cancel',
@@ -256,31 +188,7 @@ export default function GoodsDetail({route,navigation}) {
         }
 
         if(type === 'order') {
-            // 상품을 장바구니에 담는다
-            axios.post('http://49.50.162.86:80/ajax/UTIL_cart.php',{
-                act_type            : 'save_cart',
-                goods_uid           : uid,           // 상품 uid
-                mem_uid             : Member,                    // 회원 uid
-                ord_cnt             :  '1'
-            },{
-                headers: {
-                    'Content-type': 'multipart/form-data'
-                }
-            }).then((res)=>{
-                if(res) {
-                    const {result, order_uid} = res.data;
-                    console.log(result);
-                    if(result === 'OK') {
-                        navigation.navigate('장바구니');
-                        console.log(order_uid);
-                    } else {
-                        console.log('실패');
-                        return;
-                    }
-                }
-            })
-
-
+            navigation.replace('장바구니');
         }
 
     }
@@ -357,7 +265,7 @@ export default function GoodsDetail({route,navigation}) {
                                             {/*============수량=================*/}
                                             <TextInput style={[countinput,]}
                                             onChangeText={(my_cart_cnt) => goodsCnt('my_cart_cnt',my_cart_cnt)}
-                                            value={`${GoodsDetail.my_cart_cnt}`}
+                                            value={`${GoodsCnt}`}
                                             keyboardType="number-pad"
                                             />
                                             {/*=============플러스 버튼============*/}
