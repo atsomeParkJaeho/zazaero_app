@@ -1,40 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {
-    StyleSheet,
-    Button,
-    Alert,
-    CheckBox,
-    Text,
-    TextInput,
-    View,
-    Image,
-    TouchableOpacity,
-    ScrollView,
-    TouchableWithoutFeedback,
-    Switch,
-    KeyboardAvoidingView,
-} from 'react-native';
-
-import {SelectList} from 'react-native-dropdown-select-list'
-//셀렉트박스
-
-import { RadioButton } from 'react-native-paper';
-//라디오 버튼
-
-//다음주소 api
-
+import {StyleSheet, Button, Alert, CheckBox, Text, TextInput, View, Image, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Switch, KeyboardAvoidingView,} from 'react-native';
 // 공통 CSS 추가
-import {
-    container,
-    bg_white,
-    h16,
-    text_center,
-    flex_around,
-    flex_between,
-    input,
-    ms2,
-    flex,
-    mt1,
+import {container, bg_white, h16, text_center, flex_around, flex_between, input, ms2, flex, mt1,
     fw500,
     d_flex,
     align_items_center,
@@ -66,36 +33,15 @@ import {
     btn_danger, btn_primary, textarea, justify_content_around,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
-import Main_logo from "../../icons/main_logo.svg";
-import Search from "../../icons/search.svg";
-
-
-import Shippingicon from "../../icons/Shipping_icon.svg";
-import CloseBtn from "../../icons/close_btn.svg";
 import {FormStyle} from "./FormStyle";
-import col1 from "../../assets/img/co1.png";
-import col2 from "../../assets/img/co2.png";
-import col3 from "../../assets/img/co3.png";
 import {DateChg, ordStatus, payStatus, Phone, Price, Time1, Time2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import CalendarStrip from "react-native-calendar-strip";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import OrderStatus from "./OrderStatus";
-import orderStatus from "./OrderStatus";
 import RNPickerSelect from "react-native-picker-select";
 import Checkbox from "expo-checkbox";
-import {
-    AllGdOrder,
-    AllgdOrderDel,
-    ATorderDel,
-    FormMod,
-    getAppInfo,
-    getOrderInfo,
-    OrderMod,
-    payDoneCancel, PayTry, payTry
-} from "./UTIL_order";
-// import {rgb} from "yarn/lib/cli";
+import {AllgdOrderDel, ATorderDel, getAppInfo, getOrderInfo, OrderMod, payDoneCancel, PayTry,} from "./UTIL_order";
 
 
 export default function OrderDtail({route,navigation}) {
@@ -247,24 +193,22 @@ export default function OrderDtail({route,navigation}) {
     const donePay = () => {
         let msg = '결제가 완료되었습니다.';
         let N_btn = {text:"확인", onPress:()=>{navigation.replace('배송상태')}};
-        if(PayMement === 'bank') {
-            PayTry(OrderData, PayMement).then((res)=>{
-                if(res) {
-                    const {result} = res.data;
-                    if (result === 'OK') {
+        PayTry(OrderData, PayMement).then((res)=>{
+            if(res) {
+                const {result} = res.data;
+                if(result === 'OK') {
+
+                    if(PayMement === 'bank') {
                         Alert.alert('',msg,[N_btn]);
+                    } else {
+                        navigation.navigate('카드결제',{OrderData:OrderData});
                     }
+
                 }
-            });
-        } else {
-            /*카드결제창으로 이동*/
-            navigation.navigate('카드결제',{OrderData:OrderData});
-        }
+            }
+        });
+
     }
-
-
-
-
 
     const modCart = (goods_uid, order_uid, type, value, goods_price) => {
         /**----------------------------상품수량 플러스--------------------------**/
@@ -348,9 +292,7 @@ export default function OrderDtail({route,navigation}) {
 
     // 자재 체크 로직
     const modChk = (goods_uid) => {
-
         console.log('반응');
-
         let temp = OrderGoodsList.map((val)=>{
             if(val.goods_uid === goods_uid) {
                 return {
@@ -443,7 +385,6 @@ export default function OrderDtail({route,navigation}) {
             </>
         );
     }
-    console.log(OrderData,'/');
     return(
         <>
             {/**----------------수량 조절 팝업------------**/}
@@ -534,6 +475,7 @@ export default function OrderDtail({route,navigation}) {
                         <>
                             <View style={[FormStyle.FormGroup, {paddingTop: 5, paddingBottom: 5,}]}>
                                 <CalendarStrip
+                                    // scrollable={true}
                                     onDateSelected={(Date) => {
                                         setOrderDate({
                                             ...OrderData,
@@ -541,7 +483,6 @@ export default function OrderDtail({route,navigation}) {
                                         });
                                     }
                                     }
-                                    // startingDate={OrderData.hope_deli_date}
                                     startingDate={`${OrderData.hope_deli_date}`}
                                     minDate={`${Date}`}
                                     maxDate={`2024-12-31`}
@@ -745,6 +686,7 @@ export default function OrderDtail({route,navigation}) {
     );
     /**-----------------------------------------------결제완료전 발주취소 이벤트------------------------------------------------**/
     function PayReadyCancelTab() {
+
         const AlldelOrder = () => {
             Alert.alert('','전체취소 하시겠습니까?',[
                 {text:"취소", onPress:()=>{}},
@@ -824,23 +766,24 @@ export default function OrderDtail({route,navigation}) {
     function PayDoneCancelTab() {
 
         const PayDoneCancel = (type) => {
-            if(type === 'Chk') {
 
-            }
+            if(type === 'all') {
 
-            if(type === 'All') {
-                payDoneCancel(Member, OrderData).then((res)=>{
+                payDoneCancel(Member, type, OrderData).then((res)=>{
                     if(res) {
+                        console.log(res.data);
                         const {result} = res.data;
                         if(result === 'OK') {
-                            console.log('결제가 취소 되었습니다.');
                             Alert.alert('','결제가 취소되었습니다.');
-                            return navigation.replace('발주상태');
+                            return navigation.replace('배송상태');
                         } else {
                             console.log('에러');
                         }
                     }
                 });
+
+            } else {
+
             }
         }
 
@@ -852,12 +795,12 @@ export default function OrderDtail({route,navigation}) {
                         <View style={[container]}>
                             <View style={[d_flex, justify_content_between]}>
                                 <TouchableOpacity
-                                    onPress={()=>PayDoneCancel(`Chk`)}
+                                    onPress={()=>PayDoneCancel(`part`)}
                                     style={[styles.CancelBtnWrap, btn_outline_danger]}>
                                     <Text style={[text_center,styles.CancelBtn, text_danger]}>선택취소</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    onPress={()=>PayDoneCancel(`All`)}
+                                    onPress={()=>PayDoneCancel(`all`)}
                                     style={[styles.CancelBtnWrap, btn_outline_danger]}>
                                     <Text style={[text_center,styles.CancelBtn, text_danger]}>전체취소</Text>
                                 </TouchableOpacity>
@@ -887,6 +830,42 @@ export default function OrderDtail({route,navigation}) {
 
     /**-----------------------------------------------자재목록--------------------------------------------------**/
     function GoodsList() {
+
+        console.log(OrderGoodsList);
+
+        /*1. 자재별 상품 계산식을 짠다 */
+        /*
+        *  1) order_uid, order_item_uid, option_cnt, option_price
+        *  2) 기존수량은 AT_order_item(cnt) 에서 가져온다
+        *  3) 차감수량은 AT_cancel_item(cancel_cnt) option_cnt 에 저장한다.
+        *
+        * 
+        * */
+        
+        let chk_goods = OrderGoodsList.filter(val=>val.goods_chk);
+        let pay_cancel_goods = chk_goods.map(val=>{
+
+            let cancel_cnt          = Number(val.A_sel_option.map(item=>item.option_cnt));
+            let option_price        = Number(val.A_sel_option.map(item=>item.option_price));
+            let order_item_uid      = Number(val.A_sel_option.map(item=>item.order_item_uid));
+
+            return {
+                order_uid           :Number(val.order_uid),
+                cancel_cnt          :cancel_cnt,
+                option_price        :option_price,
+                order_item_uid      :order_item_uid,
+                sum_goods_price     :Number(option_price * cancel_cnt),
+            }
+        });
+        
+        let cancel_price = Number(OrderData.goodsprice - pay_cancel_goods.sum_goods_price);
+
+        console.log(chk_goods,'/체크한 자재');
+        console.log(pay_cancel_goods,'/체크 자재중 취소할 자재');
+        console.log(cancel_price,'취소후 변경가격');
+        console.log(OrderData.goodsprice,'취소후 변경가격');
+
+
         let result = OrderGoodsList.filter(val=>val.goods_del === false);
         /**-----------------------------------------장바구니 상품 수량변경--------------------------------------------------**/
         return(
@@ -1120,6 +1099,7 @@ export default function OrderDtail({route,navigation}) {
             );
         }
     }
+
 
 
 

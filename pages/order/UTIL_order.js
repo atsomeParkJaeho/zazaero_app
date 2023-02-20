@@ -126,15 +126,14 @@ export const OrderMod = async (OrderData, Member, addr1, zonecode, gd_order_uid)
 }
 
 
-export const payDoneCancel = async (Member, OrderData) => {
-
+export const payDoneCancel = async (Member, type, OrderData) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"pay_done_gd_cancel",
+        cancel_type          :type,
         mem_uid              :Member,
         gd_order_uid         :OrderData.gd_order_uid,
         imp_uid              :OrderData.imp_uid,
-        cancel_type          :"part",
-        merchant_uid         :OrderData.imp_uid,
+        merchant_uid         :OrderData.order_no,
         cancel_money         :OrderData.settleprice,
     },{
         headers: {
@@ -153,6 +152,7 @@ export const PayTry = async (OrderData, type) => {
         bankAccount          :OrderData.bankAccount,
         bankSender           :OrderData.bankSender,
         order_no             :OrderData.order_no,
+        mem_uid              :OrderData.mem_uid,
     },{
         headers: {
             'Content-type': 'multipart/form-data'

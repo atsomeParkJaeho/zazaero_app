@@ -24,36 +24,35 @@ function Payment({ route,navigation }) {
         buyer_addr              :OrderData.addr1+' '+OrderData.addr2,
         buyer_postcode          :OrderData.zonecode,
         app_scheme              :'자재로',
+        // m_redirect_url          :'http://49.50.162.86:80/contents/order/order_result_mobile.php?gd_order_uid='+OrderData.gd_order_uid+'&order_no='+OrderData.order_no,
     };
 
-    console.log(data);
+    console.log(data,'/ 데이터');
 
     function callback(rsp) {
+
+        console.log(rsp);
+
         const {imp_uid, success, merchant_uid} = rsp;
-        if(success) {
-            pay_result(imp_uid, OrderData).then((res)=>{
-                if(res) {
-                    const {result} = res.data;
-                    if(result === 'OK') {
-                        Alert.alert('','결제가 완료되었습니다.');
-                    }
+
+        /* 1. 아임포트 결제관리창에서 api 찾는다.*/
+
+        /* 2. 아임포트 결제관리창에서 찾은 api를 관리자로 보낸다. */
+
+        pay_result(imp_uid, OrderData).then((res)=>{
+            if(res) {
+                console.log(res.data);
+                const {result, gd_order} = res.data;
+                if(result === 'OK') {
+                    console.log(gd_order);
+                    console.log('결제완료');
                 }
-            }).done(res=>{
-                pay_done_log(imp_uid, merchant_uid, OrderData).then((res)=>{
-                    if(res) {
-                        const {result} = res.data;
-                        if(result === 'OK') {
-                           console.log('페이지 이동');
-                        }
-                    }
-                });
-            });
-
-        } else {
-
-        }
+            }
+        });
 
         navigation.replace('배송상태');
+
+
     }
 
     return(
