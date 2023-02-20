@@ -83,7 +83,8 @@ import {InsOrder, SaveDeliAddr} from "./UTIL_order";
 export default function OrderForm({route,navigation}) {
 
     /**--------------------------------------필수 정보사항--------------------------------------------------**/
-    const {order_uid, addr1, zonecode} = route.params;
+    const {order_uid, addr1, zonecode, goods_cate1_uid} = route.params;
+    console.log(goods_cate1_uid,'/asdf');
     let order_result_uid = order_uid.map(val=>Number(val.order_uid));
 
     const [Member, setMember]          = useState();

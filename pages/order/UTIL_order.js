@@ -99,8 +99,7 @@ export const ATorderDel = async (OrderData, Member, order_uid) => {
         headers: {
             'Content-type': 'multipart/form-data'
         }
-    })
-
+    });
     return res;
 }
 export const OrderMod = async (OrderData, Member, addr1, zonecode, gd_order_uid) => {
@@ -126,12 +125,18 @@ export const OrderMod = async (OrderData, Member, addr1, zonecode, gd_order_uid)
 }
 
 
-export const payDoneCancel = async (Member, type, OrderData) => {
+export const payDoneCancel = async (Member, type, OrderData, chk_cancel_goods) => {
+
+    console.log(Member);
+    console.log(type);
+    console.log(OrderData);
+    console.log(chk_cancel_goods);
+
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"pay_done_gd_cancel",
-        cancel_type          :type,
-        mem_uid              :Member,
         gd_order_uid         :OrderData.gd_order_uid,
+        mem_uid              :Member,
+        cancel_type          :type,
         imp_uid              :OrderData.imp_uid,
         merchant_uid         :OrderData.order_no,
         cancel_money         :OrderData.settleprice,
@@ -139,7 +144,7 @@ export const payDoneCancel = async (Member, type, OrderData) => {
         headers: {
             'Content-type': 'multipart/form-data'
         }
-    })
+    });
 
     return res;
 }

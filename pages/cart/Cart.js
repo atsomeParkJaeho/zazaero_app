@@ -276,7 +276,7 @@ export default function Cart({route, navigation}) {
             }));
             return false;
         } else {
-            return navigation.navigate('배송정보등록',{order_uid:total});;
+            return navigation.navigate('배송정보등록',{order_uid:total,goods_cate1_uid:CartUid});;
         }
 
     }
@@ -409,13 +409,13 @@ export default function Cart({route, navigation}) {
                                                                                 <View style={[flex_between, styles.pd_18]}>
                                                                                     <View style={[flex, wt8]}>
                                                                                         <Checkbox
-                                                                                            onValueChange={() => goFormChk(val.goods_uid, val.cate_name, total_price)}
+                                                                                            onValueChange={() => goFormChk(val.goods_uid, cate.cate_name, total_price)}
                                                                                             value={val.goods_chk}
                                                                                             style={styles.all_check}
                                                                                             color={"#4630eb"}/>
                                                                                         {/*숨김처리*/}
                                                                                         <Checkbox
-                                                                                            onValueChange={() => goFormChk(val.goods_uid, val.cate_name, total_price )}
+                                                                                            onValueChange={() => goFormChk(val.goods_uid, cate.cate_name, total_price )}
                                                                                             value={val.goods_chk}
                                                                                             style={styles.chk_view}
                                                                                             color={"#4630eb"}
