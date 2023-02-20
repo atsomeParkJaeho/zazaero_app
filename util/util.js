@@ -581,6 +581,203 @@ export const AddrMatch = [
 ];
 
 // 휴대전화 번호
+export const BankCode = [
+    {
+        label          :"국민은행",
+        value        :"004",
+    },
+    {
+        label          :"경남은행",
+        value        :"039",
+    },
+    {
+        label          :"광주은행",
+        value        :"034",
+    },
+    {
+        label          :"기업은행",
+        value        :"003",
+    },
+    {
+        label          :"농협",
+        value        :"011",
+    },
+    {
+        label          :"도이치은행",
+        value        :"055",
+    },
+    {
+        label          :"대구은행",
+        value        :"031",
+    },
+    {
+        label          :"부산은행",
+        value        :"032",
+    },
+    {
+        label          :"산업은행",
+        value        :"002",
+    },
+    {
+        label          :"상호저축은행",
+        value        :"050",
+    },
+    {
+        label          :"새마을금고",
+        value        :"045",
+    },
+    {
+        label          :"수협중앙",
+        value        :"007",
+    },
+    {
+        label          :"신용협동조합",
+        value        :"048",
+    },
+    {
+        label          :"신한은행",
+        value        :"088",
+    },
+    {
+        label          :"우리은행",
+        value        :"020",
+    },
+    {
+        label          :"우체국",
+        value        :"071",
+    },
+    {
+        label          :"외환은행",
+        value        :"005",
+    },
+    {
+        label          :"전북은행",
+        value        :"037",
+    },
+    {
+        label          :"제주은행",
+        value        :"035",
+    },
+    {
+        label          :"하나은행",
+        value        :"081",
+    },
+    {
+        label          :"한국씨티은행",
+        value        :"027",
+    },
+    {
+        label          :"홍콩상하이",
+        value        :"054",
+    },
+    {
+        label          :"SC제일은행",
+        value        :"023",
+    },
+    {
+        label          :"BOA(뱅크오브)",
+        value        :"060",
+    },
+    {
+        label          :"카카오뱅크",
+        value        :"090",
+    },
+    {
+        label          :"동양종합증권",
+        value        :"209",
+    },
+    {
+        label          :"현대증권",
+        value        :"218",
+    },
+    {
+        label          :"미래에셋증권",
+        value        :"230",
+    },
+    {
+        label          :"대우증권",
+        value        :"238",
+    },
+    {
+        label          :"삼성증권",
+        value        :"240",
+    },
+    {
+        label          :"한국투자증권",
+        value        :"243",
+    },
+    {
+        label          :"우리투자증권",
+        value        :"247",
+    },
+    {
+        label          :"교보증권",
+        value        :"261",
+    },
+    {
+        label          :"하이투자증권",
+        value        :"262",
+    },
+    {
+        label          :"HMC투자증권",
+        value        :"263",
+    },
+    {
+        label          :"이트레이드증권",
+        value        :"265",
+    },
+    {
+        label          :"SK증권",
+        value        :"266",
+    },
+    {
+        label          :"대신증권",
+        value        :"267",
+    },
+    {
+        label          :"한화증권",
+        value        :"269",
+    },
+    {
+        label          :"하나대투증권",
+        value        :"270",
+    },
+    {
+        label          :"신한금융투자",
+        value        :"278",
+    },
+    {
+        label          :"동부증권",
+        value        :"279",
+    },
+    {
+        label          :"유진투자증권",
+        value        :"280",
+    },
+    {
+        label          :"메리츠증권",
+        value        :"287",
+    },
+    {
+        label          :"NH투자증권",
+        value        :"289",
+    },
+    {
+        label          :"신영증권",
+        value        :"291",
+    },
+    {
+        label          :"LIG투자증권",
+        value        :"292",
+    },
+    {
+        label          :"부국증권",
+        value        :"290",
+    },
+
+];
+
+// 휴대전화 번호
 export const MobileHead = [
     {
         "name"  :"010",
@@ -695,27 +892,27 @@ export const AllHead = [
 // 이메일 코드
 export const EmailDomain = [
     {
-        "name"  :"직접입력",
-        "val"   :"etc",
+        label          :"네이버(naver.com)",
+        value        :"naver.com",
     },
     {
-        "name"  :"다음(daum.net)",
-        "val"   :"daum.net",
+        label          :"다음(daum.net)",
+        value        :"daum.net",
     },
     {
-        "name"  :"한메일(hanmail)",
-        "val"   :"hanmail.net",
+        label          :"한메일(hanmail)",
+        value        :"hanmail.net",
     },
     {
-        "name"  :"네이트(nate.com)",
-        "val"   :"nate.com",
+        label          :"네이트(nate.com)",
+        value        :"nate.com\"",
     },
     {
-        "name"  :"구글(gmail.com)",
-        "val"   :"gmail.com",
+        label          :"구글(gmail.com)",
+        value        :"gmail.com",
     },
     {
-        "name"  :"야후(yahoo.com)",
-        "val"   :"yahoo.com",
+        label          :"야후(yahoo.com)",
+        value        :"yahoo.com",
     },
 ];
