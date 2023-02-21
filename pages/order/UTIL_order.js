@@ -25,7 +25,7 @@ export const getAppInfo = async () =>{
     return res;
 }
 
-export const InsOrder = async (order_data,Member,work_uid) => {
+export const InsOrder = async (order_data,Member,work_uid,goods_cate1_uid) => {
     let ostype = Platform.OS;
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
         act_type            :'ins_order',
@@ -49,6 +49,7 @@ export const InsOrder = async (order_data,Member,work_uid) => {
         work_uid            :(work_uid) ? (work_uid):(order_data.work_uid),                                      // 공사명 uid
         save_point          :'',                                            // 적립 포인트
         point_use           :'',                                            // 사용 포인트
+        goods_cate1_uid     :goods_cate1_uid,                                            // 사용 포인트
     },{
         headers: {
             'Content-type': 'multipart/form-data'
@@ -99,8 +100,7 @@ export const ATorderDel = async (OrderData, Member, order_uid) => {
         headers: {
             'Content-type': 'multipart/form-data'
         }
-    })
-
+    });
     return res;
 }
 export const OrderMod = async (OrderData, Member, addr1, zonecode, gd_order_uid) => {
@@ -126,22 +126,68 @@ export const OrderMod = async (OrderData, Member, addr1, zonecode, gd_order_uid)
 }
 
 
-export const payDoneCancel = async (Member, type, OrderData) => {
+export const payDoneCancel = async (Member, type, OrderData, chk_cancel_goods) => {
+
+    console.log(chk_cancel_goods);
+
+    let pay_cancel_goods = chk_cancel_goods.map(val=>{
+        let src_cnt             = Number(val.A_sel_option.map(item=>item.option_cnt));
+        let cancel_cnt          = Number(val.cancel_cnt);
+        let option_price        = Number(val.A_sel_option.map(item=>item.option_price));
+        let order_item_uid      = Number(val.A_sel_option.map(item=>item.order_item_uid));
+        return {
+            order_uid           :Number(val.order_uid),
+            src_cnt             :src_cnt,
+            cancel_cnt          :cancel_cnt,
+            option_price        :option_price,
+            order_item_uid      :order_item_uid,
+            sum_goods_price     :Number(option_price * cancel_cnt),
+        }
+    });
+
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"pay_done_gd_cancel",
+        gd_order_uid         :OrderData.gd_order_uid,
         cancel_type          :type,
         mem_uid              :Member,
-        gd_order_uid         :OrderData.gd_order_uid,
-        imp_uid              :OrderData.imp_uid,
+        order_uid            :pay_cancel_goods.map(val=>val.order_uid),
+        order_item_uid       :pay_cancel_goods.map(val=>val.order_item_uid),
+        src_cnt              :pay_cancel_goods.map(val=>val.src_cnt),
+        cancel_cnt           :pay_cancel_goods.map(val=>val.cancel_cnt),
         merchant_uid         :OrderData.order_no,
         cancel_money         :OrderData.settleprice,
+        imp_uid              :OrderData.imp_uid,
     },{
         headers: {
             'Content-type': 'multipart/form-data'
         }
-    })
+    });
 
     return res;
+
+    // console.log(Member);
+    // console.log(type);
+    // console.log(OrderData);
+    // console.log(chk_cancel_goods);
+    //
+    // let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+    //     act_type             :"pay_done_gd_cancel",
+    //     gd_order_uid         :OrderData.gd_order_uid,
+    //     mem_uid              :Member,
+    //     cancel_type          :type,
+    //     imp_uid              :OrderData.imp_uid,
+    //     merchant_uid         :OrderData.order_no,
+    //     cancel_money         :OrderData.settleprice,
+    // },{
+    //     headers: {
+    //         'Content-type': 'multipart/form-data'
+    //     }
+    // });
+    //
+    // return res;
+
+
+
 }
 
 export const PayTry = async (OrderData, type) => {

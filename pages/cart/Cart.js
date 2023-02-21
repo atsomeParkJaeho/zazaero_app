@@ -64,6 +64,7 @@ export default function Cart({route, navigation}) {
 
     const [Member, setMember]        = useState();
     const [CartUid, setCartUid]      = useState(``);
+    const [Cart1stUid, setCart1stUid]      = useState(``);
     const [CartList, setCartList]    = useState([]);           // 장바구니 1차 카테고리 출력
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
@@ -223,6 +224,7 @@ export default function Cart({route, navigation}) {
 
 
     const allMod = (type, cate_uid, cate_name, price) => {
+        setCart1stUid(cate_uid);
         if(type === 'All') {
             setCartUid(cate_name);
             setCartList(CartList.map((item)=>{
@@ -238,6 +240,7 @@ export default function Cart({route, navigation}) {
     }
 
     const ChkDel = (cate_1st_uid) => {
+        setCart1stUid(cate_1st_uid);
         /* 1. 체크한 **/
         let temp = CartList.map((item)=>{
             if(item.cate_1st_uid === cate_1st_uid) {
@@ -256,7 +259,7 @@ export default function Cart({route, navigation}) {
     }
 
 
-    // console.log(test,'/ 테스트 배열');
+    console.log(Cart1stUid,'/ 테스트 배열');
     /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
     const goOrderForm = () => {
         // 중복상품 제어용 카테고리 cateUid
@@ -276,7 +279,7 @@ export default function Cart({route, navigation}) {
             }));
             return false;
         } else {
-            return navigation.navigate('배송정보등록',{order_uid:total});;
+            return navigation.navigate('배송정보등록',{order_uid:total,goods_cate1_uid:Cart1stUid});;
         }
 
     }
@@ -409,13 +412,13 @@ export default function Cart({route, navigation}) {
                                                                                 <View style={[flex_between, styles.pd_18]}>
                                                                                     <View style={[flex, wt8]}>
                                                                                         <Checkbox
-                                                                                            onValueChange={() => goFormChk(val.goods_uid, val.cate_name, total_price)}
+                                                                                            onValueChange={() => goFormChk(val.goods_uid, cate.cate_name, total_price)}
                                                                                             value={val.goods_chk}
                                                                                             style={styles.all_check}
                                                                                             color={"#4630eb"}/>
                                                                                         {/*숨김처리*/}
                                                                                         <Checkbox
-                                                                                            onValueChange={() => goFormChk(val.goods_uid, val.cate_name, total_price )}
+                                                                                            onValueChange={() => goFormChk(val.goods_uid, cate.cate_name, total_price )}
                                                                                             value={val.goods_chk}
                                                                                             style={styles.chk_view}
                                                                                             color={"#4630eb"}

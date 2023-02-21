@@ -83,7 +83,8 @@ import {InsOrder, SaveDeliAddr} from "./UTIL_order";
 export default function OrderForm({route,navigation}) {
 
     /**--------------------------------------필수 정보사항--------------------------------------------------**/
-    const {order_uid, addr1, zonecode} = route.params;
+    const {order_uid, addr1, zonecode, goods_cate1_uid} = route.params;
+    console.log(goods_cate1_uid,'/asdf');
     let order_result_uid = order_uid.map(val=>Number(val.order_uid));
 
     const [Member, setMember]          = useState();
@@ -759,7 +760,7 @@ export default function OrderForm({route,navigation}) {
                 if(res) {
                     const {result, work_uid} = res.data;
                     if(result === 'OK') {
-                        InsOrder(order_data, Member, work_uid).then((res)=>{
+                        InsOrder(order_data, Member, work_uid, goods_cate1_uid).then((res)=>{
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
@@ -773,7 +774,7 @@ export default function OrderForm({route,navigation}) {
                             }
                         });
                     } else {
-                        InsOrder(order_data, Member).then((res)=>{
+                        InsOrder(order_data, Member, work_uid, goods_cate1_uid).then((res)=>{
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {

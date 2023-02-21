@@ -261,31 +261,41 @@ export default function OrderDtail({route,navigation}) {
     }
 
 
-    const CancelCnt = (goods_uid, type, max) => {
-        if(type === 'plus') {
-            let temp = OrderGoodsList.map((cate)=>{
-                if(cate.goods_uid === goods_uid) {
-                    if(cate.goods_cancel_cnt >= max) {
-                        return {...cate, goods_cancel_cnt:max}
-                    } else {
-                        return {...cate, goods_cancel_cnt:Number(cate.goods_cancel_cnt) + 1}
-                    }
-                } else {
-                    return cate;
-                }
-            });
-            setOrderGoodsList(temp);
-        }
+    const CancelCnt = (goods_uid, type, src_cnt) => {
+
+        console.log(src_cnt);
 
         if(type === 'minus') {
-            let temp = OrderGoodsList.map((cate)=>{
-                if(cate.goods_uid === goods_uid) {
-                    return {...cate, goods_cancel_cnt:(cate.goods_cancel_cnt > 1) ? Number(cate.goods_cancel_cnt) - 1 : 1,}
+            console.log(type);
+            let temp = OrderGoodsList.map((val)=>{
+                if(val.goods_uid === goods_uid) {
+                    return {
+                        ...val,
+                        cancel_cnt:(val.cancel_cnt > 0) ? Number(val.cancel_cnt) - 1 : 0,
+                    }
                 } else {
-                    return cate;
+                    return val;
                 }
             });
             setOrderGoodsList(temp);
+
+        }
+
+        if(type === 'plus') {
+
+            console.log(type);
+            let temp = OrderGoodsList.map((val)=>{
+                if(val.goods_uid === goods_uid) {
+                    return {
+                        ...val,
+                        cancel_cnt:(val.cancel_cnt >= src_cnt) ? Number(src_cnt) : Number(val.cancel_cnt) + 1,
+                    }
+                } else {
+                    return val;
+                }
+            });
+            setOrderGoodsList(temp);
+
         }
 
     }
@@ -765,27 +775,73 @@ export default function OrderDtail({route,navigation}) {
     /**-----------------------------------------------결제완료후 발주취소 이벤트------------------------------------------------**/
     function PayDoneCancelTab() {
 
+
+
+        /*1. 자재별 상품 계산식을 짠다 */
+        /*
+        *  1) order_uid, order_item_uid, option_cnt, option_price
+        *  2) 기존수량은 AT_order_item(cnt) 에서 가져온다
+        *  3) 차감수량은 AT_cancel_item(cancel_cnt) option_cnt 에 저장한다.
+        *
+        *
+        * */
+
         const PayDoneCancel = (type) => {
 
             if(type === 'all') {
 
-                payDoneCancel(Member, type, OrderData).then((res)=>{
-                    if(res) {
-                        console.log(res.data);
-                        const {result} = res.data;
-                        if(result === 'OK') {
-                            Alert.alert('','결제가 취소되었습니다.');
-                            return navigation.replace('배송상태');
-                        } else {
-                            console.log('에러');
-                        }
-                    }
-                });
+                let chk_cancel_goods = OrderGoodsList.map(val=>{return {
+                    ...val,
+                    goods_chk   :true,
+                    cancel_cnt  :Number(val.A_sel_option.map(item=>item.option_cnt)),
+                }});
+
+                Alert.alert('','결제를 취소하시겠습니까?',[
+                    {text:"취소",onPress:()=>{}},
+                    {text:"확인",onPress:()=>{
+                            payDoneCancel(Member, type, OrderData, chk_cancel_goods).then((res)=>{
+                                if(res) {
+                                    console.log(res.data);
+                                    const {result, test} = res.data;
+                                    if(result === 'OK') {
+                                        Alert.alert('','결제가 취소 되었습니다.');
+                                        console.log(test);
+                                        return navigation.replace('발주상태');
+                                    }
+                                }
+                            });
+                        }},
+                ]);
+                console.log(chk_cancel_goods);
 
             } else {
 
+                let chk_cancel_goods = OrderGoodsList.filter(val=>val.goods_chk);
+
+                if(chk_cancel_goods.length === 0) {return Alert.alert('','자재를 선택해주세요.')}
+
+                Alert.alert('','결제를 취소하시겠습니까?',[
+                    {text:"취소",onPress:()=>{}},
+                    {text:"확인",onPress:()=>{
+                            payDoneCancel(Member, type, OrderData, chk_cancel_goods).then((res)=>{
+                                if(res) {
+                                    const {result, test} = res.data;
+                                    if(result === 'OK') {
+                                        Alert.alert('','결제가 취소 되었습니다.');
+                                        console.log(test);
+                                        return navigation.replace('발주상태');
+                                    }
+                                }
+                            });
+                        }},
+                ]);
+                console.log(chk_cancel_goods);
             }
         }
+
+
+
+
 
 
         if(OrderData.ord_status === 'pay_done' || OrderData.ord_status === 'deli_ready') {
@@ -832,38 +888,6 @@ export default function OrderDtail({route,navigation}) {
     function GoodsList() {
 
         console.log(OrderGoodsList);
-
-        /*1. 자재별 상품 계산식을 짠다 */
-        /*
-        *  1) order_uid, order_item_uid, option_cnt, option_price
-        *  2) 기존수량은 AT_order_item(cnt) 에서 가져온다
-        *  3) 차감수량은 AT_cancel_item(cancel_cnt) option_cnt 에 저장한다.
-        *
-        * 
-        * */
-        
-        let chk_goods = OrderGoodsList.filter(val=>val.goods_chk);
-        let pay_cancel_goods = chk_goods.map(val=>{
-
-            let cancel_cnt          = Number(val.A_sel_option.map(item=>item.option_cnt));
-            let option_price        = Number(val.A_sel_option.map(item=>item.option_price));
-            let order_item_uid      = Number(val.A_sel_option.map(item=>item.order_item_uid));
-
-            return {
-                order_uid           :Number(val.order_uid),
-                cancel_cnt          :cancel_cnt,
-                option_price        :option_price,
-                order_item_uid      :order_item_uid,
-                sum_goods_price     :Number(option_price * cancel_cnt),
-            }
-        });
-        
-        let cancel_price = Number(OrderData.goodsprice - pay_cancel_goods.sum_goods_price);
-
-        console.log(chk_goods,'/체크한 자재');
-        console.log(pay_cancel_goods,'/체크 자재중 취소할 자재');
-        console.log(cancel_price,'취소후 변경가격');
-        console.log(OrderData.goodsprice,'취소후 변경가격');
 
 
         let result = OrderGoodsList.filter(val=>val.goods_del === false);
@@ -979,7 +1003,7 @@ export default function OrderDtail({route,navigation}) {
                                                                                     {/**-----상품 uid, 주문 uid 추가----**/}
                                                                                     <View style={[countinput]}>
                                                                                         <Text style={[text_center]}>
-                                                                                            {val.goods_cancel_cnt}
+                                                                                            {val.cancel_cnt}
                                                                                         </Text>
                                                                                     </View>
                                                                                     {/*=============플러스 버튼============*/}

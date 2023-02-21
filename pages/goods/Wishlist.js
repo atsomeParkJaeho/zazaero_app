@@ -55,6 +55,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import WishlistNon from "../../icons/ico_heart_nc.svg";
 import WishIcon from "../../icons/ico_heart_c.svg";
 import { useIsFocused } from '@react-navigation/native';
+import {ins_cart} from "./UTIL_goods";
 
 
 export default function Wishlist({route,navigation}) {
@@ -207,48 +208,33 @@ export default function Wishlist({route,navigation}) {
 
 
     /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
-    const goOrderForm = () => {
-        // 중복상품 제어용 카테고리 cateUid
-        /**-----1. 장바구니 클릭한 상품 배열을 만든다.--------------**/
-        let goForm = WishList.filter((val) => val.goods_chk === true);
+    const goCart = () => {
+        let result = WishList.map(val=>val.A_goods_list.filter(item=>item.goods_chk));
+        let chk_goods = result.reduce((val,idx)=>{
+            return val.concat(idx);
+        });
         let goods_uid_list = "";
-
-        /**-----1. 장바구니 클릭한 상품 배열을 만든다.--------------**/
-        goForm.map(items => {
+        chk_goods.map(items => {
             if (goods_uid_list != "") {
                 goods_uid_list += ",";
             }
             goods_uid_list += items.goods_uid;
         });
-
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
-            act_type: 'ins_cart',
-            mem_uid: Member,
-            goods_uid_list: goods_uid_list,
-            ord_cnt: 1,
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        ins_cart(Member, goods_uid_list).then((res) => {
             if (res) {
                 const {result, order_uid} = res.data;
                 console.log(result);
                 if (result === 'OK') {
                     console.log(order_uid);
+                    navigation.replace('장바구니');
                 } else {
                     console.log('실패');
 
                 }
-            } else {
-
             }
         });
 
-        navigation.navigate('장바구니');
     }
-
-
 
     let list      = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
     let arr       = list.map(val=>val.length);
@@ -451,7 +437,7 @@ export default function Wishlist({route,navigation}) {
                     {(cont > 0) ? (
                         <>
                             <View style={[styles.go_cart, bg_primary, {paddingBottom: 36, paddingTop: 7,}]}>
-                                <TouchableOpacity onPress={goOrderForm}>
+                                <TouchableOpacity onPress={goCart}>
                                     <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
                                         <View style={{
                                             width: 20,
