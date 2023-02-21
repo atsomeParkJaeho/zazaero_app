@@ -801,9 +801,11 @@ export default function OrderDtail({route,navigation}) {
                     {text:"확인",onPress:()=>{
                             payDoneCancel(Member, type, OrderData, chk_cancel_goods).then((res)=>{
                                 if(res) {
-                                    const {result} = res.data;
+                                    console.log(res.data);
+                                    const {result, test} = res.data;
                                     if(result === 'OK') {
                                         Alert.alert('','결제가 취소 되었습니다.');
+                                        console.log(test);
                                         return navigation.replace('발주상태');
                                     }
                                 }
@@ -823,9 +825,10 @@ export default function OrderDtail({route,navigation}) {
                     {text:"확인",onPress:()=>{
                             payDoneCancel(Member, type, OrderData, chk_cancel_goods).then((res)=>{
                                 if(res) {
-                                    const {result} = res.data;
+                                    const {result, test} = res.data;
                                     if(result === 'OK') {
                                         Alert.alert('','결제가 취소 되었습니다.');
+                                        console.log(test);
                                         return navigation.replace('발주상태');
                                     }
                                 }

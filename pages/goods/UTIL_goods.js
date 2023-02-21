@@ -16,6 +16,19 @@ export const get_goods_list = async (Member, Cate1stUid, Cate2ndUid) => {
     return res;
 };
 
+export const get_goods_search = async (search) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
+        act_type        : "get_goods_list",
+        f_goods_name    :search,
+    }, {
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    })
+
+    return res;
+}
+
 export const goods_cate = async (Cate1stUid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_goods.php', {
         act_type: "goods_cate",
@@ -125,6 +138,21 @@ export const get_goods_info = async (Member, uid) => {
             'Content-type': 'multipart/form-data',
         }
     })
+    return res;
+}
+
+export const save_cart = async (Member, goods_uid) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_cart.php',{
+        act_type            : 'save_cart',
+        goods_uid           : goods_uid,           // 상품 uid
+        mem_uid             : Member,                    // 회원 uid
+        ord_cnt             :  '1'
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    })
 
     return res;
 }
+

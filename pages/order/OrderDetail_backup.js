@@ -803,7 +803,7 @@ export default function OrderDtail({route,navigation}) {
                 if(result.length === 0) { return Alert.alert('','자재를 선택해주세요.') }
                 Alert.alert('','결제를 취소하시겠습니까?',[n_btn, {
                     text:"확인",
-                    onPress:()=>{payDonelog(type,result)},
+                    onPress:()=>{Alert.alert('','준비중입니다.')},
                 }]);
             }
         }

@@ -228,9 +228,6 @@ export default function GoodsCateList({route, navigation}) {
             console.log(error)
         });
 
-        // // 내 즐겨찾기에 등록된 상품 필터링하기
-
-
     }
 
     // 6. 장바구니 추가 이벤트

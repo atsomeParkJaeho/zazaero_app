@@ -760,7 +760,7 @@ export default function OrderForm({route,navigation}) {
                 if(res) {
                     const {result, work_uid} = res.data;
                     if(result === 'OK') {
-                        InsOrder(order_data, Member, work_uid).then((res)=>{
+                        InsOrder(order_data, Member, work_uid, goods_cate1_uid).then((res)=>{
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
@@ -774,7 +774,7 @@ export default function OrderForm({route,navigation}) {
                             }
                         });
                     } else {
-                        InsOrder(order_data, Member).then((res)=>{
+                        InsOrder(order_data, Member, work_uid, goods_cate1_uid).then((res)=>{
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {

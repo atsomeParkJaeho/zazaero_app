@@ -58,6 +58,7 @@ import Chk from "../../icons/chk.svg";
 import CartBag from "../../icons/cart_bag.svg";
 import {Price} from "../../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {get_goods_search, save_cart, save_wish} from "./UTIL_goods";
 
 
 
@@ -72,17 +73,9 @@ export default function GoodsSearchList({route,navigation}) {
     // 1. 상태정의
     const [GoodsList, setGoodsList] = useState([]);
 
-
     // 2. 검색상품 출력
     useEffect(()=>{
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
-            act_type        : "get_goods_list",
-            f_goods_name    :search,
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        get_goods_search(search).then((res) => {
             if (res) {
                 const {result, A_goods} = res.data;
                 if (result === 'OK') {
@@ -101,8 +94,6 @@ export default function GoodsSearchList({route,navigation}) {
     });
 
     const [SearchLog, setSearchLog] = useState([]);     // 최근검색어
-
-
 
     // 입력하기
 
@@ -127,16 +118,7 @@ export default function GoodsSearchList({route,navigation}) {
 
     // 5. 즐겨찾기 액션
     const goWish = (uid) => {
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
-            act_type        :"set_my_zzim",
-            login_status    :"Y",
-            mem_uid         :Member,
-            link_uid        :uid,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
+        save_wish(Member, uid).then((res)=>{
             console.log(res.data);
             if(res) {
                 const {result} = res.data;
@@ -167,16 +149,7 @@ export default function GoodsSearchList({route,navigation}) {
         let goForm = GoodsList.filter((val) => val.goods_cart_chk);
         // 반복문
         goForm.map(items=>(
-            axios.post('http://49.50.162.86:80/ajax/UTIL_cart.php',{
-                act_type            : 'save_cart',
-                goods_uid           : items.goods_uid,           // 상품 uid
-                mem_uid             : Member,                    // 회원 uid
-                ord_cnt             :  '1'
-            },{
-                headers: {
-                    'Content-type': 'multipart/form-data'
-                }
-            }).then((res)=>{
+            save_cart(Member, items.goods_uid).then((res)=>{
                 if(res) {
                     const {result, order_uid} = res.data;
                     console.log(result);
@@ -200,14 +173,7 @@ export default function GoodsSearchList({route,navigation}) {
     // 2. 검색상품 불러오기
     const goSearch = (search) => {
         console.log(search);
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
-            act_type        : "get_goods_list",
-            f_goods_name    :search,
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        get_goods_search(search).then((res) => {
             if (res) {
                 const {result, A_goods, que} = res.data;
                 console.log(que);
@@ -224,11 +190,8 @@ export default function GoodsSearchList({route,navigation}) {
         });
     }
 
-
     // 체크한 상품 버튼 생성
     let goForm = GoodsList.filter((val) => val.goods_cart_chk);
-
-
 
     console.log(GoodsList);
 
@@ -329,13 +292,7 @@ export default function GoodsSearchList({route,navigation}) {
                     </View>
                 ))}
             </ScrollView>
-            {/*========상품즐겨찾기 체크시=========*/}
-            <View style={[styles.wish_pop]}>
-                <View style={[styles.wish_box,flex]}>
-                    <Wishlist width={35} height={24} color={'blue'}/>
-                    <Text style={styles.wish_box_txt} >즐겨찾기에 추가되었습니다.</Text>
-                </View>
-            </View>
+
             {/*========상품체크시 노출=========*/}
             {(goForm.length > 0) ? (
                 <>
