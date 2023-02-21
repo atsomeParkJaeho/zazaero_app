@@ -30,7 +30,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.koreajason.expozazeroapp",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "infoPlist": {
         "LSApplicationQueriesSchemes": [
           "kftc-bankpay",
@@ -70,7 +70,7 @@
           "NSAllowsArbitraryLoads": true,
           "NSAllowsArbitraryLoadsInWebContent": true
         }
-      }
+      },
     },
     "android": {
       "adaptiveIcon": {
@@ -78,7 +78,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.koreajason.expozazeroapp",
-      "versionCode": 3
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -88,8 +88,6 @@
         "projectId": "960980ea-d25e-4228-a133-be5e8d69d34c"
       }
     },
-    "runtimeVersion": {
-      "policy": "sdkVersion"
-    }
+    "runtimeVersion": "exposdk:46.0.0"
   }
 }

@@ -164,30 +164,6 @@ export const payDoneCancel = async (Member, type, OrderData, chk_cancel_goods) =
     });
 
     return res;
-
-    // console.log(Member);
-    // console.log(type);
-    // console.log(OrderData);
-    // console.log(chk_cancel_goods);
-    //
-    // let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-    //     act_type             :"pay_done_gd_cancel",
-    //     gd_order_uid         :OrderData.gd_order_uid,
-    //     mem_uid              :Member,
-    //     cancel_type          :type,
-    //     imp_uid              :OrderData.imp_uid,
-    //     merchant_uid         :OrderData.order_no,
-    //     cancel_money         :OrderData.settleprice,
-    // },{
-    //     headers: {
-    //         'Content-type': 'multipart/form-data'
-    //     }
-    // });
-    //
-    // return res;
-
-
-
 }
 
 export const PayTry = async (OrderData, type) => {
@@ -208,6 +184,33 @@ export const PayTry = async (OrderData, type) => {
     return res;
 }
 
+
+export const get_order_cancel_list = async (Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type             :"get_order_cancel_list",
+        mem_uid              :Member,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
+}
+
+export const gd_cancel_info = async (Member, gd_cancel_uid) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type             :"gd_cancel_info",
+        gd_cancel_uid        :gd_cancel_uid,
+        mem_uid              :Member,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
+}
 
 
 

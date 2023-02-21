@@ -407,6 +407,10 @@ export const deliStatus = (key) => {
     if(key === 'doing')         {return '배송진행'; }
     if(key === 'done')          {return '배송완료'; }
 }
+export const refundStatus = (key) => {
+    if(key === 'ready')         {return '처리중'; }
+    if(key === 'done')          {return '처리완료'; }
+}
 
 
 export const Time1 = [
