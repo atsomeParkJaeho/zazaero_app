@@ -1,16 +1,16 @@
 {
   "expo": {
     "name": "자재로",
-    "slug": "zazero",
+    "slug": "zazaero",
     "version": "1.0.0",
     "sdkVersion": "46.0.0",
     "orientation": "portrait",
     "icon": "./assets/zazero_icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/zazero_icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#3D40E0"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -24,9 +24,9 @@
       ]
     },
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.zazaero",
-      "buildNumber": "7"
+      "buildNumber": "1"
     },
     "android": {
       "adaptiveIcon": {
@@ -34,7 +34,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.zazaero",
-      "versionCode": 7
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -44,7 +44,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "eb3e037a-6c5f-421e-8b6a-66c468e2b3f5"
+        "projectId": "9ec25729-2b97-4efe-935b-7ff81ffb5720"
       }
     }
   }
