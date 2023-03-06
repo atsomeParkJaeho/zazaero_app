@@ -1,9 +1,9 @@
 {
   "expo": {
     "name": "자재로",
-    "slug": "expo-zazero-app",
-    "sdkVersion": "46.0.0",
+    "slug": "zazero",
     "version": "1.0.0",
+    "sdkVersion": "46.0.0",
     "orientation": "portrait",
     "icon": "./assets/zazero_icon.png",
     "userInterfaceStyle": "light",
@@ -11,10 +11,6 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/960980ea-d25e-4228-a133-be5e8d69d34c"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -29,65 +25,27 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.koreajason.expozazeroapp",
-      "buildNumber": "4",
-      "infoPlist": {
-        "LSApplicationQueriesSchemes": [
-          "kftc-bankpay",
-          "ispmobile",
-          "itms-apps",
-          "hdcardappcardansimclick",
-          "smhyundaiansimclick",
-          "shinhan-sr-ansimclick",
-          "smshinhanansimclick",
-          "kb-acp",
-          "mpocket.online.ansimclick",
-          "ansimclickscard",
-          "ansimclickipcollect",
-          "vguardstart",
-          "samsungpay",
-          "scardcertiapp",
-          "lottesmartpay",
-          "lotteappcard",
-          "cloudpay",
-          "nhappcardansimclick",
-          "nonghyupcardansimclick",
-          "citispay",
-          "citicardappkr",
-          "citimobileapp",
-          "kakaotalk",
-          "payco",
-          "chaipayment",
-          "kb-auth",
-          "hyundaicardappcardid",
-          "com.wooricard.wcard",
-          "lmslpay",
-          "lguthepay-xpay",
-          "liivbank",
-          "supertoss"
-        ],
-        "NSAppTransportSecurity": {
-          "NSAllowsArbitraryLoads": true,
-          "NSAllowsArbitraryLoadsInWebContent": true
-        }
-      },
+      "bundleIdentifier": "com.zazaero",
+      "buildNumber": "7"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/zazero_icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.koreajason.expozazeroapp",
-      "versionCode": 4
+      "package": "com.zazaero",
+      "versionCode": 7
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
     "extra": {
       "eas": {
-        "projectId": "960980ea-d25e-4228-a133-be5e8d69d34c"
+        "projectId": "eb3e037a-6c5f-421e-8b6a-66c468e2b3f5"
       }
-    },
-    "runtimeVersion": "exposdk:46.0.0"
+    }
   }
 }

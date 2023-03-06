@@ -129,6 +129,7 @@ export const OrderMod = async (OrderData, Member, addr1, zonecode, gd_order_uid)
 export const payDoneCancel = async (Member, type, OrderData, chk_cancel_goods) => {
 
     console.log(chk_cancel_goods);
+    let tot_price = Number(OrderData.settleprice) + Number(OrderData.tot_opt_price) + Number(OrderData.deli_price);
 
     let pay_cancel_goods = chk_cancel_goods.map(val=>{
         let src_cnt             = Number(val.A_sel_option.map(item=>item.option_cnt));
@@ -148,6 +149,7 @@ export const payDoneCancel = async (Member, type, OrderData, chk_cancel_goods) =
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"pay_done_gd_cancel",
         gd_order_uid         :OrderData.gd_order_uid,
+        cancel_money         :tot_price,
         cancel_type          :type,
         mem_uid              :Member,
         order_uid            :pay_cancel_goods.map(val=>val.order_uid),
@@ -155,7 +157,6 @@ export const payDoneCancel = async (Member, type, OrderData, chk_cancel_goods) =
         src_cnt              :pay_cancel_goods.map(val=>val.src_cnt),
         cancel_cnt           :pay_cancel_goods.map(val=>val.cancel_cnt),
         merchant_uid         :OrderData.order_no,
-        cancel_money         :OrderData.settleprice,
         imp_uid              :OrderData.imp_uid,
     },{
         headers: {

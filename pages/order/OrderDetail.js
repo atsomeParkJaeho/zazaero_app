@@ -34,7 +34,7 @@ import {container, bg_white, h16, text_center, flex_around, flex_between, input,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 import {FormStyle} from "./FormStyle";
-import {DateChg, ordStatus, payStatus, Phone, Price, Time1, Time2} from "../../util/util";
+import {bacnkAccount, DateChg, ordStatus, payStatus, Phone, Price, settleKind, Time1, Time2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import CalendarStrip from "react-native-calendar-strip";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -261,6 +261,7 @@ export default function OrderDtail({route,navigation}) {
     }
 
 
+    console.log(BankCode,'/12');
     const CancelCnt = (goods_uid, type, src_cnt) => {
 
         console.log(src_cnt);
@@ -815,7 +816,7 @@ export default function OrderDtail({route,navigation}) {
                 console.log(chk_cancel_goods);
 
             } else {
-
+                /*
                 let chk_cancel_goods = OrderGoodsList.filter(val=>val.goods_chk);
 
                 if(chk_cancel_goods.length === 0) {return Alert.alert('','자재를 선택해주세요.')}
@@ -836,6 +837,8 @@ export default function OrderDtail({route,navigation}) {
                         }},
                 ]);
                 console.log(chk_cancel_goods);
+
+                 */
             }
         }
 
@@ -881,6 +884,46 @@ export default function OrderDtail({route,navigation}) {
                 );
             }
         }
+
+        /**----------------------------반품신청탭--------------------------**/
+        if(OrderData.ord_status === 'deli_done' || OrderData.deli_status === 'done') {
+            if(Cancel) {
+                return (
+                    <>
+                        <View style={[container]}>
+                            <View style={[d_flex, justify_content_between]}>
+                                <TouchableOpacity
+                                    onPress={()=>PayDoneCancel(`part`)}
+                                    style={[styles.CancelBtnWrap, btn_outline_danger]}>
+                                    <Text style={[text_center,styles.CancelBtn, text_danger]}>선택취소</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={()=>PayDoneCancel(`all`)}
+                                    style={[styles.CancelBtnWrap, btn_outline_danger]}>
+                                    <Text style={[text_center,styles.CancelBtn, text_danger]}>전체취소</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </>
+                );
+            } else {
+                return (
+                    <>
+                        <View style={[container]}>
+                            <View style={[d_flex, justify_content_between,mb2]}>
+                                <TouchableOpacity
+                                    onPress={()=>setCancel(!Cancel)}
+                                    style={[styles.CancelBtnWrap, btn_outline_danger,{width:"100%"}]}>
+                                    <Text style={[text_center,styles.CancelBtn, text_danger]}>반품신청</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+
+                    </>
+                );
+            }
+        }
+
     }
 
 
@@ -1165,11 +1208,33 @@ export default function OrderDtail({route,navigation}) {
                                         <Text style={[h14, text_danger]}>{DateChg(OrderData.pay_status_date)} {OrderData.pay_status_time}</Text>
                                     </View>
                                 )}
+                                {/**----------------------결제유형--------------------------**/}
+                                {(OrderData.settlekind) && (
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>결제유형</Text>
+                                        <Text style={[h14]}>{settleKind(OrderData.settlekind)}</Text>
+                                    </View>
+                                )}
+                                {/**----------------------입금계좌정보--------------------------**/}
+                                {(OrderData.settlekind === 'bank') && (
+                                    <View style={[mb1]}>
+                                        <Text style={[h14]}>
+                                            {BankCode.map(label=>label.value === OrderData.bankAccount && label.label)}
+                                        </Text>
+                                    </View>
+                                )}
                                 {/**----------------------결제요청일(* 발주검수 완료후 결제대기시에 노출한다.)--------------------------**/}
                                 {(OrderData.pay_date) && (
                                     <View style={[flex,justify_content_end,mb1]}>
                                         <Text style={[h14,styles.color1,me2, text_primary]}>결제완료일</Text>
                                         <Text style={[h14, text_primary]}>{DateChg(OrderData.pay_date)} {OrderData.pay_time}</Text>
+                                    </View>
+                                )}
+                                {/**----------------------무통장입금시 노출--------------------------**/}
+                                {(OrderData.pay_status_date !== '0000-00-00') && (
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2, text_danger]}>입금확인</Text>
+                                        <Text style={[h14, text_danger]}>{DateChg(OrderData.pay_status_date)} {OrderData.pay_status_time}</Text>
                                     </View>
                                 )}
                                 {/**----------------------자재 가격--------------------------**/}

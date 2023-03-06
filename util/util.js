@@ -1,6 +1,7 @@
 import {LocaleConfig} from "react-native-calendars/src/index";
 import 'moment/locale/ko';
 import {Alert} from "react-native";
+import axios from "axios";
 export const regId = /^[a-z0-9_]{4,20}$/;
 export const Minlangth = 6;
 
@@ -411,7 +412,10 @@ export const refundStatus = (key) => {
     if(key === 'ready')         {return '처리중'; }
     if(key === 'done')          {return '처리완료'; }
 }
-
+export const settleKind = (key) => {
+    if(key === 'card')         {return '카드결제'; }
+    if(key === 'bank')         {return '무통장입금'; }
+}
 
 export const Time1 = [
     {

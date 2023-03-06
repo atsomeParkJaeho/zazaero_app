@@ -13,12 +13,19 @@ function Payment({ route,navigation }) {
     const {OrderData} = route.params;
     console.log(OrderData,'/데이터 확인123123');
 
+    let tot_price = Number(OrderData.settleprice) + Number(OrderData.tot_opt_price) + Number(OrderData.deli_price);
+
+    console.log(OrderData,'/123');
+    console.log(OrderData.tot_opt_price,'/옵션 요청비');
+    console.log(OrderData.settleprice,'/상품금액');
+    console.log(tot_price,'/합계금액');
+
     const data = {
         pg                      :'kcp',
         pay_method              :'card',
         name                    :OrderData.order_title,
         merchant_uid            :OrderData.order_no,
-        amount                  :OrderData.settleprice,
+        amount                  :tot_price,
         buyer_name              :OrderData.recv_name,
         buyer_tel               :OrderData.recv_mobile,
         buyer_addr              :OrderData.addr1+' '+OrderData.addr2,
@@ -46,6 +53,7 @@ function Payment({ route,navigation }) {
                 if(result === 'OK') {
                     console.log(gd_order);
                     console.log('결제완료');
+                    Alert.alert('','결제가 완료되었습니다.');
                 }
             }
         });
