@@ -268,24 +268,25 @@ export default function GoodsCateList({route, navigation}) {
                     <View style={styles.cate_goods_list_item}>
                         <View style={[flex_top]}>
                             <View style={[styles.flex_item, styles.flex_item1]}>
-                                <View style={[styles.cate_list_Thumbnail_box]}>
-                                    <Image style={styles.cate_list_Thumbnail}
-                                           source={{uri: 'http://www.zazaero.com' + item.list_img_url}}/>
-                                    <View style={styles.goods_like}>
-                                        {/*=============찜하기=================*/}
-                                        <TouchableOpacity onPress={() => goWish(item.goods_uid)}>
-                                            {(item.my_zzim_flag === 'Y') ? (
-                                                <>
-                                                    <Wishlist width={35} height={24} color={'blue'}/>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <WishlistNon width={35} height={24} color={'blue'}/>
-                                                </>
-                                            )}
-                                        </TouchableOpacity>
+                                <TouchableOpacity onPress={() => goWish(item.goods_uid)}>
+                                    <View style={[styles.cate_list_Thumbnail_box]}>
+                                        <Image style={styles.cate_list_Thumbnail} source={{uri: 'http://www.zazaero.com' + item.list_img_url}}/>
+                                        <View style={styles.goods_like}>
+                                            {/*=============찜하기=================*/}
+
+                                                {(item.my_zzim_flag === 'Y') ? (
+                                                    <>
+                                                        <Wishlist width={35} height={24} color={'blue'}/>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <WishlistNon width={35} height={24} color={'blue'}/>
+                                                    </>
+                                                )}
+
+                                        </View>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
                             </View>
                             <View style={[styles.flex_item, styles.flex_item2]}>
                                 <View style={[flex_between, align_items_center, pb2]}>
