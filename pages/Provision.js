@@ -4,83 +4,74 @@ import logo from "../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
 import ProvisionDisc from "../ProvisionDisc.json";
 import ProvisionTap from "../components/ProvisionTap";
+import {getAppInfo} from "./order/UTIL_order";
+import {priName} from "../util/util";
 
 
-export default function Provision(){
+export default function Provision({route, navigation}){
 
-    const [state,setState] = useState([])
-    const [cateState,setCateState] = useState([])
 
-    //하단의 return 문이 실행되어 화면이 그려진다음 실행되는 useEffect 함수
-    //내부에서 data.json으로 부터 가져온 데이터를 state 상태에 담고 있음
-    const [ready,setReady] = useState(true)
+    const {cfg_part2} = route.params;
+    const [A_provision, set_A_provision] = useState([]);
+    const [show_provision, set_show_provision] = useState(`${cfg_part2}`);
 
     useEffect(()=>{
+        getAppInfo().then((res)=>{
+            if(res) {
+                console.log(res.data);
+                const {result , app_info} = res.data;
+                if(result === 'OK') {
+                    let temp = app_info.A_provision.filter(val=>val.cfg_part2 !== "default_provision" );
+                    set_A_provision(temp);
+                }
+            }
+        });
+    },[]);
 
-        //뒤의 1000 숫자는 1초를 뜻함
-        //1초 뒤에 실행되는 코드들이 담겨 있는 함수
-        setTimeout(()=>{
+    console.log(A_provision);
+    console.log(show_provision);
 
-
-            setState(ProvisionDisc.disc)
-            setCateState(ProvisionDisc.disc)
-            setReady(false)
-        },1000)
-
-
-    },[])
-
-    const category = (cate) =>{
-        if(cate == 'Provision01'){
-            setCateState(state)
-        }else{
-            setCateState(state.filter((d)=>{
-                return d.category == cate
-            }))
-        }
-    }
-
-
-    //let Provisiontest = Provision.disc;
 
     return  (
         <ScrollView style={styles.container}>
+
             <View style={styles.Provision_tap}>
-               <View style={styles.Provision_tap_item}>
-                    <TouchableOpacity onPress={()=>{category('Provision01')}} style={[styles.Provision_tap_item_link, styles.borderTop, styles.borderRight]} >
-                        <Text style={styles.Provision_tap_item_title}>서비스 이용약관</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.Provision_tap_item}>
-                    <TouchableOpacity onPress={()=>{category('Provision02')}} style={[styles.Provision_tap_item_link, styles.borderTop, ]} >
-                        <Text style={styles.Provision_tap_item_title}>개인정보 처리방침</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.Provision_tap_item}>
-                    <TouchableOpacity onPress={()=>{category('Provision03')}} style={[styles.Provision_tap_item_link, styles.borderRight, ]} >
-                        <Text style={styles.Provision_tap_item_title}>전자금융거래 이용약관</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.Provision_tap_item}>
-                    <TouchableOpacity onPress={()=>{category('Provision04')}} style={styles.Provision_tap_item_link} >
-                        <Text style={styles.Provision_tap_item_title}>홍보 및 마케팅 이용약관</Text>
-                    </TouchableOpacity>
-                </View>
+                {A_provision.map((val,idx)=>{
+                    if(val.cfg_part2 !== '') {
+                        return(
+                            <>
+                                <View key={idx} style={styles.Provision_tap_item}>
+                                    <TouchableOpacity
+                                        onPress={()=>set_show_provision(`${val.cfg_part2}`)}
+                                        style={[styles.Provision_tap_item_link, styles.borderTop, styles.borderRight]} >
+                                        <Text numberOfLines={1}
+                                            style={styles.Provision_tap_item_title}>{priName(val.cfg_part2)}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                        );
+                    }
+                })}
             </View>
 
             {/**/}
             <View style={styles.NoticeView_disc_box}>
                 {/* 개인정보처리탭영역 */}
-                {
-                    cateState.map((content,i)=>{
-                        return ( <ProvisionTap content={content} key={i} /> )
-                    })
-                }
+                {A_provision.map((val,idx)=>{
+                    if(val.cfg_part2 === show_provision) {
+                        return (
+                            <>
+                                <View>
+                                    <Text>
+                                        {val.cfg_txt_val1}
+                                    </Text>
+                                </View>
+                            </>
+                        );
+                    }
+                })}
             </View>
             {/**/}
-
-
-
         </ScrollView>
     )
 }

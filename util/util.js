@@ -383,6 +383,14 @@ export const IMPcode = 'imp45563562';
 export const bankAccount = ["자재로(이정완)_국민은행 1234-23-5968714"];
 
 
+export const priName = (key) => {
+    if(key === 'access')            { return  `서비스 이용약관`}
+    if(key === 'info_mgr')          { return  `개인정보처리방침` }
+    if(key === 'etc_provision')     { return  `개인정보수집 및 이용동의`}
+    if(key === 'other_provision')   { return  `제3자개인정보수집 및 이용동의`}
+    if(key === 'ad_acces')          { return  `홍보 및 마케팅 이용약관`}
+}
+
 // 주문상태 정의 함수화
 
 export const ordStatus = (key) => {

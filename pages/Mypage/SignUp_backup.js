@@ -9,7 +9,7 @@ import {
     TouchableOpacity,
     ScrollView,
     Pressable,
-    Alert
+    Alert, Platform, Modal
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import RNPickerSelect from 'react-native-picker-select';
@@ -30,26 +30,30 @@ import {
     me2,
     pe2,
     mt2,
-    ios_pb
+    ios_pb, justify_content_end, justify_content_between, d_flex, text_center
 } from '../../common/style/AtStyle';
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
 import axios from "axios";
 import {AddrMatch, bizNum, Minlangth, OnlyEng, Phone, PwChk, regId, regPW} from "../../util/util";
 import CameraIcon from "../../icons/camera_icon.svg";
 import {useIsFocused} from "@react-navigation/native";
+import {chk_dup_id, Sign_up} from "../UTIL_mem";
+import {DeviceInfo} from "react-native-web";
+import PriModal from "./PriModal";
+import {getAppInfo} from "../order/UTIL_order";
 export default function SignUp({route, navigation}) {
-
-
 
 
     // 1. 상태정의
     const Chkinput = useRef([]);                // 입력값 위치 설정
-    const Update   = useIsFocused();
+    const Update   = useIsFocused();                     //
+
+    const [show,   hide]    = useState(false);
+    const [content, setContent]  = useState(``);
     const [SignUp, setSignUp] = useState({      // 회원가입 양식
         mem_id          :'',            // 아이디
         mem_pw          :'',            // 비밀번호
         mem_name        :'',            // 담당자명
-        ceo_name        :'',            // 대표자명
         com_name        :'',            // 회사명
         mem_mobile      :'',            // 담당자 전화번호
         com_biz_no      :'',            // 사업자번호
@@ -66,9 +70,7 @@ export default function SignUp({route, navigation}) {
         mem_pw_chk      :'',            // 비밀번호 확인
         all_chk         :false,
     });
-
-    //권한 요청을 위한 hooks
-    const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
+    const [appInfo, setAppInfo] = useState();
     useEffect(()=>{
         if(route.params) {
             let {zonecode, addr1} = route.params;
@@ -78,7 +80,19 @@ export default function SignUp({route, navigation}) {
                 addr1       :addr1
             })
         }
+        getAppInfo().then((res)=>{
+            if(res) {
+                console.log(res.data);
+                const {result , app_info} = res.data;
+                if(result === 'OK') {
+                    console.log(app_info);
+                    setAppInfo(app_info.A_provision);
+                }
+            }
+        });
+
     },[Update]);
+
 
 
     // 2. 입력상태 설정
@@ -89,70 +103,21 @@ export default function SignUp({route, navigation}) {
         })
     }
 
-    const uploadImage = async (keyValue) => {
-        //권한 확인 코드 : 권한 없으면 물어보고, 승인하지 않으면 함수종료
-        if (!status.granted){
-            const permission = await requestPermission();
-            if (!permission.granted){
-                return null;
-            }
-        }
-        //이미지 업로드 가능
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing : false,
-            quality: 1,
-            aspect:[1,1]
-        });
-        if (result.cancelled){
-            return null; //이미지 업로드 취소한 경우
-        }
-        //이미지 업로드 결과 및 이미지 경로 업데이트
-        console.log('keyvalue : '+keyValue);
-        console.log('이미지경로 : '+ result.uri);
-        if (keyValue === 'img_file1') {
-            setSignUp({
-                ...SignUp,
-                img_file1    : result.uri,
-            });
-        }
-        if (keyValue === 'img_file2') {
-            setSignUp({
-                ...SignUp,
-                img_file2    : result.uri,
-            });
-        }
-
-
-        // 서버에 요청 보내기
-        const localUri = result.uri;
-        const filename = localUri.split('/').pop();
-        const match = /\.(\w+)$/.exec(filename ?? '');
-        const type = match ? `image/${match[1]}` : `image`;
-        const formData = new FormData();
-        formData.append('image', { uri: localUri, name: filename, type });
-        console.log(formData._parts);
-
-    }
-
-    // 3. 닉네임 중복확인
+    // 3. 아이디 중복확인
     const chkName = () => {
-        console.log('닉네임 중복 체크');
+
+        if(!SignUp.mem_id) {
+            Alert.alert('','아이디를 입력해주세요.');
+            return Chkinput.current[0].focus();
+        }
+
         if(SignUp.mem_id_chk === 'Y') {
             setSignUp({
                 ...SignUp,
                 mem_id_chk: 'N',
             });
         } else {
-            axios.post('http://49.50.162.86:80/ajax/UTIL_mem_reg.php',{
-                act_type            :'chk_dup_id',
-                mem_id              : SignUp.mem_id,
-                mem_info_act_type   :"INS",
-            },{
-                headers: {
-                    'Content-type': 'multipart/form-data'
-                }
-            }).then((res)=>{
+            chk_dup_id(SignUp).then((res)=>{
                 if(res) {
                     const {result} = res.data;
                     console.log(result);
@@ -164,6 +129,9 @@ export default function SignUp({route, navigation}) {
                         });
                     }
                     if(result === 'NG_dup') {
+                        return Alert.alert('','사용이 불가능한 아이디 입니다.');
+                    }
+                    if(result === 'NG_dup_id') {
                         return Alert.alert('','사용이 불가능한 아이디 입니다.');
                     }
                 }
@@ -199,7 +167,7 @@ export default function SignUp({route, navigation}) {
 
     let chk = [SignUp.privacy_1, SignUp.privacy_2, SignUp.privacy_3, SignUp.privacy_4, SignUp.privacy_5];
     let TChk = chk.filter(val=>val===true);
-    console.log(TChk.length);
+
 
     // 3. 회원가입 신청
     const goForm = ()=> {
@@ -208,15 +176,10 @@ export default function SignUp({route, navigation}) {
             Alert.alert('',`${Minlangth}자 이상 입력해주세요.`);
             return Chkinput.current[0].focus();
         }
-        if(8 >= SignUp.mem_pw.length) {             // 비밀번호 최소
-            Alert.alert('',`8자 이상 입력해주세요.`);
-            return Chkinput.current[2].focus();
-        }
         if(!SignUp.mem_id_chk) {             // 아이디 중복체크
             Alert.alert('',`아이디 중복체크를 확인해주세요.`);
             return Chkinput.current[2].focus();
         }
-        // 체크루틴
         if(!SignUp.mem_id) {  /*아이디 */
             Alert.alert('',`아이디를 입력해주세요.`);
             return Chkinput.current[0].focus();
@@ -225,6 +188,11 @@ export default function SignUp({route, navigation}) {
             Alert.alert('',`아이디 중복체크를 해주세요.`);
             return Chkinput.current[0].focus();
         }
+        if(8 >= SignUp.mem_pw.length) {             // 비밀번호 최소
+            Alert.alert('',`8자 이상 입력해주세요.`);
+            return Chkinput.current[2].focus();
+        }
+        // 체크루틴
         if(!SignUp.mem_pw) {  // 비밀번호
             Alert.alert('',`비밀번호를 입력해주세요.`);
             return Chkinput.current[1].focus();
@@ -234,7 +202,7 @@ export default function SignUp({route, navigation}) {
             return Chkinput.current[2].focus();
         }
 
-        if(regPW.test(SignUp.mem_pw) === false) {  // 특수문자 입력 필수
+        if(regPW.test(SignUp.mem_pw) !== true) {  // 특수문자 입력 필수
             Alert.alert('','특수 문자가 포함되어있지 않습니다.');
             return Chkinput.current[2].focus();
         }
@@ -242,6 +210,11 @@ export default function SignUp({route, navigation}) {
         if(SignUp.mem_pw !== SignUp.mem_pw_chk) {  // 비밀번호 일치
             Alert.alert('','비밀번호가 일치 하지 않습니다.');
             return Chkinput.current[2].focus();
+        }
+
+        if(!SignUp.road_address) { // 지역코드
+            Alert.alert('','지역을 선택해주세요');
+            return Chkinput.current[6].focus();
         }
 
         if(!SignUp.com_name) {  // 업체명
@@ -260,10 +233,7 @@ export default function SignUp({route, navigation}) {
             Alert.alert('',`주소를 입력해주세요.`);
             return Chkinput.current[6].focus();
         }
-        if(!SignUp.road_address) { // 지역코드
-            Alert.alert('','지역을 선택해주세요');
-            return Chkinput.current[6].focus();
-        }
+
 
         if(!SignUp.addr2) {  // 상세주소
             Alert.alert('',`상세주소를 입력해주세요.`);
@@ -299,29 +269,9 @@ export default function SignUp({route, navigation}) {
 
         /**--------------------------첨부파일 요청---------------------------------------**/
 
+        console.log(SignUp);
 
-
-
-        axios.post('http://49.50.162.86:80/ajax/UTIL_mem_reg.php',{
-            act_type         :'mem_reg',
-            mem_id           :SignUp.mem_id,        // 아이디
-            mem_pw           :SignUp.mem_pw,        // 비밀번호
-            mem_name         :SignUp.mem_name,      // 담당자 명
-            ceo_name         :SignUp.ceo_name,      // 대표자 명
-            com_name         :SignUp.com_name,      // 회사명
-            mem_mobile       :SignUp.mem_mobile,    // 담당자 연락처
-            com_biz_no       :SignUp.com_biz_no,    // 사업자번호
-            zonecode         :SignUp.zonecode,      // 우편번호
-            addr1            :SignUp.addr1,         // 주소
-            addr2            :SignUp.addr2,         // 상세주소
-            img_file1        :SignUp.img_file1,     // 사업자등록증사본
-            img_file2        :SignUp.img_file2,     // 통장사본
-
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
+        Sign_up(SignUp).then((res)=>{
             if(res) {
                 const {result} = res.data;
                 console.log(result);
@@ -337,12 +287,18 @@ export default function SignUp({route, navigation}) {
         })
     }
 
-
-    console.log(SignUp);
-
+    console.log(content);
+    console.log(appInfo,'/약관');
 
     return (
         <>
+            {/**------------모달창------------**/}
+            <PriModal
+                show={show}// 약관 id
+                content={content}
+            />
+
+            {/**------------모달창------------**/}
             <ScrollView style={[bg_white]}>
                 <View style={[sub_page,styles.signup]}>
                     <View style={[container]}>
@@ -360,6 +316,7 @@ export default function SignUp({route, navigation}) {
                                                onEndEditing={()=>chkName}
                                                returnKeyType="next"
                                                placeholder="아이디를 입력해주세요"
+                                               autoCapitalize="none"
                                     />
                                 </View>
                                 <View style={[styles.flexitem2]}>
@@ -390,6 +347,7 @@ export default function SignUp({route, navigation}) {
                                            ref={val=>(Chkinput.current[1] = val)}
                                            secureTextEntry={true}
                                            placeholder="비밀번호를 입력해주세요."
+                                           autoCapitalize="none"
                                 />
                             </View>
                         </View>
@@ -403,6 +361,7 @@ export default function SignUp({route, navigation}) {
                                            ref={val=>(Chkinput.current[2] = val)}
                                            secureTextEntry={true}
                                            placeholder="비밀번호를 확인해주세요."
+                                           autoCapitalize="none"
                                 />
                             </View>
                         </View>
@@ -454,8 +413,9 @@ export default function SignUp({route, navigation}) {
                                            onChangeText={(com_biz_no)=>goInput('com_biz_no',com_biz_no)}
                                            value={bizNum(SignUp.com_biz_no)}
                                            ref={val=>(Chkinput.current[4] = val)}
-                                           maxLength={15}
+                                           maxLength={12}
                                            placeholder="12345-51-687891"
+                                           keyboardType="numeric"
                                 />
                             </View>
                         </View>
@@ -520,44 +480,10 @@ export default function SignUp({route, navigation}) {
                                            maxLength={13}
                                            value={Phone(SignUp.mem_mobile)}
                                            ref={val=>(Chkinput.current[9] = val)}
+                                           keyboardType="numeric"
                                 />
                             </View>
                         </View>
-                        {/*사업자 등록증 업로드*/}
-                        <View style={styles.formGroup}>
-                            <View style={styles.inputGroup}>
-                                <Text style={styles.inputTopText}>사업자 등록증</Text>
-
-                                <Pressable style={[styles.upload_btn]} onPress={(img_file1=>uploadImage('img_file1',img_file1))}>
-                                    <View  style={[pos_center]} >
-                                        <CameraIcon width={30} height={24}/>
-                                    </View>
-                                </Pressable>
-
-                                <View  style={[mt2,styles.upload_box]} >
-                                    <Image style={styles.upload_img} source={{uri: SignUp.img_file1}}/>
-                                </View>
-
-                            </View>
-                        </View>
-                        {/*통장사본 업로드*/}
-                        <View style={styles.formGroup}>
-                            <View style={styles.inputGroup}>
-                                <Text style={styles.inputTopText}>통장사본</Text>
-
-                                <Pressable style={[styles.upload_btn]} onPress={(img_file2=>uploadImage('img_file2',img_file2))}>
-                                    <View  style={[pos_center]} >
-                                        <CameraIcon width={30} height={24}/>
-                                    </View>
-                                </Pressable>
-
-                                <View  style={[mt2,styles.upload_box]} >
-                                    <Image style={styles.upload_img} source={{uri: SignUp.img_file2}}/>
-                                </View>
-
-                            </View>
-                        </View>
-
                     </View>
 
                     <View style={[gray_bar]}/>
@@ -581,15 +507,12 @@ export default function SignUp({route, navigation}) {
                                             ref={val=> (Chkinput.current[10] = val)}
                                             style={[styles.checkbox]} color={"#4630eb"}
                                         />
-                                        {/*<Checkbox*/}
-                                        {/*onValueChange={(privacy_1) => privacyChk('privacy_1',privacy_1)}*/}
-                                        {/*value={SignUp.privacy_1}*/}
-                                        {/*style={styles.Chk} color={"#4630eb"}*/}
-                                        {/*/>*/}
-                                        <Text style={styles.privacy_list_flex_item_txt}>서비스 이용약관 <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
+                                        <Text style={styles.privacy_list_flex_item_txt}>서비스 이용약관 <Text style={styles.privacy_list_flex_item_txt2}>(필수)</Text></Text>
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
-                                        <TouchableOpacity style={styles.privacy_btn}  >
+                                        <TouchableOpacity style={styles.privacy_btn}
+                                                          onPress={()=>setContent(`${appInfo[0].cfg_txt_val1}`)}
+                                        >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -682,6 +605,19 @@ export default function SignUp({route, navigation}) {
 
 
 const styles = StyleSheet.create({
+
+    modal:{
+        position:"absolute",
+        borderWidth:1,
+        backgroundColor:"#fff",
+        borderColor:"#f0f0f0",
+        zIndex:99,
+        width:"90%",
+        padding:15,
+        left:"5%",
+        top:"20%",
+    },
+
     subPage: {
         backgroundColor: '#fff',
         height:"100%",

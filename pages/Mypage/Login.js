@@ -73,7 +73,7 @@ export default function Login({navigation, route}) {
     };
     //==================로그인 하기=======================//
     const goLogin = () => {
-        console.log('dfasdf');
+
         if (!Login.mem_id) {
             Alert.alert(
                 '아이디를 입력하세요.',

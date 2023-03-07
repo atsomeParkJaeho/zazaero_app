@@ -211,7 +211,7 @@ export default function GoodsCateList({route, navigation}) {
                                 return {...val, my_zzim_flag: 'N',};
                             }
                             if (val.my_zzim_flag === 'N') {
-                                Alert.alert('', '즐겨찾기에서 추가하였습니다.');
+                                Alert.alert('', '즐겨찾기에 추가하였습니다.');
                                 return {...val, my_zzim_flag: 'Y',};
                             }
                         }

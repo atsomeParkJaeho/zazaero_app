@@ -85,12 +85,8 @@ export default function SignUp({route, navigation}) {
                 console.log(res.data);
                 const {result , app_info} = res.data;
                 if(result === 'OK') {
-                    let temp = app_info.A_provision.map(val=>{
-                        return {
-                            [val.cfg_part2] :val.cfg_txt_val1,
-                        }
-                    });
-                    setAppInfo(temp);
+                    console.log(app_info);
+                    setAppInfo(app_info.A_provision);
                 }
             }
         });
@@ -254,26 +250,10 @@ export default function SignUp({route, navigation}) {
             return Chkinput.current[9].focus();
         }
 
-        if(SignUp.privacy_1 === false) {  // 서비스 이용약관
-            return Alert.alert('',`서비스 이용약관을 체크해주세요.`);
-        }
-
-        if(SignUp.privacy_2 === false) {  // 개인정보처리방침 동의
-            return Alert.alert('',`개인정정보처리방침을 동의하지 않으셨습니다.`);
-        }
-
-        if(SignUp.privacy_3 === false) {  // 전자금융거래 이용약관
-            return Alert.alert('',`전자금융거래를 체크하지 않으셨습니다.`);
-        }
-
-        if(SignUp.privacy_4 === false) {  // 제3자 개인정보수집동의
-            return Alert.alert('',`제3자 개인정보수집동의 체크하지 않으셨습니다.`);
-        }
 
 
         /**--------------------------첨부파일 요청---------------------------------------**/
 
-        console.log(SignUp);
 
         Sign_up(SignUp).then((res)=>{
             if(res) {
@@ -291,8 +271,9 @@ export default function SignUp({route, navigation}) {
         })
     }
 
-    console.log(content);
-    console.log(appInfo);
+    const goProv = () => {
+        navigation.navigate('약관/개인정보처리방침');
+    }
 
     return (
         <>
@@ -306,7 +287,6 @@ export default function SignUp({route, navigation}) {
             <ScrollView style={[bg_white]}>
                 <View style={[sub_page,styles.signup]}>
                     <View style={[container]}>
-
                         <View style={styles.formGroup}>
                             {/*아이디*/}
                             <Text style={styles.inputTopText}>아이디</Text>
@@ -515,7 +495,7 @@ export default function SignUp({route, navigation}) {
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
                                         <TouchableOpacity style={styles.privacy_btn}
-                                        onPress={()=>setContent(`${appInfo[0].cfg_txt_val1}`)}
+                                        onPress={goProv}
                                         >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
@@ -533,7 +513,9 @@ export default function SignUp({route, navigation}) {
                                         <Text style={styles.privacy_list_flex_item_txt}>개인정보 처리방침 동의 <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
-                                        <TouchableOpacity style={styles.privacy_btn}  >
+                                        <TouchableOpacity style={styles.privacy_btn}
+                                      onPress={goProv}
+                                        >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -550,7 +532,9 @@ export default function SignUp({route, navigation}) {
                                         <Text style={styles.privacy_list_flex_item_txt}>전자금융거래 이용약관  <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
-                                        <TouchableOpacity style={styles.privacy_btn}  >
+                                        <TouchableOpacity style={styles.privacy_btn}
+                                        onPress={goProv}
+                                        >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -567,7 +551,9 @@ export default function SignUp({route, navigation}) {
                                         <Text style={styles.privacy_list_flex_item_txt}>제3자 개인정보수집 동의  <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
-                                        <TouchableOpacity style={styles.privacy_btn}  >
+                                        <TouchableOpacity style={styles.privacy_btn}
+                                        onPress={goProv}
+                                        >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -584,12 +570,13 @@ export default function SignUp({route, navigation}) {
                                         <Text style={styles.privacy_list_flex_item_txt}>홍보 및 마케팅 이용 동의 (선택) </Text>
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
-                                        <TouchableOpacity style={styles.privacy_btn}  >
+                                        <TouchableOpacity style={styles.privacy_btn}
+                                        onPress={goProv}
+                                        >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                                {/* 제3자 개인정보수집 동의 */}
                             </View>
                         </View>
                     </View>

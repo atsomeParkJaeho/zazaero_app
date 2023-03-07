@@ -175,7 +175,7 @@ export default function Wishlist({route,navigation}) {
         setWishList(temp);
     }
 
-    // ===========5. 즐겨찾기에서 삭제========================
+    // ===========5. 즐겨찾기에 삭제========================
     const delWish = (uid) => {
         // 즐겨찾기 상품리스트 가져오기
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{

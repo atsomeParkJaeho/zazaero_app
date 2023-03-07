@@ -30,6 +30,7 @@ import axios from "axios";
 import {At_db} from "../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Wishlist from "../icons/ico_heart_c.svg";
+import {get_cate_list} from "./UTIL_main";
 
 //import main1 from '../assets/img/main_1.png'
 
@@ -41,16 +42,7 @@ function Cate2nd({uid,navigation,name}) {
     console.log('제목 ',name);
     const [Cate2nd, setCate2nd] = useState([]);
     useEffect(() => {
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
-            act_type        :"get_cate_list",
-            depth           :"2",           // 2차 카테고리 추출
-            cate_1st_uid    :uid,
-            cate_2nd_img    :"Y",
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        get_cate_list(`2`, uid).then((res) => {
             if (res) {
                 const {result, A_cate} = res.data;
                 if (result === 'OK') {
@@ -102,14 +94,7 @@ export default function MainPage({navigation, route}) {
 
     useEffect(() => {
         // 포스트시에 header 셋팅 할것
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
-            act_type    :"get_cate_list",
-            depth       :"1",           // 1차 카테고리 추출
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        get_cate_list(`1`).then((res) => {
             if (res) {
                 const {result, A_cate} = res.data;
                 if (result === 'OK') {
@@ -195,21 +180,21 @@ export default function MainPage({navigation, route}) {
                         <View style={styles.main_footer_flex}>
                             <View style={styles.main_footer_flex_item}>
                                 <TouchableOpacity style={styles.main_footer_link} onPress={() => {
-                                    navigation.navigate('회원가입')
+                                    navigation.navigate('약관/개인정보처리방침',{cfg_part2:`access`});
                                 }}>
                                     <Text style={styles.main_footer_link_txt}>서비스 이용약관</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.main_footer_flex_item}>
                                 <TouchableOpacity style={styles.main_footer_link} onPress={() => {
-                                    navigation.navigate('메인페이지')
+                                    navigation.navigate('약관/개인정보처리방침',{cfg_part2:`info_mgr`});
                                 }}>
                                     <Text style={styles.main_footer_link_txt}>개인정보처리방침</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.main_footer_flex_item}>
                                 <TouchableOpacity style={styles.main_footer_link} onPress={() => {
-                                    navigation.navigate('메인페이지')
+                                    navigation.navigate('약관/개인정보처리방침',{cfg_part2:`ad_acces`});
                                 }}>
                                     <Text style={styles.main_footer_link_txt}>전자금융거래 이용약관</Text>
                                 </TouchableOpacity>
@@ -230,18 +215,16 @@ export default function MainPage({navigation, route}) {
             {/**----------------------------------------푸터----------------------------------------**/}
 
             <Footer navigation={navigation}/>
-            {/*========상품즐겨찾기 체크시=========*/}
-            {/*<View style={[styles.Notification]}>*/}
-            {/*    <View style={[styles.Notification_box]}>*/}
-            {/*        <Text style={styles.Notification_box_txt} >로그인 완료</Text>*/}
-            {/*    </View>*/}
-            {/*</View>*/}
         </>
     );
 }
 
 
 const styles = StyleSheet.create({
+    main_wrap:{
+        backgroundColor:"#fff",
+    },
+
     top_inner: {
         paddingVertical: 20,
         paddingHorizontal: 16,
@@ -255,7 +238,6 @@ const styles = StyleSheet.create({
     },
     main_footer: {
         backgroundColor: "#F9F9FB",
-        marginBottom: Platform.OS === 'ios' ? 100 : 80,
     },
     main_footer_flex: {
         flexDirection: "row",

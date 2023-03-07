@@ -164,7 +164,7 @@ export default function MyPage({navigation, route}) {
                         </View>
                         <View style={styles.mypageListItem}>
                             <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
-                                navigation.navigate('약관/개인정보처리방침')
+                                navigation.navigate('약관/개인정보처리방침',{cfg_part2:`access`})
                             }}>
                                 <View style={styles.flex}>
                                     <View style={styles.mypageListItemTitle}>
