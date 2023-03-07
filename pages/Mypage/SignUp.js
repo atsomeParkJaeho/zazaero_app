@@ -271,9 +271,6 @@ export default function SignUp({route, navigation}) {
         })
     }
 
-    const goProv = () => {
-        navigation.navigate('약관/개인정보처리방침');
-    }
 
     return (
         <>
@@ -495,7 +492,7 @@ export default function SignUp({route, navigation}) {
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
                                         <TouchableOpacity style={styles.privacy_btn}
-                                        onPress={goProv}
+                                        onPress={()=>navigation.navigate('약관/개인정보처리방침',{cfg_part2:`access`})}
                                         >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
@@ -514,7 +511,7 @@ export default function SignUp({route, navigation}) {
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
                                         <TouchableOpacity style={styles.privacy_btn}
-                                      onPress={goProv}
+                                        onPress={()=>navigation.navigate('약관/개인정보처리방침',{cfg_part2:`etc_provision`})}
                                         >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
@@ -533,7 +530,7 @@ export default function SignUp({route, navigation}) {
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
                                         <TouchableOpacity style={styles.privacy_btn}
-                                        onPress={goProv}
+                                        onPress={()=>navigation.navigate('약관/개인정보처리방침',{cfg_part2:`ad_acces`})}
                                         >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
@@ -552,7 +549,7 @@ export default function SignUp({route, navigation}) {
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
                                         <TouchableOpacity style={styles.privacy_btn}
-                                        onPress={goProv}
+                                        onPress={()=>navigation.navigate('약관/개인정보처리방침',{cfg_part2:`other_provision`})}
                                         >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
@@ -571,7 +568,7 @@ export default function SignUp({route, navigation}) {
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
                                         <TouchableOpacity style={styles.privacy_btn}
-                                        onPress={goProv}
+                                        onPress={()=>navigation.navigate('약관/개인정보처리방침',{cfg_part2:`ad_acces`})}
                                         >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
