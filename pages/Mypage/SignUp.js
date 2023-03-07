@@ -360,19 +360,7 @@ export default function SignUp({route, navigation}) {
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>지역</Text>
                                 <View style={[styles.select_box]}>
-                                    <RNPickerSelect
-                                        placeholder={{label:"지역을 선택해주세요.", value:null}}
-                                        onValueChange={(road_address) => goInput('road_address',road_address)}
-                                        items={AddrMatch}
-                                        useNativeAndroidPickerStyle={false}
-                                        style={{
-                                            placeholder:{color:'gray'},
-                                            inputAndroid : styles.input,
-                                            inputAndroidContainer : styles.inputContainer,
-                                            inputIOS: styles.input,
-                                            inputIOSContainer : styles.inputContainer,
-                                        }}
-                                    />
+
                                     <View style={[styles.select_icon_box]}>
                                         <Text style={[styles.select_icon]}>▼</Text>
                                     </View>
