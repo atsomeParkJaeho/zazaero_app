@@ -140,7 +140,7 @@ export default function GoodsDetail({route,navigation}) {
     const goodsCnt = (type, value) => {
         if(type === 'minus') {
             console.log('마이너스');
-            setGoodsCnt((0 > GoodsCnt) ? 1:GoodsCnt - 1);
+            setGoodsCnt((2 > GoodsCnt) ? 1 : GoodsCnt - 1);
         }
         if(type === 'plus') {
             console.log('플러스');
@@ -221,9 +221,9 @@ export default function GoodsDetail({route,navigation}) {
                             </View>
                             {/*상품이미지*/}
                             <View style={[styles.GoodsDetail_info]}>
-                                <WrappedText  textStyle={[styles.GoodsDetail_title]}>
+                                <Text Style={[styles.GoodsDetail_title]}>
                                     {GoodsDetail.goods_name}
-                                </WrappedText>
+                                </Text>
                                 {/*상품명*/}
                                 <View style={[flex,mt1]}>
                                     <View style={[styles.wt25]}>
@@ -285,7 +285,7 @@ export default function GoodsDetail({route,navigation}) {
                                     <View style="">
                                         <Text style={[styles.GoodsDetail_info_txt]}>총금액</Text>
                                         <Text style={[styles.GoodsDetail_total_price]}>
-                                            {Price(GoodsDetail.price * GoodsDetail.my_cart_cnt)} 원
+                                            {Price(GoodsDetail.price * GoodsCnt)}원
                                         </Text>
                                     </View>
                                 </View>
