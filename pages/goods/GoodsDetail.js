@@ -235,7 +235,7 @@ export default function GoodsDetail({route,navigation}) {
                                         </Text>
                                     </View>
                                 </View>
-                                {/*판매가*/}
+                                {/**판매가**/}
                                 <View style={[flex,styles.border_b]}>
                                     <View style={[styles.wt25]}>
                                         <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재안내</Text>
