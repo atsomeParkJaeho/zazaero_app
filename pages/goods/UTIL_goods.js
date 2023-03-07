@@ -141,6 +141,22 @@ export const get_goods_info = async (Member, uid) => {
     return res;
 }
 
+export const get_guide_info = async () => {
+
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
+        act_type    :   "get_goods_info",
+        goods_uid   :   uid,
+        mem_uid     :   Member,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data',
+        }
+    })
+
+    return res;
+}
+
+
 export const save_cart = async (Member, goods_uid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_cart.php',{
         act_type            : 'save_cart',
