@@ -7,7 +7,7 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    KeyboardAvoidingView, Alert,
+    KeyboardAvoidingView, Alert, Platform,
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
@@ -34,6 +34,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 //import * as Update from "expo-updates";
 import {reloadAsync} from "expo-updates";
 import HomeLogo from "../../icons/home_logo.svg";
+import {login} from "../UTIL_mem";
 
 export default function Login({navigation, route}) {
 
@@ -71,8 +72,8 @@ export default function Login({navigation, route}) {
         });
     };
     //==================로그인 하기=======================//
-    const goLogin = async () => {
-        const {mem_id, mem_pw} = Login;
+    const goLogin = () => {
+        console.log('dfasdf');
         if (!Login.mem_id) {
             Alert.alert(
                 '아이디를 입력하세요.',
@@ -83,35 +84,20 @@ export default function Login({navigation, route}) {
             Alert.alert('비밀번호를 입력해주세요.');
             return;
         }
-
-        const data = {
-            act_type: 'login',
-            mem_id: mem_id,
-            mem_pw: mem_pw,
-            login: 'Y'
-        }
         // 포스트시에 header 셋팅 할것
-        axios.post('http://49.50.162.86:80/ajax/UTIL_login.php', data, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        login(Login).then((res) => {
             if (res) {
+                console.log(res.data);
                 const {result, mem_uid} = res.data;
                 if (result === 'OK') {
                     AsyncStorage.setItem('member', mem_uid);
                     navigation.replace('메인페이지');
-
-                }
-                if (result === 'NG_info') {
-                    Alert.alert('해당계정이 없습니다.');
-
+                } else {
+                    Alert.alert('',result);
                 }
             }
         }).catch((err) => console.log(err));
     }
-
-
     // 로딩액션
     useEffect(() => {
         //뒤의 1000 숫자는 1초를 뜻함
@@ -122,6 +108,7 @@ export default function Login({navigation, route}) {
 
     }, []);
 
+    console.log(Platform.OS);
 
     if (Member === undefined) {
 

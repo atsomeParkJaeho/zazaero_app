@@ -110,10 +110,9 @@ export default function FindPw({navigation,route}) {
                 <View style={[styles.container,{paddingTop:0}]}>
                     <View style={styles.center_middle}>
                         <Text style={styles.FindId_txt}>
-                            가입시 입력하신 {'\n'}
-                            담당자의 연락처 인증을 통해{'\n'}
-                            비밀번호를 {'\n'}
-                            재설정 할 수 있습니다.
+                            담당자의 아이디/연락처{`\n`}
+                            인증을 통해 비밀번호를{`\n`}
+                            찾을 수 있습니다.
                         </Text>
                         {/*아이디*/}
                         <TextInput

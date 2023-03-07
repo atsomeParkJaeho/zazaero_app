@@ -50,9 +50,7 @@ export default function FindId({route, navigation}) {
 
     // 3. 본인 인증창 실행
     const goFind = () => {
-
         let { mem_name, mem_mobile} = FindId;
-
         if(mem_name === '') {
             Alert.alert('','이름을 입력해주세요.');
             return ChkInput.current[0].focus();

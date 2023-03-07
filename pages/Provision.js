@@ -45,9 +45,6 @@ export default function Provision(){
 
     return  (
         <ScrollView style={styles.container}>
-
-
-
             <View style={styles.Provision_tap}>
                <View style={styles.Provision_tap_item}>
                     <TouchableOpacity onPress={()=>{category('Provision01')}} style={[styles.Provision_tap_item_link, styles.borderTop, styles.borderRight]} >
