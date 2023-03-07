@@ -250,7 +250,21 @@ export default function SignUp({route, navigation}) {
             return Chkinput.current[9].focus();
         }
 
+        if(SignUp.privacy_1 === false) {  // 서비스 이용약관
+            return Alert.alert('',`서비스 이용약관을 체크해주세요.`);
+        }
 
+        if(SignUp.privacy_2 === false) {  // 개인정보처리방침 동의
+            return Alert.alert('',`개인정정보처리방침을 동의하지 않으셨습니다.`);
+        }
+
+        if(SignUp.privacy_3 === false) {  // 전자금융거래 이용약관
+            return Alert.alert('',`전자금융거래를 체크하지 않으셨습니다.`);
+        }
+
+        if(SignUp.privacy_4 === false) {  // 제3자 개인정보수집동의
+            return Alert.alert('',`제3자 개인정보수집동의 체크하지 않으셨습니다.`);
+        }
 
         /**--------------------------첨부파일 요청---------------------------------------**/
 
@@ -380,6 +394,7 @@ export default function SignUp({route, navigation}) {
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>업체명</Text>
                                 <TextInput style={[input]}
+                                           placeholder="업체명을 입력해주세요."
                                            onChangeText={(com_name)=>goInput('com_name',com_name)}
                                            value={SignUp.com_name}
                                            ref={val=>(Chkinput.current[3] = val)}
@@ -427,7 +442,7 @@ export default function SignUp({route, navigation}) {
                                            value={SignUp.addr1}
                                            editable={false}
                                            ref={val=>(Chkinput.current[6] = val)}
-                                           placeholder=""
+                                           placeholder="예 ) 서울특별시 00구 00로"
                                 />
                             </View>
                             {/*=============주소 2==============*/}
@@ -448,7 +463,7 @@ export default function SignUp({route, navigation}) {
                                            onChangeText={(mem_name)=>goInput('mem_name',mem_name)}
                                            value={SignUp.mem_name}
                                            ref={val=>(Chkinput.current[8] = val)}
-                                           placeholder=""
+                                           placeholder="예 ) 홍길동"
                                 />
                             </View>
                         </View>
@@ -462,6 +477,7 @@ export default function SignUp({route, navigation}) {
                                            value={Phone(SignUp.mem_mobile)}
                                            ref={val=>(Chkinput.current[9] = val)}
                                            keyboardType="numeric"
+                                           placeholder="예 ) 010-0000-0000"
                                 />
                             </View>
                         </View>
