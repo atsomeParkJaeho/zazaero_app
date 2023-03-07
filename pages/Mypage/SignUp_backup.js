@@ -70,7 +70,7 @@ export default function SignUp({route, navigation}) {
         mem_pw_chk      :'',            // 비밀번호 확인
         all_chk         :false,
     });
-
+    const [appInfo, setAppInfo] = useState();
     useEffect(()=>{
         if(route.params) {
             let {zonecode, addr1} = route.params;
@@ -80,7 +80,20 @@ export default function SignUp({route, navigation}) {
                 addr1       :addr1
             })
         }
+        getAppInfo().then((res)=>{
+            if(res) {
+                console.log(res.data);
+                const {result , app_info} = res.data;
+                if(result === 'OK') {
+                    console.log(app_info);
+                    setAppInfo(app_info.A_provision);
+                }
+            }
+        });
+
     },[Update]);
+
+
 
     // 2. 입력상태 설정
     const goInput = (name, value) => {
@@ -97,6 +110,7 @@ export default function SignUp({route, navigation}) {
             Alert.alert('','아이디를 입력해주세요.');
             return Chkinput.current[0].focus();
         }
+
         if(SignUp.mem_id_chk === 'Y') {
             setSignUp({
                 ...SignUp,
@@ -158,40 +172,37 @@ export default function SignUp({route, navigation}) {
     // 3. 회원가입 신청
     const goForm = ()=> {
 
-        let regPw = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
-
-        if(!SignUp.mem_id) {  /*아이디 */
-            Alert.alert('',`아이디를 입력해주세요.`);
-            return Chkinput.current[0].focus();
-        }
-
         if(Minlangth >= SignUp.mem_id.length) {     // 아이디 최소
             Alert.alert('',`${Minlangth}자 이상 입력해주세요.`);
             return Chkinput.current[0].focus();
         }
-
-        if(SignUp.mem_id_chk === 'N') {             // 아이디 중복체크
+        if(!SignUp.mem_id_chk) {             // 아이디 중복체크
             Alert.alert('',`아이디 중복체크를 확인해주세요.`);
+            return Chkinput.current[2].focus();
+        }
+        if(!SignUp.mem_id) {  /*아이디 */
+            Alert.alert('',`아이디를 입력해주세요.`);
             return Chkinput.current[0].focus();
         }
-
+        if(!SignUp.mem_id_chk) {  // 아이디 중복체크
+            Alert.alert('',`아이디 중복체크를 해주세요.`);
+            return Chkinput.current[0].focus();
+        }
+        if(8 >= SignUp.mem_pw.length) {             // 비밀번호 최소
+            Alert.alert('',`8자 이상 입력해주세요.`);
+            return Chkinput.current[2].focus();
+        }
         // 체크루틴
         if(!SignUp.mem_pw) {  // 비밀번호
             Alert.alert('',`비밀번호를 입력해주세요.`);
             return Chkinput.current[1].focus();
         }
-
-        if(8 >= SignUp.mem_pw.length) {             // 비밀번호 최소
-            Alert.alert('',`8자 이상 입력해주세요.`);
-            return Chkinput.current[2].focus();
-        }
-
         if(!SignUp.mem_pw_chk) {  // 비밀번호 확인
             Alert.alert('',`비밀번호 확인을 입력해주세요.`);
             return Chkinput.current[2].focus();
         }
 
-        if(regPw.test(SignUp.mem_pw) === false) {  // 특수문자 입력 필수
+        if(regPW.test(SignUp.mem_pw) !== true) {  // 특수문자 입력 필수
             Alert.alert('','특수 문자가 포함되어있지 않습니다.');
             return Chkinput.current[2].focus();
         }
@@ -255,8 +266,10 @@ export default function SignUp({route, navigation}) {
             return Alert.alert('',`제3자 개인정보수집동의 체크하지 않으셨습니다.`);
         }
 
+
         /**--------------------------첨부파일 요청---------------------------------------**/
 
+        console.log(SignUp);
 
         Sign_up(SignUp).then((res)=>{
             if(res) {
@@ -274,7 +287,8 @@ export default function SignUp({route, navigation}) {
         })
     }
 
-    console.log(SignUp);
+    console.log(content);
+    console.log(appInfo,'/약관');
 
     return (
         <>
@@ -288,6 +302,7 @@ export default function SignUp({route, navigation}) {
             <ScrollView style={[bg_white]}>
                 <View style={[sub_page,styles.signup]}>
                     <View style={[container]}>
+
                         <View style={styles.formGroup}>
                             {/*아이디*/}
                             <Text style={styles.inputTopText}>아이디</Text>
@@ -384,7 +399,6 @@ export default function SignUp({route, navigation}) {
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>업체명</Text>
                                 <TextInput style={[input]}
-                                           placeholder="업체명을 입력해주세요."
                                            onChangeText={(com_name)=>goInput('com_name',com_name)}
                                            value={SignUp.com_name}
                                            ref={val=>(Chkinput.current[3] = val)}
@@ -432,7 +446,7 @@ export default function SignUp({route, navigation}) {
                                            value={SignUp.addr1}
                                            editable={false}
                                            ref={val=>(Chkinput.current[6] = val)}
-                                           placeholder="예 ) 서울특별시 00구 00로"
+                                           placeholder=""
                                 />
                             </View>
                             {/*=============주소 2==============*/}
@@ -453,7 +467,7 @@ export default function SignUp({route, navigation}) {
                                            onChangeText={(mem_name)=>goInput('mem_name',mem_name)}
                                            value={SignUp.mem_name}
                                            ref={val=>(Chkinput.current[8] = val)}
-                                           placeholder="예 ) 홍길동"
+                                           placeholder=""
                                 />
                             </View>
                         </View>
@@ -467,7 +481,6 @@ export default function SignUp({route, navigation}) {
                                            value={Phone(SignUp.mem_mobile)}
                                            ref={val=>(Chkinput.current[9] = val)}
                                            keyboardType="numeric"
-                                           placeholder="예 ) 010-0000-0000"
                                 />
                             </View>
                         </View>
@@ -498,7 +511,7 @@ export default function SignUp({route, navigation}) {
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
                                         <TouchableOpacity style={styles.privacy_btn}
-                                                          onPress={()=>navigation.navigate('약관/개인정보처리방침',{cfg_part2:`access`})}
+                                                          onPress={()=>setContent(`${appInfo[0].cfg_txt_val1}`)}
                                         >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
@@ -516,9 +529,7 @@ export default function SignUp({route, navigation}) {
                                         <Text style={styles.privacy_list_flex_item_txt}>개인정보 처리방침 동의 <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
-                                        <TouchableOpacity style={styles.privacy_btn}
-                                                          onPress={()=>navigation.navigate('약관/개인정보처리방침',{cfg_part2:`etc_provision`})}
-                                        >
+                                        <TouchableOpacity style={styles.privacy_btn}  >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -535,9 +546,7 @@ export default function SignUp({route, navigation}) {
                                         <Text style={styles.privacy_list_flex_item_txt}>전자금융거래 이용약관  <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
-                                        <TouchableOpacity style={styles.privacy_btn}
-                                                          onPress={()=>navigation.navigate('약관/개인정보처리방침',{cfg_part2:`ad_acces`})}
-                                        >
+                                        <TouchableOpacity style={styles.privacy_btn}  >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -554,9 +563,7 @@ export default function SignUp({route, navigation}) {
                                         <Text style={styles.privacy_list_flex_item_txt}>제3자 개인정보수집 동의  <Text style={styles.privacy_list_flex_item_txt2}>(필수) </Text></Text>
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
-                                        <TouchableOpacity style={styles.privacy_btn}
-                                                          onPress={()=>navigation.navigate('약관/개인정보처리방침',{cfg_part2:`other_provision`})}
-                                        >
+                                        <TouchableOpacity style={styles.privacy_btn}  >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -573,13 +580,12 @@ export default function SignUp({route, navigation}) {
                                         <Text style={styles.privacy_list_flex_item_txt}>홍보 및 마케팅 이용 동의 (선택) </Text>
                                     </View>
                                     <View style={styles.privacy_list_flex_item}>
-                                        <TouchableOpacity style={styles.privacy_btn}
-                                                          onPress={()=>navigation.navigate('약관/개인정보처리방침',{cfg_part2:`ad_acces`})}
-                                        >
+                                        <TouchableOpacity style={styles.privacy_btn}  >
                                             <Text style={styles.privacy_btn_txt}>보기</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
+                                {/* 제3자 개인정보수집 동의 */}
                             </View>
                         </View>
                     </View>
