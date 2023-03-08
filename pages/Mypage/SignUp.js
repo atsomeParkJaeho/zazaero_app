@@ -344,7 +344,7 @@ export default function SignUp({route, navigation}) {
                     <View style={styles.container}>
                         <View style={styles.formGroup}>
                             <View style={styles.inputGroup}>
-                                <Text style={styles.inputTopText}>지역</Text>
+                                <Text style={styles.inputTopText}>지역12</Text>
                                 <View style={[styles.select_box]}>
                                     <View style={[styles.select_icon_box]}>
                                         <Text style={[styles.select_icon]}>▼</Text>
