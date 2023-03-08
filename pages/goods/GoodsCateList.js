@@ -38,7 +38,7 @@ import {
     justify_content_center, justify_content_end, me1,
     min_height, ms1, pb2,
     sub_page,
-    text_light, text_primary, text_right, wt2, wt3, wt4, wt6, wt7, wt8
+    text_light, text_primary, text_right, wt2, wt3, wt4, wt5, wt6, wt7, wt8
 } from "../../common/style/AtStyle";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -277,90 +277,91 @@ export default function GoodsCateList({route, navigation}) {
             <>
                 <View>
                     <View style={styles.cate_goods_list_item}>
+                        <TouchableOpacity onPress={() => navigation.navigate('상품상세', {uid: item.goods_uid})}>
                         <View style={[flex_top]}>
-                            <View style={[styles.flex_item, styles.flex_item1]}>
-                                <TouchableOpacity onPress={() => navigation.navigate('상품상세', {uid: item.goods_uid})}>
+
+                                <View style={[styles.flex_item, styles.flex_item1]}>
                                     <View style={[styles.cate_list_Thumbnail_box]}>
                                         <Image style={styles.cate_list_Thumbnail} source={{uri: 'http://www.zazaero.com' + item.list_img_url}}/>
                                         <View style={styles.goods_like}>
                                             {/*=============찜하기=================*/}
+                                            <TouchableOpacity onPress={() => goWish(item.goods_uid)}>
+                                            {(item.my_zzim_flag === 'Y') ? (
+                                                <>
+                                                    <Wishlist width={35} height={24} color={'blue'} zIndex={2000}/>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <WishlistNon width={35} height={24} color={'blue'}/>
+                                                </>
+                                            )}
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                </View>
+                                <View style={[styles.flex_item, styles.flex_item2]}>
+                                    <View style={[flex_between, align_items_center, pb2]}>
+                                        <View style={[wt8]}>
 
-                                                {(item.my_zzim_flag === 'Y') ? (
-                                                    <>
-                                                        <Wishlist width={35} height={24} color={'blue'}/>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <WishlistNon width={35} height={24} color={'blue'}/>
-                                                    </>
-                                                )}
+                                                {/*========상품명========*/}
+                                                <Text
+                                                    style={[styles.cate_2st_btn_txt, (item.goods_wish_chk) ? {color: "red"} : {color: "#000"}]}
+                                                    numberOfLines={1}>{item.goods_name}</Text>
+
+                                        </View>
+                                        {/**----------------------장바구니------------------------------**/}
+                                        <View style={[wt2, d_flex, justify_content_end]}>
+                                            {(item.goods_cart_chk) ? (
+                                                // 체크시에 노출
+                                                <View style={[btn_circle, bg_primary]}>
+                                                    <Checkbox style={styles.btn_cart} value={item.goods_cart_chk}
+                                                              onValueChange={() => {
+                                                                  goChk(item.goods_uid);
+                                                              }}/>
+                                                    <View style={{
+                                                        flex: 1,
+                                                        alignItems: "center",
+                                                        justifyContent: "center"
+                                                    }}>
+                                                        <Chk width={16} height={22}></Chk>
+                                                    </View>
+                                                </View>
+                                            ) : (
+                                                // 체크가 없을시 노출
+                                                <View style={[btn_circle, bg_light]}>
+                                                    <Checkbox style={styles.btn_cart} value={item.goods_cart_chk}
+                                                              onValueChange={() => {
+                                                                  goChk(item.goods_uid)
+                                                              }}/>
+                                                    <View style={{
+                                                        flex: 1,
+                                                        alignItems: "center",
+                                                        justifyContent: "center"
+                                                    }}>
+                                                        <CartBag width={16} height={22} style={[styles.CartBagIcon]}></CartBag>
+                                                    </View>
+                                                </View>
+                                            )}
 
                                         </View>
                                     </View>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={[styles.flex_item, styles.flex_item2]}>
-                                <View style={[flex_between, align_items_center, pb2]}>
-                                    <View style={[wt8]}>
-                                        <TouchableOpacity style="" onPress={() => {
-                                            navigation.navigate('상품상세', {uid: item.goods_uid})
-                                        }}>
-                                            {/*========상품명========*/}
+                                    <View style={[]}>
+                                        {/*-----------------------------가이드 안내-----------------------------*/}
+                                        <View style={[]}>
+                                            <Text style={styles.cate_list_disc} numberOfLines={1}>
+                                                제3일이상 소요{(item.goods_guide_name) ? item.goods_guide_name : ''}
+                                            </Text>
+                                        </View>
+                                        <View style={[]}>
                                             <Text
-                                                style={[styles.cate_2st_btn_txt, (item.goods_wish_chk) ? {color: "red"} : {color: "#000"}]}
-                                                numberOfLines={1}>{item.goods_name}</Text>
-                                        </TouchableOpacity>
+                                                style={[styles.cate_list_price, text_right]}>{Price(item.price)}원</Text>
+                                        </View>
                                     </View>
-                                    {/**----------------------장바구니------------------------------**/}
-                                    <View style={[wt2, d_flex, justify_content_end]}>
-                                        {(item.goods_cart_chk) ? (
-                                            // 체크시에 노출
-                                            <View style={[btn_circle, bg_primary]}>
-                                                <Checkbox style={styles.btn_cart} value={item.goods_cart_chk}
-                                                          onValueChange={() => {
-                                                              goChk(item.goods_uid);
-                                                          }}/>
-                                                <View style={{
-                                                    flex: 1,
-                                                    alignItems: "center",
-                                                    justifyContent: "center"
-                                                }}>
-                                                    <Chk width={16} height={22}></Chk>
-                                                </View>
-                                            </View>
-                                        ) : (
-                                            // 체크가 없을시 노출
-                                            <View style={[btn_circle, bg_light]}>
-                                                <Checkbox style={styles.btn_cart} value={item.goods_cart_chk}
-                                                          onValueChange={() => {
-                                                              goChk(item.goods_uid)
-                                                          }}/>
-                                                <View style={{
-                                                    flex: 1,
-                                                    alignItems: "center",
-                                                    justifyContent: "center"
-                                                }}>
-                                                    <CartBag width={16} height={22} style={[styles.CartBagIcon]}></CartBag>
-                                                </View>
-                                            </View>
-                                        )}
+                                </View>
 
-                                    </View>
-                                </View>
-                                <View style={styles.flex_bottom}>
-                                    {/*-----------------------------가이드 안내-----------------------------*/}
-                                    <View style={[wt6]}>
-                                        <Text style={styles.cate_list_disc} numberOfLines={1}>
-                                            {(item.goods_guide_name) ? item.goods_guide_name : ''}
-                                        </Text>
-                                    </View>
-                                    <View style={[wt4]}>
-                                        <Text
-                                            style={[styles.cate_list_price, text_right]}>{Price(item.price)}원</Text>
-                                    </View>
-                                </View>
-                            </View>
+
                         </View>
+                        </TouchableOpacity>
                         {/**/}
                     </View>
                 </View>
