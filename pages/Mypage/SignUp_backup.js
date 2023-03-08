@@ -368,7 +368,7 @@ export default function SignUp({route, navigation}) {
                                     {/*    style={{*/}
                                     {/*        placeholder:{color:'gray'},*/}
                                     {/*        inputAndroid : styles.input,*/}
-                                    {/*        inputAndroidContainer : styles.inputContainer,*/}
+                                    {/*        input AndroidContainer : styles.inputContainer,*/}
                                     {/*        inputIOS: styles.input,*/}
                                     {/*        inputIOSContainer : styles.inputContainer,*/}
                                     {/*    }}*/}

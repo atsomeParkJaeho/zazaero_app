@@ -35,6 +35,9 @@ import {chk_dup_id, Sign_up} from "../UTIL_mem";
 import {DeviceInfo} from "react-native-web";
 import PriModal from "./PriModal";
 import {getAppInfo} from "../order/UTIL_order";
+import DropDownPicker from 'react-native-dropdown-picker';
+
+
 export default function SignUp({route, navigation}) {
 
 
@@ -145,7 +148,12 @@ export default function SignUp({route, navigation}) {
     let chk = [SignUp.privacy_1, SignUp.privacy_2, SignUp.privacy_3, SignUp.privacy_4, SignUp.privacy_5];
     let TChk = chk.filter(val=>val===true);
 
-
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
+    const [items, setItems] = useState([
+        {label: 'Apple', value: 'apple'},
+        {label: 'Banana', value: 'banana'}
+    ]);
     // 3. 회원가입 신청
     const goForm = ()=> {
 
@@ -344,12 +352,27 @@ export default function SignUp({route, navigation}) {
                     <View style={styles.container}>
                         <View style={styles.formGroup}>
                             <View style={styles.inputGroup}>
-                                <Text style={styles.inputTopText}>지역12</Text>
-                                <View style={[styles.select_box]}>
-                                    <View style={[styles.select_icon_box]}>
-                                        <Text style={[styles.select_icon]}>▼</Text>
-                                    </View>
+                                <Text style={styles.inputTopText}>지역</Text>
+                                <View
+                                style={{
+                                    position:"relative",
+                                    zIndex:500,
+                                    paddingBottom:50
+                                }}
 
+                                >
+                                    <DropDownPicker
+                                        open={open}
+                                        value={value}
+                                        items={items}
+                                        setOpen={setOpen}
+                                        setValue={setValue}
+                                        setItems={setItems}
+                                        dropDownContainerStyle={{
+                                            backgroundColor: "#333",
+
+                                        }}
+                                    />
                                 </View>
                             </View>
                         </View>
