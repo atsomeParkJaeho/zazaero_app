@@ -15,8 +15,7 @@ import {
     KeyboardAvoidingView,
 } from 'react-native';
 
-import {SelectList} from 'react-native-dropdown-select-list'
-//셀렉트박스
+
 
 import { RadioButton } from 'react-native-paper';
 //라디오 버튼

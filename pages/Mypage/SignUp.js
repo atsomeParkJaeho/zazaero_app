@@ -20,22 +20,13 @@ import {
     flex,
     input,
     pos_center,
-    pe1,
-    me1,
-    me2,
     pe2,
-    mt2,
-    ios_pb, justify_content_end, justify_content_between, d_flex, text_center
+    ios_pb,
 } from '../../common/style/AtStyle';
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
-import axios from "axios";
-import {AddrMatch, bizNum, Minlangth, OnlyEng, Phone, PwChk, regId, regPW} from "../../util/util";
+import {AddrMatch, bizNum, Minlangth, OnlyEng, Phone} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import {chk_dup_id, Sign_up} from "../UTIL_mem";
-import {DeviceInfo} from "react-native-web";
-import PriModal from "./PriModal";
-import {getAppInfo} from "../order/UTIL_order";
-import DropDownPicker from 'react-native-dropdown-picker';
 
 
 export default function SignUp({route, navigation}) {
@@ -150,10 +141,7 @@ export default function SignUp({route, navigation}) {
 
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
-    const [items, setItems] = useState([
-        {label: 'Apple', value: 'apple'},
-        {label: 'Banana', value: 'banana'}
-    ]);
+    const [items, setItems] = useState(AddrMatch);
     // 3. 회원가입 신청
     const goForm = ()=> {
 
@@ -361,18 +349,7 @@ export default function SignUp({route, navigation}) {
                                 }}
 
                                 >
-                                    <DropDownPicker
-                                        open={open}
-                                        value={value}
-                                        items={items}
-                                        setOpen={setOpen}
-                                        setValue={setValue}
-                                        setItems={setItems}
-                                        dropDownContainerStyle={{
-                                            backgroundColor: "#333",
 
-                                        }}
-                                    />
                                 </View>
                             </View>
                         </View>

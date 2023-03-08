@@ -39,7 +39,6 @@ import {useIsFocused} from "@react-navigation/native";
 import CalendarStrip from "react-native-calendar-strip";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import RNPickerSelect from "react-native-picker-select";
 import Checkbox from "expo-checkbox";
 import {AllgdOrderDel, ATorderDel, getAppInfo, getOrderInfo, OrderMod, payDoneCancel, PayTry,} from "./UTIL_order";
 
@@ -525,21 +524,7 @@ export default function OrderDtail({route,navigation}) {
                             <View style={[FormStyle.FormGroup]}>
                                 <View style={[d_flex, align_items_center]}>
                                     <View style={[styles.formSelect,{flex:1}]}>
-                                        <RNPickerSelect
-                                            placeholder={{label:"시간을 선택해주세요.", value:null}}
-                                            onValueChange={(hope_deli_time) => goInput(`hope_deli_time`,hope_deli_time)}
-                                            items={Time2}
-                                            value={OrderData.hope_deli_time}
-                                            useNativeAndroidPickerStyle={false}
-                                            fixAndroidTouchableBug={true}
-                                            style={{
-                                                placeholder:{color:'gray'},
-                                                inputAndroid : styles.input,
-                                                inputAndroidContainer : styles.inputContainer,
-                                                inputIOS: styles.input,
-                                                inputIOSContainer : styles.inputContainer,
-                                            }}
-                                        />
+
                                     </View>
                                 </View>
                             </View>
@@ -646,20 +631,7 @@ export default function OrderDtail({route,navigation}) {
                                             <View style={[mb2]}>
                                                 {/*은행선택*/}
                                                 <View style={[input,{flex:1, marginBottom:15,}]}>
-                                                    <RNPickerSelect
-                                                        items={BankCode}
-                                                        placeholder={{label:"은행을 선택해주세요.", value:null}}
-                                                        value={OrderData.bankAccount}
-                                                        onValueChange={(bankAccount)=>goInput('bankAccount',bankAccount)}
-                                                        useNativeAndroidPickerStyle={false}
-                                                        style={{
-                                                            placeholder:{color:'gray'},
-                                                            inputAndroid : styles.input,
-                                                            inputAndroidContainer : styles.inputContainer,
-                                                            inputIOS: styles.input,
-                                                            inputIOSContainer : styles.inputContainer,
-                                                        }}
-                                                    />
+
                                                 </View>
                                                 {/*예금주 입력*/}
                                                 <View style={{flex:1}}>

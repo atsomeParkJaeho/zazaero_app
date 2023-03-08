@@ -12,8 +12,6 @@ import {
     TouchableWithoutFeedback, Switch, Alert
 } from 'react-native';
 
-import {SelectList} from 'react-native-dropdown-select-list'
-//셀렉트박스
 
 
 //다음주소 api

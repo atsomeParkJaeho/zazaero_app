@@ -11,7 +11,7 @@ import {
     ScrollView,
     KeyboardAvoidingView, DatePickerIOS, TouchableWithoutFeedback, Alert
 } from 'react-native';
-import {SelectList} from 'react-native-dropdown-select-list'
+
 // 공통 CSS 추가
 import {
     container,
@@ -72,10 +72,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {AddrMatch, Phone, Price, Time, Time1, Time2, cancel_List, cancel_d_List, DateChg, DateChg2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
-import RNPickerSelect from "react-native-picker-select";
-import goodsthum1 from "../../assets/img/goods_thum1.jpg";
 import {InsOrder, SaveDeliAddr} from "./UTIL_order";
-// import SelectBox from "react-native-multi-selectbox";
 
 
 
@@ -361,19 +358,7 @@ export default function OrderForm({route,navigation}) {
                                 <View style={[FormStyle.FormGroup]}>
                                     <View style={[d_flex, align_items_center]}>
                                         <View style={[styles.formSelect,{flex:1}]}>
-                                            <RNPickerSelect
-                                                placeholder={{label:"시간을 선택해주세요.", value:null}}
-                                                onValueChange={(hope_deli_time) => goInput('hope_deli_time',hope_deli_time)}
-                                                items={Time2}
-                                                useNativeAndroidPickerStyle={false}
-                                                style={{
-                                                    placeholder:{color:'gray'},
-                                                    inputAndroid : styles.input,
-                                                    inputAndroidContainer : styles.inputContainer,
-                                                    inputIOS: styles.input,
-                                                    inputIOSContainer : styles.inputContainer,
-                                                }}
-                                            />
+
                                         </View>
                                     </View>
                                 </View>

@@ -11,7 +11,6 @@ import {
     ScrollView,
     KeyboardAvoidingView, Pressable, Alert,
 } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
 
 // 공통 CSS 추가
 import {
@@ -315,20 +314,7 @@ export default function MemInfo({route, navigation}) {
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>지역</Text>
                                     <View style={[styles.select_box]}>
-                                        <RNPickerSelect
-                                            placeholder={{label:"지역을 선택해주세요.", value:null}}
-                                            onValueChange={(road_address) => ChkInput('road_address',road_address)}
-                                            items={AddrMatch}
-                                            value={MemInfo.road_address}
-                                            useNativeAndroidPickerStyle={false}
-                                            style={{
-                                                placeholder:{color:'gray'},
-                                                inputAndroid : styles.input,
-                                                inputAndroidContainer : styles.inputContainer,
-                                                inputIOS: styles.input,
-                                                inputIOSContainer : styles.inputContainer,
-                                            }}
-                                        />
+
                                         <View style={[styles.select_icon_box]}>
                                             <Text style={[styles.select_icon]}>▼</Text>
                                         </View>
@@ -401,20 +387,7 @@ export default function MemInfo({route, navigation}) {
                                         </View>
                                         <View style={[styles.flex_item, styles.flex_item3]}>
                                             <View style={[styles.select_box]}>
-                                                <RNPickerSelect
-                                                    placeholder={{label: "직접입력", value: null}}
-                                                    onValueChange={(mem_email2) => ChkInput('mem_email2', mem_email2)}
-                                                    items={EmailDomain}
-                                                    value={MemInfo.mem_email2}
-                                                    useNativeAndroidPickerStyle={false}
-                                                    style={{
-                                                        placeholder: {color: 'gray'},
-                                                        inputAndroid: styles.input,
-                                                        inputAndroidContainer: styles.inputContainer,
-                                                        inputIOS: styles.input,
-                                                        inputIOSContainer: styles.inputContainer,
-                                                    }}
-                                                />
+
                                                 <View style={[styles.select_icon_box]}>
                                                     <Text style={[styles.select_icon]}>▼</Text>
                                                 </View>
@@ -556,20 +529,7 @@ export default function MemInfo({route, navigation}) {
                                     </View>
                                     <View style={[styles.flex_item, styles.flex_item3]}>
                                         <View style={[styles.select_box]}>
-                                            <RNPickerSelect
-                                                placeholder={{label: "직접입력", value: null}}
-                                                onValueChange={(Tax_email2) => ChkInput('Tax_email2', Tax_email2)}
-                                                items={EmailDomain}
-                                                value={MemInfo.Tax_email2}
-                                                useNativeAndroidPickerStyle={false}
-                                                style={{
-                                                    placeholder: {color: 'gray'},
-                                                    inputAndroid: styles.input,
-                                                    inputAndroidContainer: styles.inputContainer,
-                                                    inputIOS: styles.input,
-                                                    inputIOSContainer: styles.inputContainer,
-                                                }}
-                                            />
+
                                             <View style={[styles.select_icon_box]}>
                                                 <Text style={[styles.select_icon]}>▼</Text>
                                             </View>
@@ -584,20 +544,7 @@ export default function MemInfo({route, navigation}) {
                                 <View style={flex}>
                                     <View style={[styles.flex_item, styles.bank_flex_item1]}>
                                         <View style={[styles.select_box]}>
-                                            <RNPickerSelect
-                                                placeholder={{label: "은행명", value: null}}
-                                                onValueChange={(pay_bank_code) => ChkInput('pay_bank_code', pay_bank_code)}
-                                                items={BankCode}
-                                                value={MemInfo.pay_bank_code}
-                                                useNativeAndroidPickerStyle={false}
-                                                style={{
-                                                    placeholder: {color: 'gray'},
-                                                    inputAndroid: styles.input,
-                                                    inputAndroidContainer: styles.inputContainer,
-                                                    inputIOS: styles.input,
-                                                    inputIOSContainer: styles.inputContainer,
-                                                }}
-                                            />
+
                                             <View style={[styles.select_icon_box]}>
                                                 <Text style={[styles.select_icon]}>▼</Text>
                                             </View>
