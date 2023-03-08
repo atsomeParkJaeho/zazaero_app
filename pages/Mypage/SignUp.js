@@ -20,13 +20,32 @@ import {
     flex,
     input,
     pos_center,
+    pe1,
+    me1,
+    me2,
     pe2,
+    mt2,
     ios_pb,
+    justify_content_end,
+    justify_content_between,
+    d_flex,
+    text_center,
+    mb1,
+    flex_between,
+    h14,
+    text_gray,
+    ms2,
+    h15, h18, h17, text_black
 } from '../../common/style/AtStyle';
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
-import {AddrMatch, bizNum, Minlangth, OnlyEng, Phone} from "../../util/util";
+import axios from "axios";
+import {AddrMatch, bizNum, DateChg, Minlangth, OnlyEng, Phone, PwChk, regId, regPW} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import {chk_dup_id, Sign_up} from "../UTIL_mem";
+import {DeviceInfo} from "react-native-web";
+import PriModal from "./PriModal";
+import {getAppInfo} from "../order/UTIL_order";
+import DropDownPicker from 'react-native-dropdown-picker';
 
 
 export default function SignUp({route, navigation}) {
@@ -55,6 +74,9 @@ export default function SignUp({route, navigation}) {
         mem_pw_chk      :'',            // 비밀번호 확인
         all_chk         :false,
     });
+
+    //
+    const [Show, setShow]         = useState(false);    // 셀렉트창 노출 여부
 
     useEffect(()=>{
         if(route.params) {
@@ -141,7 +163,10 @@ export default function SignUp({route, navigation}) {
 
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
-    const [items, setItems] = useState(AddrMatch);
+    const [items, setItems] = useState([
+        {label: 'Apple', value: 'apple'},
+        {label: 'Banana', value: 'banana'}
+    ]);
     // 3. 회원가입 신청
     const goForm = ()=> {
 
@@ -261,7 +286,58 @@ export default function SignUp({route, navigation}) {
         })
     }
 
-    console.log(SignUp);
+    //console.log(SignUp);
+    
+    //
+    const loca_list = [
+
+        {
+            name: "서울",                       //예금주
+        },
+        {
+            name: "부산",                       //예금주
+        },
+        {
+            name: "광주",                       //예금주
+        },
+        {
+            name: "전주",                       //예금주
+        },
+        {
+            name: "대구",                       //예금주
+        },
+        {
+            name: "대전",                       //예금주
+        },
+        {
+            name: "울산",                       //예금주
+        },
+        {
+            name: "인천",                       //예금주
+        },
+        {
+            name: "제주",                       //예금주
+        },
+        {
+            name: "전주",                       //예금주
+        },
+    ];
+
+    const [Selected, setSelected] = useState({
+        select_title: '',
+    });
+
+    const goSearch = (name) => {
+        setSelected({
+            ...Selected,
+            select_title: name,
+
+        });
+
+    }
+    console.log(Selected.select_title);
+
+    //
 
     return (
         <>
@@ -341,16 +417,37 @@ export default function SignUp({route, navigation}) {
                         <View style={styles.formGroup}>
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>지역</Text>
-                                <View
-                                style={{
-                                    position:"relative",
-                                    zIndex:500,
-                                    paddingBottom:50
-                                }}
-
-                                >
-
+                                <View style={[styles.select_box]}>
+                                    <TouchableOpacity onPress={()=>{setShow(!Show)}}>
+                                        <View style={[styles.border]}>
+                                            {/**---------------------------선택주소 노출--------------------------------**/}
+                                            <Text style={[styles.select_txt,(Selected.select_title) ? text_black:'']}>
+                                                {(Selected.select_title) ? Selected.select_title:'지역을 선택해주세요'}
+                                            </Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <View style={[styles.select_icon_box]}>
+                                        <Text style={[styles.select_icon]}>▼</Text>
+                                    </View>
                                 </View>
+                                {/**/}
+                                {/**---------------------------클릭시 노출--------------------------------**/}
+                                {(Show) && (
+                                <View style={[styles.select_opt_list_box]}>
+                                    <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
+                                        {loca_list.map((val,ide)=>
+                                            <View style={[styles.select_opt_list_itmes]}>
+                                                <TouchableOpacity onPress={() => goSearch(val.name)}>
+                                                    <Text style={[text_center,h17]}>
+                                                        {val.name}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        )}
+                                    </ScrollView>
+                                </View>
+                                )}
+                                {/**/}
                             </View>
                         </View>
                         <View style={styles.formGroup}>
@@ -730,6 +827,15 @@ const styles = StyleSheet.create({
     },
     select_box:{
         position:"relative",
+        borderWidth:1,
+        borderColor:"#eee",
+        borderRadius:5,
+        paddingVertical:10,
+        paddingHorizontal:16,
+    },
+    select_txt:{
+        fontSize:12,
+        color:"#999",
     },
     select_icon_box:{
         position: "absolute",
@@ -755,5 +861,20 @@ const styles = StyleSheet.create({
         width:"100%",
         height:'100%',
     },
+    select_opt_list_box:{
+        paddingHorizontal:10,
+        paddingVertical:12,
+        borderLeftWidth:1,
+        borderRightWidth:1,
+        borderBottomWidth:1,
+        borderColor:"#EDEDF1",
+        borderBottomLeftRadius:5,
+        borderBottomRightRadius:5,
+    },
+    select_opt_list_itmes:{
+        borderBottomWidth:1,
+        paddingVertical:10,
+        borderColor:"#ccc",
 
+    },
 });
