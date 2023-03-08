@@ -12,11 +12,6 @@ import {
     Alert, Platform, Modal
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
-import RNPickerSelect from 'react-native-picker-select';
-import * as ImagePicker from 'expo-image-picker';
-
-//로딩화면
-import Loading from '../../components/Loading';
 
 // 공통 CSS 추가
 import {
@@ -35,7 +30,6 @@ import {
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
 import axios from "axios";
 import {AddrMatch, bizNum, Minlangth, OnlyEng, Phone, PwChk, regId, regPW} from "../../util/util";
-import CameraIcon from "../../icons/camera_icon.svg";
 import {useIsFocused} from "@react-navigation/native";
 import {chk_dup_id, Sign_up} from "../UTIL_mem";
 import {DeviceInfo} from "react-native-web";
@@ -47,9 +41,6 @@ export default function SignUp({route, navigation}) {
     // 1. 상태정의
     const Chkinput = useRef([]);                // 입력값 위치 설정
     const Update   = useIsFocused();                     //
-
-    const [show,   hide]    = useState(false);
-    const [content, setContent]  = useState(``);
     const [SignUp, setSignUp] = useState({      // 회원가입 양식
         mem_id          :'',            // 아이디
         mem_pw          :'',            // 비밀번호
@@ -278,11 +269,6 @@ export default function SignUp({route, navigation}) {
 
     return (
         <>
-            {/**------------모달창------------**/}
-            <PriModal
-            show={show}// 약관 id
-            content={content}
-            />
 
             {/**------------모달창------------**/}
             <ScrollView style={[bg_white]}>
@@ -360,7 +346,6 @@ export default function SignUp({route, navigation}) {
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>지역</Text>
                                 <View style={[styles.select_box]}>
-
                                     <View style={[styles.select_icon_box]}>
                                         <Text style={[styles.select_icon]}>▼</Text>
                                     </View>
