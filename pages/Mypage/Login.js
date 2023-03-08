@@ -124,7 +124,7 @@ export default function Login({navigation, route}) {
                             {/*아이디 입력창*/}
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
-                                    <Text style={styles.inputTopText}>아이디123123123123</Text>
+                                    <Text style={styles.inputTopText}>아이디</Text>
                                     <TextInput style={[input]} onChangeText={(mem_id) => goInput("mem_id", mem_id)}
                                     value={Login.mem_id} placeholder="아이디를 입력해주세요"
                                     ref={value=>(ChkValue.current[0] = value)}
