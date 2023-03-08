@@ -279,7 +279,6 @@ export default function GoodsCateList({route, navigation}) {
                     <View style={styles.cate_goods_list_item}>
                         <TouchableOpacity onPress={() => navigation.navigate('상품상세', {uid: item.goods_uid})}>
                         <View style={[flex_top]}>
-
                                 <View style={[styles.flex_item, styles.flex_item1]}>
                                     <View style={[styles.cate_list_Thumbnail_box]}>
                                         <Image style={styles.cate_list_Thumbnail} source={{uri: 'http://www.zazaero.com' + item.list_img_url}}/>
@@ -349,7 +348,7 @@ export default function GoodsCateList({route, navigation}) {
                                         {/*-----------------------------가이드 안내-----------------------------*/}
                                         <View style={[]}>
                                             <Text style={styles.cate_list_disc} numberOfLines={1}>
-                                                제3일이상 소요{(item.goods_guide_name) ? item.goods_guide_name : ''}
+                                                {(item.goods_guide_name) ? item.goods_guide_name : ''}
                                             </Text>
                                         </View>
                                         <View style={[]}>
@@ -358,7 +357,6 @@ export default function GoodsCateList({route, navigation}) {
                                         </View>
                                     </View>
                                 </View>
-
 
                         </View>
                         </TouchableOpacity>

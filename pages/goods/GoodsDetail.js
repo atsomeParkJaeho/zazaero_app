@@ -76,7 +76,6 @@ export default function GoodsDetail({route,navigation}) {
                 const {result, goods_info} = res.data;
                 if(result === 'OK') {
                     setGoodsDetail({...goods_info, my_cart_cnt:1})
-
                 } else {
                     console.log('실패');
                 }
@@ -157,8 +156,8 @@ export default function GoodsDetail({route,navigation}) {
     let goForm = (type,uid) => {
         if(type === 'cart') {
             Alert.alert(
-                '장바구니에 담으시겠습니까?',
                 '',
+                '장바구니에 담으시겠습니까?',
                 [
                     {text: '취소', onPress: () => {}, style: 'destructive'},
                     {
@@ -242,7 +241,7 @@ export default function GoodsDetail({route,navigation}) {
                                     </View>
                                     <View style={[styles.wt75]}>
                                         <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                            4일 이상 소요
+                                            {GoodsDetail.goods_guide_name}
                                         </Text>
                                     </View>
                                 </View>

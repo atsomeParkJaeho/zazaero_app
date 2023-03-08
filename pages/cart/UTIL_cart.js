@@ -8,7 +8,6 @@ export const getCartList = async (Member) => {
         act_type        : "get_cart_list_new",
         login_status    : "Y",
         mem_uid         : Member,
-
     }, {
         headers: {
             'Content-type': 'multipart/form-data'

@@ -92,19 +92,29 @@ export default function Cart({route, navigation}) {
 
     /**---------------------------------장바구니 해당상품 삭제----------------------------------------**/
     const delCart = (order_uid,goods_uid) => {
-        /**---------1. db에서 삭제-----**/
-        goDelCart(Member, order_uid).then((res) => {
-            if (res) {
-                const {result} = res.data;
-                if (result === 'OK') {
-                } else {
-                    console.log('실패');
-                }
-            }
-        });
 
-        /**---------2. 어플에서 삭제-----**/
-        let temp = CartList.map((cate) => {
+        Alert.alert('','상품을 삭제하시겠습니까?',[
+            {
+                text:"취소",
+                onPress:()=>{}
+            },
+            {
+                text:"확인",
+                onPress:()=>{
+                    Alert.alert('','상품이 삭제되었습니다.');
+                    /**---------1. db에서 삭제-----**/
+                    goDelCart(Member, order_uid).then((res) => {
+                        if (res) {
+                            const {result} = res.data;
+                            if (result === 'OK') {
+                            } else {
+                                console.log('실패');
+                            }
+                        }
+                    });
+
+                    /**---------2. 어플에서 삭제-----**/
+                    let temp = CartList.map((cate) => {
                         return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
                                 if(val.goods_uid === goods_uid) {
                                     return {...val, goods_del:true, goods_chk:false,}
@@ -113,8 +123,13 @@ export default function Cart({route, navigation}) {
                                 }
                             })}
                     });
-        setCartList(temp);
-        ``
+                    setCartList(temp);
+                }
+            },
+        ])
+
+
+
     }
 
     /**---------------------------------옵션요청사항 있을시 체크----------------------------------------**/
@@ -133,7 +148,9 @@ export default function Cart({route, navigation}) {
     }
     /**---------------------------------체크시 배송정보 등록이동창 활성화----------------------------------------**/
     const goFormChk = (uid, cate, price) => {
-        console.log(price,'/ 가격');
+        console.log(uid,'/ 123');
+        console.log(cate,'/ 456');
+        console.log(price,'/ 789');
         if(cate) {
             setCartUid(cate); // 카테고리 넣기
         } else if(!cate) {
@@ -226,7 +243,7 @@ export default function Cart({route, navigation}) {
     const allMod = (type, cate_uid, cate_name, price) => {
         setCart1stUid(cate_uid);
         if(type === 'All') {
-            setCartUid(cate_name);
+            setCartUid(cate_uid);
             setCartList(CartList.map((item)=>{
                 if(item.cate_1st_uid === cate_uid) {
                     return {...item, A_goods_list:item.A_goods_list.map((val)=>{
@@ -260,6 +277,7 @@ export default function Cart({route, navigation}) {
 
 
     console.log(Cart1stUid,'/ 테스트 배열');
+
     /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
     const goOrderForm = () => {
         // 중복상품 제어용 카테고리 cateUid
@@ -267,11 +285,11 @@ export default function Cart({route, navigation}) {
         let total = temp.reduce((val,idx)=>{
             return val.concat(idx);
         });
-        let result = total.map(val=>val.cate_name);
+        let result = total.map(val=>val.cate_1st_uid);
         let find = result.indexOf(CartUid);
 
         if(find !== 0) {
-            Alert.alert('','동일 카테고리면 선택 가능합니다.');
+            Alert.alert('','동일카테고리만 선택가능합니다');
             setCartList(CartList.map((cate) => {
                 return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
                         return {...val, goods_chk:false}
@@ -341,6 +359,7 @@ export default function Cart({route, navigation}) {
 
     console.log(list_goods_cnt);
     console.log(list_goods_price);
+    console.log(Cart1stUid,'/카테고리');
 
 
 
@@ -385,11 +404,11 @@ export default function Cart({route, navigation}) {
                                                                             <Checkbox style={styles.chk_view} color={"#4630eb"} onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`,`${total_price}`)}/>
                                                                             <Text style={[ms1]}>전체선택</Text>
                                                                         </View>
-                                                                        <View style={[d_flex]}>
-                                                                            <TouchableOpacity onPress={()=>ChkDel(cate.cate_1st_uid)}>
-                                                                                <Text style={[ms1, text_gray]}>선택상품 삭제</Text>
-                                                                            </TouchableOpacity>
-                                                                        </View>
+                                                                        {/*<View style={[d_flex]}>*/}
+                                                                        {/*    <TouchableOpacity onPress={()=>ChkDel(cate.cate_1st_uid)}>*/}
+                                                                        {/*        <Text style={[ms1, text_gray]}>선택상품 삭제</Text>*/}
+                                                                        {/*    </TouchableOpacity>*/}
+                                                                        {/*</View>*/}
                                                                     </View>
                                                                 </View>
 
@@ -403,22 +422,23 @@ export default function Cart({route, navigation}) {
                                                                     let test                = val.A_sel_option.map(cnt=>cnt);
                                                                     let temp = String(opt_chk);
                                                                     let memochk = String(req_memo);
-
-
                                                                     return (
                                                                         <>
                                                                             <View style={[styles.pb_2, {padding: 15, borderColor: "#e0e0e0"}]}>
                                                                                 {/*================자재명==============*/}
                                                                                 <View style={[flex_between, styles.pd_18]}>
                                                                                     <View style={[flex, wt8]}>
+                                                                                        <Text>{cate.cate_1st_uid}</Text>
+                                                                                        <Text></Text>
+                                                                                        <Text></Text>
                                                                                         <Checkbox
-                                                                                            onValueChange={() => goFormChk(val.goods_uid, cate.cate_name, total_price)}
+                                                                                            onValueChange={() => goFormChk(val.goods_uid, cate.cate_1st_uid, total_price)}
                                                                                             value={val.goods_chk}
                                                                                             style={styles.all_check}
                                                                                             color={"#4630eb"}/>
                                                                                         {/*숨김처리*/}
                                                                                         <Checkbox
-                                                                                            onValueChange={() => goFormChk(val.goods_uid, cate.cate_name, total_price )}
+                                                                                            onValueChange={() => goFormChk(val.goods_uid, cate.cate_1st_uid, total_price)}
                                                                                             value={val.goods_chk}
                                                                                             style={styles.chk_view}
                                                                                             color={"#4630eb"}
