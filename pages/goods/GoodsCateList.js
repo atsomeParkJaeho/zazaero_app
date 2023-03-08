@@ -1,5 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Dimensions,FlatList, Text, View, Image, TouchableOpacity, ScrollView, Alert} from 'react-native';
+import {
+    StyleSheet,
+    Dimensions,
+    FlatList,
+    Text,
+    View,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    Alert,
+    Platform
+} from 'react-native';
 import Checkbox from 'expo-checkbox';
 import logo from "../../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
@@ -268,7 +279,7 @@ export default function GoodsCateList({route, navigation}) {
                     <View style={styles.cate_goods_list_item}>
                         <View style={[flex_top]}>
                             <View style={[styles.flex_item, styles.flex_item1]}>
-                                <TouchableOpacity onPress={() => goWish(item.goods_uid)}>
+                                <TouchableOpacity onPress={() => navigation.navigate('상품상세', {uid: item.goods_uid})}>
                                     <View style={[styles.cate_list_Thumbnail_box]}>
                                         <Image style={styles.cate_list_Thumbnail} source={{uri: 'http://www.zazaero.com' + item.list_img_url}}/>
                                         <View style={styles.goods_like}>
@@ -515,7 +526,7 @@ const styles = StyleSheet.create({
         zIndex: 10,
     },
     go_cart: {
-        paddingBottom: 36,
+        paddingBottom: (Platform.OS === 'android') ? 15 : 50,
         paddingTop: 7,
         position: "absolute",
         left: 0,
