@@ -117,7 +117,7 @@ export default function OrderForm({route,navigation}) {
         tot_order_price     :'',                              // 자재 총 가격
         deli_type           :'',                              // 착불, 선불
         deli_price          :'',                              // 배송비
-        work_uid           :'',                              // 공사명 uid
+        work_uid            :'',                              // 공사명 uid
         save_point          :'',                              // 적립 포인트
         point_use           :'',                              // 사용 포인트
     });
@@ -215,7 +215,7 @@ export default function OrderForm({route,navigation}) {
         // 오늘날짜 출력
     let today = new Date();
     console.log(DateChg2(today));
-
+    console.log(route.params);
     console.log(OrderData);
     console.log(DeliList);
 
@@ -264,7 +264,7 @@ export default function OrderForm({route,navigation}) {
                                                ref={el => (InputFocus.current[1] = el)}
                                     />
                                     {/*주소찾기*/}
-                                    <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"배송정보등록", order_uid:order_uid})}>
+                                    <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"배송정보등록", order_uid:order_uid, goods_cate1_uid:goods_cate1_uid})}>
                                         <View style={[bg_primary,{padding:8,borderRadius:5,}]}>
                                             <Text style={[text_light]}>주소찾기</Text>
                                         </View>
