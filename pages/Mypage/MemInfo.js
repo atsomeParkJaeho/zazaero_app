@@ -176,6 +176,7 @@ export default function MemInfo({route, navigation}) {
                             const {result} = res.data;
                             if(result === 'OK') {
                                 Alert.alert('','회원정보가 수정되었습니다.');
+                                return navigation.navigate('마이페이지');
                             } else {
                                 Alert.alert('','실패');
                             }
