@@ -223,45 +223,6 @@ export default function OrderForm({route,navigation}) {
         });
     }
 
-    //
-    //
-    const loca_list = [
-
-        {
-            name: "09:00",                       //예금주
-        },
-        {
-            name: "09:30",                       //예금주
-        },
-        {
-            name: "09:30",                       //예금주
-        },
-        {
-            name: "전주",                       //예금주
-        },
-        {
-            name: "대구",                       //예금주
-        },
-        {
-            name: "대전",                       //예금주
-        },
-        {
-            name: "울산",                       //예금주
-        },
-        {
-            name: "인천",                       //예금주
-        },
-        {
-            name: "제주",                       //예금주
-        },
-        {
-            name: "전주",                       //예금주
-        },
-    ];
-
-    const [MakeSelected, setMakeSelected] = useState({
-        select_title: '',
-    });
 
     let goSearch = (time) => {
         setShow(false);
