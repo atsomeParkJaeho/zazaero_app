@@ -49,9 +49,7 @@ export const chk_dup_id = async (SignUp) => {
 }
 
 export const login = async (Login)=>{
-
     let os_type = Platform.OS;
-
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php', {
         act_type    :'login',
         mem_id      :Login.mem_id,
@@ -94,7 +92,7 @@ export const Sign_up = async (SignUp) => {
 
 export const search_id = async (FindId) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
-
+        act_type         : 'mem_reg',
     },{
         headers: {
             'Content-type': 'multipart/form-data'
@@ -103,4 +101,42 @@ export const search_id = async (FindId) => {
 
     return res;
 }
+
+
+export const mod_mem_info = async (Member, MemInfo) => {
+    console.log(MemInfo,'/확인 값');
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
+        act_type                :'mod_mem_info',
+        mem_pw                  :MemInfo.mem_pw,
+        mem_pw_chk              :MemInfo.mem_pw_chk,
+        addr1                   :MemInfo.addr1,
+        addr2                   :MemInfo.addr2,
+        zonecode                :MemInfo.zonecode,
+        mem_email1              :MemInfo.mem_email1,
+        mem_email2              :MemInfo.mem_email2,
+        tax_calc_email1         :MemInfo.tax_calc_email1,
+        tax_calc_email2         :MemInfo.tax_calc_email2,
+        biz_cate                :MemInfo.biz_cate,
+        biz_item                :MemInfo.biz_item,
+        ceo_name                :MemInfo.ceo_name,
+        com_name                :MemInfo.com_name,
+        com_biz_no              :MemInfo.com_biz_no,
+        com_biz_name            :MemInfo.com_biz_name,
+        com_fax                 :MemInfo.com_fax,
+        mem_mobile              :MemInfo.mem_mobile,
+        mem_name                :MemInfo.mem_name,
+        pay_bank_code           :MemInfo.pay_bank_code,
+        pay_bank_no             :MemInfo.pay_bank_no,
+        pay_bank_owner          :MemInfo.pay_bank_owner,
+        road_address            :MemInfo.road_address,
+        mod_mem_uid             :Member,
+        mem_uid                 :Member,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}
+
 
