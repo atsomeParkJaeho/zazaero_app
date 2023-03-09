@@ -871,7 +871,6 @@ export default function OrderDtail({route,navigation}) {
                         }},
                 ]);
                 console.log(chk_cancel_goods);
-
             } else {
                 /*
                 let chk_cancel_goods = OrderGoodsList.filter(val=>val.goods_chk);
@@ -895,7 +894,7 @@ export default function OrderDtail({route,navigation}) {
                 ]);
                 console.log(chk_cancel_goods);
 
-                 */
+                */
             }
         }
 
@@ -1234,51 +1233,61 @@ export default function OrderDtail({route,navigation}) {
         return(
             <>
                 <View>
+
+
                     {/**---------------배송정보---------------**/}
                     {(OrderData.deli_mem_name) && (
                         <>
                             <View style={container}>
                                 <Text style={[h18]}>배송정보</Text>
                             </View>
-                            {/**----------------------배송기사명--------------------------**/}
-                            {(OrderData.deli_mem_name) && (
+                            {/**------------------------배송기사명------------------------**/}
                             <View style={[flex,mt1]}>
-                                <View style={[styles.wt25]}>
+                                <View style={[styles.wt30]}>
                                     <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송기사명</Text>
                                 </View>
-                                <View style={[styles.wt75]}>
+                                <View style={[styles.wt70]}>
                                     <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
                                         {OrderData.deli_mem_name}
                                     </Text>
                                 </View>
                             </View>
-                            )}
-                            {/**----------------------배송기사 연락처--------------------------**/}
-                            {(OrderData.deli_mem_mobile) && (
-                                <View style={[flex,mt1]}>
-                                    <View style={[styles.wt25]}>
-                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송기사명</Text>
+                            {/**------------------------배송기사 연락처------------------------**/}
+                            <View style={[flex]}>
+                                <View style={[styles.wt30]}>
+                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송기사 연락처</Text>
+                                </View>
+                                <View style={[styles.wt70]}>
+                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                        {OrderData.deli_mem_mobile}
+                                    </Text>
+                                </View>
+                            </View>
+                            {/**------------------------배송차량------------------------**/}
+                            <View style={[flex]}>
+                                <View style={[styles.wt30]}>
+                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송차량</Text>
+                                </View>
+                                <View style={[styles.wt70]}>
+                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                        {OrderData.deli_car_type_name}
+                                    </Text>
+                                </View>
+                            </View>
+                            {/**------------------------배송완료일시------------------------**/}
+                            {(OrderData.deli_status === 'done') && (
+                                <View style={[flex]}>
+                                    <View style={[styles.wt30]}>
+                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송완료일시</Text>
                                     </View>
-                                    <View style={[styles.wt75]}>
+                                    <View style={[styles.wt70]}>
                                         <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                            {OrderData.deli_mem_name}
+                                            {DateChg(OrderData.deli_done_date)} {OrderData.deli_done_time}
                                         </Text>
                                     </View>
                                 </View>
                             )}
-                            {/**----------------------배송차량--------------------------**/}
-                            {(OrderData.deli_mem_mobile) && (
-                                <View style={[flex,mt1]}>
-                                    <View style={[styles.wt25]}>
-                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송차량</Text>
-                                    </View>
-                                    <View style={[styles.wt75]}>
-                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                            {OrderData.deli_car_type_name}
-                                        </Text>
-                                    </View>
-                                </View>
-                            )}
+
                         </>
                     )}
 
@@ -1594,6 +1603,23 @@ const styles = StyleSheet.create({
     },
     wt75: {
         width: "75%",
+        padding:8,
+        borderWidth:1,
+        borderColor:"#ddd",
+        borderLeftWidth:0,
+        borderBottomWidth:0,
+    },
+    wt30: {
+        width: "30%",
+        backgroundColor:"#f8f8f8",
+        padding:8,
+        borderWidth:1,
+        borderColor:"#ddd",
+        borderRightWidth:0,
+        borderBottomWidth:0,
+    },
+    wt70: {
+        width: "70%",
         padding:8,
         borderWidth:1,
         borderColor:"#ddd",
