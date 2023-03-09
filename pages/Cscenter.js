@@ -25,16 +25,16 @@ export default function Cscenter({navigation}) {
                             </View>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {navigation.navigate('1:1문의작성')}}>
-                        <View style={styles.mypageListItem}>
-                            <View style={styles.mypageListItemTitle}>
-                                <Text style={styles.mypageList_name}>1:1문의</Text>
-                            </View>
-                            <View style={styles.mypageListItemIcon}>
-                                <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
+                    {/*<TouchableOpacity onPress={() => {navigation.navigate('1:1문의작성')}}>*/}
+                    {/*    <View style={styles.mypageListItem}>*/}
+                    {/*        <View style={styles.mypageListItemTitle}>*/}
+                    {/*            <Text style={styles.mypageList_name}>1:1문의</Text>*/}
+                    {/*        </View>*/}
+                    {/*        <View style={styles.mypageListItemIcon}>*/}
+                    {/*            <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>*/}
+                    {/*        </View>*/}
+                    {/*    </View>*/}
+                    {/*</TouchableOpacity>*/}
                     <TouchableOpacity onPress={() => {Linking.openURL('tel:1666-7099');}}>
                         <View style={styles.mypageListItem}>
                             <View style={styles.mypageListItemTitle}>

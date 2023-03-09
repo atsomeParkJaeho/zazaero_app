@@ -25,17 +25,6 @@ export default function MyPage({navigation, route}) {
     console.log('회원코드 / ' + Member);
 
     const [mem_info, set_mem_info] = useState([]);   // 회원정보 셋팅
-
-    // 로그아웃 로직
-    let goLogout = () => {
-        AsyncStorage.clear();
-        AsyncStorage.getItem('member').then((value)=>{
-            console.log(value);
-        });
-        reloadAsync();
-        navigation.replace('로그인');
-    }
-
     useEffect(() => {
         axios.get('http://49.50.162.86:80/ajax/UTIL_mem_info.php', {
             params: {
@@ -57,7 +46,15 @@ export default function MyPage({navigation, route}) {
 
     }, [Member]);
 
-
+    // 로그아웃 로직
+    let goLogout = () => {
+        AsyncStorage.clear();
+        AsyncStorage.getItem('member').then((value)=>{
+            console.log(value);
+        });
+        reloadAsync();
+        navigation.replace('로그인');
+    }
 
     console.log(mem_info);
 
@@ -83,53 +80,52 @@ export default function MyPage({navigation, route}) {
                                     <Text style={[styles.user_point_link_txt]}>나의 환불내역</Text>
                                 </TouchableOpacity>
                             </View>
-                            
                         </View>
                     </View>
                     <View style={styles.mypageList}>
-                        <View style={styles.mypageListItem}>
-                            <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
-                                navigation.navigate('설정')
-                            }}>
-                                <View style={styles.flex}>
-                                    <View style={styles.mypageListItemTitle}>
-                                        <Text style={styles.mypageList_name}>설정</Text>
-                                    </View>
-                                    <View style={styles.mypageListItemIcon}>
-                                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                                        <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.mypageListItem}>
-                            <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {navigation.navigate('회원정보수정',{uid:mem_info.mem_uid})}}>
-                                <View style={styles.flex}>
-                                    <View style={styles.mypageListItemTitle}>
-                                        <Text style={styles.mypageList_name}>회원정보변경</Text>
-                                    </View>
-                                    <View style={styles.mypageListItemIcon}>
-                                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                                        <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.mypageListItem}>
-                            <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
-                                navigation.navigate('공사현황목록')
-                            }}>
-                                <View style={styles.flex}>
-                                    <View style={styles.mypageListItemTitle}>
-                                        <Text style={styles.mypageList_name}>공사현황조회</Text>
-                                    </View>
-                                    <View style={styles.mypageListItemIcon}>
-                                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                                        <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+                        {/*<View style={styles.mypageListItem}>*/}
+                        {/*    <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {*/}
+                        {/*        navigation.navigate('설정')*/}
+                        {/*    }}>*/}
+                        {/*        <View style={styles.flex}>*/}
+                        {/*            <View style={styles.mypageListItemTitle}>*/}
+                        {/*                <Text style={styles.mypageList_name}>설정</Text>*/}
+                        {/*            </View>*/}
+                        {/*            <View style={styles.mypageListItemIcon}>*/}
+                        {/*                /!*<Icon name="chevron-forward-outline" size={25} color="#000" />*!/*/}
+                        {/*                <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>*/}
+                        {/*            </View>*/}
+                        {/*        </View>*/}
+                        {/*    </TouchableOpacity>*/}
+                        {/*</View>*/}
+                        {/*<View style={styles.mypageListItem}>*/}
+                        {/*    <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {navigation.navigate('회원정보수정',{uid:mem_info.mem_uid})}}>*/}
+                        {/*        <View style={styles.flex}>*/}
+                        {/*            <View style={styles.mypageListItemTitle}>*/}
+                        {/*                <Text style={styles.mypageList_name}>회원정보변경</Text>*/}
+                        {/*            </View>*/}
+                        {/*            <View style={styles.mypageListItemIcon}>*/}
+                        {/*                /!*<Icon name="chevron-forward-outline" size={25} color="#000" />*!/*/}
+                        {/*                <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>*/}
+                        {/*            </View>*/}
+                        {/*        </View>*/}
+                        {/*    </TouchableOpacity>*/}
+                        {/*</View>*/}
+                        {/*<View style={styles.mypageListItem}>*/}
+                        {/*    <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {*/}
+                        {/*        navigation.navigate('공사현황목록')*/}
+                        {/*    }}>*/}
+                        {/*        <View style={styles.flex}>*/}
+                        {/*            <View style={styles.mypageListItemTitle}>*/}
+                        {/*                <Text style={styles.mypageList_name}>공사현황조회</Text>*/}
+                        {/*            </View>*/}
+                        {/*            <View style={styles.mypageListItemIcon}>*/}
+                        {/*                /!*<Icon name="chevron-forward-outline" size={25} color="#000" />*!/*/}
+                        {/*                <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>*/}
+                        {/*            </View>*/}
+                        {/*        </View>*/}
+                        {/*    </TouchableOpacity>*/}
+                        {/*</View>*/}
 
                         {/*<View style={styles.mypageListItem}>*/}
                         {/*    <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {*/}
@@ -205,6 +201,7 @@ export default function MyPage({navigation, route}) {
                                 </View>
                             </TouchableOpacity>
                         </View>
+
                         {/*<View style={styles.mypageListItem}>*/}
                         {/*    <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {*/}
                         {/*        navigation.navigate('반품요청')*/}

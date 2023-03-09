@@ -6,6 +6,7 @@ import ProvisionDisc from "../ProvisionDisc.json";
 import ProvisionTap from "../components/ProvisionTap";
 import {getAppInfo} from "./order/UTIL_order";
 import {priName} from "../util/util";
+import {text_primary} from "../common/style/AtStyle";
 
 
 export default function Provision({route, navigation}){
@@ -44,8 +45,16 @@ export default function Provision({route, navigation}){
                                     <TouchableOpacity
                                         onPress={()=>set_show_provision(`${val.cfg_part2}`)}
                                         style={[styles.Provision_tap_item_link, styles.borderTop, styles.borderRight]} >
-                                        <Text numberOfLines={1}
-                                            style={styles.Provision_tap_item_title}>{priName(val.cfg_part2)}</Text>
+                                        {(val.cfg_part2 === show_provision) ? (
+                                            <Text numberOfLines={1} style={[styles.Provision_tap_item_title, text_primary]}>
+                                                {priName(val.cfg_part2)}
+                                            </Text>
+                                        ):(
+                                            <Text numberOfLines={1} style={styles.Provision_tap_item_title}>
+                                                {priName(val.cfg_part2)}
+                                            </Text>
+                                        )}
+
                                     </TouchableOpacity>
                                 </View>
                             </>

@@ -124,11 +124,11 @@ export default function MainPage({navigation, route}) {
                         <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
                             <Search width={30} height={21} style={[styles.icon]}/>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.link_signUp} onPress={() => {
-                            navigation.navigate('알림')
-                        }}>
-                            <NotificationIcon width={30} height={21} style={[styles.icon, ms1]}/>
-                        </TouchableOpacity>
+                        {/*<TouchableOpacity style={styles.link_signUp} onPress={() => {*/}
+                        {/*    navigation.navigate('알림')*/}
+                        {/*}}>*/}
+                        {/*    <NotificationIcon width={30} height={21} style={[styles.icon, ms1]}/>*/}
+                        {/*</TouchableOpacity>*/}
                     </View>
                 </View>
             </View>
