@@ -115,7 +115,7 @@ export default function OrderDtail({route,navigation}) {
 
     const goSearch = (name) => {
         setShow(!Show);
-      
+
     }
 
     /**--------------------------------------주문서 셋팅--------------------------------------------------**/
@@ -694,7 +694,7 @@ export default function OrderDtail({route,navigation}) {
                                                             <View style={[styles.select_opt_list_itmes]}>
                                                                 <TouchableOpacity onPress={() => goSearch()}>
                                                                     <Text style={[text_center,h17]}>
-                                                                       국민 9498496496498 홍길동
+                                                                        국민 9498496496498 홍길동
                                                                     </Text>
                                                                 </TouchableOpacity>
                                                             </View>
@@ -745,6 +745,7 @@ export default function OrderDtail({route,navigation}) {
     );
     /**-----------------------------------------------결제완료전 발주취소 이벤트------------------------------------------------**/
     function PayReadyCancelTab() {
+
         const AlldelOrder = () => {
             Alert.alert('','전체취소 하시겠습니까?',[
                 {text:"취소", onPress:()=>{}},
@@ -1021,11 +1022,11 @@ export default function OrderDtail({route,navigation}) {
                                                 const reqMemo = (key, value, uid) =>{
                                                     let temp = OrderGoodsList.map((cate)=>{
                                                         return {...cate, A_sel_option:cate.A_sel_option.map(val=>{
-                                                            if(uid === val.order_item_uid) {
-                                                                return {...cate, req_memo:value}
-                                                            } else {
-                                                                return cate;
-                                                            }
+                                                                if(uid === val.order_item_uid) {
+                                                                    return {...cate, req_memo:value}
+                                                                } else {
+                                                                    return cate;
+                                                                }
                                                             })}
                                                     });
                                                     setOrderGoodsList(temp);
@@ -1221,7 +1222,7 @@ export default function OrderDtail({route,navigation}) {
     /**-----------------------------------------------총금액------------------------------------------------------**/
     function OrderTotalPrice() {
         /**----------------총 결제금액은 자재가격 + 요청옵션비 + 배송비 + 포인트----------------**/
-        // 총 결제금액
+            // 총 결제금액
         let Settlekindprice = 0;
         Settlekindprice += Number(OrderData.goodsprice);
         Settlekindprice += Number(OrderData.deli_price);
