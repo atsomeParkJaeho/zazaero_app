@@ -25,7 +25,7 @@ import {
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
 // 샘플데이터
-import {order_List, ordStatus} from "../../util/util";
+import {DateChg, order_List, ordStatus} from "../../util/util";
 import axios from "axios";
 import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -63,7 +63,7 @@ function PayStatus({route, navigation}) {
                     val.ord_status === 'pay_err'
                 );
                 let desc = temp.sort((a,b)=>{
-                    return new Date(b.order_date) - new Date(a.order_date);
+                    return new Date(b.gd_order_uid) - new Date(a.gd_order_uid);
                 });
                 return setOrderList(desc);
 
@@ -107,6 +107,18 @@ function PayStatus({route, navigation}) {
                                                 <Text style={[styles.goods_num_val, h16, fw600]}>{val.order_no}</Text>
                                             </View>
                                         </View>
+                                        {/**-------------------------발주신청일시----------------------------**/}
+                                        <View style={[flex, styles.mb_5]}>
+                                            <View style={[styles.wt3]}>
+                                                <Text style={[styles.Construction_name, h14]}> 신청일시
+                                                    :</Text>
+                                            </View>
+                                            <View style={[styles.wt7]}>
+                                                <Text style={[styles.Construction_name_val, h14]} numberOfLines={1}>{DateChg(val.order_date)} {val.order_time}</Text>
+                                            </View>
+                                        </View>
+
+
                                         {/**-------------------------공사명----------------------------**/}
                                         <View style={[flex, styles.mb_5]}>
                                             <View style={[styles.wt3]}>
@@ -126,7 +138,7 @@ function PayStatus({route, navigation}) {
                                             </View>
                                             <View style={[styles.wt7]}>
                                                 <Text
-                                                    style={[styles.Desired_Delivery_Date_val, h14]}>{val.hope_deli_date} {val.hope_deli_time} 도착예정</Text>
+                                                    style={[styles.Desired_Delivery_Date_val, h14]}>{DateChg(val.hope_deli_date)} {val.hope_deli_time} 도착예정</Text>
                                             </View>
                                         </View>
                                         {/**-------------------------배송지----------------------------**/}
@@ -141,16 +153,20 @@ function PayStatus({route, navigation}) {
                                             </View>
                                         </View>
                                         {/**-------------------------최근수정일----------------------------**/}
-                                        <View style={[flex]}>
-                                            <View style={[styles.wt3]}>
-                                                <Text style={[styles.Delivery_destination_name, h14, val.text_gray]}> 최근수정일 :</Text>
-                                            </View>
-                                            <View style={[styles.wt7]}>
-                                                <Text style={[styles.Delivery_destination_name_val, h14, text_gray]}>
-
-                                                </Text>
-                                            </View>
-                                        </View>
+                                        {/*{(val.mod_date !== "0000-00-00") && (*/}
+                                        {/*    <>*/}
+                                        {/*        <View style={[flex]}>*/}
+                                        {/*            <View style={[styles.wt3]}>*/}
+                                        {/*                <Text style={[styles.Delivery_destination_name, h14, val.text_gray]}> 최근수정일 :</Text>*/}
+                                        {/*            </View>*/}
+                                        {/*            <View style={[styles.wt7]}>*/}
+                                        {/*                <Text style={[styles.Delivery_destination_name_val, h14, text_primary]}>*/}
+                                        {/*                    {val.mod_date} {val.mod_time}*/}
+                                        {/*                </Text>*/}
+                                        {/*            </View>*/}
+                                        {/*        </View>*/}
+                                        {/*    </>*/}
+                                        {/*)}*/}
                                     </View>
                                     <View style={[styles.border_b_dotted]}></View>
                                     <View style={[container]}>
@@ -166,14 +182,6 @@ function PayStatus({route, navigation}) {
                                                 </TouchableOpacity>
                                             </View>
                                             <View style={[flex]}>
-                                                {/*<Text style={[h14]}>결제상태</Text>*/}
-                                                {/*(val.pay_status == 'ready') ? (
-                                                         <Text
-                                                             style={[ text_danger,btn_outline_danger,ps1,pe1, h14]}>결제대기</Text>
-                                                     ) : (
-                                                         <Text
-                                                             style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>결제완료</Text>
-                                                     )*/}
                                                 <Text style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>
                                                     {ordStatus(`${val.ord_status}`)}
                                                 </Text>

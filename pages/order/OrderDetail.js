@@ -745,7 +745,6 @@ export default function OrderDtail({route,navigation}) {
     );
     /**-----------------------------------------------결제완료전 발주취소 이벤트------------------------------------------------**/
     function PayReadyCancelTab() {
-
         const AlldelOrder = () => {
             Alert.alert('','전체취소 하시겠습니까?',[
                 {text:"취소", onPress:()=>{}},
