@@ -263,19 +263,18 @@ export default function OrderForm({route,navigation}) {
         select_title: '',
     });
 
-    const goSearch = (name) => {
+    let goSearch = (time) => {
         setShow(false);
-        setMakeSelected({
-            ...MakeSelected,
-            select_title: name,
-
+        setOrderDate({
+            ...OrderData,
+            hope_deli_time:time,
         });
 
     }
     //
 
     /**--------------------------------------------------------------------------------------------------------------------------**/
-    // 오늘날짜 출력
+        // 오늘날짜 출력
     let today = new Date();
     console.log(DateChg2(today));
 
@@ -412,7 +411,7 @@ export default function OrderForm({route,navigation}) {
                                     <View style={[select_box]}>
                                         <TouchableOpacity onPress={()=>{setShow(!Show)}}>
                                             <Text style={[select_txt,(Selected.select_title) ? text_black:'']}>
-                                                {(Selected.select_title) ? Selected.select_title:'시간을 선택해주세요'}
+                                                {(OrderData.hope_deli_time) ? OrderData.hope_deli_time:'시간을 선택해주세요'}
                                             </Text>
                                             <View style={[select_icon_box]}>
                                                 <Text style={[styles.select_icon]}>▼</Text>
@@ -424,11 +423,11 @@ export default function OrderForm({route,navigation}) {
                                     {(Show) && (
                                         <View style={[styles.select_opt_list_box]}>
                                             <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
-                                                {loca_list.map((val,ide)=>
+                                                {Time2.map((val,ide)=>
                                                     <View style={[styles.select_opt_list_itmes]}>
-                                                        <TouchableOpacity onPress={() => goSearch(val.name)}>
+                                                        <TouchableOpacity onPress={() => goSearch(val.value)}>
                                                             <Text style={[text_center,h17]}>
-                                                                {val.name}
+                                                                {val.label}
                                                             </Text>
                                                         </TouchableOpacity>
                                                     </View>

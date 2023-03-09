@@ -312,9 +312,6 @@ export default function Cart({route, navigation}) {
                     <View style={[styles.cartList]}>
                         {/*===================1차 카테고리 리스트 출력==================*/}
                         <List.Section style={[styles.Section,{padding:0, margin:0}]}>
-
-
-
                             {CartCate1st.map((cate,idx)=>(
                                 <>
                                     <List.Accordion

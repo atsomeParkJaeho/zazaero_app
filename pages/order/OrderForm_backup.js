@@ -56,7 +56,7 @@ import {
     wt3,
     wt7,
     mb2,
-    text_gray
+    text_gray, select_box, select_txt, select_icon_box, text_black, h17
 } from '../../common/style/AtStyle';
 import {sub_page, gary_bar, gray_bar} from '../../common/style/SubStyle';
 import axios from "axios";
@@ -72,10 +72,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {AddrMatch, Phone, Price, Time, Time1, Time2, cancel_List, cancel_d_List, DateChg, DateChg2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
-import RNPickerSelect from "react-native-picker-select";
-import goodsthum1 from "../../assets/img/goods_thum1.jpg";
 import {InsOrder, SaveDeliAddr} from "./UTIL_order";
-// import SelectBox from "react-native-multi-selectbox";
 
 
 
@@ -92,6 +89,8 @@ export default function OrderForm({route,navigation}) {
         setMember(value);
     });
     const InputFocus = useRef([]);
+
+    const [Show, setShow]         = useState(false);    // 셀렉트창 노출 여부
     /**--------------------------------------상태값 셋팅--------------------------------------------------**/
     const [CartList, setCartList]         = useState([]);      // 장바구니 상태 정의
     const [modAddr, setmodAddr]           = useState(`add`); // 신규, 기존 배송지 선택 상태 정의
@@ -223,6 +222,57 @@ export default function OrderForm({route,navigation}) {
             }
         });
     }
+
+    //
+    //
+    const loca_list = [
+
+        {
+            name: "09:00",                       //예금주
+        },
+        {
+            name: "09:30",                       //예금주
+        },
+        {
+            name: "09:30",                       //예금주
+        },
+        {
+            name: "전주",                       //예금주
+        },
+        {
+            name: "대구",                       //예금주
+        },
+        {
+            name: "대전",                       //예금주
+        },
+        {
+            name: "울산",                       //예금주
+        },
+        {
+            name: "인천",                       //예금주
+        },
+        {
+            name: "제주",                       //예금주
+        },
+        {
+            name: "전주",                       //예금주
+        },
+    ];
+
+    const [MakeSelected, setMakeSelected] = useState({
+        select_title: '',
+    });
+
+    const goSearch = (name) => {
+        setShow(false);
+        setMakeSelected({
+            ...MakeSelected,
+            select_title: name,
+
+        });
+
+    }
+    //
 
     /**--------------------------------------------------------------------------------------------------------------------------**/
         // 오늘날짜 출력
@@ -359,23 +409,34 @@ export default function OrderForm({route,navigation}) {
                                 </View>
                                 {/*==============시간입력==============*/}
                                 <View style={[FormStyle.FormGroup]}>
-                                    <View style={[d_flex, align_items_center]}>
-                                        <View style={[styles.formSelect,{flex:1}]}>
-                                            <RNPickerSelect
-                                                placeholder={{label:"시간을 선택해주세요.", value:null}}
-                                                onValueChange={(hope_deli_time) => goInput('hope_deli_time',hope_deli_time)}
-                                                items={Time2}
-                                                useNativeAndroidPickerStyle={false}
-                                                style={{
-                                                    placeholder:{color:'gray'},
-                                                    inputAndroid : styles.input,
-                                                    inputAndroidContainer : styles.inputContainer,
-                                                    inputIOS: styles.input,
-                                                    inputIOSContainer : styles.inputContainer,
-                                                }}
-                                            />
-                                        </View>
+                                    <View style={[select_box]}>
+                                        <TouchableOpacity onPress={()=>{setShow(!Show)}}>
+                                            <Text style={[select_txt,(Selected.select_title) ? text_black:'']}>
+                                                {(Selected.select_title) ? Selected.select_title:'시간을 선택해주세요'}
+                                            </Text>
+                                            <View style={[select_icon_box]}>
+                                                <Text style={[styles.select_icon]}>▼</Text>
+                                            </View>
+                                        </TouchableOpacity>
                                     </View>
+                                    {/**/}
+                                    {/**---------------------------클릭시 노출--------------------------------**/}
+                                    {(Show) && (
+                                        <View style={[styles.select_opt_list_box]}>
+                                            <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
+                                                {loca_list.map((val,ide)=>
+                                                    <View style={[styles.select_opt_list_itmes]}>
+                                                        <TouchableOpacity onPress={() => goSearch(val.name)}>
+                                                            <Text style={[text_center,h17]}>
+                                                                {val.name}
+                                                            </Text>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                )}
+                                            </ScrollView>
+                                        </View>
+                                    )}
+                                    {/**/}
                                 </View>
                             </View>
                             {/**----------------------------------------------현장인도자 정보--------------------------------------------------**/}
@@ -880,5 +941,21 @@ const styles = StyleSheet.create({
         bottom: 0,
         justifyContent: "center",
         alignItems: "center",
+    },
+    select_opt_list_box:{
+        paddingHorizontal:10,
+        paddingVertical:12,
+        borderLeftWidth:1,
+        borderRightWidth:1,
+        borderBottomWidth:1,
+        borderColor:"#EDEDF1",
+        borderBottomLeftRadius:5,
+        borderBottomRightRadius:5,
+    },
+    select_opt_list_itmes:{
+        borderBottomWidth:1,
+        paddingVertical:10,
+        borderColor:"#eee",
+
     },
 });

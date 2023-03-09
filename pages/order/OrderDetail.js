@@ -664,7 +664,7 @@ export default function OrderDtail({route,navigation}) {
                 )}
             </ScrollView>
             {/**-------------------------수정변경------------------------**/}
-            <GoOrderForm/>
+            {/*<GoOrderForm/>*/}
         </>
     );
     /**-----------------------------------------------결제완료전 발주취소 이벤트------------------------------------------------**/
@@ -1063,14 +1063,14 @@ export default function OrderDtail({route,navigation}) {
                                                                     {/*옵션요청가격*/}
                                                                     <View style={[]}>
                                                                         <Text style={[h13]}>{val.goods_guide_name}</Text>
-                                                                        <TextInput
-                                                                            onChangeText={(req_memo)=>reqMemo('req_memo',req_memo,order_item_uid)}
-                                                                            style={[textarea]}
-                                                                            value={`${items.req_memo}`}
-                                                                            multiline={true}
-                                                                            numberOfLines={4}
-                                                                        />
-                                                                        {/*<Text style={[h13]}>{items.req_memo}</Text>*/}
+                                                                        {/*<TextInput*/}
+                                                                        {/*    onChangeText={(req_memo)=>reqMemo('req_memo',req_memo,order_item_uid)}*/}
+                                                                        {/*    style={[textarea]}*/}
+                                                                        {/*    value={`${items.req_memo}`}*/}
+                                                                        {/*    multiline={true}*/}
+                                                                        {/*    numberOfLines={4}*/}
+                                                                        {/*/>*/}
+                                                                        <Text style={[textarea, h13, bg_light]}>{items.req_memo}</Text>
                                                                     </View>
                                                                     {/*옵션요청글*/}
                                                                 </View>

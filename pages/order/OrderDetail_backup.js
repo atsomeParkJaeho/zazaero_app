@@ -34,12 +34,11 @@ import {container, bg_white, h16, text_center, flex_around, flex_between, input,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 import {FormStyle} from "./FormStyle";
-import {DateChg, ordStatus, payStatus, Phone, Price, Time1, Time2} from "../../util/util";
+import {bacnkAccount, DateChg, ordStatus, payStatus, Phone, Price, settleKind, Time1, Time2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import CalendarStrip from "react-native-calendar-strip";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import RNPickerSelect from "react-native-picker-select";
 import Checkbox from "expo-checkbox";
 import {AllgdOrderDel, ATorderDel, getAppInfo, getOrderInfo, OrderMod, payDoneCancel, PayTry,} from "./UTIL_order";
 
@@ -261,6 +260,7 @@ export default function OrderDtail({route,navigation}) {
     }
 
 
+    console.log(BankCode,'/12');
     const CancelCnt = (goods_uid, type, src_cnt) => {
 
         console.log(src_cnt);
@@ -524,21 +524,7 @@ export default function OrderDtail({route,navigation}) {
                             <View style={[FormStyle.FormGroup]}>
                                 <View style={[d_flex, align_items_center]}>
                                     <View style={[styles.formSelect,{flex:1}]}>
-                                        <RNPickerSelect
-                                            placeholder={{label:"시간을 선택해주세요.", value:null}}
-                                            onValueChange={(hope_deli_time) => goInput(`hope_deli_time`,hope_deli_time)}
-                                            items={Time2}
-                                            value={OrderData.hope_deli_time}
-                                            useNativeAndroidPickerStyle={false}
-                                            fixAndroidTouchableBug={true}
-                                            style={{
-                                                placeholder:{color:'gray'},
-                                                inputAndroid : styles.input,
-                                                inputAndroidContainer : styles.inputContainer,
-                                                inputIOS: styles.input,
-                                                inputIOSContainer : styles.inputContainer,
-                                            }}
-                                        />
+
                                     </View>
                                 </View>
                             </View>
@@ -645,20 +631,7 @@ export default function OrderDtail({route,navigation}) {
                                             <View style={[mb2]}>
                                                 {/*은행선택*/}
                                                 <View style={[input,{flex:1, marginBottom:15,}]}>
-                                                    <RNPickerSelect
-                                                        items={BankCode}
-                                                        placeholder={{label:"은행을 선택해주세요.", value:null}}
-                                                        value={OrderData.bankAccount}
-                                                        onValueChange={(bankAccount)=>goInput('bankAccount',bankAccount)}
-                                                        useNativeAndroidPickerStyle={false}
-                                                        style={{
-                                                            placeholder:{color:'gray'},
-                                                            inputAndroid : styles.input,
-                                                            inputAndroidContainer : styles.inputContainer,
-                                                            inputIOS: styles.input,
-                                                            inputIOSContainer : styles.inputContainer,
-                                                        }}
-                                                    />
+
                                                 </View>
                                                 {/*예금주 입력*/}
                                                 <View style={{flex:1}}>
@@ -787,70 +760,62 @@ export default function OrderDtail({route,navigation}) {
         * */
 
         const PayDoneCancel = (type) => {
-            let n_btn = {text:"취소", onPress:()=>{}}
+
             if(type === 'all') {
-                let result = OrderGoodsList.map(val=>{return {...val, goods_chk:true}});
-                setOrderGoodsList(result);
-                Alert.alert('','결제를 취소하시겠습니까?',[n_btn, {
-                    text:"확인",
-                    onPress:()=>{payDonelog(type,result)},
-                }]);
+
+                let chk_cancel_goods = OrderGoodsList.map(val=>{return {
+                    ...val,
+                    goods_chk   :true,
+                    cancel_cnt  :Number(val.A_sel_option.map(item=>item.option_cnt)),
+                }});
+
+                Alert.alert('','결제를 취소하시겠습니까?',[
+                    {text:"취소",onPress:()=>{}},
+                    {text:"확인",onPress:()=>{
+                            payDoneCancel(Member, type, OrderData, chk_cancel_goods).then((res)=>{
+                                if(res) {
+                                    console.log(res.data);
+                                    const {result, test} = res.data;
+                                    if(result === 'OK') {
+                                        Alert.alert('','결제가 취소 되었습니다.');
+                                        console.log(test);
+                                        return navigation.replace('발주상태');
+                                    }
+                                }
+                            });
+                        }},
+                ]);
+                console.log(chk_cancel_goods);
 
             } else {
-                let result = OrderGoodsList.filter(val=>val.goods_chk);
-                if(OrderGoodsList.length === 1) { return Alert.alert('','전체취소를 버튼을 클릭해주세요.') }
-                if(OrderGoodsList.length === result.length) { return Alert.alert('','전체취소를 버튼을 클릭해주세요.') }
-                if(result.length === 0) { return Alert.alert('','자재를 선택해주세요.') }
-                Alert.alert('','결제를 취소하시겠습니까?',[n_btn, {
-                    text:"확인",
-                    onPress:()=>{Alert.alert('','준비중입니다.')},
-                }]);
+                /*
+                let chk_cancel_goods = OrderGoodsList.filter(val=>val.goods_chk);
+
+                if(chk_cancel_goods.length === 0) {return Alert.alert('','자재를 선택해주세요.')}
+
+                Alert.alert('','결제를 취소하시겠습니까?',[
+                    {text:"취소",onPress:()=>{}},
+                    {text:"확인",onPress:()=>{
+                            payDoneCancel(Member, type, OrderData, chk_cancel_goods).then((res)=>{
+                                if(res) {
+                                    const {result, test} = res.data;
+                                    if(result === 'OK') {
+                                        Alert.alert('','결제가 취소 되었습니다.');
+                                        console.log(test);
+                                        return navigation.replace('발주상태');
+                                    }
+                                }
+                            });
+                        }},
+                ]);
+                console.log(chk_cancel_goods);
+
+                 */
             }
         }
 
 
-        const payDonelog = (type, result) => {
 
-            let chk_goods = result.filter(val=>val.goods_chk);
-            let pay_cancel_goods = chk_goods.map(val=>{
-                let src_cnt             = Number(val.A_sel_option.map(item=>item.option_cnt));
-                let cancel_cnt          = Number(val.cancel_cnt);
-                let option_price        = Number(val.A_sel_option.map(item=>item.option_price));
-                let order_item_uid      = Number(val.A_sel_option.map(item=>item.order_item_uid));
-                return {
-                    order_uid           :Number(val.order_uid),
-                    src_cnt             :src_cnt,
-                    cancel_cnt          :cancel_cnt,
-                    option_price        :option_price,
-                    order_item_uid      :order_item_uid,
-                    sum_goods_price     :Number(option_price * cancel_cnt),
-                }
-            });
-
-            let cancel_price = pay_cancel_goods.map(val=>val.sum_goods_price);
-            let tot_cancel_price = 0;
-            for (let i = 0; i < cancel_price.length; i++) {
-                tot_cancel_price += cancel_price[i];
-            }
-
-            console.log(pay_cancel_goods,'/ 체크한 자재 필터링');
-
-            payDoneCancel(Member, type, OrderData, pay_cancel_goods, tot_cancel_price).then((res)=>{
-                if(res) {
-                    console.log(res.data);
-                    const {result, test} = res.data;
-                    if(result === 'OK') {
-                        // Alert.alert('',test);
-                        console.log(test,'/주문 uid');
-                        // return navigation.replace('배송상태');
-                    } else {
-                        console.log('에러');
-                    }
-                }
-            });
-
-
-        }
 
 
 
@@ -891,6 +856,46 @@ export default function OrderDtail({route,navigation}) {
                 );
             }
         }
+
+        /**----------------------------반품신청탭--------------------------**/
+        if(OrderData.ord_status === 'deli_done' || OrderData.deli_status === 'done') {
+            if(Cancel) {
+                return (
+                    <>
+                        <View style={[container]}>
+                            <View style={[d_flex, justify_content_between]}>
+                                <TouchableOpacity
+                                    onPress={()=>PayDoneCancel(`part`)}
+                                    style={[styles.CancelBtnWrap, btn_outline_danger]}>
+                                    <Text style={[text_center,styles.CancelBtn, text_danger]}>선택취소</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={()=>PayDoneCancel(`all`)}
+                                    style={[styles.CancelBtnWrap, btn_outline_danger]}>
+                                    <Text style={[text_center,styles.CancelBtn, text_danger]}>전체취소</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </>
+                );
+            } else {
+                return (
+                    <>
+                        <View style={[container]}>
+                            <View style={[d_flex, justify_content_between,mb2]}>
+                                <TouchableOpacity
+                                    onPress={()=>setCancel(!Cancel)}
+                                    style={[styles.CancelBtnWrap, btn_outline_danger,{width:"100%"}]}>
+                                    <Text style={[text_center,styles.CancelBtn, text_danger]}>반품신청</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+
+                    </>
+                );
+            }
+        }
+
     }
 
 
@@ -1175,11 +1180,33 @@ export default function OrderDtail({route,navigation}) {
                                         <Text style={[h14, text_danger]}>{DateChg(OrderData.pay_status_date)} {OrderData.pay_status_time}</Text>
                                     </View>
                                 )}
+                                {/**----------------------결제유형--------------------------**/}
+                                {(OrderData.settlekind) && (
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>결제유형</Text>
+                                        <Text style={[h14]}>{settleKind(OrderData.settlekind)}</Text>
+                                    </View>
+                                )}
+                                {/**----------------------입금계좌정보--------------------------**/}
+                                {(OrderData.settlekind === 'bank') && (
+                                    <View style={[mb1]}>
+                                        <Text style={[h14]}>
+                                            {BankCode.map(label=>label.value === OrderData.bankAccount && label.label)}
+                                        </Text>
+                                    </View>
+                                )}
                                 {/**----------------------결제요청일(* 발주검수 완료후 결제대기시에 노출한다.)--------------------------**/}
                                 {(OrderData.pay_date) && (
                                     <View style={[flex,justify_content_end,mb1]}>
                                         <Text style={[h14,styles.color1,me2, text_primary]}>결제완료일</Text>
                                         <Text style={[h14, text_primary]}>{DateChg(OrderData.pay_date)} {OrderData.pay_time}</Text>
+                                    </View>
+                                )}
+                                {/**----------------------무통장입금시 노출--------------------------**/}
+                                {(OrderData.pay_status_date !== '0000-00-00') && (
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2, text_danger]}>입금확인</Text>
+                                        <Text style={[h14, text_danger]}>{DateChg(OrderData.pay_status_date)} {OrderData.pay_status_time}</Text>
                                     </View>
                                 )}
                                 {/**----------------------자재 가격--------------------------**/}
