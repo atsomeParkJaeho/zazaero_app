@@ -26,6 +26,27 @@ export const min_height = {
 //     height:"100%",
 // }
 
+export const select_box = {
+    position:"relative",
+        borderWidth:1,
+        borderColor:"#eee",
+        borderRadius:5,
+        paddingVertical:10,
+        paddingHorizontal:16,
+}
+export const select_txt = {
+    fontSize:12,
+        color:"#999",
+}
+export const select_icon_box = {
+    position: "absolute",
+        top: 0,
+        right: 10,
+        bottom: 0,
+        justifyContent: "center",
+        alignItems: "center",
+}
+
 export const text_center = {textAlign:"center"}
 export const text_left = {textAlign:"left"}
 export const text_right = {textAlign:"right"}
