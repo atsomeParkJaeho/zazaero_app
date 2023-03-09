@@ -231,6 +231,7 @@ export default function MemInfo({route, navigation}) {
                                             <View style={[styles.border]}>
                                                 {/**---------------------------선택주소 노출--------------------------------**/}
                                                 <Text style={[styles.select_txt,(MemInfo.road_address) ? text_black:'']}>
+
                                                     {(MemInfo.road_address) ? MemInfo.road_address:'지역을 선택해주세요'}
                                                 </Text>
                                             </View>
