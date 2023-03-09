@@ -100,28 +100,27 @@ export default function MemInfo({route, navigation}) {
             [keyValue]      :value,
         });
     }
-    
+
     // 3. 데이터 전송
     const goForm = () => {
         let regPw = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
 
-
-        if(MemInfo.mem_pw.length === 0 && MemInfo.mem_pw_chk.length === 0) {
+        if(!MemInfo.mem_pw && !MemInfo.mem_pw_chk) {
             //  비밀번호 변경의사 없음
         } else {
-            if (MemInfo.mem_pw.length === 0 && MemInfo.mem_pw_chk.length > 0) {
+            if (!MemInfo.mem_pw && MemInfo.mem_pw_chk) {
                 Alert.alert('', `비밀번호를 입력해주세요.`);
                 return Alert.alert('', `비밀번호를 입력해주세요.`);
             }
 
-            if (MemInfo.mem_pw.length > 0 && MemInfo.mem_pw_chk.length === 0) {
+            if (MemInfo.mem_pw && !MemInfo.mem_pw_chk) {
                 Alert.alert('', `비밀번호 확인을 입력해주세요.`);
                 return Alert.alert('', `비밀번호 확인을 입력해주세요.`);
             }
 
             if (MemInfo.mem_pw !== MemInfo.mem_pw_chk) {  // 비밀번호 일치
                 Alert.alert('', '비밀번호가 일치 하지 않습니다.');
-                return Alert.alert('', '비밀번호가 일치 하지 않습니다.');
+                return Alert.alert('', `비밀번호가 일치 하지 않습니다.`);
             }
 
             if (8 >= MemInfo.mem_pw.length) {             // 비밀번호 최소
@@ -200,9 +199,9 @@ export default function MemInfo({route, navigation}) {
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>비밀번호 <Text style={[text_danger]}>*</Text></Text>
                                     <TextInput style={[input]} secureTextEntry={true}
-                                    onChangeText={(mem_pw) => goInput("mem_pw", mem_pw)}
-                                    defaultValue={``}
-                                   autoCapitalize="none"
+                                               onChangeText={(mem_pw) => goInput("mem_pw", mem_pw)}
+                                               defaultValue={``}
+                                               autoCapitalize="none"
                                     />
                                 </View>
                             </View>
@@ -211,10 +210,10 @@ export default function MemInfo({route, navigation}) {
                                 <View style={styles.inputGroup}>
                                     <Text style={styles.inputTopText}>비밀번호 확인 <Text style={[text_danger]}>*</Text></Text>
                                     <TextInput style={[input]} secureTextEntry={true}
-                                    onChangeText={(mem_pw_chk) => goInput("mem_pw_chk", mem_pw_chk)}
-                                    defaultValue={``}
-                                   autoCapitalize="none"
-                                   />
+                                               onChangeText={(mem_pw_chk) => goInput("mem_pw_chk", mem_pw_chk)}
+                                               defaultValue={``}
+                                               autoCapitalize="none"
+                                    />
                                 </View>
                             </View>
                             {/*============ 변경 비밀번호 ============ */}
@@ -231,7 +230,6 @@ export default function MemInfo({route, navigation}) {
                                             <View style={[styles.border]}>
                                                 {/**---------------------------선택주소 노출--------------------------------**/}
                                                 <Text style={[styles.select_txt,(MemInfo.road_address) ? text_black:'']}>
-
                                                     {(MemInfo.road_address) ? MemInfo.road_address:'지역을 선택해주세요'}
                                                 </Text>
                                             </View>
@@ -317,7 +315,8 @@ export default function MemInfo({route, navigation}) {
                                                        onChangeText={(mem_email1) => goInput("mem_email1", mem_email1)}
                                                        ref={val=>(goInput2.current[9] = val)}
                                                        placeholder=""
-                                                       value={MemInfo.mem_email1}/>
+                                                       value={MemInfo.mem_email1}
+                                            />
                                         </View>
                                         <View style={[styles.flex_item_1]}>
                                             <Text style={styles.txt_center}>@</Text>
@@ -327,7 +326,8 @@ export default function MemInfo({route, navigation}) {
                                                        onChangeText={(mem_email2) => goInput("mem_email2", mem_email2)}
                                                        ref={val=>(goInput2.current[10] = val)}
                                                        placeholder=""
-                                                       value={MemInfo.mem_email2}/>
+                                                       value={MemInfo.mem_email2}
+                                            />
                                         </View>
                                     </View>
                                 </View>
@@ -769,12 +769,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     select_icon:{
-      color:"#999",
+        color:"#999",
     },
     upload_box:{
         width: "100%",
         height: 500,
-      borderWidth: 1,
+        borderWidth: 1,
     },
     upload_img:{
         resizeMode:"contain",

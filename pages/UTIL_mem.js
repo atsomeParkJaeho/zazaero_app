@@ -120,6 +120,7 @@ export const mod_mem_info = async (Member, MemInfo) => {
         biz_item                :MemInfo.biz_item,
         ceo_name                :MemInfo.ceo_name,
         com_name                :MemInfo.com_name,
+        rank_name               :MemInfo.rank_name,
         com_biz_no              :MemInfo.com_biz_no,
         com_biz_name            :MemInfo.com_biz_name,
         com_fax                 :MemInfo.com_fax,
