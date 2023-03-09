@@ -9,7 +9,7 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    KeyboardAvoidingView, DatePickerIOS, TouchableWithoutFeedback, Alert
+    KeyboardAvoidingView, DatePickerIOS, TouchableWithoutFeedback, Alert, Platform
 } from 'react-native';
 
 // 공통 CSS 추가
@@ -432,7 +432,7 @@ export default function OrderForm({route,navigation}) {
                                         <View>
                                             <Text style={[FormStyle.FormLabel]}>배송 요청 사항</Text>
                                             <TouchableWithoutFeedback >
-                                                <TextInput style={[input,{flex:1,height:100}]} multiline={true}
+                                                <TextInput style={[input,{flex:1,height:100,textAlignVertical:"top"}]} multiline={true}
                                                            onChangeText={(order_memo)=>goInput('order_memo',order_memo)}
                                                            numberOfLines={4}
                                                            placeholder="배송요청사항"
@@ -818,7 +818,7 @@ export default function OrderForm({route,navigation}) {
                 {/**----------------------------------------------발주신청--------------------------------------------------**/}
                 <View style={[bg_gray, {
                     paddingTop: 6,
-                    paddingBottom: 38,
+                    paddingBottom: Platform.OS === 'ios' ? 38 : 10,
                     left: 0,
                     bottom: 0,
                     width: "100%"
