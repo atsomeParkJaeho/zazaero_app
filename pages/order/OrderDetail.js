@@ -46,7 +46,7 @@ import {
     h13,
     text_right,
     justify_content_between,
-    btn_danger, btn_primary, textarea, justify_content_around, text_black, h17,
+    btn_danger, btn_primary, textarea, justify_content_around, text_black, h17, text_gray, h12,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 import {FormStyle} from "./FormStyle";
@@ -113,9 +113,12 @@ export default function OrderDtail({route,navigation}) {
     //
     const [Show, setShow]         = useState(false);    // 셀렉트창 노출 여부
 
-    const goSearch = (name) => {
+    const goSearch = (value) => {
         setShow(!Show);
-
+        setOrderDate({
+            ...OrderData,
+            bankAccount:value,
+        });
     }
 
     /**--------------------------------------주문서 셋팅--------------------------------------------------**/
@@ -437,6 +440,7 @@ export default function OrderDtail({route,navigation}) {
 
     console.log(OrderData);
     console.log(OrderGoodsList);
+    console.log(BankCode);
 
     return(
         <>
@@ -677,8 +681,8 @@ export default function OrderDtail({route,navigation}) {
                                                     <TouchableOpacity onPress={()=>{setShow(!Show)}}>
                                                         <View style={[styles.border]}>
                                                             {/**---------------------------선택주소 노출--------------------------------**/}
-                                                            <Text style={[styles.select_txt,]}>
-                                                                계좌를 선택해주세요
+                                                            <Text style={[styles.select_txt, h12, (OrderData.bankAccount !== '0') ? text_black:text_gray]}>
+                                                                {BankCode.map(label=>label.value === OrderData.bankAccount ? label.label : '계좌번호를 선택해주세요')}
                                                             </Text>
                                                         </View>
                                                     </TouchableOpacity>
@@ -691,20 +695,18 @@ export default function OrderDtail({route,navigation}) {
                                                 {(Show) && (
                                                     <View style={[styles.select_opt_list_box]}>
                                                         <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
-                                                            <View style={[styles.select_opt_list_itmes]}>
-                                                                <TouchableOpacity onPress={() => goSearch()}>
-                                                                    <Text style={[text_center,h17]}>
-                                                                        국민 9498496496498 홍길동
-                                                                    </Text>
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                            <View style={[styles.select_opt_list_itmes]}>
-                                                                <TouchableOpacity onPress={() => goSearch()}>
-                                                                    <Text style={[text_center,h17]}>
-                                                                        신한 9498496496498 홍길동
-                                                                    </Text>
-                                                                </TouchableOpacity>
-                                                            </View>
+                                                            {BankCode.map((val,idx)=>(
+                                                                <>
+                                                                    <View style={[styles.select_opt_list_itmes]}>
+                                                                        <TouchableOpacity onPress={() => goSearch(val.value)}>
+                                                                            <Text style={[text_center,h14]}>
+                                                                                {val.label}
+                                                                            </Text>
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                </>
+                                                            ))}
+
                                                         </ScrollView>
                                                     </View>
                                                 )}
