@@ -117,30 +117,35 @@ export default function GoodsSearchList({route,navigation}) {
     }
 
     // 5. 즐겨찾기 액션
-    const goWish = (uid) => {
-        save_wish(Member, uid).then((res)=>{
+    const goWish = (link_uid) => {
+        save_wish(Member, link_uid).then((res) => {
             console.log(res.data);
-            if(res) {
+            if (res) {
                 const {result} = res.data;
-                if(result === 'OK') {
+                if (result === 'OK') {
                     console.log(result);
-                    alert('즐겨찾기에 추가 하였습니다.');
+                    let temp = GoodsList.map((val) => {
+                        if (link_uid === val.goods_uid) {
+                            if (val.my_zzim_flag === 'Y') {
+                                Alert.alert('', '즐겨찾기에서 삭제하였습니다.');
+                                return {...val, my_zzim_flag: 'N',};
+                            }
+                            if (val.my_zzim_flag === 'N') {
+                                Alert.alert('', '즐겨찾기에 추가하였습니다.');
+                                return {...val, my_zzim_flag: 'Y',};
+                            }
+                        }
+                        return val;
+                    });
+
+                    setGoodsList(temp);
                 }
             } else {
-                const {result} = res.data;
                 console.log(result);
             }
-        }).catch((error)=>{console.log(error)});
-
-        // 내 즐겨찾기에 등록된 상품 필터링하기
-        let temp = GoodsList.map((val) => {
-            if (uid === val.goods_uid) {
-                return {...val, goods_wish_chk: !val.goods_wish_chk,};
-            }
-            return val;
+        }).catch((error) => {
+            console.log(error)
         });
-        setGoodsList(temp);
-
     }
 
 
@@ -226,17 +231,17 @@ export default function GoodsSearchList({route,navigation}) {
                                         <Image style={styles.cate_list_Thumbnail} source={{uri:'http://www.zazaero.com'+val.list_img_url}}/>
                                         <View style={styles.goods_like}>
                                             {/*=============찜하기=================*/}
-                                            <TouchableOpacity onPress={()=>goWish(val.goods_uid)}>
-                                                {/*<Text>찜하기</Text>*/}
-                                                {(val.goods_wish_chk) ? (
-                                                    <>
-                                                        <Wishlist width={35} height={24} color={'blue'}  />
-                                                    </>
-                                                ) :(
-                                                    <WishlistNon width={35} height={24} color={'blue'}  />
+                                            {/*<TouchableOpacity onPress={()=>goWish(val.goods_uid)}>*/}
+                                            {/*    /!*<Text>찜하기</Text>*!/*/}
+                                            {/*    {(val.goods_wish_chk) ? (*/}
+                                            {/*        <>*/}
+                                            {/*            <Wishlist width={35} height={24} color={'blue'}  />*/}
+                                            {/*        </>*/}
+                                            {/*    ) :(*/}
+                                            {/*        <WishlistNon width={35} height={24} color={'blue'}  />*/}
 
-                                                )}
-                                            </TouchableOpacity>
+                                            {/*    )}*/}
+                                            {/*</TouchableOpacity>*/}
                                         </View>
                                     </View>
                                 </View>

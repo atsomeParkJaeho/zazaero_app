@@ -232,13 +232,11 @@ export default function GoodsCateList({route, navigation}) {
                     setGoodsList(temp);
                 }
             } else {
-                const {result} = res.data;
                 console.log(result);
             }
         }).catch((error) => {
             console.log(error)
         });
-
     }
 
     // 6. 장바구니 추가 이벤트

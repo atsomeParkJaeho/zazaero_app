@@ -105,38 +105,34 @@ export default function MemInfo({route, navigation}) {
     const goForm = () => {
         let regPw = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
 
-        if(!MemInfo.mem_id) {  /*아이디 */
-            return Alert.alert('',`아이디를 입력해주세요.`);
-        }
 
-        if(Minlangth >= MemInfo.mem_id.length) {     // 아이디 최소
-            Alert.alert('',`${Minlangth}자 이상 입력해주세요.`);
-            return Alert.alert('',`${Minlangth}자 이상 입력해주세요.`);
-        }
+        if(MemInfo.mem_pw.length === 0 && MemInfo.mem_pw_chk.length === 0) {
+            //  비밀번호 변경의사 없음
+        } else {
+            if (MemInfo.mem_pw.length === 0 && MemInfo.mem_pw_chk.length > 0) {
+                Alert.alert('', `비밀번호를 입력해주세요.`);
+                return Alert.alert('', `비밀번호를 입력해주세요.`);
+            }
 
-        if(MemInfo.mem_id_chk === 'N') {             // 아이디 중복체크
-            Alert.alert('',`아이디 중복체크를 확인해주세요.`);
-            return Alert.alert('',`아이디 중복체크를 확인해주세요.`);
-        }
+            if (MemInfo.mem_pw.length > 0 && MemInfo.mem_pw_chk.length === 0) {
+                Alert.alert('', `비밀번호 확인을 입력해주세요.`);
+                return Alert.alert('', `비밀번호 확인을 입력해주세요.`);
+            }
 
-        if(8 >= MemInfo.mem_pw.length) {             // 비밀번호 최소
-            Alert.alert('',`8자 이상 입력해주세요.`);
-            return Alert.alert('',`8자 이상 입력해주세요.`);
-        }
+            if (MemInfo.mem_pw !== MemInfo.mem_pw_chk) {  // 비밀번호 일치
+                Alert.alert('', '비밀번호가 일치 하지 않습니다.');
+                return Alert.alert('', '비밀번호가 일치 하지 않습니다.');
+            }
 
-        if(!MemInfo.mem_pw_chk) {  // 비밀번호 확인
-            Alert.alert('',`비밀번호 확인을 입력해주세요.`);
-            return Alert.alert('',`비밀번호 확인을 입력해주세요.`);
-        }
+            if (8 >= MemInfo.mem_pw.length) {             // 비밀번호 최소
+                Alert.alert('', `8자 이상 입력해주세요.`);
+                return Alert.alert('', `8자 이상 입력해주세요.`);
+            }
 
-        if(regPw.test(MemInfo.mem_pw) === false) {  // 특수문자 입력 필수
-            Alert.alert('','특수 문자가 포함되어있지 않습니다.');
-            return Alert.alert('','특수 문자가 포함되어있지 않습니다.');
-        }
-
-        if(MemInfo.mem_pw !== MemInfo.mem_pw_chk) {  // 비밀번호 일치
-            Alert.alert('','비밀번호가 일치 하지 않습니다.');
-            return Alert.alert('','비밀번호가 일치 하지 않습니다.');
+            if (regPw.test(MemInfo.mem_pw) === false) {  // 특수문자 입력 필수
+                Alert.alert('', '특수 문자가 포함되어있지 않습니다.');
+                return Alert.alert('', '특수 문자가 포함되어있지 않습니다.');
+            }
         }
 
         if(!MemInfo.road_address) { // 지역코드
@@ -471,7 +467,7 @@ export default function MemInfo({route, navigation}) {
                                         <TouchableOpacity onPress={()=>{setShow_2(!Show_2)}}>
                                             <View style={[styles.border]}>
                                                 {/**---------------------------선택주소 노출--------------------------------**/}
-                                                <Text style={[styles.select_txt,(MemInfo.road_address) ? text_black:'']}>
+                                                <Text style={[styles.select_txt,(MemInfo.pay_bank_code) ? text_black:'']}>
                                                     {BankCode.map(label=>label.value === MemInfo.pay_bank_code && label.label)}
                                                 </Text>
                                             </View>

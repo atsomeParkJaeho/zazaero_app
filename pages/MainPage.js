@@ -196,7 +196,7 @@ export default function MainPage({navigation, route}) {
                                 <TouchableOpacity style={styles.main_footer_link} onPress={() => {
                                     navigation.navigate('약관/개인정보처리방침',{cfg_part2:`ad_acces`});
                                 }}>
-                                    <Text style={styles.main_footer_link_txt}>전자금융거래 이용약관</Text>
+                                    <Text style={styles.main_footer_link_txt}>홍보 및 마케팅 이용약관</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>

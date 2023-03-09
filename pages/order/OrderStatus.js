@@ -189,7 +189,7 @@ function OrderStatus({route, navigation}) {
                                                                       hope_deli_date :val.hope_deli_date,
                                                                   })}
                                                 >
-                                                    <Text style={[text_light]}>상세내역 / 정보변경</Text>
+                                                    <Text style={[text_light]}>상세내역</Text>
                                                 </TouchableOpacity>
                                             </View>
                                             <View style={[flex]}>

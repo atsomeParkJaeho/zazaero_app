@@ -28,7 +28,7 @@ export default function MyPage({navigation, route}) {
     useEffect(() => {
         axios.get('http://49.50.162.86:80/ajax/UTIL_mem_info.php', {
             params: {
-                act_type: "my_page",
+                act_type:"my_page",
                 mem_uid: Member,
             }
         }).then((res) => {
@@ -70,16 +70,16 @@ export default function MyPage({navigation, route}) {
                             <Text style={styles.user_name}>
                                 {mem_info.mem_name} ({mem_info.mem_mobile})
                             </Text>
-                            <Text style={styles.user_point}>보유포인트:<Text style={styles.user_point_score}>5000P</Text></Text>
-                            <View style={[flex_around]}>
-                                <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {navigation.navigate('포인트내역')}}>
-                                    <Text style={[styles.user_point_link_txt]}>나의 포인트 내역</Text>
-                                </TouchableOpacity>
-                                <View style={[wt1]}/>
-                                <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {navigation.navigate('환불내역')}}>
-                                    <Text style={[styles.user_point_link_txt]}>나의 환불내역</Text>
-                                </TouchableOpacity>
-                            </View>
+                            {/*<Text style={styles.user_point}>보유포인트:<Text style={styles.user_point_score}>5000P</Text></Text>*/}
+                            {/*<View style={[flex_around]}>*/}
+                            {/*    <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {navigation.navigate('포인트내역')}}>*/}
+                            {/*        <Text style={[styles.user_point_link_txt]}>나의 포인트 내역</Text>*/}
+                            {/*    </TouchableOpacity>*/}
+                            {/*    <View style={[wt1]}/>*/}
+                            {/*    <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {navigation.navigate('환불내역')}}>*/}
+                            {/*        <Text style={[styles.user_point_link_txt]}>나의 환불내역</Text>*/}
+                            {/*    </TouchableOpacity>*/}
+                            {/*</View>*/}
                         </View>
                     </View>
                     <View style={styles.mypageList}>
