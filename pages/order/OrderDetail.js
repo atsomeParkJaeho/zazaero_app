@@ -445,9 +445,9 @@ export default function OrderDtail({route,navigation}) {
         );
     }
 
-    console.log(OrderData);
-    console.log(OrderGoodsList);
-    console.log(BankCode);
+    console.log(OrderData,' / 주문정보');
+    console.log(OrderGoodsList,' / 주문상품 정보');
+    console.log(BankCode,'/ 무통장 입금처 정보');
 
     return(
         <>
@@ -634,9 +634,9 @@ export default function OrderDtail({route,navigation}) {
                 {/**----------------------------------------------상품목록--------------------------------------------------**/}
                 <GoodsList/>
                 {/**----------------------------------------------결제전 발주취소 이벤트--------------------------------------------------**/}
-                <PayReadyCancelTab/>
+                {/*<PayReadyCancelTab/>*/}
                 {/**----------------------------------------------결제완료후 발주취소 이벤트--------------------------------------------------**/}
-                <PayDoneCancelTab/>
+                {/*<PayDoneCancelTab/>*/}
                 <OrderTotalPrice/>
                 {/**-----------------------------------------결제대기시 노출 시킨다.--------------------------------------------**/}
                 {(OrderData.ord_status === 'pay_ready' || OrderData.ord_status === 'pay_try' || OrderData.ord_status === 'pay_err') && (
@@ -1233,10 +1233,6 @@ export default function OrderDtail({route,navigation}) {
         Settlekindprice += Number(OrderData.tot_opt_price);
         return(
             <>
-
-
-
-
                 <View>
                     {/**---------------배송정보---------------**/}
                     {(OrderData.deli_mem_name) && (
@@ -1327,17 +1323,22 @@ export default function OrderDtail({route,navigation}) {
                         </View>
                     )}
                     {/**----------------------결제유형--------------------------**/}
-                    {(OrderData.settlekind) && (
-                        <View style={[flex]}>
-                            <View style={[styles.wt25]}>
-                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>결제유형</Text>
-                            </View>
-                            <View style={[styles.wt75]}>
-                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                    {settleKind(OrderData.settlekind)}
-                                </Text>
-                            </View>
-                        </View>
+                    {(OrderData.ord_status === 'pay_done' || OrderData.ord_status === 'pay_try' || OrderData.settlekind === 'bank') && (
+                        <>
+                            {(OrderData.settlekind) && (
+                                <View style={[flex]}>
+                                    <View style={[styles.wt25]}>
+                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>결제유형</Text>
+                                    </View>
+                                    <View style={[styles.wt75]}>
+                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                            {settleKind(OrderData.settlekind)}
+                                            {/*{OrderData.settlekind}*/}
+                                        </Text>
+                                    </View>
+                                </View>
+                            )}
+                        </>
                     )}
                     {/**----------------------입금계좌정보--------------------------**/}
                     {(OrderData.settlekind === 'bank') && (
