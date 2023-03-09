@@ -78,7 +78,7 @@ function OrderStatus({route, navigation}) {
 
                 );
                 let desc = temp.sort((a,b)=>{
-                    return new Date(b.order_date) - new Date(a.order_date);
+                    return new Date(b.gd_order_uid) - new Date(a.gd_order_uid);
                 });
                 return setOrderList(desc);
             } else {
@@ -127,6 +127,18 @@ function OrderStatus({route, navigation}) {
                                                 <Text style={[styles.goods_num_val, h16, fw600]}>{val.order_no}</Text>
                                             </View>
                                         </View>
+                                        {/**-------------------------발주신청일시----------------------------**/}
+                                        <View style={[flex, styles.mb_5]}>
+                                            <View style={[styles.wt3]}>
+                                                <Text style={[styles.Construction_name, h14]}> 신청일시
+                                                    :</Text>
+                                            </View>
+                                            <View style={[styles.wt7]}>
+                                                <Text style={[styles.Construction_name_val, h14]} numberOfLines={1}>{DateChg(val.order_date)} {val.order_time}</Text>
+                                            </View>
+                                        </View>
+
+
                                         {/**-------------------------공사명----------------------------**/}
                                         <View style={[flex, styles.mb_5]}>
                                             <View style={[styles.wt3]}>

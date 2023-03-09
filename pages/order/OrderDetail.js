@@ -569,7 +569,7 @@ export default function OrderDtail({route,navigation}) {
                             <View>
                                 <Text style={[FormStyle.FormLabel]}>배송 요청 사항</Text>
                                 <TouchableWithoutFeedback >
-                                    <TextInput style={[input,{flex:1,height:100}]} multiline={true}
+                                    <TextInput style={[input,{flex:1,height:100,textAlignVertical: "top"}]} multiline={true}
                                                editable={Mod}
                                                onChangeText={(order_memo)=>goInput('order_memo',order_memo)}
                                                numberOfLines={4}
@@ -1174,7 +1174,7 @@ export default function OrderDtail({route,navigation}) {
                                 {/**----------------------발주신청일--------------------------**/}
                                 {(OrderData.order_date) && (
                                     <View style={[flex,justify_content_end,mb1]}>
-                                        <Text style={[h14,styles.color1,me2]}>발주신청일</Text>
+                                        <Text style={[h14,styles.color1,me2]}>발주신청일시</Text>
                                         <Text style={[h14]}>{DateChg(OrderData.order_date)} {OrderData.order_time}</Text>
                                     </View>
                                 )}

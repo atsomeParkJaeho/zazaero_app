@@ -117,21 +117,21 @@ export default function MyPage({navigation, route}) {
                             </TouchableOpacity>
                         </View>
 
-                        <View style={styles.mypageListItem}>
-                            <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
-                                navigation.navigate('취소내역')
-                            }}>
-                                <View style={styles.flex}>
-                                    <View style={styles.mypageListItemTitle}>
-                                        <Text style={styles.mypageList_name}>취소,반품내역</Text>
-                                    </View>
-                                    <View style={styles.mypageListItemIcon}>
-                                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                                        <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+                        {/*<View style={styles.mypageListItem}>*/}
+                        {/*    <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {*/}
+                        {/*        navigation.navigate('취소내역')*/}
+                        {/*    }}>*/}
+                        {/*        <View style={styles.flex}>*/}
+                        {/*            <View style={styles.mypageListItemTitle}>*/}
+                        {/*                <Text style={styles.mypageList_name}>취소,반품내역</Text>*/}
+                        {/*            </View>*/}
+                        {/*            <View style={styles.mypageListItemIcon}>*/}
+                        {/*                /!*<Icon name="chevron-forward-outline" size={25} color="#000" />*!/*/}
+                        {/*                <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>*/}
+                        {/*            </View>*/}
+                        {/*        </View>*/}
+                        {/*    </TouchableOpacity>*/}
+                        {/*</View>*/}
                         <View style={styles.mypageListItem}>
                             <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
                                 navigation.navigate('공지사항')
@@ -177,21 +177,21 @@ export default function MyPage({navigation, route}) {
                                 </View>
                             </TouchableOpacity>
                         </View>
-                        <View style={styles.mypageListItem}>
-                            <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
-                                navigation.navigate('반품요청')
-                            }}>
-                                <View style={styles.flex}>
-                                    <View style={styles.mypageListItemTitle}>
-                                        <Text style={styles.mypageList_name}>반품요청</Text>
-                                    </View>
-                                    <View style={styles.mypageListItemIcon}>
-                                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                                        <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+                        {/*<View style={styles.mypageListItem}>*/}
+                        {/*    <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {*/}
+                        {/*        navigation.navigate('반품요청')*/}
+                        {/*    }}>*/}
+                        {/*        <View style={styles.flex}>*/}
+                        {/*            <View style={styles.mypageListItemTitle}>*/}
+                        {/*                <Text style={styles.mypageList_name}>반품요청</Text>*/}
+                        {/*            </View>*/}
+                        {/*            <View style={styles.mypageListItemIcon}>*/}
+                        {/*                /!*<Icon name="chevron-forward-outline" size={25} color="#000" />*!/*/}
+                        {/*                <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>*/}
+                        {/*            </View>*/}
+                        {/*        </View>*/}
+                        {/*    </TouchableOpacity>*/}
+                        {/*</View>*/}
                     </View>
                 </View>
             </ScrollView>
