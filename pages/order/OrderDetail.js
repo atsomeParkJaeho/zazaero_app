@@ -1265,10 +1265,10 @@ export default function OrderDtail({route,navigation}) {
                             </View>
                             {/**------------------------배송차량------------------------**/}
                             <View style={[flex]}>
-                                <View style={[styles.wt30]}>
+                                <View style={[styles.wt30,{borderBottomWidth: 1,}]}>
                                     <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송차량</Text>
                                 </View>
-                                <View style={[styles.wt70]}>
+                                <View style={[styles.wt70,{borderBottomWidth: 1,}]}>
                                     <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
                                         {OrderData.deli_car_type_name}
                                     </Text>
@@ -1277,10 +1277,10 @@ export default function OrderDtail({route,navigation}) {
                             {/**------------------------배송완료일시------------------------**/}
                             {(OrderData.deli_status === 'done') && (
                                 <View style={[flex]}>
-                                    <View style={[styles.wt30]}>
+                                    <View style={[styles.wt30,{borderBottomWidth: 1,}]}>
                                         <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송완료일시</Text>
                                     </View>
-                                    <View style={[styles.wt70]}>
+                                    <View style={[styles.wt70,{borderBottomWidth: 1,}]}>
                                         <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
                                             {DateChg(OrderData.deli_done_date)} {OrderData.deli_done_time}
                                         </Text>
@@ -1322,7 +1322,7 @@ export default function OrderDtail({route,navigation}) {
                     {(OrderData.pay_status_date !== '0000-00-00') && (
                         <View style={[flex]}>
                             <View style={[styles.wt25]}>
-                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>결제요청일</Text>
+                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>결제요청일시</Text>
                             </View>
                             <View style={[styles.wt75]}>
                                 <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
@@ -1366,7 +1366,7 @@ export default function OrderDtail({route,navigation}) {
                     {(OrderData.pay_date) && (
                         <View style={[flex]}>
                             <View style={[styles.wt25]}>
-                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>결제완료일</Text>
+                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>결제완료일시</Text>
                             </View>
                             <View style={[styles.wt75]}>
                                 <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
