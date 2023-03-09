@@ -68,7 +68,6 @@ function OrderStatus({route, navigation}) {
                     val=>
                         val.ord_status === 'ord_ready'  ||
                         val.ord_status === 'ord_doing'
-
                 );
                 let desc = temp.sort((a,b)=>{
                     return new Date(b.gd_order_uid) - new Date(a.gd_order_uid);
@@ -106,7 +105,6 @@ function OrderStatus({route, navigation}) {
             <ScrollView style={[bg_white]}>
                 <View style={[styles.bt, styles.bb]}>
                     <View>
-
                         {OrderList.map((val,idx)=>(
                             <>
                                 <View style={[styles.order_list_items]} key={idx}>

@@ -68,6 +68,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Checkbox from "expo-checkbox";
 import {AllgdOrderDel, ATorderDel, getAppInfo, getOrderInfo, OrderMod, payDoneCancel, PayTry,} from "./UTIL_order";
+import deliStatus from "./DeliStatus";
 
 
 export default function OrderDtail({route,navigation}) {
@@ -177,19 +178,25 @@ export default function OrderDtail({route,navigation}) {
     /**--------------------------------------------------------페이지 진입시 노출---------------------------------------------------**/
     useEffect(() => {
         /**-------------주문상세정보 출력------------**/
-        getOrderInfo(gd_order_uid, Member).then(res=>{
-            if(res.data.result === 'OK') {
+        getOrderInfo(gd_order_uid, Member).then(res=> {
+            if (res.data.result === 'OK') {
                 const {gd_order} = res.data;
-                let temp = gd_order.A_order.map(val=>{
+                let temp = gd_order.A_order.map(val => {
                     return {
                         ...val,
-                        goods_chk         :false,
-                        goods_del         :false,
+                        goods_chk: false,
+                        goods_del: false,
                     }
                 })
                 setOrderDate(gd_order);
                 setOrderGoodsList(temp);
-                navigation.setOptions({title: ordStatus(gd_order.ord_status)+' 상태입니다.'});    // 상태에 따른 타이틀 변경
+                console.log(gd_order.deli_status);
+                // 발주상태
+                if(gd_order.ord_status === 'pay_done') {
+                    navigation.setOptions({title: gd_order.deli_status_name + ' 상태입니다.'});
+                } else {
+                    navigation.setOptions({title: gd_order.ord_status_name + ' 상태입니다.'});
+                }
             }
         });
 
@@ -892,11 +899,6 @@ export default function OrderDtail({route,navigation}) {
             }
         }
 
-
-
-
-
-
         if(OrderData.ord_status === 'pay_done' || OrderData.ord_status === 'deli_ready') {
             if(Cancel) {
                 return (
@@ -1231,7 +1233,60 @@ export default function OrderDtail({route,navigation}) {
         Settlekindprice += Number(OrderData.tot_opt_price);
         return(
             <>
+
+
+
+
                 <View>
+                    {/**---------------배송정보---------------**/}
+                    {(OrderData.deli_mem_name) && (
+                        <>
+                            <View style={container}>
+                                <Text style={[h18]}>배송정보</Text>
+                            </View>
+                            {/**----------------------배송기사명--------------------------**/}
+                            {(OrderData.deli_mem_name) && (
+                            <View style={[flex,mt1]}>
+                                <View style={[styles.wt25]}>
+                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송기사명</Text>
+                                </View>
+                                <View style={[styles.wt75]}>
+                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                        {OrderData.deli_mem_name}
+                                    </Text>
+                                </View>
+                            </View>
+                            )}
+                            {/**----------------------배송기사 연락처--------------------------**/}
+                            {(OrderData.deli_mem_mobile) && (
+                                <View style={[flex,mt1]}>
+                                    <View style={[styles.wt25]}>
+                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송기사명</Text>
+                                    </View>
+                                    <View style={[styles.wt75]}>
+                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                            {OrderData.deli_mem_name}
+                                        </Text>
+                                    </View>
+                                </View>
+                            )}
+                            {/**----------------------배송차량--------------------------**/}
+                            {(OrderData.deli_mem_mobile) && (
+                                <View style={[flex,mt1]}>
+                                    <View style={[styles.wt25]}>
+                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송차량</Text>
+                                    </View>
+                                    <View style={[styles.wt75]}>
+                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                            {OrderData.deli_car_type_name}
+                                        </Text>
+                                    </View>
+                                </View>
+                            )}
+                        </>
+                    )}
+
+                    {/**--------------결제정보---------------**/}
                     <View style={container}>
                         <Text style={[h18]}>결제금액</Text>
                         {(OrderData.settlekind === 'bank') && (
@@ -1291,7 +1346,7 @@ export default function OrderDtail({route,navigation}) {
                                 <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>입금계좌</Text>
                             </View>
                             <View style={[styles.wt75]}>
-                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                <Text style={[styles.GoodsDetail_info_txt_val,h12, styles.GoodsDetail_price_val]}>
                                     {BankCode.map(label=>label.value === OrderData.bankAccount && label.label)}
                                 </Text>
                             </View>
@@ -1306,19 +1361,6 @@ export default function OrderDtail({route,navigation}) {
                             <View style={[styles.wt75]}>
                                 <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
                                     {DateChg(OrderData.pay_date)} {OrderData.pay_time}
-                                </Text>
-                            </View>
-                        </View>
-                    )}
-                    {/**----------------------무통장입금시 노출--------------------------**/}
-                    {(OrderData.pay_status_date !== '0000-00-00') && (
-                        <View style={[flex]}>
-                            <View style={[styles.wt25]}>
-                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>입금확인</Text>
-                            </View>
-                            <View style={[styles.wt75]}>
-                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                    {DateChg(OrderData.pay_status_date)} {OrderData.pay_status_time}
                                 </Text>
                             </View>
                         </View>

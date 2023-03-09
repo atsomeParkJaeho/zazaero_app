@@ -60,7 +60,7 @@ function DeliStatus({route, navigation}) {
             console.log(result);
             if(result === 'OK') {
                 let temp = A_gd_order.filter(val=>
-                    val.ord_status === 'pay_done' ||
+                    val.ord_status === 'pay_done'   ||
                     val.ord_status === 'deli_ready' ||
                     val.ord_status === 'deli_doing' ||
                     val.ord_status === 'deli_done'
@@ -123,8 +123,6 @@ function DeliStatus({route, navigation}) {
                                                         <Text style={[styles.Construction_name_val, h14]} numberOfLines={1}>{DateChg(val.order_date)} {val.order_time}</Text>
                                                     </View>
                                                 </View>
-
-
                                                 {/**-------------------------공사명----------------------------**/}
                                                 <View style={[flex, styles.mb_5]}>
                                                     <View style={[styles.wt3]}>
@@ -179,17 +177,17 @@ function DeliStatus({route, navigation}) {
                                                 <View style={[flex_between]}>
                                                     <View style="">
                                                         <TouchableOpacity style={[btn_primary, p1,]}
-                                                                          onPress={()=>navigation.navigate('발주상세',{
-                                                                              gd_order_uid   :val.gd_order_uid,
-                                                                              hope_deli_date :val.hope_deli_date,
-                                                                          })}
+                                                          onPress={()=>navigation.navigate('발주상세',{
+                                                              gd_order_uid   :val.gd_order_uid,
+                                                              hope_deli_date :val.hope_deli_date,
+                                                          })}
                                                         >
                                                             <Text style={[text_light]}>상세내역 / 정보변경</Text>
                                                         </TouchableOpacity>
                                                     </View>
                                                     <View style={[flex]}>
                                                         <Text style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>
-                                                            {ordStatus(`${val.ord_status}`)}
+                                                            {deliStatus(`${val.deli_status}`)}
                                                         </Text>
                                                     </View>
                                                 </View>
