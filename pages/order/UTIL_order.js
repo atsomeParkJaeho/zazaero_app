@@ -252,6 +252,20 @@ export const del_deli_addr = async (Member, uid) => {
     return res;
 }
 
+export const get_order_list = async (Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type        :"get_order_list",
+        login_status    :"Y",
+        mem_uid         :Member,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
+
+}
 
 
 

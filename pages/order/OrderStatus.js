@@ -43,6 +43,7 @@ import {DateChg, order_List, ordStatus} from "../../util/util";
 import axios from "axios";
 import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {get_order_list} from "./UTIL_order";
 
 
 function OrderStatus({route, navigation}) {
@@ -58,15 +59,7 @@ function OrderStatus({route, navigation}) {
     console.log('전달 2값 / ',Member);
     /**-----------------------------주문서정보 출력----------------------------**/
     const getOrderStatus = () => {
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-            act_type        :"get_order_list",
-            login_status    :"Y",
-            mem_uid         :Member,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
+        get_order_list(Member).then((res)=>{
             const {result, A_gd_order, query} = res.data;
             console.log(result,'/ 확인');
             if(result === 'OK') {
