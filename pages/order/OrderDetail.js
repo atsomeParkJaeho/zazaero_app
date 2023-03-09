@@ -395,6 +395,10 @@ export default function OrderDtail({route,navigation}) {
             </>
         );
     }
+
+    console.log(OrderData);
+    console.log(OrderGoodsList);
+
     return(
         <>
             {/**----------------수량 조절 팝업------------**/}
@@ -941,6 +945,7 @@ export default function OrderDtail({route,navigation}) {
                                             {val.A_sel_option.map(items=>{
                                                 let goods_price     = items.option_price;
                                                 let goods_cnt       = items.option_cnt;
+                                                let goods_opt_price = items.opt_price;
                                                 let order_item_uid  = items.order_item_uid;
                                                 const reqMemo = (key, value, uid) =>{
                                                     let temp = OrderGoodsList.map((cate)=>{
@@ -1058,7 +1063,7 @@ export default function OrderDtail({route,navigation}) {
                                                             <>
                                                                 <View style={[mt1]}>
                                                                     <View style={[]}>
-                                                                        <Text style={[h13,text_right]}>요청금액 : <Text style={[text_danger]}>0원</Text></Text>
+                                                                        <Text style={[h13,text_right]}>요청금액 : <Text style={[text_danger]}>{Price(goods_opt_price)}원</Text></Text>
                                                                     </View>
                                                                     {/*옵션요청가격*/}
                                                                     <View style={[]}>
@@ -1219,17 +1224,29 @@ export default function OrderDtail({route,navigation}) {
 
                                 {/**----------------------요청옵션비--------------------------**/}
                                 {(OrderData.tot_opt_price) && (
-                                    <View style={[flex,justify_content_end,mb1]}>
-                                        <Text style={[h14,styles.color1,me2]}>옵션요청비</Text>
-                                        <Text style={[h14]}>{Price(OrderData.tot_opt_price)}원</Text>
-                                    </View>
+                                    <>
+                                        {(OrderData.ord_status !== 'ord_ready' && OrderData.ord_status !== 'ord_doing') && (
+                                            <>
+                                                <View style={[flex,justify_content_end,mb1]}>
+                                                    <Text style={[h14,styles.color1,me2]}>옵션요청비</Text>
+                                                    <Text style={[h14]}>{Price(OrderData.tot_opt_price)}원</Text>
+                                                </View>
+                                            </>
+                                        )}
+                                    </>
                                 )}
                                 {/**----------------------배송비--------------------------**/}
                                 {(OrderData.deli_price) && (
-                                    <View style={[flex,justify_content_end,mb1]}>
-                                        <Text style={[h14,styles.color1,me2]}>배송비</Text>
-                                        <Text style={[h14]}>{Price(OrderData.deli_price)}원</Text>
-                                    </View>
+                                    <>
+                                        {(OrderData.ord_status !== 'ord_ready' && OrderData.ord_status !== 'ord_doing') && (
+                                            <>
+                                                <View style={[flex,justify_content_end,mb1]}>
+                                                    <Text style={[h14,styles.color1,me2]}>배송비</Text>
+                                                    <Text style={[h14]}>{Price(OrderData.deli_price)}원</Text>
+                                                </View>
+                                            </>
+                                        )}
+                                    </>
                                 )}
                                 {/**----------------------총결제 금액--------------------------**/}
                                 <View style={[flex,justify_content_end,mb1]}>

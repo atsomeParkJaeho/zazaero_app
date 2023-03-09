@@ -72,7 +72,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {AddrMatch, Phone, Price, Time, Time1, Time2, cancel_List, cancel_d_List, DateChg, DateChg2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
-import {InsOrder, SaveDeliAddr} from "./UTIL_order";
+import {del_deli_addr, get_deli_addr_list, get_order_ready, InsOrder, SaveDeliAddr, setDeliList} from "./UTIL_order";
 
 
 
@@ -131,14 +131,7 @@ export default function OrderForm({route,navigation}) {
 
     /**---------------------------------입력한 배송지 검색---------------------------------------------------**/
     const getDeliList = () => {
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-            act_type        : "get_deli_addr_list",
-            mem_uid         :Member,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
+        get_deli_addr_list(Member).then((res)=>{
             if (res) {
                 const {result, A_deli_info} = res.data;
                 if (result === 'OK') {
@@ -152,15 +145,7 @@ export default function OrderForm({route,navigation}) {
     /**---------------------------------장바구니 정보 유틸에서 출력---------------------------------------------------**/
     const getCartList = () => {
         let order_result_uid = order_uid.map(val=>Number(val.order_uid));
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
-            act_type        : "get_order_ready",
-            mem_uid         : Member,
-            order_uid       : order_result_uid,         // 배열로감
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        get_order_ready(Member, order_result_uid).then((res) => {
             if (res) {
                 const {result, A_order} = res.data;
                 if (result === 'OK') {
@@ -201,15 +186,7 @@ export default function OrderForm({route,navigation}) {
 
     /**---------------------------------배송지 삭제---------------------------------------------------**/
     const delDeli = (uid) => {
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-            act_type        : "del_deli_addr",
-            mem_uid         :Member,
-            gmd_sno         :uid,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
+        del_deli_addr(Member, uid).then((res)=>{
             if (res) {
                 const {result} = res.data;
                 if (result === 'OK') {
@@ -497,9 +474,9 @@ export default function OrderForm({route,navigation}) {
     }
     /**--------------------------------기존 배송지 선택----------------------------------**/
     function OrderSearch() {
+
         const [Search, setSearch]     = useState(``);
         const [Show, setShow]         = useState(false);    // 검색창 노출 여부
-
 
         let find = DeliList.filter(text=>(text.gmd_address.includes(Search) && text));
 

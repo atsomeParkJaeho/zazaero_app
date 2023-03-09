@@ -213,6 +213,44 @@ export const gd_cancel_info = async (Member, gd_cancel_uid) => {
     return res;
 }
 
+export const get_deli_addr_list = async (Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type        :"get_deli_addr_list",
+        mem_uid         :Member,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    })
+    return res;
+}
+
+export const get_order_ready = async (Member, order_result_uid) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
+        act_type        : "get_order_ready",
+        mem_uid         : Member,
+        order_uid       : order_result_uid,         // 배열로감
+    }, {
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    })
+
+    return res;
+}
+
+export const del_deli_addr = async (Member, uid) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type        : "del_deli_addr",
+        mem_uid         :Member,
+        gmd_sno         :uid,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    })
+    return res;
+}
 
 
 
