@@ -428,9 +428,6 @@ export default function Cart({route, navigation}) {
                                                                                 {/*================자재명==============*/}
                                                                                 <View style={[flex_between, styles.pd_18]}>
                                                                                     <View style={[flex, wt8]}>
-                                                                                        <Text>{cate.cate_1st_uid}</Text>
-                                                                                        <Text></Text>
-                                                                                        <Text></Text>
                                                                                         <Checkbox
                                                                                             onValueChange={() => goFormChk(val.goods_uid, cate.cate_1st_uid, total_price)}
                                                                                             value={val.goods_chk}
@@ -497,11 +494,11 @@ export default function Cart({route, navigation}) {
                                                                                             </TouchableWithoutFeedback>
                                                                                             {/*============수량=================*/}
                                                                                             {/**-----상품 uid, 주문 uid 추가----**/}
-                                                                                            <TouchableOpacity style={[countinput]}>
+                                                                                            <View style={[countinput]}>
                                                                                                 <Text style={[text_center]}>
                                                                                                     {goods_cnt}
                                                                                                 </Text>
-                                                                                            </TouchableOpacity>
+                                                                                            </View>
                                                                                             {/*=============플러스 버튼============*/}
                                                                                             <TouchableWithoutFeedback
                                                                                                 onPress={() => modCart(val.goods_uid, val.order_uid, 'plus', goods_cnt, goods_price)}>
