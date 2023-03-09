@@ -45,9 +45,6 @@ import {chk_dup_id, Sign_up} from "../UTIL_mem";
 import {DeviceInfo} from "react-native-web";
 import PriModal from "./PriModal";
 import {getAppInfo} from "../order/UTIL_order";
-import DropDownPicker from 'react-native-dropdown-picker';
-
-
 export default function SignUp({route, navigation}) {
 
 
@@ -160,13 +157,6 @@ export default function SignUp({route, navigation}) {
 
     let chk = [SignUp.privacy_1, SignUp.privacy_2, SignUp.privacy_3, SignUp.privacy_4, SignUp.privacy_5];
     let TChk = chk.filter(val=>val===true);
-
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
-    const [items, setItems] = useState([
-        {label: 'Apple', value: 'apple'},
-        {label: 'Banana', value: 'banana'}
-    ]);
     // 3. 회원가입 신청
     const goForm = ()=> {
 
@@ -286,58 +276,16 @@ export default function SignUp({route, navigation}) {
         })
     }
 
-    //console.log(SignUp);
-    
-    //
-    const loca_list = [
-
-        {
-            name: "서울",                       //예금주
-        },
-        {
-            name: "부산",                       //예금주
-        },
-        {
-            name: "광주",                       //예금주
-        },
-        {
-            name: "전주",                       //예금주
-        },
-        {
-            name: "대구",                       //예금주
-        },
-        {
-            name: "대전",                       //예금주
-        },
-        {
-            name: "울산",                       //예금주
-        },
-        {
-            name: "인천",                       //예금주
-        },
-        {
-            name: "제주",                       //예금주
-        },
-        {
-            name: "전주",                       //예금주
-        },
-    ];
-
-    const [Selected, setSelected] = useState({
-        select_title: '',
-    });
-
     const goSearch = (name) => {
-        setSelected({
-            ...Selected,
-            select_title: name,
-
+        setShow(!Show);
+        setSignUp({
+            ...SignUp,
+            road_address: name,
         });
-
     }
-    console.log(Selected.select_title);
+    // console.log(Selected.select_title);
 
-    //
+
 
     return (
         <>
@@ -421,8 +369,8 @@ export default function SignUp({route, navigation}) {
                                     <TouchableOpacity onPress={()=>{setShow(!Show)}}>
                                         <View style={[styles.border]}>
                                             {/**---------------------------선택주소 노출--------------------------------**/}
-                                            <Text style={[styles.select_txt,(Selected.select_title) ? text_black:'']}>
-                                                {(Selected.select_title) ? Selected.select_title:'지역을 선택해주세요'}
+                                            <Text style={[styles.select_txt,(SignUp.road_address) ? text_black:'']}>
+                                                {(SignUp.road_address) ? SignUp.road_address:'지역을 선택해주세요'}
                                             </Text>
                                         </View>
                                     </TouchableOpacity>
@@ -435,11 +383,11 @@ export default function SignUp({route, navigation}) {
                                 {(Show) && (
                                 <View style={[styles.select_opt_list_box]}>
                                     <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
-                                        {loca_list.map((val,ide)=>
+                                        {AddrMatch.map((val,idx)=>
                                             <View style={[styles.select_opt_list_itmes]}>
-                                                <TouchableOpacity onPress={() => goSearch(val.name)}>
+                                                <TouchableOpacity onPress={() => goSearch(val.value)}>
                                                     <Text style={[text_center,h17]}>
-                                                        {val.name}
+                                                        {val.label}
                                                     </Text>
                                                 </TouchableOpacity>
                                             </View>
@@ -874,7 +822,7 @@ const styles = StyleSheet.create({
     select_opt_list_itmes:{
         borderBottomWidth:1,
         paddingVertical:10,
-        borderColor:"#ccc",
+        borderColor:"#eee",
 
     },
 });
