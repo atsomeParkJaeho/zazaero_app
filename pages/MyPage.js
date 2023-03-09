@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Footer from "./Footer";
 
 import ArrowRight from '../icons/arrow_r.svg'
+import {reloadAsync} from "expo-updates";
 
 
 export default function MyPage({navigation, route}) {
@@ -24,6 +25,17 @@ export default function MyPage({navigation, route}) {
     console.log('회원코드 / ' + Member);
 
     const [mem_info, set_mem_info] = useState([]);   // 회원정보 셋팅
+
+    // 로그아웃 로직
+    let goLogout = () => {
+        AsyncStorage.clear();
+        AsyncStorage.getItem('member').then((value)=>{
+            console.log(value);
+        });
+        reloadAsync();
+        navigation.replace('로그인');
+    }
+
     useEffect(() => {
         axios.get('http://49.50.162.86:80/ajax/UTIL_mem_info.php', {
             params: {
@@ -44,6 +56,8 @@ export default function MyPage({navigation, route}) {
         });
 
     }, [Member]);
+
+
 
     console.log(mem_info);
 
@@ -147,6 +161,7 @@ export default function MyPage({navigation, route}) {
                                 </View>
                             </TouchableOpacity>
                         </View>
+
                         <View style={styles.mypageListItem}>
                             <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
                                 navigation.navigate('고객센터')
@@ -169,6 +184,19 @@ export default function MyPage({navigation, route}) {
                                 <View style={styles.flex}>
                                     <View style={styles.mypageListItemTitle}>
                                         <Text style={styles.mypageList_name}>약관 * 개인정보처리방침</Text>
+                                    </View>
+                                    <View style={styles.mypageListItemIcon}>
+                                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
+                                        <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.mypageListItem}>
+                            <TouchableOpacity style={styles.mypageListItem_link} onPress={goLogout}>
+                                <View style={styles.flex}>
+                                    <View style={styles.mypageListItemTitle}>
+                                        <Text style={styles.mypageList_name}>로그아웃</Text>
                                     </View>
                                     <View style={styles.mypageListItemIcon}>
                                         {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
