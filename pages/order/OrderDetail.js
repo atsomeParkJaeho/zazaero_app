@@ -1,7 +1,23 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {StyleSheet, Button, Alert, CheckBox, Text, TextInput, View, Image, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Switch, KeyboardAvoidingView,} from 'react-native';
+import {
+    StyleSheet,
+    Button,
+    Alert,
+    CheckBox,
+    Text,
+    TextInput,
+    View,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    TouchableWithoutFeedback,
+    Switch,
+    KeyboardAvoidingView,
+    Platform,
+} from 'react-native';
 // 공통 CSS 추가
-import {container, bg_white, h16, text_center, flex_around, flex_between, input, ms2, flex, mt1,
+import {
+    container, bg_white, h16, text_center, flex_around, flex_between, input, ms2, flex, mt1,
     fw500,
     d_flex,
     align_items_center,
@@ -30,11 +46,22 @@ import {container, bg_white, h16, text_center, flex_around, flex_between, input,
     h13,
     text_right,
     justify_content_between,
-    btn_danger, btn_primary, textarea, justify_content_around,
+    btn_danger, btn_primary, textarea, justify_content_around, text_black, h17,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 import {FormStyle} from "./FormStyle";
-import {bacnkAccount, DateChg, ordStatus, payStatus, Phone, Price, settleKind, Time1, Time2} from "../../util/util";
+import {
+    AddrMatch,
+    bacnkAccount,
+    DateChg,
+    ordStatus,
+    payStatus,
+    Phone,
+    Price,
+    settleKind,
+    Time1,
+    Time2
+} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import CalendarStrip from "react-native-calendar-strip";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -51,6 +78,7 @@ export default function OrderDtail({route,navigation}) {
     /**--------------------------------------필수 정보사항--------------------------------------------------**/
     const [Member, setMember]          = useState();
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
+        setMember(value);
         setMember(value);
     });
     const InputFocus = useRef([]);
@@ -80,8 +108,19 @@ export default function OrderDtail({route,navigation}) {
         bankAccount         :'',
         bankSender          :'',
     });
+
+
+    //
+    const [Show, setShow]         = useState(false);    // 셀렉트창 노출 여부
+
+    const goSearch = (name) => {
+        setShow(!Show);
+      
+    }
+
     /**--------------------------------------주문서 셋팅--------------------------------------------------**/
     const Update = useIsFocused();
+
     /**------------------------------------------------------카드결제완료시 db 로그 전송.----------------------------------------------**/
 
 
@@ -634,11 +673,44 @@ export default function OrderDtail({route,navigation}) {
                                         <>
                                             <View style={[mb2]}>
                                                 {/*은행선택*/}
-                                                <View style={[input,{flex:1, marginBottom:15,}]}>
-
+                                                <View style={[styles.select_box]}>
+                                                    <TouchableOpacity onPress={()=>{setShow(!Show)}}>
+                                                        <View style={[styles.border]}>
+                                                            {/**---------------------------선택주소 노출--------------------------------**/}
+                                                            <Text style={[styles.select_txt,]}>
+                                                                계좌를 선택해주세요
+                                                            </Text>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                    <View style={[styles.select_icon_box]}>
+                                                        <Text style={[styles.select_icon]}>▼</Text>
+                                                    </View>
                                                 </View>
+                                                {/**/}
+                                                {/**---------------------------클릭시 노출--------------------------------**/}
+                                                {(Show) && (
+                                                    <View style={[styles.select_opt_list_box]}>
+                                                        <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
+                                                            <View style={[styles.select_opt_list_itmes]}>
+                                                                <TouchableOpacity onPress={() => goSearch()}>
+                                                                    <Text style={[text_center,h17]}>
+                                                                       국민 9498496496498 홍길동
+                                                                    </Text>
+                                                                </TouchableOpacity>
+                                                            </View>
+                                                            <View style={[styles.select_opt_list_itmes]}>
+                                                                <TouchableOpacity onPress={() => goSearch()}>
+                                                                    <Text style={[text_center,h17]}>
+                                                                        신한 9498496496498 홍길동
+                                                                    </Text>
+                                                                </TouchableOpacity>
+                                                            </View>
+                                                        </ScrollView>
+                                                    </View>
+                                                )}
+                                                {/**/}
                                                 {/*예금주 입력*/}
-                                                <View style={{flex:1}}>
+                                                <View style={[{flex:1},mt1]}>
                                                     <TextInput style={[input,{width:"100%"}]} placeholder="예금주명" value={OrderData.bankSender}
                                                                onChangeText={(bankSender)=>goInput('bankSender',bankSender)}
                                                     />
@@ -1168,91 +1240,156 @@ export default function OrderDtail({route,navigation}) {
                             </>
                         )}
                     </View>
+                    {/**/}
+                    <View style={[flex,mt1]}>
+                        {/**----------------------발주신청일--------------------------**/}
+                        {(OrderData.order_date) && (
+                            <>
+                                <View style={[styles.wt25]}>
+                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>발주신청일시</Text>
+                                </View>
+                                <View style={[styles.wt75]}>
+                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                        {DateChg(OrderData.order_date)} {OrderData.order_time}
+                                    </Text>
+                                </View>
+                            </>
+                        )}
+                    </View>
+                    {/**----------------------결제요청일--------------------------**/}
+                    {(OrderData.pay_status_date !== '0000-00-00') && (
+                        <View style={[flex]}>
+                            <View style={[styles.wt25]}>
+                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>결제요청일</Text>
+                            </View>
+                            <View style={[styles.wt75]}>
+                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                    {DateChg(OrderData.pay_status_date)} {OrderData.pay_status_time}
+                                </Text>
+                            </View>
+                        </View>
+                    )}
+                    {/**----------------------결제유형--------------------------**/}
+                    {(OrderData.settlekind) && (
+                        <View style={[flex]}>
+                            <View style={[styles.wt25]}>
+                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>결제유형</Text>
+                            </View>
+                            <View style={[styles.wt75]}>
+                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                    {settleKind(OrderData.settlekind)}
+                                </Text>
+                            </View>
+                        </View>
+                    )}
+                    {/**----------------------입금계좌정보--------------------------**/}
+                    {(OrderData.settlekind === 'bank') && (
+                        <View style={[flex]}>
+                            <View style={[styles.wt25]}>
+                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>입금계좌</Text>
+                            </View>
+                            <View style={[styles.wt75]}>
+                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                    {BankCode.map(label=>label.value === OrderData.bankAccount && label.label)}
+                                </Text>
+                            </View>
+                        </View>
+                    )}
+                    {/**----------------------결제요청일(* 발주검수 완료후 결제대기시에 노출한다.)--------------------------**/}
+                    {(OrderData.pay_date) && (
+                        <View style={[flex]}>
+                            <View style={[styles.wt25]}>
+                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>결제완료일</Text>
+                            </View>
+                            <View style={[styles.wt75]}>
+                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                    {DateChg(OrderData.pay_date)} {OrderData.pay_time}
+                                </Text>
+                            </View>
+                        </View>
+                    )}
+                    {/**----------------------무통장입금시 노출--------------------------**/}
+                    {(OrderData.pay_status_date !== '0000-00-00') && (
+                        <View style={[flex]}>
+                            <View style={[styles.wt25]}>
+                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>입금확인</Text>
+                            </View>
+                            <View style={[styles.wt75]}>
+                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                    {DateChg(OrderData.pay_status_date)} {OrderData.pay_status_time}
+                                </Text>
+                            </View>
+                        </View>
+                    )}
+                    {/**----------------------자재 가격--------------------------**/}
+                    {(OrderData.goodsprice) && (
+                        <View style={[flex]}>
+                            <View style={[styles.wt25]}>
+                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재가격</Text>
+                            </View>
+                            <View style={[styles.wt75]}>
+                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                    {Price(OrderData.goodsprice)}원
+                                </Text>
+                            </View>
+                        </View>
+                    )}
+                    {/**----------------------요청옵션비--------------------------**/}
+                    {(OrderData.tot_opt_price) && (
+                        <>
+                            {(OrderData.ord_status !== 'ord_ready' && OrderData.ord_status !== 'ord_doing') && (
+                                <>
+                                    <View style={[flex]}>
+                                        <View style={[styles.wt25]}>
+                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>옵션요청비</Text>
+                                        </View>
+                                        <View style={[styles.wt75]}>
+                                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                {Price(OrderData.tot_opt_price)}원
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </>
+                            )}
+                        </>
+                    )}
+                    {/**----------------------배송비--------------------------**/}
+                    {(OrderData.deli_price) && (
+                        <>
+                            {(OrderData.ord_status !== 'ord_ready' && OrderData.ord_status !== 'ord_doing') && (
+                                <>
+                                    <View style={[flex]}>
+                                        <View style={[styles.wt25]}>
+                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송비</Text>
+                                        </View>
+                                        <View style={[styles.wt75]}>
+                                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                {Price(OrderData.deli_price)}원
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </>
+                            )}
+                        </>
+                    )}
+                    {/**----------------------총결제 금액--------------------------**/}
+                    <View style={[flex]}>
+                        <View style={[styles.wt25]}>
+                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>총 결제금액</Text>
+                        </View>
+                        <View style={[styles.wt75]}>
+                            <Text style={[styles.GoodsDetail_info_txt_val,h16,text_primary]}>
+                                {Price(Settlekindprice)}원
+                            </Text>
+                        </View>
+                    </View>
+                    {/**/}
                     <View style={[container,bg_light]}>
                         <View style={[d_flex,justify_content_end,pe1]}>
                             <View style="">
-                                {/**----------------------발주신청일--------------------------**/}
-                                {(OrderData.order_date) && (
-                                    <View style={[flex,justify_content_end,mb1]}>
-                                        <Text style={[h14,styles.color1,me2]}>발주신청일시</Text>
-                                        <Text style={[h14]}>{DateChg(OrderData.order_date)} {OrderData.order_time}</Text>
-                                    </View>
-                                )}
-                                {/**----------------------결제요청일--------------------------**/}
-                                {(OrderData.pay_status_date !== '0000-00-00') && (
-                                    <View style={[flex,justify_content_end,mb1]}>
-                                        <Text style={[h14,styles.color1,me2, text_danger]}>결제요청일</Text>
-                                        <Text style={[h14, text_danger]}>{DateChg(OrderData.pay_status_date)} {OrderData.pay_status_time}</Text>
-                                    </View>
-                                )}
-                                {/**----------------------결제유형--------------------------**/}
-                                {(OrderData.settlekind) && (
-                                    <View style={[flex,justify_content_end,mb1]}>
-                                        <Text style={[h14,styles.color1,me2]}>결제유형</Text>
-                                        <Text style={[h14]}>{settleKind(OrderData.settlekind)}</Text>
-                                    </View>
-                                )}
-                                {/**----------------------입금계좌정보--------------------------**/}
-                                {(OrderData.settlekind === 'bank') && (
-                                    <View style={[mb1]}>
-                                        <Text style={[h14]}>
-                                            {BankCode.map(label=>label.value === OrderData.bankAccount && label.label)}
-                                        </Text>
-                                    </View>
-                                )}
-                                {/**----------------------결제요청일(* 발주검수 완료후 결제대기시에 노출한다.)--------------------------**/}
-                                {(OrderData.pay_date) && (
-                                    <View style={[flex,justify_content_end,mb1]}>
-                                        <Text style={[h14,styles.color1,me2, text_primary]}>결제완료일</Text>
-                                        <Text style={[h14, text_primary]}>{DateChg(OrderData.pay_date)} {OrderData.pay_time}</Text>
-                                    </View>
-                                )}
-                                {/**----------------------무통장입금시 노출--------------------------**/}
-                                {(OrderData.pay_status_date !== '0000-00-00') && (
-                                    <View style={[flex,justify_content_end,mb1]}>
-                                        <Text style={[h14,styles.color1,me2, text_danger]}>입금확인</Text>
-                                        <Text style={[h14, text_danger]}>{DateChg(OrderData.pay_status_date)} {OrderData.pay_status_time}</Text>
-                                    </View>
-                                )}
-                                {/**----------------------자재 가격--------------------------**/}
-                                {(OrderData.goodsprice) && (
-                                    <View style={[flex,justify_content_end,mb1]}>
-                                        <Text style={[h14,styles.color1,me2]}>자재가격</Text>
-                                        <Text style={[h14]}>{Price(OrderData.goodsprice)}원</Text>
-                                    </View>
-                                )}
 
-                                {/**----------------------요청옵션비--------------------------**/}
-                                {(OrderData.tot_opt_price) && (
-                                    <>
-                                        {(OrderData.ord_status !== 'ord_ready' && OrderData.ord_status !== 'ord_doing') && (
-                                            <>
-                                                <View style={[flex,justify_content_end,mb1]}>
-                                                    <Text style={[h14,styles.color1,me2]}>옵션요청비</Text>
-                                                    <Text style={[h14]}>{Price(OrderData.tot_opt_price)}원</Text>
-                                                </View>
-                                            </>
-                                        )}
-                                    </>
-                                )}
-                                {/**----------------------배송비--------------------------**/}
-                                {(OrderData.deli_price) && (
-                                    <>
-                                        {(OrderData.ord_status !== 'ord_ready' && OrderData.ord_status !== 'ord_doing') && (
-                                            <>
-                                                <View style={[flex,justify_content_end,mb1]}>
-                                                    <Text style={[h14,styles.color1,me2]}>배송비</Text>
-                                                    <Text style={[h14]}>{Price(OrderData.deli_price)}원</Text>
-                                                </View>
-                                            </>
-                                        )}
-                                    </>
-                                )}
-                                {/**----------------------총결제 금액--------------------------**/}
-                                <View style={[flex,justify_content_end,mb1]}>
-                                    <Text style={[h14,styles.color1,me2]}>총 결제금액</Text>
-                                    <Text style={[h16,text_primary]}>{Price(Settlekindprice)}원</Text>
-                                </View>
+
+
                             </View>
                         </View>
                     </View>
@@ -1400,5 +1537,49 @@ const styles = StyleSheet.create({
         borderRadius:5,
         width:90,
         height:80,
+    },
+    wt25: {
+        width: "25%",
+        backgroundColor:"#f8f8f8",
+        padding:8,
+        borderWidth:1,
+        borderColor:"#ddd",
+        borderRightWidth:0,
+        borderBottomWidth:0,
+    },
+    wt75: {
+        width: "75%",
+        padding:8,
+        borderWidth:1,
+        borderColor:"#ddd",
+        borderLeftWidth:0,
+        borderBottomWidth:0,
+    },
+    GoodsDetail_info_txt:{
+        fontSize: Platform.OS === 'ios' ? 14 : 13,
+        color:"#333",
+        lineHeight:24,
+        textAlign:"right",
+    },
+    GoodsDetail_info_txt_val:{
+        fontSize: Platform.OS === 'ios' ? 15 : 14,
+        lineHeight:24,
+        fontWeight:"500",
+        textAlign:"right",
+    },
+    select_opt_list_box:{
+        paddingHorizontal:10,
+        paddingVertical:12,
+        borderLeftWidth:1,
+        borderRightWidth:1,
+        borderBottomWidth:1,
+        borderColor:"#EDEDF1",
+        borderBottomLeftRadius:5,
+        borderBottomRightRadius:5,
+    },
+    select_opt_list_itmes:{
+        borderBottomWidth:1,
+        paddingVertical:10,
+        borderColor:"#eee",
     },
 });
