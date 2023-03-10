@@ -200,6 +200,10 @@ export default function OrderForm({route,navigation}) {
             });
         }
         if(type === 'mod') {
+            setSelected({
+                ...Selected,
+                order_title:'',
+            });
             setmodAddr(type);
         }
     }
