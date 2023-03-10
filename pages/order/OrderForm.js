@@ -172,8 +172,8 @@ export default function OrderForm({route,navigation}) {
 
     /**---------------------------------입력폼 입력---------------------------------------------------**/
     const goInput = (keyValue, e) => {
-        if(keyValue === 'addr1') {setOrderDate({...OrderData, addr1:e,});}
-        if(keyValue === 'zonecode') {setOrderDate({...OrderData, zonecode:e,});}
+        // if(keyValue === 'addr1') {setOrderDate({...OrderData, addr1:e,});}
+        // if(keyValue === 'zonecode') {setOrderDate({...OrderData, zonecode:e,});}
         setOrderDate({...OrderData,
             addr1           :addr1,
             zonecode        :zonecode,
@@ -181,6 +181,27 @@ export default function OrderForm({route,navigation}) {
             mgr_mem_uid     :Member,
             [keyValue]      :e,
         });
+    }
+
+    /**--------------------------------------신규공사, 기존공사 선택 이벤트--------------------------------------------**/
+    const select_addr = (type) => {
+        if(type === 'add') {
+
+            route.params.addr1      = '';
+            route.params.zonecode   = '';
+
+            setmodAddr(type);
+            setOrderDate({
+                ...OrderData,
+                order_title :'',
+                addr1       :'',
+                addr2       :'',
+                zonecode    :'',
+            });
+        }
+        if(type === 'mod') {
+            setmodAddr(type);
+        }
     }
 
 
@@ -215,9 +236,9 @@ export default function OrderForm({route,navigation}) {
         // 오늘날짜 출력
     let today = new Date();
     console.log(DateChg2(today));
-    console.log(route.params);
-    console.log(OrderData);
-    console.log(DeliList);
+    console.log(route.params,' / 라우터 파라미터');
+    console.log(OrderData,' / 주문 데이터');
+    console.log(DeliList,' / 공사명일시');
 
     return (
         <>
@@ -257,7 +278,7 @@ export default function OrderForm({route,navigation}) {
                                     <TextInput style={[input,{flex:1,marginRight:16},bg_light]}
                                                editable={false}
                                                placeholder="우편번호"
-                                               value={zonecode}
+                                               value={(zonecode) ? zonecode: OrderData.zonecode}
                                                onChangeText={(zonecode)=>goInput("zonecode",zonecode)}
                                                returnKeyType="next"
                                                blurOnSubmit={false}
@@ -276,7 +297,7 @@ export default function OrderForm({route,navigation}) {
                                 <TextInput style={[input,{flex:1},bg_light]}
                                            editable={false}
                                            placeholder="주소"
-                                           value={addr1}
+                                           value={(addr1) ? addr1: OrderData.addr1}
                                            onChangeText={(addr1)=>goInput("addr1",addr1)}
                                            returnKeyType="next"
                                            blurOnSubmit={false}
@@ -443,7 +464,7 @@ export default function OrderForm({route,navigation}) {
             <>
                 <View style={[flex,pb2]}>
                     {/**----------------------------------------------신규공사--------------------------------------------------**/}
-                    <TouchableOpacity onPress={()=>setmodAddr('add')}>
+                    <TouchableOpacity onPress={()=>select_addr('add')}>
                         <View style={[flex]}>
                             <View style={[styles.border_Circle]}>
                                 {(modAddr === 'add') &&
@@ -456,7 +477,7 @@ export default function OrderForm({route,navigation}) {
                         </View>
                     </TouchableOpacity>
                     {/**----------------------------------------------기존 공사--------------------------------------------------**/}
-                    <TouchableOpacity onPress={()=>setmodAddr('mod')}>
+                    <TouchableOpacity onPress={()=>select_addr('mod')}>
                         <View style={[flex,ms2]}>
                             <View style={[styles.border_Circle]}>
                                 {(modAddr === 'mod') &&
