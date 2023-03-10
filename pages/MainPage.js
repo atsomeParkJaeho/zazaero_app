@@ -202,7 +202,7 @@ export default function MainPage({navigation, route}) {
                         </View>
                         {/*  메인풋터 상단  */}
                         <View style={styles.main_footer_disc}>
-                            <Text style={styles.main_footer_disc_txt}>상호명 : (주 스타키움) - test</Text>
+                            <Text style={styles.main_footer_disc_txt}>상호명 : (주 스타키움)</Text>
                             <Text style={styles.main_footer_disc_txt}>대표자명 : 이정환</Text>
                             <Text style={styles.main_footer_disc_txt}>사업자 번호 : 899-87-01114</Text>
                             <Text style={styles.main_footer_disc_txt}>고객센터 : 1666-7099</Text>
