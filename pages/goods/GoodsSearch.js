@@ -211,9 +211,6 @@ export default function GoodsSearch({route,navigation}) {
                             <>
                                 <View style={flex_between}>
                                     <Text style={h16}>최근 검색어</Text>
-                                    <TouchableOpacity style="" >
-                                        <Text style={[h14,styles.txt_color]}>전체삭제</Text>
-                                    </TouchableOpacity>
                                 </View>
                                 <View style={[mt2]}>
                                 {SearchLog.map(val=>(

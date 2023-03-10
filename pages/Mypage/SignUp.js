@@ -185,17 +185,17 @@ export default function SignUp({route, navigation}) {
 
         if(8 >= SignUp.mem_pw.length) {             // 비밀번호 최소
             Alert.alert('',`8자 이상 입력해주세요.`);
-            return Chkinput.current[2].focus();
+            return Chkinput.current[1].focus();
         }
 
         if(!SignUp.mem_pw_chk) {  // 비밀번호 확인
             Alert.alert('',`비밀번호 확인을 입력해주세요.`);
-            return Chkinput.current[2].focus();
+            return Chkinput.current[1].focus();
         }
 
         if(regPw.test(SignUp.mem_pw) === false) {  // 특수문자 입력 필수
             Alert.alert('','특수 문자가 포함되어있지 않습니다.');
-            return Chkinput.current[2].focus();
+            return Chkinput.current[1].focus();
         }
 
         if(SignUp.mem_pw !== SignUp.mem_pw_chk) {  // 비밀번호 일치
