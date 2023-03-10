@@ -99,7 +99,6 @@ export default function GoodsDetail({route,navigation}) {
                         Alert.alert('','즐겨찾기에 추가하였습니다.');
                         setGoodsDetail({...GoodsDetail,my_zzim_flag:'Y'});
                     }
-
                 }
             } else {
                 const {result} = res.data;
@@ -143,11 +142,11 @@ export default function GoodsDetail({route,navigation}) {
         }
         if(type === 'plus') {
             console.log('플러스');
-            setGoodsCnt(GoodsCnt + 1);
+            setGoodsCnt((GoodsCnt > 1000) ? 999 : GoodsCnt + 1);
         }
         if(type === 'my_cart_cnt') {
             console.log('직접입력');
-            setGoodsCnt(Number(value));
+            setGoodsCnt((value > 1000) ? (999) : (Number(value)));
         }
     }
 
