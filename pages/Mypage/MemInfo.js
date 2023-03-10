@@ -277,7 +277,7 @@ export default function MemInfo({route, navigation}) {
                                             <TextInput style={[input]}
                                                        onChangeText={(mem_name) => goInput("mem_name", mem_name)}
                                                        ref={val=>(goInput2.current[3] = val)}
-                                                       placeholder="홍길동"
+                                                       placeholder="예시)홍길동"
                                                        value={MemInfo.mem_name}/>
                                         </View>
                                         <View style={[styles.flex_item_1]}>
@@ -287,7 +287,7 @@ export default function MemInfo({route, navigation}) {
                                             <TextInput style={[input]}
                                                        onChangeText={(rank_name) => goInput("rank_name", rank_name)}
                                                        ref={val=>(goInput2.current[4] = val)}
-                                                       placeholder="과장"
+                                                       placeholder="예시)과장"
                                                        value={MemInfo.rank_name}/>
                                         </View>
                                     </View>
@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         lineHeight: 22,
         color: "#222",
-        marginBottom: 20,
+
         paddingVertical:6,
         paddingLeft:16,
         backgroundColor:'#eee',
@@ -776,9 +776,25 @@ const styles = StyleSheet.create({
         height: 500,
         borderWidth: 1,
     },
-    upload_img:{
-        resizeMode:"contain",
+    upload_img: {
+        resizeMode: "contain",
         width: "100%",
         height: "100%",
-    }
+    },
+    select_opt_list_box:{
+        paddingHorizontal:10,
+        paddingVertical:12,
+        borderLeftWidth:1,
+        borderRightWidth:1,
+        borderBottomWidth:1,
+        borderColor:"#EDEDF1",
+        borderBottomLeftRadius:5,
+        borderBottomRightRadius:5,
+    },
+    select_opt_list_itmes:{
+        borderBottomWidth:1,
+        paddingVertical:10,
+        borderColor:"#eee",
+
+    },
 });
