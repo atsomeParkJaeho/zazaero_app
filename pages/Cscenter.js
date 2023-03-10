@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView,Linking} from 'react-native'
+import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Linking, Platform} from 'react-native'
 import logo from "../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
 import {bg_white, text_primary} from "../common/style/AtStyle";
@@ -9,8 +9,9 @@ import ArrowRight from "../icons/arrow_r.svg";
 export default function Cscenter({navigation}) {
 
     // console.log('고객센터');
-
-
+    // const callNumber = () => {
+    //     Linking.openURL(`tel:1666-7099`);
+    // };
     return (
         <>
             <ScrollView style={[bg_white]}>
@@ -35,17 +36,28 @@ export default function Cscenter({navigation}) {
                     {/*        </View>*/}
                     {/*    </View>*/}
                     {/*</TouchableOpacity>*/}
-                    <TouchableOpacity onPress={() => {Linking.openURL('tel:1666-7099');}}>
-                        <View style={styles.mypageListItem}>
-                            <View style={styles.mypageListItemTitle}>
-                                <Text style={styles.mypageList_name}>고객센터</Text>
-                            </View>
-                            <View style={styles.mypageListItemIcon}>
-                                {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
-                                <Text style={[styles.mypageList_name,text_primary]}> 1666-7099 </Text>
-                            </View>
+
+                    <View style={styles.mypageListItem}>
+                        <View style={styles.mypageListItemTitle}>
+                            <Text style={styles.mypageList_name}>고객센터</Text>
                         </View>
-                    </TouchableOpacity>
+                        <View style={styles.mypageListItemIcon}>
+                            {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
+                            <Text style={[styles.mypageList_name,text_primary]}> 1666-7099 </Text>
+                        </View>
+                    </View>
+
+                    {/*<TouchableOpacity onPress={() => {Linking.openURL('tel:1666-7099');}}>*/}
+                    {/*    <View style={styles.mypageListItem}>*/}
+                    {/*        <View style={styles.mypageListItemTitle}>*/}
+                    {/*            <Text style={styles.mypageList_name}>고객센터</Text>*/}
+                    {/*        </View>*/}
+                    {/*        <View style={styles.mypageListItemIcon}>*/}
+                    {/*            /!*<Icon name="chevron-forward-outline" size={25} color="#000" />*!/*/}
+                    {/*            <Text style={[styles.mypageList_name,text_primary]}> 1666-7099 </Text>*/}
+                    {/*        </View>*/}
+                    {/*    </View>*/}
+                    {/*</TouchableOpacity>*/}
                 </View>
             </ScrollView>
         </>
