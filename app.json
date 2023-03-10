@@ -25,7 +25,7 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.zazaero",
+      "bundleIdentifier": "com.zazaero.www",
       "buildNumber": "7"
     },
     "android": {
@@ -33,7 +33,7 @@
         "foregroundImage": "./assets/zazero_icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.zazaero",
+      "package": "com.www.zazaero",
       "versionCode": 7
     },
     "web": {
