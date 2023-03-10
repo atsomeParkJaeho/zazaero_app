@@ -10,6 +10,8 @@ import RenderHTML from "react-native-render-html";
 
 function FaqList({navigation}) {
     console.log('자주묻는질문');
+
+
     const [FaqList, setFaqList] = useState([]);  // 자주묻는질문 불러오기
     useEffect(() => {
         // 1. 설정
@@ -29,43 +31,25 @@ function FaqList({navigation}) {
             }
         });
     }, []);
-    //console.log(FaqList);
+
+    console.log(FaqList);
     return (
         <>
             <ScrollView style={[bg_white]}>
                 <List.Section style={[bg_white]}>
-                    {/*{(FaqList.map((val,idx)=>(*/}
-                    {/*    // 제목*/}
-                    {/*    <List.Accordion style={[text_white, bg_white, {borderBottomWidth:1, borderColor:"#EDEDF1"}]} title={val.bd_title} key={idx}>*/}
-                    {/*        <View style={{padding:16}}>*/}
-                    {/*            <View style={[bg_light,{padding:16}]}>*/}
-                    {/*                <Text>*/}
-                    {/*                    가림처리/!*<RenderHTML source={{html:val.bd_contents}}/>*!/*/}
-                    {/*                </Text>*/}
-                    {/*            </View>*/}
-                    {/*        </View>*/}
-                    {/*    </List.Accordion>*/}
-                    {/*    // 내용*/}
-                    {/*)))}*/}
-
-                    <List.Accordion style={[text_white, bg_white, {borderBottomWidth:1, borderColor:"#EDEDF1"}]} title="자주묻는질문1" >
-                        <View style={{padding:16}}>
-                            <View style={[bg_light,{padding:16}]}>
-                                <Text>
-                                    자주묻는질문1 답변
-                                </Text>
+                    {(FaqList.map((val,idx)=>(
+                        // 제목
+                        <List.Accordion style={[text_white, bg_white, {borderBottomWidth:1, borderColor:"#EDEDF1"}]} title={val.bd_title} key={idx}>
+                            <View style={{padding:16}}>
+                                <View style={[bg_light,{padding:16}]}>
+                                    <Text style={[{lineHeight:20,}]}>
+                                        {val.bd_contents}
+                                    </Text>
+                                </View>
                             </View>
-                        </View>
-                    </List.Accordion>
-                    <List.Accordion style={[text_white, bg_white, {borderBottomWidth:1, borderColor:"#EDEDF1"}]} title="자주묻는질문2" >
-                        <View style={{padding:16}}>
-                            <View style={[bg_light,{padding:16}]}>
-                                <Text>
-                                    자주묻는질문2 답변
-                                </Text>
-                            </View>
-                        </View>
-                    </List.Accordion>
+                        </List.Accordion>
+                        // 내용
+                    )))}
                 </List.Section>
             </ScrollView>
         </>
