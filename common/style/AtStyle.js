@@ -368,7 +368,7 @@ export const input = {
     borderRadius: 5,
 }
 export const countinput = {
-    width:60,
+    width:70,
     textAlign:"center",
     height: 36,
     margin: 0,

@@ -192,7 +192,7 @@ export default function Cart({route, navigation}) {
                             return {...val, A_sel_option:val.A_sel_option.map(cnt=>{
                                     return {
                                         ...cnt,
-                                        option_cnt      :Number(cnt.option_cnt) + 1,
+                                        option_cnt      :(cnt.option_cnt > 998) ? 997 : Number(cnt.option_cnt) + 1,
                                     }
                                 })}
                         } else {
