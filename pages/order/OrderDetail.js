@@ -309,7 +309,7 @@ export default function OrderDtail({route,navigation}) {
     }
 
 
-    console.log(BankCode,'/12');
+    console.log(BankCode,'/12 12312312');
     const CancelCnt = (goods_uid, type, src_cnt) => {
 
         console.log(src_cnt);
