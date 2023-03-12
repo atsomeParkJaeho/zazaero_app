@@ -189,6 +189,21 @@ export default function MyPage({navigation, route}) {
                             </TouchableOpacity>
                         </View>
                         <View style={styles.mypageListItem}>
+                            <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
+                                navigation.navigate('회원탈퇴',{uid:mem_info.mem_uid})
+                            }}>
+                                <View style={styles.flex}>
+                                    <View style={styles.mypageListItemTitle}>
+                                        <Text style={styles.mypageList_name}>회원탈퇴</Text>
+                                    </View>
+                                    <View style={styles.mypageListItemIcon}>
+                                        {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
+                                        <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.mypageListItem}>
                             <TouchableOpacity style={styles.mypageListItem_link} onPress={goLogout}>
                                 <View style={styles.flex}>
                                     <View style={styles.mypageListItemTitle}>
