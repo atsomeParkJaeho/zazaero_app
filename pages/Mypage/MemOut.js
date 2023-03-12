@@ -85,7 +85,7 @@ export default function MemOut({navigation, route}) {
     const goMemOut = async () => {
 
         if(!MemOut.mem_out_reason_memo) {
-            return Alert.alert('','탈퇴 선택 또는 입력해주세요.',);
+            return Alert.alert('','사유선택 또는 직접입력해주세요.',);
         }
         if (!MemOut.mem_out_pw) {
             return Alert.alert('','비밀번호를 입력하세요.',);
