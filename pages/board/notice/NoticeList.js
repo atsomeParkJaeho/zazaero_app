@@ -22,7 +22,10 @@ export default function NoticeList({navigation}) {
         }).then((res) => {
             if (res) {
                 const {bd_list} = res.data;
-                setNoticeList(bd_list);
+                let temp = bd_list.sort((a,b)=>{
+                    return b.bd_uid - a.bd_uid
+                });
+                setNoticeList(temp);
             }
         });
     }, []);
@@ -84,12 +87,7 @@ const styles = StyleSheet.create({
         borderColor: '#ededf1',
 
     },
-    mypageList_name: {
-        fontSize: 20,
-        color: "#08052f",
-        fontFamily: "Amatic-Bold",
-        fontWeight: "700",
-    },
+
     id: {
         marginStart: 6,
         fontSize: 17,
@@ -141,11 +139,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "700"
     },
-    mypageListItem: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
+
     mypageList: {
         marginTop: 30,
     },
