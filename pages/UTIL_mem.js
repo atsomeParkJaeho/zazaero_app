@@ -1,6 +1,8 @@
 import axios from "axios";
 import {Platform} from "react-native";
 
+
+/**---------------------------------회원가입-------------------------------------------**/
 export const mem_reg = async (SignUp) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php', {
         act_type        : "mem_reg",
@@ -33,7 +35,7 @@ export const mem_reg = async (SignUp) => {
     })
     return res;
 }
-
+/**---------------------------------아이디 중복체크-------------------------------------------**/
 export const chk_dup_id = async (SignUp) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
         act_type            :'chk_dup_id',
@@ -47,7 +49,7 @@ export const chk_dup_id = async (SignUp) => {
 
     return res;
 }
-
+/**---------------------------------로그인-------------------------------------------**/
 export const login = async (Login)=>{
     let os_type = Platform.OS;
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php', {
@@ -64,7 +66,7 @@ export const login = async (Login)=>{
 
     return res;
 }
-
+/**---------------------------------로그인-------------------------------------------**/
 export const Sign_up = async (SignUp) => {
     let reg_mem_os = Platform.OS;
 
@@ -102,7 +104,7 @@ export const search_id = async (FindId) => {
     return res;
 }
 
-
+/**---------------------------------회원정보 수정-------------------------------------------**/
 export const mod_mem_info = async (Member, MemInfo) => {
     console.log(MemInfo,'/확인 값');
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
@@ -137,6 +139,32 @@ export const mod_mem_info = async (Member, MemInfo) => {
             'Content-type': 'multipart/form-data'
         }
     });
+    return res;
+}
+/**---------------------------------회원탈퇴-------------------------------------------**/
+export const mem_out = async (Member, MemOut) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
+        act_type            :'mem_out',
+        mem_uid             :Member,
+        mem_pw              :MemOut.mem_out_pw,
+        mem_out_reason_uid  :MemOut.mem_out_reason_uid,
+        mem_out_reason_memo :MemOut.mem_out_reason_memo,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    })
+    return res;
+}
+/**---------------------------------회원탈퇴사유 리스트-------------------------------------------**/
+export const mem_out_reason_cfg = async (Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
+        act_type         : 'mem_out_reason_cfg',
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    })
     return res;
 }
 

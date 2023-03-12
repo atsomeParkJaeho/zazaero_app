@@ -31,19 +31,42 @@ import {sub_page} from '../../common/style/SubStyle';
 import Wishlist from "../../icons/ico_heart_c.svg";
 import WishlistNon from "../../icons/ico_heart_nc.svg";
 import {DateChg, Time2} from "../../util/util";
+import {mem_out, mem_out_reason_cfg} from "../UTIL_mem";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {reloadAsync} from "expo-updates";
 
 
 export default function MemOut({navigation, route}) {
 
-    const [modAddr, setmodAddr]           = useState(`add`); // 사유선택, 직접입력 선택 상태 정의
-    const [Show, setShow]         = useState(false);    // 셀렉트창 노출 여부
 
-    //1.
-    const [MemOut, setMemOut] = useState({
-        mem_out_pw: "",    //비밀번호
-        mem_out_pw_ch: "",   // 비밀번호 확인
-
+    const [Member, setMember] = useState();
+    const mem_uid = AsyncStorage.getItem("member").then((value) => {
+        setMember(value);
     })
+
+    const [Mod, setMod]                   = useState(`Select`); // 사유선택, 직접입력 선택 상태 정의
+    const [Show, setShow]                 = useState(false);    // 셀렉트창 노출 여부
+    const [cfg_list, set_cfg_list]        = useState([]);
+    const [MemOut, setMemOut] = useState({
+        mem_out_reason_uid  :'',
+        mem_out_reason_memo :'',
+        mem_out_pw          :'',
+        mem_out_pw_ch       :'',
+    });
+
+    useEffect(()=>{
+        /**---------------탈퇴사유 리스트 가져오기---------------**/
+        mem_out_reason_cfg().then((res)=>{
+            if(res) {
+                const {result, A_ind_cfg} = res.data;
+                if(result === 'OK') {
+                    set_cfg_list(A_ind_cfg);
+                } else {
+                    Alert.alert('',result);
+                }
+            }
+        });
+    },[Member]);
 
 
     //2. 입력폼 체크루틴
@@ -55,38 +78,98 @@ export default function MemOut({navigation, route}) {
         })
     }
 
-    console.log(MemOut);
+
+
+    console.log(cfg_list,'/ 사유 리스트');
 
     const goMemOut = async () => {
-        const {mem_out_pw, mem_out_pw_ch} = MemOut;
+
+        if(!MemOut.mem_out_reason_memo) {
+            return Alert.alert('','탈퇴 선택 또는 입력해주세요.',);
+        }
         if (!MemOut.mem_out_pw) {
-            Alert.alert(
-                '비밀번호를 입력하세요.',
-            );
-            return;
+            return Alert.alert('','비밀번호를 입력하세요.',);
         }
         if (!MemOut.mem_out_pw_ch) {
-            Alert.alert('비밀번호확인을 입력해주세요.');
-            return;
+            return Alert.alert('비밀번호확인을 입력해주세요.');
         }
         if (MemOut.mem_out_pw !== MemOut.mem_out_pw_ch) {
-            Alert.alert('비밀번호가 일치하지 않습니다!!');
-
+            return Alert.alert('비밀번호가 일치하지 않습니다!!');
         }
 
+        Alert.alert('','회원탈퇴 하시겠습니까?',[
+            {
+                text:'취소',
+                onPress:()=>{}
+            },
+            {
+                text:'확인',
+                onPress:()=>{
+                    mem_out(Member,MemOut).then((res)=>{
+                        if(res) {
+                            console.log(res.data);
+                            const {result,err_msg,query} = res.data;
+                            if(result === 'OK') {
+                                Alert.alert('','회원탈퇴 되었습니다.',[
+                                    {
+                                        text:"확인",
+                                        onPress:()=>{
+                                            goLogout();
+                                        }
+                                    }
+                                ]);
+                            } else {
+                                Alert.alert('',err_msg);
+                                console.log(query);
+                            }
+                        }
+                    });
+                }
+            }
+        ]);
     }
 
-    /**--------------------------------------신규공사, 기존공사 선택 이벤트--------------------------------------------**/
+    let goSearch = (key, value) => {
+        setShow(!Show);
+        setMemOut({
+            ...MemOut,
+            mem_out_reason_uid  : key,
+            mem_out_reason_memo : value,
+        });
+    }
+
+    let goLogout = () => {
+        AsyncStorage.clear();
+        AsyncStorage.getItem('member').then((value)=>{
+            console.log(value);
+        });
+        reloadAsync();
+        navigation.replace('로그인');
+    }
+
+    /**--------------------------------------사유선택, 직접입력--------------------------------------------**/
     const select_addr = (type) => {
         if(type === 'Select') {
-            setmodAddr(type);
+            setMod(type);
+            setMemOut({
+                ...MemOut,
+                mem_out_reason_uid :'',
+                mem_out_reason_memo:''
+            });
         }
         if(type === 'Direct') {
-            setmodAddr(type);
+            setMod(type);
+            setMemOut({
+                ...MemOut,
+                mem_out_reason_uid :'',
+                mem_out_reason_memo: ''
+            });
         }
     }
 
-    /**------------------------------신규배송지, 기존배송지 선택-------------------------------**/
+    console.log(MemOut,'/ 확인');
+    console.log(Member,'/ 회원uid');
+
     function MemOutChoice() {
         return (
             <>
@@ -95,7 +178,7 @@ export default function MemOut({navigation, route}) {
                     <TouchableOpacity onPress={()=>select_addr('Select')}>
                         <View style={[flex]}>
                             <View style={[styles.border_Circle]}>
-                                {(modAddr === 'Select') &&
+                                {(Mod === 'Select') &&
                                     <View style={[pos_center]}>
                                         <View style={[styles.border_Circle_active]}/>
                                     </View>
@@ -108,7 +191,7 @@ export default function MemOut({navigation, route}) {
                     <TouchableOpacity onPress={()=>select_addr('Direct')}>
                         <View style={[flex,ms2]}>
                             <View style={[styles.border_Circle]}>
-                                {(modAddr === 'Direct') &&
+                                {(Mod === 'Direct') &&
                                     <View style={[pos_center]}>
                                         <View style={[styles.border_Circle_active]}/>
                                     </View>
@@ -129,14 +212,13 @@ export default function MemOut({navigation, route}) {
                     <View style={styles.container}>
                         <Text style={styles.inputTopText}>회원탈퇴 사유</Text>
                         <MemOutChoice/>
-                        {(modAddr === 'Direct') ? (
+                        {(Mod === 'Direct') ? (
                             <>
                                 <TextInput style={styles.input}
-
-                                           onChangeText={(mem_out_pw) => ChkInput("mem_out_pw", mem_out_pw)}
-                                           placeholder="탈퇴사유를 적어주세요."
-                                           value={MemOut.mem_out_pw}/>
-
+                                onChangeText={(mem_out_reason_memo) => ChkInput("mem_out_reason_memo", mem_out_reason_memo)}
+                                placeholder="탈퇴사유를 적어주세요."
+                                value={MemOut.mem_out_reason_memo}
+                                />
                             </>
                         ) : (
                             <>
@@ -145,7 +227,7 @@ export default function MemOut({navigation, route}) {
                                         <View style={[styles.border]}>
                                             {/**---------------------------선택주소 노출--------------------------------**/}
                                             <Text style={[]}>
-                                                탙퇴사유를 선택해주세요.
+                                                {(MemOut.mem_out_reason_memo) ? MemOut.mem_out_reason_memo:'탈퇴사유를 선택해주세요.'}
                                             </Text>
                                         </View>
                                     </TouchableOpacity>
@@ -157,15 +239,17 @@ export default function MemOut({navigation, route}) {
                                 {(Show) && (
                                     <View style={[styles.select_opt_list_box]}>
                                         <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
-
-                                                <View style={[styles.select_opt_list_itmes]}>
-                                                    <TouchableOpacity onPress={() => goSearch(val.value)}>
-                                                        <Text style={[text_center,h14]}>
-                                                           테스트1
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                </View>
-
+                                            {cfg_list.map((val,idx)=>(
+                                                <>
+                                                    <View style={[styles.select_opt_list_itmes]}>
+                                                        <TouchableOpacity onPress={() => goSearch(val.key, val.name)}>
+                                                            <Text style={[text_center,h14]}>
+                                                                {val.name}
+                                                            </Text>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                </>
+                                            ))}
                                         </ScrollView>
                                     </View>
 
@@ -181,6 +265,7 @@ export default function MemOut({navigation, route}) {
                                            secureTextEntry={true}
                                            onChangeText={(mem_out_pw) => ChkInput("mem_out_pw", mem_out_pw)}
                                            placeholder="비밀번호를 입력해주세요."
+                                           autoCapitalize="none"
                                            value={MemOut.mem_out_pw}/>
                             </View>
                         </View>
@@ -192,6 +277,7 @@ export default function MemOut({navigation, route}) {
                                            secureTextEntry={true}
                                            onChangeText={(mem_out_pw_ch) => ChkInput("mem_out_pw_ch", mem_out_pw_ch)}
                                            placeholder="비밀번호를 확인해주세요."
+                                           autoCapitalize="none"
                                            value={MemOut.mem_out_pw_ch}/>
                             </View>
                         </View>
