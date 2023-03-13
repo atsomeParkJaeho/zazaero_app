@@ -88,10 +88,10 @@ export const AllgdOrderDel = async (OrderData, Member) => {
 
 export const ATorderDel = async (OrderData, Member, order_uid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-        act_type        :"del_AT_order",
-        gd_order_uid    :OrderData.gd_order_uid,
-        mem_uid         :Member,
-        order_uid       :order_uid,
+        act_type          :"del_AT_order",
+        gd_order_uid      :OrderData.gd_order_uid,
+        mem_uid           :Member,
+        A_order_uid       :order_uid,
     },{
         headers: {
             'Content-type': 'multipart/form-data'
@@ -276,7 +276,19 @@ export const chg_order_item_cnt = async (order_item_uid, cnt) => {
     return res;
 }
 
-
+export const ins_order_goods = async (gd_order_uid, goods_uid) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type        :"ins_order_goods",
+        gd_order_uid    :gd_order_uid,
+        goods_uid       :goods_uid,
+        cnt             :1,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}
 
 
 

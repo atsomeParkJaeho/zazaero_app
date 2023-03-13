@@ -57,6 +57,7 @@ import WishIcon from "../../icons/ico_heart_c.svg";
 import { useIsFocused } from '@react-navigation/native';
 import {ins_cart} from "./UTIL_goods";
 import Wish from "../../icons/ico_heart_nc.svg";
+import {ins_order_goods} from "../order/UTIL_order";
 
 
 export default function Wishlist({route,navigation}) {
@@ -143,9 +144,6 @@ export default function Wishlist({route,navigation}) {
                     }
                 })}
         }));
-
-
-
     }
     
     /**---------------------체크시 상태 변경----------------------------**/
@@ -179,21 +177,24 @@ export default function Wishlist({route,navigation}) {
 
         Add_goods.map(val=>{
             /**------------------------------2. db로 보내기-----------------------------**/
-            axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-                act_type        : "ins_order_goods",
-                gd_order_uid    : gd_order_uid,
-                goods_uid       : val.goods_uid,
-                cnt             : 1,
-            },{
-                headers: {
-                    'Content-type': 'multipart/form-data'
-                }
-            }).then((res)=>{
+            ins_order_goods(gd_order_uid, val.goods_uid).then((res)=>{
                 if(res) {
                     const {result} = res.data;
                     console.log(result);
                     if(result === 'OK') {
                         console.log('연결');
+                    }
+
+                    if(result === 'NG_dup_goods_uid') {
+                        console.log('이미 주문에 존재한 상품입니다.');
+                        return Alert.alert('','이미 주문에 존재한 상품입니다.',[
+                            {
+                                text:"확인",
+                                onPress:()=>{
+                                    navigation.pop();
+                                }
+                            },
+                        ]);
                     } else {
                         console.log('실패');
                     }

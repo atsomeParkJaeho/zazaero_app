@@ -811,6 +811,13 @@ export default function OrderDtail({route,navigation}) {
     /**-----------------------------------------------결제완료전 발주취소 이벤트------------------------------------------------**/
     function PayReadyCancelTab() {
 
+        /**----------------------------------자재추가--------------------------------**/
+        const AddGoodsOrder = () => {
+            // 1. 즐겨찾기 페이지로 이동한다
+            navigation.navigate('즐겨찾기',{gd_order_uid:gd_order_uid});
+        }
+
+        /**-------------------------------전체주문취소--------------------------------**/
         const AlldelOrder = () => {
             Alert.alert('','전체취소 하시겠습니까?',[
                 {text:"취소", onPress:()=>{}},
@@ -828,7 +835,8 @@ export default function OrderDtail({route,navigation}) {
                 });
             }
         }
-
+        
+        /**----------------------------선택주문취소-----------------------------------**/
         const ChkdelOrder = () => {
             let result = OrderGoodsList.filter(val=>val.goods_chk);
             let order_uid = result.map(val=>val.order_uid);
@@ -866,7 +874,7 @@ export default function OrderDtail({route,navigation}) {
                 return (
                     <>
                         <View style={[container]}>
-                            <View style={[d_flex, justify_content_between]}>
+                            <View style={[d_flex, justify_content_between,{marginBottom:15}]}>
                                 <TouchableOpacity
                                     onPress={ChkdelOrder}
                                     style={[styles.CancelBtnWrap, btn_outline_danger]}>
@@ -876,6 +884,13 @@ export default function OrderDtail({route,navigation}) {
                                     onPress={AlldelOrder}
                                     style={[styles.CancelBtnWrap, btn_outline_danger]}>
                                     <Text style={[text_center,styles.CancelBtn, text_danger]}>전체취소</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={[d_flex, justify_content_between]}>
+                                <TouchableOpacity
+                                    onPress={AddGoodsOrder}
+                                    style={[styles.CancelBtnWrap, btn_outline_primary, {width:"100%"}]}>
+                                    <Text style={[text_center,styles.CancelBtn, text_primary]}>자재추가</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -1520,6 +1535,8 @@ const styles = StyleSheet.create({
     CancelBtn:{
         padding:10,
     },
+
+
     all_check:{
         borderRadius:5,
     },

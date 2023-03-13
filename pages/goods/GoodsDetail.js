@@ -53,6 +53,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RenderHTML from "react-native-render-html";
 import {get_goods_info, ins_cart, save_wish} from "./UTIL_goods";
+import {ins_order_goods} from "../order/UTIL_order";
 
 
 
@@ -118,17 +119,19 @@ export default function GoodsDetail({route,navigation}) {
         }
     }
 
-    console.log(route.params.gd_order_uid);
+    console.log(route.params.ord_status);
     /**-----------------------------------------주문서에 자재 추가---------------------------------------------**/
     const InsOrderGoods = (goods_uid) => {
-        ins_cart(Member, goods_uid).then((res)=>{
+        ins_order_goods(route.params.ord_status, goods_uid).then((res)=>{
             if(res) {
                 const {result} = res.data;
                 console.log(result);
                 if(result === 'OK') {
                     Alert.alert('','자재를 추가하였습니다.');
+                    return navigation.pop();
                 } else {
-                    console.log('실패');
+                    Alert.alert('','이미 존재하는 자재입니다.')
+                    return navigation.pop();
                 }
             }
         });
