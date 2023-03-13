@@ -115,11 +115,8 @@ export default function OrderForm({route,navigation}) {
         order_memo          :'',                              // 배송요청사항
         settleprice         :'',                              // 결제 금액
         tot_order_price     :'',                              // 자재 총 가격
-        deli_type           :'',                              // 착불, 선불
-        deli_price          :'',                              // 배송비
         work_uid            :'',                              // 공사명 uid
-        save_point          :'',                              // 적립 포인트
-        point_use           :'',                              // 사용 포인트
+
     });
     const [Selected, setSelected] = useState({
         zonecode        :'',

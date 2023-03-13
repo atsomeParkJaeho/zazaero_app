@@ -44,11 +44,7 @@ export const InsOrder = async (order_data,Member,work_uid,goods_cate1_uid) => {
         order_memo          :order_data.order_memo,                         // 배송요청사항
         settleprice         :order_data.settleprice,                        // 결제 금액
         tot_order_price     :order_data.tot_order_price,                    // 자재 총 가격
-        deli_type           :'',                                            // 착불, 선불
-        deli_price          :'',                                            // 배송비
         work_uid            :(work_uid) ? (work_uid):(order_data.work_uid),                                      // 공사명 uid
-        save_point          :'',                                            // 적립 포인트
-        point_use           :'',                                            // 사용 포인트
         goods_cate1_uid     :goods_cate1_uid,                                            // 사용 포인트
     },{
         headers: {
