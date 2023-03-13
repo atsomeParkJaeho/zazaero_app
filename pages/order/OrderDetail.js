@@ -17,7 +17,16 @@ import {
 } from 'react-native';
 // 공통 CSS 추가
 import {
-    container, bg_white, h16, text_center, flex_around, flex_between, input, ms2, flex, mt1,
+    container,
+    bg_white,
+    h16,
+    text_center,
+    flex_around,
+    flex_between,
+    input,
+    ms2,
+    flex,
+    mt1,
     fw500,
     d_flex,
     align_items_center,
@@ -46,7 +55,17 @@ import {
     h13,
     text_right,
     justify_content_between,
-    btn_danger, btn_primary, textarea, justify_content_around, text_black, h17, text_gray, h12,
+    btn_danger,
+    btn_primary,
+    textarea,
+    justify_content_around,
+    text_black,
+    h17,
+    text_gray,
+    h12,
+    select_box,
+    select_txt,
+    select_icon_box,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 import {FormStyle} from "./FormStyle";
@@ -67,7 +86,16 @@ import CalendarStrip from "react-native-calendar-strip";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Checkbox from "expo-checkbox";
-import {AllgdOrderDel, ATorderDel, getAppInfo, getOrderInfo, OrderMod, payDoneCancel, PayTry,} from "./UTIL_order";
+import {
+    AllgdOrderDel,
+    ATorderDel,
+    chg_order_item_cnt,
+    getAppInfo,
+    getOrderInfo,
+    OrderMod,
+    payDoneCancel,
+    PayTry,
+} from "./UTIL_order";
 import deliStatus from "./DeliStatus";
 
 
@@ -112,14 +140,27 @@ export default function OrderDtail({route,navigation}) {
 
 
     //
-    const [Show, setShow]         = useState(false);    // 셀렉트창 노출 여부
+    const [Show_1, setShow_1]         = useState(false);
+    const [Show_2, setShow_2]         = useState(false);    // 셀렉트창 노출 여부
 
-    const goSearch = (value) => {
-        setShow(!Show);
-        setOrderDate({
-            ...OrderData,
-            bankAccount:value,
-        });
+    const goSearch = (type, value) => {
+
+        if(type === 'hope_deli_time') {
+            setShow_1(!Show_1);
+            setOrderDate({
+                ...OrderData,
+                hope_deli_time:value,
+            });
+        }
+
+        if(type === 'settlekind') {
+            setShow_2(!Show_2);
+            setOrderDate({
+                ...OrderData,
+                bankAccount:value,
+            });
+        }
+        
     }
 
     /**--------------------------------------주문서 셋팅--------------------------------------------------**/
@@ -155,15 +196,7 @@ export default function OrderDtail({route,navigation}) {
         });
 
         temp.map(val=>
-            axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-                act_type             :"chg_order_item_cnt",
-                order_item_uid       :Number(val.order_item_uid),
-                cnt                  :Number(val.cnt),
-            },{
-                headers: {
-                    'Content-type': 'multipart/form-data'
-                }
-            }).then((res)=>{
+            chg_order_item_cnt(val.order_item_uid, val.cnt).then((res)=>{
                 const {result} = res.data;
                 if(result === 'OK') {
                     console.log('저장완료2');
@@ -539,7 +572,7 @@ export default function OrderDtail({route,navigation}) {
                         <>
                             <View style={[FormStyle.FormGroup, {paddingTop: 5, paddingBottom: 5,}]}>
                                 <CalendarStrip
-                                    // scrollable={true}
+                                    // scrollable
                                     onDateSelected={(Date) => {
                                         setOrderDate({
                                             ...OrderData,
@@ -576,11 +609,34 @@ export default function OrderDtail({route,navigation}) {
                         <>
                             {/*==============시간입력==============*/}
                             <View style={[FormStyle.FormGroup]}>
-                                <View style={[d_flex, align_items_center]}>
-                                    <View style={[styles.formSelect,{flex:1}]}>
-
-                                    </View>
+                                <View style={[select_box]}>
+                                    <TouchableOpacity onPress={()=>{setShow_1(!Show_1)}}>
+                                        <Text style={[select_txt]}>
+                                            {(OrderData.hope_deli_time) ? OrderData.hope_deli_time:'시간을 선택해주세요'}
+                                        </Text>
+                                        <View style={[select_icon_box]}>
+                                            <Text style={[styles.select_icon]}>▼</Text>
+                                        </View>
+                                    </TouchableOpacity>
                                 </View>
+                                {/**/}
+                                {/**---------------------------클릭시 노출--------------------------------**/}
+                                {(Show_1) && (
+                                    <View style={[styles.select_opt_list_box]}>
+                                        <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
+                                            {Time2.map((val,ide)=>
+                                                <View style={[styles.select_opt_list_itmes]}>
+                                                    <TouchableOpacity onPress={() => goSearch(`hope_deli_time`,val.value)}>
+                                                        <Text style={[text_center,h17]}>
+                                                            {val.label}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            )}
+                                        </ScrollView>
+                                    </View>
+                                )}
+                                {/**/}
                             </View>
                         </>
                     )}
@@ -685,7 +741,7 @@ export default function OrderDtail({route,navigation}) {
                                             <View style={[mb2]}>
                                                 {/*은행선택*/}
                                                 <View style={[styles.select_box]}>
-                                                    <TouchableOpacity onPress={()=>{setShow(!Show)}}>
+                                                    <TouchableOpacity onPress={()=>{setShow_2(!Show_2)}}>
                                                         <View style={[styles.border]}>
                                                             {/**---------------------------선택주소 노출--------------------------------**/}
                                                             <Text style={[styles.select_txt, h12, (OrderData.bankAccount !== '0') ? text_black:text_gray]}>
@@ -699,13 +755,13 @@ export default function OrderDtail({route,navigation}) {
                                                 </View>
                                                 {/**/}
                                                 {/**---------------------------클릭시 노출--------------------------------**/}
-                                                {(Show) && (
+                                                {(Show_2) && (
                                                     <View style={[styles.select_opt_list_box]}>
                                                         <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
                                                             {BankCode.map((val,idx)=>(
                                                                 <>
                                                                     <View style={[styles.select_opt_list_itmes]}>
-                                                                        <TouchableOpacity onPress={() => goSearch(val.value)}>
+                                                                        <TouchableOpacity onPress={() => goSearch(`settlekind`,val.value)}>
                                                                             <Text style={[text_center,h14]}>
                                                                                 {val.label}
                                                                             </Text>
@@ -749,7 +805,7 @@ export default function OrderDtail({route,navigation}) {
                 )}
             </ScrollView>
             {/**-------------------------수정변경------------------------**/}
-            {/*<GoOrderForm/>*/}
+            <GoOrderForm/>
         </>
     );
     /**-----------------------------------------------결제완료전 발주취소 이벤트------------------------------------------------**/

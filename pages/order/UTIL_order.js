@@ -260,7 +260,20 @@ export const get_order_list = async (Member) => {
     });
 
     return res;
+}
 
+export const chg_order_item_cnt = async (order_item_uid, cnt) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type        :"chg_order_item_cnt",
+        order_item_uid  :order_item_uid,
+        cnt             :cnt,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
 }
 
 

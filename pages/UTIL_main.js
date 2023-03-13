@@ -14,3 +14,15 @@ export const get_cate_list = async (depth, uid) => {
 
     return res;
 }
+
+export const ABanner = async () => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
+        act_type        :"A_banner",
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
+}

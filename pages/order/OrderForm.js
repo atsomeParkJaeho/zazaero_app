@@ -763,16 +763,6 @@ export default function OrderForm({route,navigation}) {
             let msg = '발주신청이 완료되었습니다.';
             msg += '\n현장인도자 성명 :'    +order_data.recv_name;
             msg += '\n공사명 :'           +order_data.order_title;
-            // msg += '\n 주문자 전화번호 :' +order_data.recv_phone;
-            // msg += '\n 우편번호 : '      +order_data.zonecode;
-            // msg += '\n 주소 : '         +order_data.addr1;
-            // msg += '\n 상세주소 : '      +order_data.addr2;
-            // msg += '\n 희망배송일 : '     +order_data.hope_deli_date;
-            // msg += '\n 희망배송시간 : '   +order_data.hope_deli_time;
-            // msg += '\n 배송메모 : '       +order_data.order_memo;
-            // msg += '\n 결제금액 : '      +order_data.settleprice;
-            // msg += '\n 자재금액 : '      +order_data.tot_order_price;
-            // msg += '\n 공사명_uid : '      +order_data.work_uid;
 
 
             /**-------------------------------배송지 저장-----------------------------------------**/

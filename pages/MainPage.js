@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView} from 'react-native';
-import {useNavigationState} from '@react-navigation/native';
+import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Alert} from 'react-native';
+import {useIsFocused, useNavigationState} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {List} from 'react-native-paper';
 import {AccordionList} from "accordion-collapse-react-native";
@@ -30,7 +30,7 @@ import axios from "axios";
 import {At_db} from "../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Wishlist from "../icons/ico_heart_c.svg";
-import {get_cate_list} from "./UTIL_main";
+import {ABanner, get_cate_list, get_main_info} from "./UTIL_main";
 
 //import main1 from '../assets/img/main_1.png'
 
@@ -41,6 +41,8 @@ function Cate2nd({uid,navigation,name}) {
     console.log('카테고리 uid ',uid);
     console.log('제목 ',name);
     const [Cate2nd, setCate2nd] = useState([]);
+
+
     useEffect(() => {
         get_cate_list(`2`, uid).then((res) => {
             if (res) {
@@ -85,12 +87,15 @@ function Cate2nd({uid,navigation,name}) {
 
 
 // 상품출력 페이지
-export default function MainPage({navigation, route}) {
-
+export default function MainPage({route,navigation}) {
+    const Update = useIsFocused();
     // 1. 1차 카테고리 추출
     const [Cate1st, setCate1st] = useState([]);   // 1차 카테고리 설정
     // 아코디언 설정
     const [expend, setExpend] = useState(`1`);
+
+    // 2. 배너 담기
+    const [A_banner, set_A_banner] = useState([]);
 
     useEffect(() => {
         // 포스트시에 header 셋팅 할것
@@ -101,13 +106,31 @@ export default function MainPage({navigation, route}) {
                     // 1. 1차 카테고리를 담는다
                     setCate1st(A_cate);
                 } else {
-                    console.log('실패');
+                    console.log('실패123');
                 }
             }
         }).catch((err) => console.log(err));
-    }, []);
+
+        /**------------------------배너------------------------**/
+        ABanner().then((res)=>{
+            if(res) {
+                console.log(res);
+                const {result, A_banner, query} = res.data;
+                if(result === 'OK') {
+                    set_A_banner(A_banner);
+                    console.log(query,'/123');
+                } else {
+                    Alert.alert('','에러');
+                }
+            }
+        });
+
+    }, [Update]);
 
     // console.log('1차 카테고리', Cate1st);
+
+    console.log(A_banner,'/배너aaa');
+    console.log(Cate1st,'/배너 123123');
 
     return (
         /*
@@ -135,12 +158,12 @@ export default function MainPage({navigation, route}) {
             {/**----------------------------------------바디----------------------------------------**/}
             <ScrollView style={styles.main_wrap}>
                 <ImageSlider
-                    data={[
-                        {img: require("../assets/img/main_banner1.jpg")},
-                        {img: require("../assets/img/main_banner2.jpg")},
-                        {img: require("../assets/img/main_banner3.jpg")},
-                    ]}
-                    localImg={true}
+                    data={
+                        A_banner.map(val=>{
+                            return {img:"http://49.50.162.86:80/"+val.img_url}
+                        })
+                    }
+                    onClick={()=>console.log('테스트 입니다.')}
                     previewImageStyle={false}
                     caroselImageStyle={{ resizeMode: 'cover', height:180, }}
                     preview={false}
