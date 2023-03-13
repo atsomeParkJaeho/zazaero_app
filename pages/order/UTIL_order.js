@@ -102,7 +102,7 @@ export const ATorderDel = async (OrderData, Member, order_uid) => {
 export const OrderMod = async (OrderData, Member, addr1, zonecode, gd_order_uid) => {
 
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-        act_type             :"save_recv_info",
+        act_type             :"mod_recv_info",
         gd_order_uid         :gd_order_uid,
         mem_uid              :Member,
         addr1                :(addr1) ? (addr1):OrderData.addr1,
