@@ -99,8 +99,7 @@ export const ATorderDel = async (OrderData, Member, order_uid) => {
     });
     return res;
 }
-export const OrderMod = async (OrderData, Member, addr1, zonecode, gd_order_uid) => {
-
+export const OrderMod = async (OrderData, Member, addr1, zonecode, gd_order_uid, A_order_item_uid, A_order_item_cnt) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"mod_recv_info",
         gd_order_uid         :gd_order_uid,
@@ -112,6 +111,8 @@ export const OrderMod = async (OrderData, Member, addr1, zonecode, gd_order_uid)
         zonecode             :(zonecode) ? (zonecode):OrderData.zonecode,
         recv_name            :OrderData.recv_name,
         recv_mobile          :OrderData.recv_mobile,
+        A_order_item_uid     :A_order_item_uid,
+        A_order_item_cnt     :A_order_item_cnt,
     },{
         headers: {
             'Content-type': 'multipart/form-data'
@@ -119,6 +120,8 @@ export const OrderMod = async (OrderData, Member, addr1, zonecode, gd_order_uid)
     });
 
     return res;
+
+
 }
 
 
@@ -142,16 +145,22 @@ export const payDoneCancel = async (Member, type, OrderData, chk_cancel_goods) =
         }
     });
 
+    let order_uid = pay_cancel_goods.map(val=>val.order_uid);
+    let order_item_uid = pay_cancel_goods.map(val=>val.order_item_uid);
+    let src_cnt = pay_cancel_goods.map(val=>val.src_cnt);
+    let cancel_cnt = pay_cancel_goods.map(val=>val.cancel_cnt);
+
+
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"pay_done_gd_cancel",
         gd_order_uid         :OrderData.gd_order_uid,
         cancel_money         :tot_price,
         cancel_type          :type,
         mem_uid              :Member,
-        order_uid            :pay_cancel_goods.map(val=>val.order_uid),
-        order_item_uid       :pay_cancel_goods.map(val=>val.order_item_uid),
-        src_cnt              :pay_cancel_goods.map(val=>val.src_cnt),
-        cancel_cnt           :pay_cancel_goods.map(val=>val.cancel_cnt),
+        order_uid            :order_uid,
+        order_item_uid       :order_item_uid,
+        src_cnt              :src_cnt,
+        cancel_cnt           :cancel_cnt,
         merchant_uid         :OrderData.order_no,
         imp_uid              :OrderData.imp_uid,
     },{

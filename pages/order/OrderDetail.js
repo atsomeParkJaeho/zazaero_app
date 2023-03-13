@@ -97,7 +97,7 @@ import {
     PayTry,
 } from "./UTIL_order";
 import deliStatus from "./DeliStatus";
-
+import Toast, {DURATION} from 'react-native-easy-toast'
 
 export default function OrderDtail({route,navigation}) {
 
@@ -121,6 +121,7 @@ export default function OrderDtail({route,navigation}) {
         option_cnt  :'',
     });
     /**--------------------------------------상태값 셋팅--------------------------------------------------**/
+    const toastRef = useRef();
     const [OrderGoodsList,  setOrderGoodsList]              = useState([]);             // 주문상품상태정의
     const [BankCode,        setBankCode]                    = useState([]);          // 관리자 무통장입금계좌 출력
     const [PayMement,       setPayMement]                   = useState('bank');      // 결제창 노출 여부
@@ -171,18 +172,6 @@ export default function OrderDtail({route,navigation}) {
 
     /*수정완료 클릭시 변경사항 저장*/
     const FormMod = () => {
-        /**-------------------------발주서 정보 변경시------------------------------**/
-        OrderMod(OrderData, Member, addr1, zonecode, gd_order_uid).then((res)=>{
-            if(res) {
-                const {result} = res.data;
-                if(result === 'OK') {
-                    setMod(!Mod);
-                } else {
-
-                }
-            }
-        });
-
         /**-------------------------------------------------------**/
         let order_item = OrderGoodsList.map(cate=>cate.A_sel_option.map(val=>{
             return {
@@ -195,16 +184,22 @@ export default function OrderDtail({route,navigation}) {
             return val.concat(idx);
         });
 
-        temp.map(val=>
-            chg_order_item_cnt(val.order_item_uid, val.cnt).then((res)=>{
+        let A_order_item_uid = temp.map(val=>val.order_item_uid);
+        let A_order_item_cnt = temp.map(val=>val.cnt);
+
+        /**-------------------------발주서 정보 변경시------------------------------**/
+        OrderMod(OrderData, Member, addr1, zonecode, gd_order_uid, A_order_item_uid, A_order_item_cnt).then((res)=>{
+            if(res) {
                 const {result} = res.data;
                 if(result === 'OK') {
-                    console.log('저장완료2');
+                    setMod(!Mod);
+                    console.log(res.data,'/변경 내용 출력');
                 } else {
-                    console.log('에러');
+
                 }
-            })
-        );
+            }
+        });
+
     }
 
 
@@ -292,10 +287,11 @@ export default function OrderDtail({route,navigation}) {
     }
 
     const modCart = (goods_uid, order_uid, type, value, goods_price) => {
+
         /**----------------------------상품수량 플러스--------------------------**/
         if(type === 'plus') {
             let cnt     = Number(value) + 1;
-            let price   = Number(goods_price) ;
+            let price   = Number(goods_price);
             /**----------------------------상품수량 증가시 뷰화면에서도 적용--------------------------**/
             let temp = OrderGoodsList.map((cate)=>{
                 if(cate.goods_uid === goods_uid) {
@@ -326,6 +322,7 @@ export default function OrderDtail({route,navigation}) {
         }
         /**----------------------------상품수량 수기조절--------------------------**/
         if(type === 'order_item_cnt') {
+
             /*안드로이드는 안되는 현상 있음*/
             let cnt     = Number(value);
             let temp = OrderGoodsList.map((cate)=>{
@@ -398,6 +395,23 @@ export default function OrderDtail({route,navigation}) {
         console.log(temp);
         setOrderGoodsList(temp);
     }
+
+    // 수정하기 버튼
+    const ModInfo = () => {
+        setMod(!Mod);
+        let msg = '';
+        msg += '발주내용중\n\n';
+        msg += '자재정보의 변경(추가/수정/삭제)시에는\n\n';
+        msg += '발주검수부터 다시 진행하게 됩니다.';
+        Alert.alert('',msg,[
+            {
+                text:"확인",
+            }
+        ],{},{
+            textStyle:{textAlign:"center"}
+        });
+    }
+
 
 
     const cntPopup = (goods_uid, order_uid, option_cnt) => {
@@ -805,6 +819,15 @@ export default function OrderDtail({route,navigation}) {
                 )}
             </ScrollView>
             {/**-------------------------수정변경------------------------**/}
+            {/*<Toast ref={toastRef}*/}
+            {/*       style={{backgroundColor:'red',position:"absolute", zIndex:99, bottom:-200,}}*/}
+            {/*       position='bottom'*/}
+            {/*       positionValue={500}*/}
+            {/*       fadeInDuration={500}*/}
+            {/*       fadeOutDuration={500}*/}
+            {/*       opacity={1.0}*/}
+            {/*       textStyle={{color:'#fff'}}*/}
+            {/*/>*/}
             <GoOrderForm/>
         </>
     );
@@ -915,10 +938,9 @@ export default function OrderDtail({route,navigation}) {
         *
         * */
 
-        const PayDoneCancel = (type) => {
+        const PayDoneCancel = (cancel_type) => {
 
-            if(type === 'all') {
-
+            if(cancel_type === 'all') {
                 let chk_cancel_goods = OrderGoodsList.map(val=>{return {
                     ...val,
                     goods_chk   :true,
@@ -928,7 +950,7 @@ export default function OrderDtail({route,navigation}) {
                 Alert.alert('','결제를 취소하시겠습니까?',[
                     {text:"취소",onPress:()=>{}},
                     {text:"확인",onPress:()=>{
-                            payDoneCancel(Member, type, OrderData, chk_cancel_goods).then((res)=>{
+                            payDoneCancel(Member, cancel_type, OrderData, chk_cancel_goods).then((res)=>{
                                 if(res) {
                                     console.log(res.data);
                                     const {result, test} = res.data;
@@ -1242,6 +1264,9 @@ export default function OrderDtail({route,navigation}) {
                     })}
                 </View>
                 <View style={gray_bar}/>
+
+
+
             </>
         );
     }
@@ -1277,7 +1302,7 @@ export default function OrderDtail({route,navigation}) {
                             </>
                         ):(
                             <>
-                                <TouchableOpacity onPress={()=>setMod(!Mod)}>
+                                <TouchableOpacity onPress={ModInfo}>
                                     <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
                                         <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
                                     </View>
