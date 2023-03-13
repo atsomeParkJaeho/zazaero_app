@@ -1,4 +1,4 @@
-import {Text, TouchableOpacity, View} from "react-native";
+import {Platform, Text, TouchableOpacity, View} from "react-native";
 import styleSheet from "react-native-web/dist/exports/StyleSheet";
 import HomeLogo from '../icons/home_logo.svg';
 import HomeLogoAt from '../icons/home_logo_at.svg';
@@ -15,50 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {fw500, pos_center, text_center, text_primary} from "../common/style/AtStyle";
 import {useNavigationState} from "@react-navigation/native";
 
-const styles = styleSheet.create({
-    FooterWrap : {
-        flexDirection:"row",
-        backgroundColor:"#fff",
-        paddingTop: 10,
-        paddingBottom:5,
-        borderTopLeftRadius:15,
-        borderTopRightRadius:15,
-        ...Platform.select({
-            ios: {
-                shadowColor: "#000",
-                shadowOffset: {
-                    width: 10,
-                    height: 10,
-                },
-                shadowOpacity: 0.5,
-                shadowRadius: 10,
-            },
-            android: {
-                // position:"absolute",
-                // bottom:0,
-                // left:0,
-                // width:"100%",
-                elevation: 20,
-            },
-        }),
-    },
-    Tabs:{
-        paddingTop:15,
-        textAlign:"center",
-        paddingBottom: Platform.OS === 'ios' ? 40 : 15,
-        flex:0.3,
-    },
-    TextCenter : {
-        textAlign: "center",
-    },
-    SvgIcons: {
-        flex:1,
-        alignItems:"center",
-        justifyContent:"center",
-        paddingBottom: 15,
-    }
 
-});
 
 
 
@@ -99,7 +56,7 @@ function Footer({navigation,pages}) {
                         <View style={styles.SvgIcons}>
                             {(currentRoute === '즐겨찾기') ? (
                                 <>
-                                    <Wish width={22} height={18}/>
+                                    <WishAt width={22} height={18}/>
                                 </>
                             ):(
                                 <>
@@ -177,3 +134,49 @@ function Footer({navigation,pages}) {
         </>
     );
 } export default Footer;
+
+
+const styles = styleSheet.create({
+    FooterWrap : {
+        flexDirection:"row",
+        backgroundColor:"#fff",
+        paddingTop: 10,
+        paddingBottom:5,
+        borderTopLeftRadius:15,
+        borderTopRightRadius:15,
+        ...Platform.select({
+            ios: {
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 10,
+                    height: 10,
+                },
+                shadowOpacity: 0.5,
+                shadowRadius: 10,
+            },
+            android: {
+                // position:"absolute",
+                // bottom:0,
+                // left:0,
+                // width:"100%",
+                elevation: 20,
+            },
+        }),
+    },
+    Tabs:{
+        paddingTop:15,
+        textAlign:"center",
+        paddingBottom: Platform.OS === 'ios' ? 40 : 15,
+        flex:0.3,
+    },
+    TextCenter : {
+        textAlign: "center",
+    },
+    SvgIcons: {
+        flex:1,
+        alignItems:"center",
+        justifyContent:"center",
+        paddingBottom: 15,
+    }
+
+});
