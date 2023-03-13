@@ -57,7 +57,7 @@ import WishIcon from "../../icons/ico_heart_c.svg";
 import { useIsFocused } from '@react-navigation/native';
 import {ins_cart} from "./UTIL_goods";
 import Wish from "../../icons/ico_heart_nc.svg";
-import {ins_order_goods} from "../order/UTIL_order";
+import {add_order_goods} from "../order/UTIL_order";
 
 
 export default function Wishlist({route,navigation}) {
@@ -172,39 +172,23 @@ export default function Wishlist({route,navigation}) {
         let Add_goods = temp.reduce((val,idx)=>{
             return val.concat(idx);
         });
+        let goods_uid = Add_goods.map(val=>val.goods_uid);
 
-        console.log(Add_goods);
-
-        Add_goods.map(val=>{
-            /**------------------------------2. db로 보내기-----------------------------**/
-            ins_order_goods(gd_order_uid, val.goods_uid).then((res)=>{
-                if(res) {
-                    const {result} = res.data;
-                    console.log(result);
-                    if(result === 'OK') {
-                        console.log('연결');
-                    }
-
-                    if(result === 'NG_dup_goods_uid') {
-                        console.log('이미 주문에 존재한 상품입니다.');
-                        return Alert.alert('','이미 주문에 존재한 상품입니다.',[
-                            {
-                                text:"확인",
-                                onPress:()=>{
-                                    navigation.pop();
-                                }
-                            },
-                        ]);
-                    } else {
-                        console.log('실패');
-                    }
+        add_order_goods(gd_order_uid, goods_uid).then((res)=>{
+            if(res) {
+                const {result, err_msg} = res.data;
+                console.log(result);
+                if(result === 'OK') {
+                    console.log('연결');
+                    Alert.alert('','자재를 추가하였습니다.');
+                    return navigation.pop();
+                } else {
+                    Alert.alert('',err_msg);
+                    return navigation.pop();
                 }
-            });
+            }
         });
-        /**------------------------------3. 완료 액션후 페이지 이동------------------------**/
-        
-        Alert.alert('','자재 추가가 완료되었습니다.');
-        navigation.pop();
+
         
     }
 

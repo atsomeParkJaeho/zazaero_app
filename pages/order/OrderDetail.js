@@ -1109,7 +1109,10 @@ export default function OrderDtail({route,navigation}) {
                                                     <>
                                                         <View style={[flex_between_bottom]}>
                                                             <View style={[flex_end]}>
-                                                                <Image style={[styles.goods_thum]} source={{uri: 'http://www.zazaero.com' + img_src}}/>
+                                                                <View>
+                                                                    <Checkbox style={[styles.AllGoodsChk]} color={"#4630eb"} value={val.goods_chk} onValueChange={()=>modChk(val.goods_uid)}/>
+                                                                    <Image style={[styles.goods_thum]} source={{uri: 'http://www.zazaero.com' + img_src}}/>
+                                                                </View>
                                                                 {/**-------------------수량조절---------------**/}
                                                                 {(Mod) ? (
                                                                     <>
@@ -1526,6 +1529,14 @@ export default function OrderDtail({route,navigation}) {
 
 const styles = StyleSheet.create({
 
+    AllGoodsChk:{
+        position:"absolute",
+        borderWidth:1,
+        zIndex:99,
+        width:"100%",
+        height:"100%",
+        opacity:0
+    },
     CancelBtnWrap:{
         borderWidth:1,
         borderColor:"#333",

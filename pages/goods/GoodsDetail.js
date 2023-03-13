@@ -53,7 +53,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RenderHTML from "react-native-render-html";
 import {get_goods_info, ins_cart, save_wish} from "./UTIL_goods";
-import {ins_order_goods} from "../order/UTIL_order";
+import {add_order_goods} from "../order/UTIL_order";
 
 
 
@@ -122,7 +122,7 @@ export default function GoodsDetail({route,navigation}) {
     console.log(route.params.ord_status);
     /**-----------------------------------------주문서에 자재 추가---------------------------------------------**/
     const InsOrderGoods = (goods_uid) => {
-        ins_order_goods(route.params.ord_status, goods_uid).then((res)=>{
+        add_order_goods(route.params.ord_status, goods_uid).then((res)=>{
             if(res) {
                 const {result} = res.data;
                 console.log(result);

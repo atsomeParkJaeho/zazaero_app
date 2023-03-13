@@ -276,9 +276,9 @@ export const chg_order_item_cnt = async (order_item_uid, cnt) => {
     return res;
 }
 
-export const ins_order_goods = async (gd_order_uid, goods_uid) => {
+export const add_order_goods = async (gd_order_uid, goods_uid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-        act_type        :"ins_order_goods",
+        act_type        :"add_order_goods",
         gd_order_uid    :gd_order_uid,
         goods_uid       :goods_uid,
         cnt             :1,
