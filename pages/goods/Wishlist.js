@@ -180,11 +180,11 @@ export default function Wishlist({route,navigation}) {
                 console.log(result);
                 if(result === 'OK') {
                     console.log('연결');
-                    Alert.alert('','자재를 추가하였습니다.');
+                    Alert.alert('','자재를 추가하였습니다.\n발주내용중\n자재정보의 변경이 발생하여\n발주검수부터 다시 진행하게 됩니다.');
                     return navigation.pop();
                 } else {
                     Alert.alert('',`${err_msg}`);
-                    return navigation.pop();
+                    // return navigation.pop();
                 }
             }
         });

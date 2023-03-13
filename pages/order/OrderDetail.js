@@ -190,10 +190,24 @@ export default function OrderDtail({route,navigation}) {
         /**-------------------------발주서 정보 변경시------------------------------**/
         OrderMod(OrderData, Member, addr1, zonecode, gd_order_uid, A_order_item_uid, A_order_item_cnt).then((res)=>{
             if(res) {
-                const {result} = res.data;
+                console.log(res.data);
+                const {result, err_msg} = res.data;
                 if(result === 'OK') {
                     setMod(!Mod);
-                    console.log(res.data,'/변경 내용 출력');
+                    Alert.alert('','저장되었습니다.',[
+                        {
+                            text:"OK",
+                            onPress:()=>{navigation.replace('발주상태')}
+                        }
+                    ]);
+                } else if(result === 'OK_ord_chg') {
+                    setMod(!Mod);
+                    Alert.alert('',err_msg,[
+                        {
+                            text:"OK",
+                            onPress:()=>{navigation.replace('발주상태')}
+                        }
+                    ]);
                 } else {
 
                 }
@@ -223,7 +237,16 @@ export default function OrderDtail({route,navigation}) {
                 if(gd_order.ord_status === 'pay_done') {
                     navigation.setOptions({title: gd_order.deli_status_name + ' 상태입니다.'});
                 } else {
-                    navigation.setOptions({title: gd_order.ord_status_name + ' 상태입니다.'});
+                    navigation.setOptions({
+                        title           :gd_order.ord_status_name + ' 상태입니다.',
+                        // tabBarLabel     :()=>{
+                        //     return (
+                        //         <>
+                        //             <Text>asdf</Text>
+                        //         </>
+                        //     )
+                        // },
+                    });
                 }
             }
         });
@@ -1273,7 +1296,7 @@ export default function OrderDtail({route,navigation}) {
 
     /**-----------------------------------------------발주신청------------------------------------------------------**/
     function GoOrderForm() {
-        if(OrderData.ord_status === 'ord_ready' || OrderData.ord_status === 'pay_ready' || OrderData.ord_status === 'pay_err' || OrderData.ord_status === 'pay_try') {
+        if(OrderData.ord_status === 'ord_ready' || OrderData.ord_status === 'ord_edit' || OrderData.ord_status === 'pay_ready' || OrderData.ord_status === 'pay_err' || OrderData.ord_status === 'pay_try') {
             return (
                 <>
                     {/**----------------------------------------------발주신청--------------------------------------------------**/}
