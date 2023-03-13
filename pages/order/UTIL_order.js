@@ -289,7 +289,7 @@ export const add_order_goods = async (gd_order_uid, goods_uid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type        :"add_order_goods",
         gd_order_uid    :gd_order_uid,
-        goods_uid       :goods_uid,
+        A_goods_uid     :goods_uid,
         cnt             :1,
     },{
         headers: {

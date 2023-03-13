@@ -396,6 +396,7 @@ export const priName = (key) => {
 export const ordStatus = (key) => {
     if(key === 'ord_ready')         {return '발주신청'; }
     if(key === 'ord_doing')         {return '발주검수중'; }
+    if(key === 'ord_edit')         {return '발주수정중'; }
     if(key === 'ord_done')          {return '발주검수완료'; }
     if(key === 'pay_try')           {return '결제시도'; }
     if(key === 'pay_err')           {return '결제에러'; }

@@ -183,7 +183,7 @@ export default function Wishlist({route,navigation}) {
                     Alert.alert('','자재를 추가하였습니다.');
                     return navigation.pop();
                 } else {
-                    Alert.alert('',err_msg);
+                    Alert.alert('',`${err_msg}`);
                     return navigation.pop();
                 }
             }

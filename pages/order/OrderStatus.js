@@ -67,7 +67,8 @@ function OrderStatus({route, navigation}) {
                 let temp = A_gd_order.filter(
                     val=>
                         val.ord_status === 'ord_ready'  ||
-                        val.ord_status === 'ord_doing'
+                        val.ord_status === 'ord_doing'  ||
+                        val.ord_status === 'ord_edit'
                 );
                 let desc = temp.sort((a,b)=>{
                     return new Date(b.gd_order_uid) - new Date(a.gd_order_uid);
