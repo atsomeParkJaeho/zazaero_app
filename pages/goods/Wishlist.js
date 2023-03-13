@@ -10,7 +10,7 @@ import {
     Button,
     TouchableWithoutFeedback,
     Switch,
-    Alert
+    Alert, Platform
 } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { List } from 'react-native-paper';
@@ -35,7 +35,7 @@ import {
     bg_light,
     h13,
     text_primary,
-    justify_content_center, text_light, ms1, padding_bottom
+    justify_content_center, text_light, ms1, padding_bottom, mt10, mt2, h15, text_center
 } from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 
@@ -56,6 +56,7 @@ import WishlistNon from "../../icons/ico_heart_nc.svg";
 import WishIcon from "../../icons/ico_heart_c.svg";
 import { useIsFocused } from '@react-navigation/native';
 import {ins_cart} from "./UTIL_goods";
+import Wish from "../../icons/ico_heart_nc.svg";
 
 
 export default function Wishlist({route,navigation}) {
@@ -215,7 +216,7 @@ export default function Wishlist({route,navigation}) {
         });
         let goods_uid_list = "";
         chk_goods.map(items => {
-            if (goods_uid_list != "") {
+            if (goods_uid_list !== "") {
                 goods_uid_list += ",";
             }
             goods_uid_list += items.goods_uid;
@@ -398,6 +399,15 @@ export default function Wishlist({route,navigation}) {
                                 </>
                             ):(
                                 <>
+                                    <View style={[flex,justify_content_center]}>
+                                        <View style={[mt10]}>
+                                            <Wish width={200} height={223} style={[styles.CartIcon]}/>
+                                            <Text style={[mt2,h15,text_center]}>
+                                                즐겨찾기에 추가된 자재가 없습니다.
+                                            </Text>
+                                        </View>
+
+                                    </View>
                                 </>
                             )}
 
