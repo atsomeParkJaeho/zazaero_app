@@ -81,7 +81,7 @@ import {
     h30,
     ps2,
     pe2,
-    btn_warning, wt3, wt5, wt4, wt7, ms1,
+    btn_warning, wt3, wt5, wt4, wt7, ms1, align_items_start, align_items_end, wt6,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 import {FormStyle} from "./FormStyle";
@@ -1441,10 +1441,10 @@ export default function OrderDtail({route,navigation}) {
                                             </View>
 
                                             <View style={[d_flex, align_items_center, mb1]}>
-                                                <View style={[]}>
+                                                <View style={[me2]}>
                                                     <Image style={[styles.goods_thum]} source={{uri: `http://www.zazaero.com${val.list_img_url}`}}/>
                                                 </View>
-                                                <View style={[d_flex]}>
+                                                <View style={[wt7,flex_between,align_items_end]}>
                                                     {(val.A_sel_option.map((item,idx)=>(
                                                         <>
                                                             <View style={ms1} key={idx}>
@@ -1453,12 +1453,12 @@ export default function OrderDtail({route,navigation}) {
                                                                         기존수량 : {item.option_cnt}개
                                                                     </Text>
                                                                 </View>
-                                                                <View style={[d_flex,align_items_center]}>
+                                                                <View style={[align_items_center]}>
                                                                     <Text style={[h14,fw500,{paddingBottom:10,}]}>
                                                                         취소수량
                                                                     </Text>
                                                                     <TextInput
-                                                                        style={[input,wt3,ms1]}
+                                                                        style={[input,ms1]}
                                                                         onChangeText={onChangeNumber}
                                                                         value={number}
                                                                         placeholder=""
@@ -1486,12 +1486,12 @@ export default function OrderDtail({route,navigation}) {
                         {/* 저장버튼 */}
                         <View style={[flex_between]}>
                             <View style={[wt5,ps1,pe1]}>
-                                <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,}]} onPress="">
+                                <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]} onPress="">
                                     <Text style={[text_center,h18]}>주문취소</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={[wt5,ps1,pe1]}>
-                                <TouchableOpacity style={[btn_primary,{borderRadius:5,}]} onPress="">
+                                <TouchableOpacity style={[btn_primary,{borderRadius:5,paddingTop:7,paddingBottom:7}]} onPress="">
                                     <Text style={[text_white,text_center,h18]}>전체취소</Text>
                                 </TouchableOpacity>
                             </View>
