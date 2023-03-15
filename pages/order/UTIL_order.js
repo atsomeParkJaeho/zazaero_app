@@ -1,4 +1,5 @@
 import axios from "axios";
+import {Platform} from "react-native";
 
 
 export const getOrderInfo = async (gd_order_uid, Member) =>{
@@ -13,7 +14,7 @@ export const getOrderInfo = async (gd_order_uid, Member) =>{
     });
     return res;
 }
-
+/**-------------------------------------앱정보 출력-----------------------------------------------------------------------**/
 export const getAppInfo = async () =>{
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
         act_type        :"get_app_info",
@@ -24,7 +25,7 @@ export const getAppInfo = async () =>{
     });
     return res;
 }
-
+/**-------------------------------------발주신청 폼-----------------------------------------------------------------------**/
 export const InsOrder = async (order_data,Member,work_uid,goods_cate1_uid) => {
     let ostype = Platform.OS;
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
@@ -53,7 +54,7 @@ export const InsOrder = async (order_data,Member,work_uid,goods_cate1_uid) => {
     });
     return res;
 }
-
+/**-------------------------------------발주리스트 출력-----------------------------------------------------------------------**/
 export const SaveDeliAddr = async (Member, order_data) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
         act_type        :"save_deli_addr",
@@ -71,7 +72,7 @@ export const SaveDeliAddr = async (Member, order_data) => {
     });
     return res;
 }
-
+/**-------------------------------------결제전 주문취소()-----------------------------------------------------------------------**/
 export const AllgdOrderDel = async (OrderData, Member) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type        :"del_gd_order",
@@ -85,7 +86,7 @@ export const AllgdOrderDel = async (OrderData, Member) => {
 
     return res;
 }
-
+/**-------------------------------------발주삭제-----------------------------------------------------------------------**/
 export const ATorderDel = async (OrderData, Member, order_uid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type          :"del_AT_order",
@@ -99,6 +100,7 @@ export const ATorderDel = async (OrderData, Member, order_uid) => {
     });
     return res;
 }
+/**-------------------------------------발주정보 수정-----------------------------------------------------------------------**/
 export const OrderMod = async (OrderData, Member, addr1, zonecode, gd_order_uid, A_order_item_uid, A_order_item_cnt) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"mod_recv_info",
@@ -124,7 +126,7 @@ export const OrderMod = async (OrderData, Member, addr1, zonecode, gd_order_uid,
 
 }
 
-
+/**-------------------------------------발주취소-----------------------------------------------------------------------**/
 export const payDoneCancel = async (Member, type, OrderData, chk_cancel_goods) => {
 
     console.log(chk_cancel_goods);
@@ -171,7 +173,7 @@ export const payDoneCancel = async (Member, type, OrderData, chk_cancel_goods) =
 
     return res;
 }
-
+/**-------------------------------------결제시도-----------------------------------------------------------------------**/
 export const PayTry = async (OrderData, type) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"pay_try",
@@ -190,7 +192,7 @@ export const PayTry = async (OrderData, type) => {
     return res;
 }
 
-
+/**-------------------------------------발주취소 자재 리스트 출력-----------------------------------------------------------------------**/
 export const get_order_cancel_list = async (Member) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"get_order_cancel_list",
@@ -203,7 +205,7 @@ export const get_order_cancel_list = async (Member) => {
 
     return res;
 }
-
+/**-------------------------------------주문취소내역출력-----------------------------------------------------------------------**/
 export const gd_cancel_info = async (Member, gd_cancel_uid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"gd_cancel_info",
@@ -217,7 +219,7 @@ export const gd_cancel_info = async (Member, gd_cancel_uid) => {
 
     return res;
 }
-
+/**-------------------------------------공사명, 배송지 리스트 출력----------------------------------------------------------------------**/
 export const get_deli_addr_list = async (Member) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type        :"get_deli_addr_list",
@@ -229,7 +231,7 @@ export const get_deli_addr_list = async (Member) => {
     })
     return res;
 }
-
+/**-------------------------------------배송정보등록 자재목록 리스트 출력-----------------------------------------------------------------------**/
 export const get_order_ready = async (Member, order_result_uid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
         act_type        : "get_order_ready",
@@ -243,7 +245,7 @@ export const get_order_ready = async (Member, order_result_uid) => {
 
     return res;
 }
-
+/**-------------------------------------배송지,공사명 저장-----------------------------------------------------------------------**/
 export const del_deli_addr = async (Member, uid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type        : "del_deli_addr",
@@ -256,7 +258,7 @@ export const del_deli_addr = async (Member, uid) => {
     })
     return res;
 }
-
+/**-------------------------------------발주리스트 출력-----------------------------------------------------------------------**/
 export const get_order_list = async (Member) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type        :"get_order_list",
@@ -271,6 +273,8 @@ export const get_order_list = async (Member) => {
     return res;
 }
 
+
+/**--------------------------------------------자재수량 조절----------------------------------------------------------------**/
 export const chg_order_item_cnt = async (order_item_uid, cnt) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type        :"chg_order_item_cnt",
@@ -284,6 +288,8 @@ export const chg_order_item_cnt = async (order_item_uid, cnt) => {
 
     return res;
 }
+
+/**--------------------------------------결제전 자재추가 이벤트--------------------------------------------------**/
 
 export const add_order_goods = async (gd_order_uid, goods_uid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
@@ -299,7 +305,75 @@ export const add_order_goods = async (gd_order_uid, goods_uid) => {
     return res;
 }
 
+/**-----------------------------------------결제후 추가발주 이벤트---------------------------------------------------**/
 
+export const add_order = async (OrderData, Member, add_goods_info) => {
+    // goods_uid, goods_cnt 배열로 보내기
+    let os_type = Platform.OS;
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type                :"add_order",
+        mem_uid                 :Member,
+        mgr_mem_uid             :Member,
+        os_type                 :os_type,
+        hope_deli_date          :OrderData.hope_deli_date,
+        hope_deli_time          :OrderData.hope_deli_time,
+        recv_name               :OrderData.recv_name,
+        recv_phone              :OrderData.recv_phone,
+        zonecode                :OrderData.zonecode,
+        addr1                   :OrderData.addr1,
+        addr2                   :OrderData.addr2,
+        order_memo	            :OrderData.order_memo,
+        work_uid                :OrderData.work_uid,
+        gd_parent_order_uid     :OrderData.gd_parent_order_uid,
+        A_goods_uid             :add_goods_info.goods_uid,
+        A_goods_cnt             :add_goods_info.goods_cnt,
+        ord_status              :'ord_doing',
+
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}
+/**-----------------------------------------결제후 선택 주문 취소 이벤트---------------------------------------------------**/
+export const order_cancel = async (OrderData, type, OrderGoodsList, Member) => {
+
+    // 1. 체크박스를 클릭한다
+    // refund_type = all, part
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type                    :"order_cancel",
+        mem_uid                     :Member,
+        gd_order_uid                :OrderData.gd_order_uid,
+        A_goods_uid                 :'',    // 배열
+        A_order_uid	                :'',    // 배열
+        A_order_item_uid            :'',    // 배열
+        A_order_item_cancel_cnt     :'',    // 배열
+        cancel_type                 :type,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+
+    // 1)
+    /*
+    *   1. gd_order 테이블에서 해당 발주 상태 ord_status : 'ord_cancel'로 업데이트
+    *   2. gd_cancel 테이블에 해당 발주 저장
+    *   3. AT_cancel_goods 테이블에 해당 발주 상품 저장
+    *   4. AT_cancel_item 테이블에 해당 발주 상품 옵션(수량) 저장
+    *
+    * */
+
+    // 2)
+    /*
+    *
+    *
+    * */
+
+
+}
 
 
 
