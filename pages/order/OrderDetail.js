@@ -97,7 +97,9 @@ import {
     PayTry,
 } from "./UTIL_order";
 import deliStatus from "./DeliStatus";
-import Toast, {DURATION} from 'react-native-easy-toast'
+import LeftArrow from "../../icons/left_arrow.svg";
+import HomeLogoAt from "../../icons/home_logo_at.svg";
+import platform from "react-native-web/dist/exports/Platform";
 
 export default function OrderDtail({route,navigation}) {
 
@@ -113,7 +115,6 @@ export default function OrderDtail({route,navigation}) {
     const InputFocus = useRef([]);
     /**-----------------------------------------수정 상태 설정-------------------------------------------------------**/
     const [Mod, setMod] = useState(false);          // 발주상태시 수정 변경가능
-    const [Cancel, setCancel] = useState(false);    // 결제취소 가능 설정
     const [expended, setExpended] = useState(false);
     const [PopData, setPopupData] = useState({
         goods_uid   :'',
@@ -125,6 +126,7 @@ export default function OrderDtail({route,navigation}) {
     const [OrderGoodsList,  setOrderGoodsList]              = useState([]);             // 주문상품상태정의
     const [BankCode,        setBankCode]                    = useState([]);          // 관리자 무통장입금계좌 출력
     const [PayMement,       setPayMement]                   = useState('bank');      // 결제창 노출 여부
+    const [AddGoods,         setAddGoods]                           = useState(false);       // 추가발주 여부 스위치
     const [OrderData,       setOrderDate]                   = useState({
         order_title         :'',
         zonecode            :'',
@@ -145,7 +147,6 @@ export default function OrderDtail({route,navigation}) {
     const [Show_2, setShow_2]         = useState(false);    // 셀렉트창 노출 여부
 
     const goSearch = (type, value) => {
-
         if(type === 'hope_deli_time') {
             setShow_1(!Show_1);
             setOrderDate({
@@ -197,7 +198,9 @@ export default function OrderDtail({route,navigation}) {
                     Alert.alert('','저장되었습니다.',[
                         {
                             text:"OK",
-                            onPress:()=>{navigation.replace('발주상태')}
+                            onPress:()=>{
+                                navigation.pop()
+                            }
                         }
                     ]);
                 } else if(result === 'OK_ord_chg') {
@@ -205,7 +208,9 @@ export default function OrderDtail({route,navigation}) {
                     Alert.alert('',err_msg,[
                         {
                             text:"OK",
-                            onPress:()=>{navigation.replace('발주상태')}
+                            onPress:()=>{
+                                navigation.pop()
+                            }
                         }
                     ]);
                 } else {
@@ -233,19 +238,28 @@ export default function OrderDtail({route,navigation}) {
                 setOrderDate(gd_order);
                 setOrderGoodsList(temp);
                 console.log(gd_order.deli_status);
+
+                let status = (gd_order.ord_status === 'pay_ready' || gd_order.ord_status === 'pay_err' || gd_order.ord_status === 'pay_try') ? '결제상태' : '발주상태';
+
                 // 발주상태
                 if(gd_order.ord_status === 'pay_done') {
                     navigation.setOptions({title: gd_order.deli_status_name + ' 상태입니다.'});
+                } else if(gd_order.ord_status === 'deli_ready' || gd_order.ord_status === 'deli_doing' || gd_order.ord_status === 'deli_done') {
+                    navigation.setOptions({title: gd_order.ord_status_name + ' 상태입니다.'});
                 } else {
                     navigation.setOptions({
-                        title           :gd_order.ord_status_name + ' 상태입니다.',
-                        // tabBarLabel     :()=>{
-                        //     return (
-                        //         <>
-                        //             <Text>asdf</Text>
-                        //         </>
-                        //     )
-                        // },
+                        title               :gd_order.ord_status_name + ' 상태입니다.',
+                        headerLeft          :()=>{
+                            return(
+                                <>
+                                    <View style={{paddingLeft:3}}>
+                                        <TouchableOpacity onPress={()=>navigation.pop()}>
+                                            <LeftArrow width={25} height={20}/>
+                                        </TouchableOpacity>
+                                    </View>
+                                </>
+                            )
+                        }
                     });
                 }
             }
@@ -291,7 +305,7 @@ export default function OrderDtail({route,navigation}) {
 
     const donePay = () => {
         let msg = '결제가 완료되었습니다.';
-        let N_btn = {text:"확인", onPress:()=>{navigation.replace('배송상태')}};
+        let N_btn = {text:"확인", onPress:()=>{navigation.replace('결제상태')}};
         PayTry(OrderData, PayMement).then((res)=>{
             if(res) {
                 const {result} = res.data;
@@ -311,53 +325,62 @@ export default function OrderDtail({route,navigation}) {
 
     const modCart = (goods_uid, order_uid, type, value, goods_price) => {
 
-        /**----------------------------상품수량 플러스--------------------------**/
-        if(type === 'plus') {
-            let cnt     = Number(value) + 1;
-            let price   = Number(goods_price);
-            /**----------------------------상품수량 증가시 뷰화면에서도 적용--------------------------**/
-            let temp = OrderGoodsList.map((cate)=>{
-                if(cate.goods_uid === goods_uid) {
-                    return {...cate, A_sel_option:cate.A_sel_option.map((val)=>{
-                            return {...val, option_cnt:Number(val.option_cnt) +1   ,}
-                        })}
-                } else {
-                    return cate;
-                }
-            });
-            setOrderGoodsList(temp);
-        }
-        /**----------------------------상품수량 마이너스--------------------------**/
-        if(type === 'minus') {
-            let cnt     = Number(value) - 1;
-            let price   = Number(goods_price) ;
-            /**----------------------------상품수량 증가시 뷰화면에서도 적용--------------------------**/
-            let temp = OrderGoodsList.map((cate)=>{
-                if(cate.goods_uid === goods_uid) {
-                    return {...cate, A_sel_option:cate.A_sel_option.map((val)=>{
-                            return {...val, option_cnt:(val.option_cnt > 1) ? Number(val.option_cnt)-1 : 1,}
-                        })}
-                } else {
-                    return cate;
-                }
-            });
-            setOrderGoodsList(temp);
-        }
-        /**----------------------------상품수량 수기조절--------------------------**/
-        if(type === 'order_item_cnt') {
+        if(OrderData.ord_status === 'ord_ready' || OrderData.ord_status === 'pay_ready') {
+            /**----------------------------상품수량 플러스--------------------------**/
+            if(type === 'plus') {
+                let cnt     = Number(value) + 1;
+                let price   = Number(goods_price);
+                /**----------------------------상품수량 증가시 뷰화면에서도 적용--------------------------**/
+                let temp = OrderGoodsList.map((cate)=>{
+                    if(cate.goods_uid === goods_uid) {
+                        return {...cate, A_sel_option:cate.A_sel_option.map((val)=>{
+                                return {...val, option_cnt:Number(val.option_cnt) +1   ,}
+                            })}
+                    } else {
+                        return cate;
+                    }
+                });
+                setOrderGoodsList(temp);
+            }
+            /**----------------------------상품수량 마이너스--------------------------**/
+            if(type === 'minus') {
+                let cnt     = Number(value) - 1;
+                let price   = Number(goods_price) ;
+                /**----------------------------상품수량 증가시 뷰화면에서도 적용--------------------------**/
+                let temp = OrderGoodsList.map((cate)=>{
+                    if(cate.goods_uid === goods_uid) {
+                        return {...cate, A_sel_option:cate.A_sel_option.map((val)=>{
+                                return {...val, option_cnt:(val.option_cnt > 1) ? Number(val.option_cnt)-1 : 1,}
+                            })}
+                    } else {
+                        return cate;
+                    }
+                });
+                setOrderGoodsList(temp);
+            }
+            /**----------------------------상품수량 수기조절--------------------------**/
+            if(type === 'order_item_cnt') {
+                /*안드로이드는 안되는 현상 있음*/
+                let cnt     = Number(value);
+                let temp = OrderGoodsList.map((cate)=>{
+                    if(cate.goods_uid === goods_uid) {
+                        return {...cate, A_sel_option:cate.A_sel_option.map((val)=>{
+                                return {...val, option_cnt:cnt,}
+                            })}
+                    } else {
+                        return cate;
+                    }
+                });
+                setOrderGoodsList(temp);
+            }
+        } else {
+            if(type === 'plus') {
+                Alert.alert('','수량 추가시 추가발주가 생성됩니다.');
+            }
 
-            /*안드로이드는 안되는 현상 있음*/
-            let cnt     = Number(value);
-            let temp = OrderGoodsList.map((cate)=>{
-                if(cate.goods_uid === goods_uid) {
-                    return {...cate, A_sel_option:cate.A_sel_option.map((val)=>{
-                            return {...val, option_cnt:cnt,}
-                        })}
-                } else {
-                    return cate;
-                }
-            });
-            setOrderGoodsList(temp);
+            if(type === 'minus') {
+                Alert.alert('','수량 차감시 환불처리됩니다.');
+            }
         }
     }
 
@@ -711,7 +734,7 @@ export default function OrderDtail({route,navigation}) {
                         <View style={[FormStyle.FormGroupItems]}>
                             <View>
                                 <Text style={[FormStyle.FormLabel]}>배송 요청 사항</Text>
-                                <TouchableWithoutFeedback >
+                                <TouchableWithoutFeedback>
                                     <TextInput style={[input,{flex:1,height:100,textAlignVertical: "top"}]} multiline={true}
                                                editable={Mod}
                                                onChangeText={(order_memo)=>goInput('order_memo',order_memo)}
@@ -724,12 +747,36 @@ export default function OrderDtail({route,navigation}) {
                         </View>
                     </View>
                 </View>
-                {/**----------------------------------------------상품목록--------------------------------------------------**/}
-                <GoodsList/>
+
+                {(AddGoods) ? (
+                    <>
+                        {/**----------------------------------------------추가발주 자재(결제후)--------------------------------------------------**/}
+                        <AddGoodsList/>
+                    </>
+                ):(
+                    <>
+                        {/**----------------------------------------------상품목록(결제전)--------------------------------------------------**/}
+                        <GoodsList/>
+                    </>
+                )}
+
                 {/**----------------------------------------------결제전 발주취소 이벤트--------------------------------------------------**/}
-                <PayReadyCancelTab/>
+                {(
+                    OrderData.ord_status === 'ord_ready' ||
+                    OrderData.ord_status === 'ord_doing' ||
+                    OrderData.ord_status === 'ord_edit'  ||
+                    OrderData.ord_status === 'ord_done'  ||
+                    OrderData.ord_status === 'pay_ready'
+                ) && (
+                    <PayReadyCancelTab/>
+                )}
                 {/**----------------------------------------------결제완료후 발주취소 이벤트--------------------------------------------------**/}
-                {/*<PayDoneCancelTab/>*/}
+                {/*{(*/}
+                {/*    OrderData.ord*/}
+                {/*) && (*/}
+
+                {/*)}*/}
+                <PayDoneCancelTab/>
                 <OrderTotalPrice/>
                 {/**-----------------------------------------결제대기시 노출 시킨다.--------------------------------------------**/}
                 {(OrderData.ord_status === 'pay_ready' || OrderData.ord_status === 'pay_try' || OrderData.ord_status === 'pay_err') && (
@@ -841,16 +888,6 @@ export default function OrderDtail({route,navigation}) {
                     </>
                 )}
             </ScrollView>
-            {/**-------------------------수정변경------------------------**/}
-            {/*<Toast ref={toastRef}*/}
-            {/*       style={{backgroundColor:'red',position:"absolute", zIndex:99, bottom:-200,}}*/}
-            {/*       position='bottom'*/}
-            {/*       positionValue={500}*/}
-            {/*       fadeInDuration={500}*/}
-            {/*       fadeOutDuration={500}*/}
-            {/*       opacity={1.0}*/}
-            {/*       textStyle={{color:'#fff'}}*/}
-            {/*/>*/}
             <GoOrderForm/>
         </>
     );
@@ -949,157 +986,33 @@ export default function OrderDtail({route,navigation}) {
 
     /**-----------------------------------------------결제완료후 발주취소 이벤트------------------------------------------------**/
     function PayDoneCancelTab() {
+        return(
+            <>
 
+            </>
+        );
+    }
 
-
-        /*1. 자재별 상품 계산식을 짠다 */
-        /*
-        *  1) order_uid, order_item_uid, option_cnt, option_price
-        *  2) 기존수량은 AT_order_item(cnt) 에서 가져온다
-        *  3) 차감수량은 AT_cancel_item(cancel_cnt) option_cnt 에 저장한다.
-        *
-        *
-        * */
-
-        const PayDoneCancel = (cancel_type) => {
-
-            if(cancel_type === 'all') {
-                let chk_cancel_goods = OrderGoodsList.map(val=>{return {
-                    ...val,
-                    goods_chk   :true,
-                    cancel_cnt  :Number(val.A_sel_option.map(item=>item.option_cnt)),
-                }});
-
-                Alert.alert('','결제를 취소하시겠습니까?',[
-                    {text:"취소",onPress:()=>{}},
-                    {text:"확인",onPress:()=>{
-                            payDoneCancel(Member, cancel_type, OrderData, chk_cancel_goods).then((res)=>{
-                                if(res) {
-                                    console.log(res.data);
-                                    const {result, test} = res.data;
-                                    if(result === 'OK') {
-                                        Alert.alert('','결제가 취소 되었습니다.');
-                                        console.log(test);
-                                        return navigation.replace('발주상태');
-                                    }
-                                }
-                            });
-                        }},
-                ]);
-                console.log(chk_cancel_goods);
-            } else {
-                /*
-                let chk_cancel_goods = OrderGoodsList.filter(val=>val.goods_chk);
-
-                if(chk_cancel_goods.length === 0) {return Alert.alert('','자재를 선택해주세요.')}
-
-                Alert.alert('','결제를 취소하시겠습니까?',[
-                    {text:"취소",onPress:()=>{}},
-                    {text:"확인",onPress:()=>{
-                            payDoneCancel(Member, type, OrderData, chk_cancel_goods).then((res)=>{
-                                if(res) {
-                                    const {result, test} = res.data;
-                                    if(result === 'OK') {
-                                        Alert.alert('','결제가 취소 되었습니다.');
-                                        console.log(test);
-                                        return navigation.replace('발주상태');
-                                    }
-                                }
-                            });
-                        }},
-                ]);
-                console.log(chk_cancel_goods);
-
-                */
-            }
-        }
-
-        if(OrderData.ord_status === 'pay_done' || OrderData.ord_status === 'deli_ready') {
-            if(Cancel) {
-                return (
-                    <>
-                        <View style={[container]}>
-                            <View style={[d_flex, justify_content_between]}>
-                                <TouchableOpacity
-                                    onPress={()=>PayDoneCancel(`part`)}
-                                    style={[styles.CancelBtnWrap, btn_outline_danger]}>
-                                    <Text style={[text_center,styles.CancelBtn, text_danger]}>선택취소</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    onPress={()=>PayDoneCancel(`all`)}
-                                    style={[styles.CancelBtnWrap, btn_outline_danger]}>
-                                    <Text style={[text_center,styles.CancelBtn, text_danger]}>전체취소</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </>
-                );
-            } else {
-                return (
-                    <>
-                        <View style={[container]}>
-                            <View style={[d_flex, justify_content_between,mb2]}>
-                                <TouchableOpacity
-                                    onPress={()=>setCancel(!Cancel)}
-                                    style={[styles.CancelBtnWrap, btn_outline_danger,{width:"100%"}]}>
-                                    <Text style={[text_center,styles.CancelBtn, text_danger]}>주문취소</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                    </>
-                );
-            }
-        }
-
-        /**----------------------------반품신청탭--------------------------**/
-        if(OrderData.ord_status === 'deli_done' || OrderData.deli_status === 'done') {
-            if(Cancel) {
-                return (
-                    <>
-                        <View style={[container]}>
-                            <View style={[d_flex, justify_content_between]}>
-                                <TouchableOpacity
-                                    onPress={()=>PayDoneCancel(`part`)}
-                                    style={[styles.CancelBtnWrap, btn_outline_danger]}>
-                                    <Text style={[text_center,styles.CancelBtn, text_danger]}>선택취소</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    onPress={()=>PayDoneCancel(`all`)}
-                                    style={[styles.CancelBtnWrap, btn_outline_danger]}>
-                                    <Text style={[text_center,styles.CancelBtn, text_danger]}>전체취소</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </>
-                );
-            } else {
-                return (
-                    <>
-                        <View style={[container]}>
-                            <View style={[d_flex, justify_content_between,mb2]}>
-                                <TouchableOpacity
-                                    onPress={()=>setCancel(!Cancel)}
-                                    style={[styles.CancelBtnWrap, btn_outline_danger,{width:"100%"}]}>
-                                    <Text style={[text_center,styles.CancelBtn, text_danger]}>반품신청</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                    </>
-                );
-            }
-        }
-
+    /**---발주자재 추가 화면리스트--**/
+    function AddGoodsList() {
+        return (
+            <>
+                <View style={[container, {borderBottomWidth: 1,borderColor:"#e6e6e6",}]}>
+                    <Text style={[h18]}>추가발주 자재</Text>
+                </View>
+                {/**-----------------자재목록---------------------------------------**/}
+                <View>
+                    
+                </View>
+                <View style={gray_bar}/>
+            </>
+        );
     }
 
 
     /**-----------------------------------------------자재목록--------------------------------------------------**/
     function GoodsList() {
-
         console.log(OrderGoodsList);
-
-
         let result = OrderGoodsList.filter(val=>val.goods_del === false);
         /**-----------------------------------------장바구니 상품 수량변경--------------------------------------------------**/
         return(
@@ -1119,7 +1032,7 @@ export default function OrderDtail({route,navigation}) {
                                         <View style={[container]}>
                                             <View style={[d_flex, align_items_center, mb1,flex_between]}>
                                                 {/*체크박스*/}
-                                                {(Mod || Cancel) && (
+                                                {(Mod) && (
                                                     <>
                                                         <Checkbox style={styles.chk_view} color={"#4630eb"} value={val.goods_chk} onValueChange={()=>modChk(val.goods_uid)}/>
                                                         <View style={{flex:0.1}}>
@@ -1195,53 +1108,15 @@ export default function OrderDtail({route,navigation}) {
                                                                         </View>
                                                                     </>
                                                                 ) : (
-                                                                    /** -------------------------부분주문취소---------------------**/
                                                                     <>
-                                                                        {(Cancel) ? (
-                                                                            <View style={ms2}>
-                                                                                <Text style={[h14,fw500,{paddingBottom:10,}]}>
-                                                                                    기존수량 /  {items.option_cnt}
+                                                                        <View style={ms2}>
+                                                                            <Text style={[h14,fw500,{paddingBottom:10,}]}>수량</Text>
+                                                                            <View style={[flex]}>
+                                                                                <Text style={[text_center]}>
+                                                                                    {items.option_cnt} 개
                                                                                 </Text>
-                                                                                <View style={[flex]}>
-                                                                                    {/*=============마이너스 버튼==========*/}
-                                                                                    <TouchableOpacity
-                                                                                        onPress={()=>CancelCnt(val.goods_uid,`minus`,items.option_cnt)}
-                                                                                    >
-                                                                                        <View style={[count_btn]}>
-                                                                                            <View style={[pos_center]}>
-                                                                                                <Text style={[count_btn_txt]}>－</Text>
-                                                                                            </View>
-                                                                                        </View>
-                                                                                    </TouchableOpacity>
-                                                                                    {/*============수량=================*/}
-                                                                                    {/**-----상품 uid, 주문 uid 추가----**/}
-                                                                                    <View style={[countinput]}>
-                                                                                        <Text style={[text_center]}>
-                                                                                            {val.cancel_cnt}
-                                                                                        </Text>
-                                                                                    </View>
-                                                                                    {/*=============플러스 버튼============*/}
-                                                                                    <TouchableOpacity
-                                                                                        onPress={()=>CancelCnt(val.goods_uid,`plus`,items.option_cnt)}
-                                                                                    >
-                                                                                        <View style={[count_btn]}>
-                                                                                            <View style={[pos_center]}>
-                                                                                                <Text style={[count_btn_txt]}>＋</Text>
-                                                                                            </View>
-                                                                                        </View>
-                                                                                    </TouchableOpacity>
-                                                                                </View>
                                                                             </View>
-                                                                        ):(
-                                                                            <View style={ms2}>
-                                                                                <Text style={[h14,fw500,{paddingBottom:10,}]}>수량</Text>
-                                                                                <View style={[flex]}>
-                                                                                    <Text style={[text_center]}>
-                                                                                        {items.option_cnt} 개
-                                                                                    </Text>
-                                                                                </View>
-                                                                            </View>
-                                                                        )}
+                                                                        </View>
                                                                     </>
                                                                 )}
                                                             </View>
@@ -1287,55 +1162,68 @@ export default function OrderDtail({route,navigation}) {
                     })}
                 </View>
                 <View style={gray_bar}/>
-
-
-
             </>
         );
     }
 
     /**-----------------------------------------------발주신청------------------------------------------------------**/
     function GoOrderForm() {
-        if(OrderData.ord_status === 'ord_ready' || OrderData.ord_status === 'ord_edit' || OrderData.ord_status === 'pay_ready' || OrderData.ord_status === 'pay_err' || OrderData.ord_status === 'pay_try') {
+        if(
+            OrderData.ord_status === 'ord_ready' ||
+            OrderData.ord_status === 'ord_edit' ||
+            OrderData.ord_status === 'pay_ready' ||
+            OrderData.ord_status === 'pay_err' ||
+            OrderData.ord_status === 'pay_try' ||
+            OrderData.ord_status === 'pay_done'
+        ) {
             return (
                 <>
                     {/**----------------------------------------------발주신청--------------------------------------------------**/}
-                    <View style={[bg_gray, {
-                        paddingTop      : 6,
-                        paddingBottom   : 38,
-                        width           : "100%",
-                        position        : "relative",
-                        left            : 0,
-                        bottom          : 0,
-                        zIndex          : 99,
-                        backgroundColor : (Mod) ? "#3D40E0":"#B1B2C3",
 
-                    }]}>
-                        {(Mod) ? (
+                        {(OrderData.settlekind === 'bank' && OrderData.pay_status === 'ready') ? (
                             <>
-                                {/*<TouchableOpacity onPress={()=>setMod(!Mod)}>*/}
-                                <TouchableOpacity onPress={FormMod}>
-                                    <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
-                                        <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
-                                    </View>
-                                    <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
-                                        수정완료
-                                    </Text>
-                                </TouchableOpacity>
+
                             </>
-                        ):(
+                        ) :(
                             <>
-                                <TouchableOpacity onPress={ModInfo}>
-                                    <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
-                                        <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
-                                    </View>
-                                    <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
-                                        수정하기
-                                    </Text>
-                                </TouchableOpacity>
+                                <View style={[bg_gray, {
+                                    paddingTop      : 6,
+                                    paddingBottom   : 38,
+                                    width           : "100%",
+                                    position        : "relative",
+                                    left            : 0,
+                                    bottom          : 0,
+                                    zIndex          : 99,
+                                    backgroundColor : (Mod) ? "#3D40E0":"#B1B2C3",
+                                }]}>
+                                    {(Mod) ? (
+                                        <>
+                                            {/*<TouchableOpacity onPress={()=>setMod(!Mod)}>*/}
+                                            <TouchableOpacity onPress={FormMod}>
+                                                <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
+                                                    <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
+                                                </View>
+                                                <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
+                                                    수정완료
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </>
+                                    ):(
+                                        <>
+                                            <TouchableOpacity onPress={ModInfo}>
+                                                <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
+                                                    <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
+                                                </View>
+                                                <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
+                                                    수정하기
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </>
+                                    )}
+                                </View>
                             </>
                         )}
-                    </View>
+
                 </>
             );
         }
