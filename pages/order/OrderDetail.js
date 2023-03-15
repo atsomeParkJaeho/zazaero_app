@@ -2,6 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import {
     StyleSheet,
     Button,
+    Modal,
     Alert,
     CheckBox,
     Text,
@@ -66,6 +67,21 @@ import {
     select_box,
     select_txt,
     select_icon_box,
+    text_info,
+    btn_info,
+    text_white,
+    wt2,
+    pt1,
+    pb1,
+    pt3,
+    pt5,
+    pt7,
+    h20,
+    ps1,
+    h30,
+    ps2,
+    pe2,
+    btn_warning, wt3, wt5, wt4, wt7, ms1,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 import {FormStyle} from "./FormStyle";
@@ -162,7 +178,7 @@ export default function OrderDtail({route,navigation}) {
                 bankAccount:value,
             });
         }
-        
+
     }
 
     /**--------------------------------------주문서 셋팅--------------------------------------------------**/
@@ -542,6 +558,21 @@ export default function OrderDtail({route,navigation}) {
     console.log(OrderGoodsList,' / 주문상품 정보');
     console.log(BankCode,'/ 무통장 입금처 정보');
 
+//모달창 오픈
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const toggleModal = () => {
+        setIsModalVisible(!isModalVisible);
+    };
+    const [isModalVisible2, setIsModalVisible2] = useState(false);
+
+    const toggleModal2 = () => {
+        setIsModalVisible2(!isModalVisible2);
+    };
+
+    const [text, onChangeText] = React.useState('Useless Text');
+    const [number, onChangeNumber] = React.useState('');
+
     return(
         <>
             {/**----------------수량 조절 팝업------------**/}
@@ -702,7 +733,77 @@ export default function OrderDtail({route,navigation}) {
                     )}
                 </View>
                 {/**----------------------------------------------현장인도자 정보--------------------------------------------------**/}
+
+
                 <View style={[FormStyle.FormGroup]}>
+                    {/*<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>*/}
+                    {/*    <Button title="Open Modal" onPress={toggleModal} />*/}
+                    {/*    */}
+                    {/*</View>*/}
+                    <View style={[flex,justify_content_end]}>
+                        <TouchableOpacity style={[btn_info,wt2,]} onPress={toggleModal}>
+                            <Text style={[text_white,text_center,h13]}>수정</Text>
+                        </TouchableOpacity>
+                        {/**/}
+                        <Modal visible={isModalVisible} animationType="slide">
+                            <View style={[pt7,ps2,pe2]}>
+                                <TouchableOpacity style={[flex,justify_content_end]} onPress={toggleModal}>
+                                    <Text style={[h30]}>X</Text>
+                                </TouchableOpacity>
+                                <View style={[pt3]}>
+                                </View>
+                                {/*==============현장인도자 성명==============*/}
+                                <View style={[FormStyle.FormGroupItems]}>
+                                    <View style={[FormStyle.FormGroupItems]}>
+                                        <Text style={[FormStyle.FormLabel]}>현장인도자 성명</Text>
+                                        <TextInput style={[input]}
+                                                   editable={Mod}
+                                                   onChangeText={(recv_name)=>goInput("recv_name",recv_name)}
+                                                   placeholder="예 ) 홍길동"
+                                                   value={OrderData.recv_name}
+                                                   ref={el => (InputFocus.current[4] = el)}
+                                        />
+                                    </View>
+                                    {/*==============현장인도자 연락처==============*/}
+                                    <View style={[FormStyle.FormGroupItems]}>
+                                        <View>
+                                            <Text style={[FormStyle.FormLabel]}>현장인도자 연락처</Text>
+                                            <TextInput style={[input]}
+                                                       keyboardType="number-pad"
+                                                       editable={Mod}
+                                                       onChangeText={(recv_mobile)=>goInput("recv_mobile",recv_mobile)}
+                                                       placeholder="예 ) 010-XXXX-XXXX"
+                                                       maxLength={13}
+                                                       value={Phone(OrderData.recv_mobile)}
+                                                       ref={el => (InputFocus.current[5] = el)}
+                                            />
+                                        </View>
+                                    </View>
+                                    {/*==============배송 요청 사항==============*/}
+                                    <View style={[FormStyle.FormGroupItems]}>
+                                        <View>
+                                            <Text style={[FormStyle.FormLabel]}>배송 요청 사항</Text>
+                                            <TouchableWithoutFeedback>
+                                                <TextInput style={[input,{height:100,textAlignVertical: "top"}]} multiline={true}
+                                                           editable={Mod}
+                                                           onChangeText={(order_memo)=>goInput('order_memo',order_memo)}
+                                                           numberOfLines={4}
+                                                           value={OrderData.order_memo}
+                                                           placeholder="배송요청사항"
+                                                />
+                                            </TouchableWithoutFeedback>
+                                        </View>
+                                    </View>
+                                </View>
+                                {/* 저장버튼   */}
+                                <TouchableOpacity style={[btn_primary,{borderRadius:5,}]} onPress="">
+                                    <Text style={[text_white,text_center,h20]}>저장</Text>
+                                </TouchableOpacity>
+
+                            </View>
+                        </Modal>
+                        {/* */}
+                    </View>
                     {/*==============현장인도자 성명==============*/}
                     <View style={[FormStyle.FormGroupItems]}>
                         <View style={[FormStyle.FormGroupItems]}>
@@ -918,7 +1019,7 @@ export default function OrderDtail({route,navigation}) {
                 });
             }
         }
-        
+
         /**----------------------------선택주문취소-----------------------------------**/
         const ChkdelOrder = () => {
             let result = OrderGoodsList.filter(val=>val.goods_chk);
@@ -1002,7 +1103,7 @@ export default function OrderDtail({route,navigation}) {
                 </View>
                 {/**-----------------자재목록---------------------------------------**/}
                 <View>
-                    
+
                 </View>
                 <View style={gray_bar}/>
             </>
@@ -1018,7 +1119,255 @@ export default function OrderDtail({route,navigation}) {
         return(
             <>
                 <View style={[container, {borderBottomWidth: 1,borderColor:"#e6e6e6",}]}>
-                    <Text style={[h18]}>자재목록</Text>
+                    <View style={[flex_between]}>
+                        <View style={[]}>
+                            <Text style={[h18]}>자재목록</Text>
+                        </View>
+                        <View style={[flex]}>
+                            <TouchableOpacity style={[btn_primary,{paddingVertical:7,paddingHorizontal:7,}]} onPress="">
+                                <Text style={[text_white,text_center,h13]}>추가발주</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[ms2,btn_warning,{paddingVertical:7,paddingHorizontal:7,}]} onPress={toggleModal2}>
+                                <Text style={[text_white,text_center,h13]}>주문취소</Text>
+                            </TouchableOpacity>
+                            {/**/}
+                            <Modal visible={isModalVisible2} animationType="slide">
+                                <View style={[{ paddingTop:Platform.OS === 'ios' ? 70 : 50,},ps1,pe1]}>
+
+                                    <View style={[flex_between,ps1,pe1]} >
+                                        <Text style={[h18,]}>자재목록</Text>
+                                        <TouchableOpacity style={[flex,justify_content_end]} onPress={toggleModal2}>
+                                            <Text style={[h30]}>X</Text>
+                                        </TouchableOpacity>
+                                    </View>
+
+                                   <ScrollView style={[{height:650,borderColor:"#EDEDF1", borderTopWidth:1}]} nestedScrollEnabled={true}>
+
+                                        {/**/}
+                                       {/**-----------------반복문 구간---------------------------------------**/}
+                                       <View style={[styles.CancelDetail_list_items]} >
+                                           <View style={[container]}>
+                                               <View style={[d_flex, align_items_center, mb1,flex_between]}>
+                                                   {/*체크박스*/}
+                                                   <Checkbox style={styles.chk_view} color={"#4630eb"} value="" onValueChange={()=>modChk(val.goods_uid)}/>
+                                                   <View style={{flex:0.1}}>
+                                                       <Checkbox style={styles.all_check} color={"#4630eb"} value="" onValueChange={()=>modChk(val.goods_uid)}/>
+                                                   </View>
+                                                    <View style={{flex:1}}>
+                                                       {/*상품명*/}
+                                                       <Text style={[h14]}>상품명</Text>
+                                                   </View>
+                                               </View>
+                                               <View style={[d_flex, align_items_center, mb1]}>
+                                                   <View style={[]}>
+                                                       <Image style={[styles.goods_thum]} source={{uri: 'http://www.zazaero.com/upload/999999994022/goods/60810231375729.png'}}/>
+                                                   </View>
+                                                   <View style={[d_flex]}>
+                                                       <View style={ms1}>
+                                                           <View style={[d_flex]}>
+                                                               <Text style={[h14,fw500,{paddingBottom:10,}]}>
+                                                                   기존수량 : 5 개
+                                                               </Text>
+                                                           </View>
+                                                           <View style={[d_flex,align_items_center]}>
+                                                               <Text style={[h14,fw500,{paddingBottom:10,}]}>
+                                                                   취소수량
+                                                               </Text>
+                                                               <TextInput
+                                                                   style={[input,wt4,ms1]}
+                                                                   onChangeText={onChangeNumber}
+                                                                   value={number}
+                                                                   placeholder=""
+                                                                   maxLength={3}
+                                                                   keyboardType="numeric"
+                                                               />
+                                                           </View>
+
+                                                       </View>
+                                                       <View style={[justify_content_end]}>
+                                                           <Text style={[h13]}>( 단가 : {Price(39000)} 원)</Text>
+                                                           {/*단가*/}
+                                                           <Text style={[h16,text_right]}>{Price(5 * 39000)} 원</Text>
+                                                           {/*총금액*/}
+                                                       </View>
+                                                   </View>
+                                               </View>
+                                            </View>
+                                       </View>
+
+                                       <View style={[styles.CancelDetail_list_items]} >
+                                           <View style={[container]}>
+                                               <View style={[d_flex, align_items_center, mb1,flex_between]}>
+                                                   {/*체크박스*/}
+                                                   <Checkbox style={styles.chk_view} color={"#4630eb"} value="" onValueChange={()=>modChk(val.goods_uid)}/>
+                                                   <View style={{flex:0.1}}>
+                                                       <Checkbox style={styles.all_check} color={"#4630eb"} value="" onValueChange={()=>modChk(val.goods_uid)}/>
+                                                   </View>
+                                                   <View style={{flex:1}}>
+                                                       {/*상품명*/}
+                                                       <Text style={[h14]}>상품명</Text>
+                                                   </View>
+                                               </View>
+                                               <View style={[d_flex, align_items_center, mb1]}>
+                                                   <View style={[]}>
+                                                       <Image style={[styles.goods_thum]} source={{uri: 'http://www.zazaero.com/upload/999999994022/goods/60810231375729.png'}}/>
+                                                   </View>
+                                                   <View style={[d_flex]}>
+                                                       <View style={ms1}>
+                                                           <View style={[d_flex]}>
+                                                               <Text style={[h14,fw500,{paddingBottom:10,}]}>
+                                                                   기존수량 : 5 개
+                                                               </Text>
+                                                           </View>
+                                                           <View style={[d_flex,align_items_center]}>
+                                                               <Text style={[h14,fw500,{paddingBottom:10,}]}>
+                                                                   취소수량
+                                                               </Text>
+                                                               <TextInput
+                                                                   style={[input,wt4,ms1]}
+                                                                   onChangeText={onChangeNumber}
+                                                                   value={number}
+                                                                   placeholder=""
+                                                                   maxLength={3}
+                                                                   keyboardType="numeric"
+                                                               />
+                                                           </View>
+
+                                                       </View>
+                                                       <View style={[justify_content_end]}>
+                                                           <Text style={[h13]}>( 단가 : {Price(39000)} 원)</Text>
+                                                           {/*단가*/}
+                                                           <Text style={[h16,text_right]}>{Price(5 * 39000)} 원</Text>
+                                                           {/*총금액*/}
+                                                       </View>
+                                                   </View>
+                                               </View>
+                                           </View>
+                                       </View>
+
+                                       <View style={[styles.CancelDetail_list_items]} >
+                                           <View style={[container]}>
+                                               <View style={[d_flex, align_items_center, mb1,flex_between]}>
+                                                   {/*체크박스*/}
+                                                   <Checkbox style={styles.chk_view} color={"#4630eb"} value="" onValueChange={()=>modChk(val.goods_uid)}/>
+                                                   <View style={{flex:0.1}}>
+                                                       <Checkbox style={styles.all_check} color={"#4630eb"} value="" onValueChange={()=>modChk(val.goods_uid)}/>
+                                                   </View>
+                                                   <View style={{flex:1}}>
+                                                       {/*상품명*/}
+                                                       <Text style={[h14]}>상품명</Text>
+                                                   </View>
+                                               </View>
+                                               <View style={[d_flex, align_items_center, mb1]}>
+                                                   <View style={[]}>
+                                                       <Image style={[styles.goods_thum]} source={{uri: 'http://www.zazaero.com/upload/999999994022/goods/60810231375729.png'}}/>
+                                                   </View>
+                                                   <View style={[d_flex]}>
+                                                       <View style={ms1}>
+                                                           <View style={[d_flex]}>
+                                                               <Text style={[h14,fw500,{paddingBottom:10,}]}>
+                                                                   기존수량 : 5 개
+                                                               </Text>
+                                                           </View>
+                                                           <View style={[d_flex,align_items_center]}>
+                                                               <Text style={[h14,fw500,{paddingBottom:10,}]}>
+                                                                   취소수량
+                                                               </Text>
+                                                               <TextInput
+                                                                   style={[input,wt4,ms1]}
+                                                                   onChangeText={onChangeNumber}
+                                                                   value={number}
+                                                                   placeholder=""
+                                                                   maxLength={3}
+                                                                   keyboardType="numeric"
+                                                               />
+                                                           </View>
+
+                                                       </View>
+                                                       <View style={[justify_content_end]}>
+                                                           <Text style={[h13]}>( 단가 : {Price(39000)} 원)</Text>
+                                                           {/*단가*/}
+                                                           <Text style={[h16,text_right]}>{Price(5 * 39000)} 원</Text>
+                                                           {/*총금액*/}
+                                                       </View>
+                                                   </View>
+                                               </View>
+                                           </View>
+                                       </View>
+
+                                       <View style={[styles.CancelDetail_list_items]} >
+                                           <View style={[container]}>
+                                               <View style={[d_flex, align_items_center, mb1,flex_between]}>
+                                                   {/*체크박스*/}
+                                                   <Checkbox style={styles.chk_view} color={"#4630eb"} value="" onValueChange={()=>modChk(val.goods_uid)}/>
+                                                   <View style={{flex:0.1}}>
+                                                       <Checkbox style={styles.all_check} color={"#4630eb"} value="" onValueChange={()=>modChk(val.goods_uid)}/>
+                                                   </View>
+                                                   <View style={{flex:1}}>
+                                                       {/*상품명*/}
+                                                       <Text style={[h14]}>상품명</Text>
+                                                   </View>
+                                               </View>
+                                               <View style={[d_flex, align_items_center, mb1]}>
+                                                   <View style={[]}>
+                                                       <Image style={[styles.goods_thum]} source={{uri: 'http://www.zazaero.com/upload/999999994022/goods/60810231375729.png'}}/>
+                                                   </View>
+                                                   <View style={[d_flex]}>
+                                                       <View style={ms1}>
+                                                           <View style={[d_flex]}>
+                                                               <Text style={[h14,fw500,{paddingBottom:10,}]}>
+                                                                   기존수량 : 5 개
+                                                               </Text>
+                                                           </View>
+                                                           <View style={[d_flex,align_items_center]}>
+                                                               <Text style={[h14,fw500,{paddingBottom:10,}]}>
+                                                                   취소수량
+                                                               </Text>
+                                                               <TextInput
+                                                                   style={[input,wt4,ms1]}
+                                                                   onChangeText={onChangeNumber}
+                                                                   value={number}
+                                                                   placeholder=""
+                                                                   maxLength={3}
+                                                                   keyboardType="numeric"
+                                                               />
+                                                           </View>
+
+                                                       </View>
+                                                       <View style={[justify_content_end]}>
+                                                           <Text style={[h13]}>( 단가 : {Price(39000)} 원)</Text>
+                                                           {/*단가*/}
+                                                           <Text style={[h16,text_right]}>{Price(5 * 39000)} 원</Text>
+                                                           {/*총금액*/}
+                                                       </View>
+                                                   </View>
+                                               </View>
+                                           </View>
+                                       </View>
+                                        {/**/}
+
+                                   </ScrollView>
+                                    {/* 저장버튼   */}
+                                    <View style={[flex_between]}>
+                                        <View style={[wt5,ps1,pe1]}>
+                                            <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,}]} onPress="">
+                                                <Text style={[text_center,h18]}>주문취소</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={[wt5,ps1,pe1]}>
+                                            <TouchableOpacity style={[btn_primary,{borderRadius:5,}]} onPress="">
+                                                <Text style={[text_white,text_center,h18]}>전체취소</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+
+
+                                </View>
+                            </Modal>
+                            {/* */}
+                        </View>
+                    </View>
+
                 </View>
                 {/**-----------------자재목록---------------------------------------**/}
                 <View>
@@ -1161,6 +1510,149 @@ export default function OrderDtail({route,navigation}) {
                         }
                     })}
                 </View>
+                {/**/}
+                <View>
+                    <Text style={[h14]}>나눠지는곳</Text>
+                    {/**-----------------반복문 구간---------------------------------------**/}
+                    {result.map(val=>{
+                        if(val.goods_name !== null) {
+                            let img_src = val.list_img_url;
+                            return(
+                                <>
+                                    <View style={[styles.CancelDetail_list_items]} >
+                                        <View style={[container]}>
+                                            <View style={[d_flex, align_items_center, mb1,flex_between]}>
+                                                {/*체크박스*/}
+                                                {(Mod) && (
+                                                    <>
+                                                        <Checkbox style={styles.chk_view} color={"#4630eb"} value={val.goods_chk} onValueChange={()=>modChk(val.goods_uid)}/>
+                                                        <View style={{flex:0.1}}>
+                                                            <Checkbox style={styles.all_check} color={"#4630eb"} value={val.goods_chk} onValueChange={()=>modChk(val.goods_uid)}/>
+                                                        </View>
+                                                    </>
+                                                )}
+                                                <View style={{flex:1}}>
+                                                    {/*상품명*/}
+                                                    <Text style={[h14]}>{val.goods_name}</Text>
+                                                </View>
+                                            </View>
+                                            {/**--------------------------------옵션--------------------------------**/}
+                                            {val.A_sel_option.map(items=>{
+                                                let goods_price     = items.option_price;
+                                                let goods_cnt       = items.option_cnt;
+                                                let goods_opt_price = items.opt_price;
+                                                let order_item_uid  = items.order_item_uid;
+                                                const reqMemo = (key, value, uid) =>{
+                                                    let temp = OrderGoodsList.map((cate)=>{
+                                                        return {...cate, A_sel_option:cate.A_sel_option.map(val=>{
+                                                                if(uid === val.order_item_uid) {
+                                                                    return {...cate, req_memo:value}
+                                                                } else {
+                                                                    return cate;
+                                                                }
+                                                            })}
+                                                    });
+                                                    setOrderGoodsList(temp);
+                                                }
+                                                return(
+                                                    <>
+                                                        <View style={[flex_between_bottom]}>
+                                                            <View style={[flex_end]}>
+                                                                <View>
+                                                                    <Checkbox style={[styles.AllGoodsChk]} color={"#4630eb"} value={val.goods_chk} onValueChange={()=>modChk(val.goods_uid)}/>
+                                                                    <Image style={[styles.goods_thum]} source={{uri: 'http://www.zazaero.com' + img_src}}/>
+                                                                </View>
+                                                                {/**-------------------수량조절---------------**/}
+                                                                {(Mod) ? (
+                                                                    <>
+                                                                        <View style={ms2}>
+                                                                            <View style={[d_flex]}>
+                                                                                <Text style={[h14,fw500,{paddingBottom:10,}]}>
+                                                                                    수량
+                                                                                </Text>
+                                                                            </View>
+                                                                            <View style={[flex]}>
+                                                                                {/*=============마이너스 버튼==========*/}
+                                                                                <TouchableWithoutFeedback onPress={()=>modCart(val.goods_uid, val.order_uid, 'minus', items.option_cnt, items.option_price)}>
+                                                                                    <View style={[count_btn]}>
+                                                                                        <View style={[pos_center]}>
+                                                                                            <Text style={[count_btn_txt]}>－</Text>
+                                                                                        </View>
+                                                                                    </View>
+                                                                                </TouchableWithoutFeedback>
+                                                                                {/*============수량=================*/}
+                                                                                {/**-----상품 uid, 주문 uid 추가----**/}
+                                                                                <TouchableOpacity onPress={()=>cntPopup(val.goods_uid, val.order_uid, items.option_cnt)} style={[countinput]}>
+                                                                                    <Text style={[text_center]}>
+                                                                                        {items.option_cnt}
+                                                                                    </Text>
+                                                                                </TouchableOpacity>
+                                                                                {/*=============플러스 버튼============*/}
+                                                                                <TouchableWithoutFeedback onPress={() => modCart(val.goods_uid, val.order_uid, 'plus', items.option_cnt, items.option_price)}>
+                                                                                    <View style={[count_btn]}>
+                                                                                        <View style={[pos_center]}>
+                                                                                            <Text style={[count_btn_txt]}>＋</Text>
+                                                                                        </View>
+                                                                                    </View>
+                                                                                </TouchableWithoutFeedback>
+                                                                            </View>
+                                                                        </View>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <View style={ms2}>
+                                                                            <Text style={[h14,fw500,{paddingBottom:10,}]}>수량</Text>
+                                                                            <View style={[flex]}>
+                                                                                <Text style={[text_center]}>
+                                                                                    {items.option_cnt} 개
+                                                                                </Text>
+                                                                            </View>
+                                                                        </View>
+                                                                    </>
+                                                                )}
+                                                            </View>
+                                                            <View style={justify_content_end}>
+                                                                <Text style={[h13]}>( 단가 : {Price(items.option_price)} 원)</Text>
+                                                                {/*단가*/}
+                                                                <Text style={[h16,text_right]}>{Price(goods_price * goods_cnt)} 원</Text>
+                                                                {/*총금액*/}
+                                                            </View>
+                                                        </View>
+                                                        {/*옵션요청글이 있을시 노출한다 */}
+                                                        {(items.req_memo) && (
+                                                            <>
+                                                                <View style={[mt1]}>
+                                                                    <View style={[]}>
+                                                                        <Text style={[h13,text_right]}>요청금액 : <Text style={[text_danger]}>{Price(goods_opt_price)}원</Text></Text>
+                                                                    </View>
+                                                                    {/*옵션요청가격*/}
+                                                                    <View style={[]}>
+                                                                        <Text style={[h13]}>{val.goods_guide_name}</Text>
+                                                                        {/*<TextInput*/}
+                                                                        {/*    onChangeText={(req_memo)=>reqMemo('req_memo',req_memo,order_item_uid)}*/}
+                                                                        {/*    style={[textarea]}*/}
+                                                                        {/*    value={`${items.req_memo}`}*/}
+                                                                        {/*    multiline={true}*/}
+                                                                        {/*    numberOfLines={4}*/}
+                                                                        {/*/>*/}
+                                                                        <Text style={[textarea, h13, bg_light]}>{items.req_memo}</Text>
+                                                                    </View>
+                                                                    {/*옵션요청글*/}
+                                                                </View>
+                                                            </>
+                                                        )}
+
+                                                    </>
+                                                );
+                                            })}
+                                        </View>
+                                    </View>
+                                </>
+                            )
+                        }
+                    })}
+                </View>
+                {/**/}
                 <View style={gray_bar}/>
             </>
         );
@@ -1180,49 +1672,49 @@ export default function OrderDtail({route,navigation}) {
                 <>
                     {/**----------------------------------------------발주신청--------------------------------------------------**/}
 
-                        {(OrderData.settlekind === 'bank' && OrderData.pay_status === 'ready') ? (
-                            <>
+                    {(OrderData.settlekind === 'bank' && OrderData.pay_status === 'ready') ? (
+                        <>
 
-                            </>
-                        ) :(
-                            <>
-                                <View style={[bg_gray, {
-                                    paddingTop      : 6,
-                                    paddingBottom   : 38,
-                                    width           : "100%",
-                                    position        : "relative",
-                                    left            : 0,
-                                    bottom          : 0,
-                                    zIndex          : 99,
-                                    backgroundColor : (Mod) ? "#3D40E0":"#B1B2C3",
-                                }]}>
-                                    {(Mod) ? (
-                                        <>
-                                            {/*<TouchableOpacity onPress={()=>setMod(!Mod)}>*/}
-                                            <TouchableOpacity onPress={FormMod}>
-                                                <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
-                                                    <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
-                                                </View>
-                                                <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
-                                                    수정완료
-                                                </Text>
-                                            </TouchableOpacity>
-                                        </>
-                                    ):(
-                                        <>
-                                            <TouchableOpacity onPress={ModInfo}>
-                                                <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
-                                                    <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
-                                                </View>
-                                                <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
-                                                    수정하기
-                                                </Text>
-                                            </TouchableOpacity>
-                                        </>
-                                    )}
-                                </View>
-                            </>
-                        )}
+                        </>
+                    ) :(
+                        <>
+                            <View style={[bg_gray, {
+                                paddingTop      : 6,
+                                paddingBottom   : 38,
+                                width           : "100%",
+                                position        : "relative",
+                                left            : 0,
+                                bottom          : 0,
+                                zIndex          : 99,
+                                backgroundColor : (Mod) ? "#3D40E0":"#B1B2C3",
+                            }]}>
+                                {(Mod) ? (
+                                    <>
+                                        {/*<TouchableOpacity onPress={()=>setMod(!Mod)}>*/}
+                                        <TouchableOpacity onPress={FormMod}>
+                                            <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
+                                                <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
+                                            </View>
+                                            <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
+                                                수정완료
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </>
+                                ):(
+                                    <>
+                                        <TouchableOpacity onPress={ModInfo}>
+                                            <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
+                                                <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
+                                            </View>
+                                            <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
+                                                수정하기
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </>
+                                )}
+                            </View>
+                        </>
+                    )}
 
                 </>
             );
