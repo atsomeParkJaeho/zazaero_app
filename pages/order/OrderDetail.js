@@ -159,10 +159,15 @@ export default function OrderDtail({route,navigation}) {
         bankSender          :'',
     });
 
-
-    //
     const [Show_1, setShow_1]         = useState(false);
     const [Show_2, setShow_2]         = useState(false);    // 셀렉트창 노출 여부
+
+    //모달창 오픈
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isModalVisible2, setIsModalVisible2] = useState(false);
+    const toggleModal = () => {setIsModalVisible(!isModalVisible);};
+    const toggleModal2 = () => {setIsModalVisible2(!isModalVisible2);};
+
 
     const goSearch = (type, value) => {
         if(type === 'hope_deli_time') {
@@ -180,7 +185,6 @@ export default function OrderDtail({route,navigation}) {
                 bankAccount:value,
             });
         }
-
     }
 
     /**--------------------------------------주문서 셋팅--------------------------------------------------**/
@@ -245,6 +249,7 @@ export default function OrderDtail({route,navigation}) {
         /**-------------주문상세정보 출력------------**/
         getOrderInfo(gd_order_uid, Member).then(res=> {
             if (res.data.result === 'OK') {
+
                 const {gd_order} = res.data;
                 let temp = gd_order.A_order.map(val => {
                     return {
@@ -252,10 +257,12 @@ export default function OrderDtail({route,navigation}) {
                         goods_chk: false,
                         goods_del: false,
                     }
-                })
+                });
+
+                // 1. 주문정보 넣기
                 setOrderDate(gd_order);
-                setOrderGoodsList(temp);
-                console.log(gd_order.deli_status);
+                // 2. 자재정보 넣기
+                setOrderGoodsList(temp);    
 
                 let status = (gd_order.ord_status === 'pay_ready' || gd_order.ord_status === 'pay_err' || gd_order.ord_status === 'pay_try') ? '결제상태' : '발주상태';
 
@@ -296,15 +303,38 @@ export default function OrderDtail({route,navigation}) {
             }
         });
 
+
+
+
     },[Update,Member]);
     /**--------------------------------------------------------------입력폼 입력---------------------------------------------------**/
-    const goInput = (keyValue, e) => {
+    const goInput = (keyValue, e, order_uid) => {
         /**------------------------------------------------------------------**/
-        setOrderDate({
-            ...OrderData,
-            [keyValue]:e,
-        });
+        if(keyValue === 'cancel_cnt') {
+            let temp = OrderGoodsList.map(val=>{
+                if(val.order_uid === order_uid) {
+                    let limited = Number(val.A_sel_option.map(item=>item.option_cnt));
+                    console.log(limited,'/제한');
+                    return {
+                        ...val,
+                        [keyValue]:(e > limited) ? (limited):Number(e),
+                    }
+                } else {
+                    return val;
+                }
+            });
+            setOrderGoodsList(temp);
+        } else {
+            setOrderDate({
+                ...OrderData,
+                [keyValue]:e,
+            });
+        }
     }
+    const fullNumber = () => {
+
+    }
+
 
     /**--------------------------------------------------------------------------------------------------------------------------**/
     const goPay = () => {
@@ -400,47 +430,6 @@ export default function OrderDtail({route,navigation}) {
                 Alert.alert('','수량 차감시 환불처리됩니다.');
             }
         }
-    }
-
-
-    console.log(BankCode,'/12 12312312');
-    const CancelCnt = (goods_uid, type, src_cnt) => {
-
-        console.log(src_cnt);
-
-        if(type === 'minus') {
-            console.log(type);
-            let temp = OrderGoodsList.map((val)=>{
-                if(val.goods_uid === goods_uid) {
-                    return {
-                        ...val,
-                        cancel_cnt:(val.cancel_cnt > 0) ? Number(val.cancel_cnt) - 1 : 0,
-                    }
-                } else {
-                    return val;
-                }
-            });
-            setOrderGoodsList(temp);
-
-        }
-
-        if(type === 'plus') {
-
-            console.log(type);
-            let temp = OrderGoodsList.map((val)=>{
-                if(val.goods_uid === goods_uid) {
-                    return {
-                        ...val,
-                        cancel_cnt:(val.cancel_cnt >= src_cnt) ? Number(src_cnt) : Number(val.cancel_cnt) + 1,
-                    }
-                } else {
-                    return val;
-                }
-            });
-            setOrderGoodsList(temp);
-
-        }
-
     }
 
     // 자재 체크 로직
@@ -559,21 +548,6 @@ export default function OrderDtail({route,navigation}) {
     console.log(OrderData,' / 주문정보');
     console.log(OrderGoodsList,' / 주문상품 정보');
     console.log(BankCode,'/ 무통장 입금처 정보');
-
-//모달창 오픈
-    const [isModalVisible, setIsModalVisible] = useState(false);
-
-    const toggleModal = () => {
-        setIsModalVisible(!isModalVisible);
-    };
-    const [isModalVisible2, setIsModalVisible2] = useState(false);
-
-    const toggleModal2 = () => {
-        setIsModalVisible2(!isModalVisible2);
-    };
-
-    const [text, onChangeText] = React.useState('Useless Text');
-    const [number, onChangeNumber] = React.useState('');
 
     return(
         <>
@@ -990,6 +964,92 @@ export default function OrderDtail({route,navigation}) {
                     </>
                 )}
             </ScrollView>
+            {/**--------------------------------모달------------------------**/}
+            <Modal visible={isModalVisible2} animationType="slide">
+                <View style={[{ paddingTop:Platform.OS === 'ios' ? 70 : 50,}]}>
+
+                    <View style={[flex_between,ps1,pe1]} >
+                        <Text style={[h18,]}>자재목록</Text>
+                        <TouchableOpacity style={[flex,justify_content_end]} onPress={toggleModal2}>
+                            <Close width={20} height={20}/>
+                        </TouchableOpacity>
+                    </View>
+
+                    <ScrollView style={[{height:"80%",borderColor:"#EDEDF1", borderTopWidth:1}]} nestedScrollEnabled={true}>
+                        {/**-----------------반복문 구간---------------------------------------**/}
+                        {OrderGoodsList.map((val, idx)=>(
+                            <>
+                                <View key={idx} style={[styles.CancelDetail_list_items,]} >
+                                    <View style={[container]}>
+                                        <View style={[d_flex, align_items_center, mb1,flex_between]}>
+                                            {/*체크박스*/}
+                                            <View style={{flex:1}}>
+                                                {/*상품명*/}
+                                                <Text style={[h14]}>{val.goods_name}</Text>
+                                            </View>
+                                        </View>
+
+                                        <View style={[d_flex, align_items_center, mb1]}>
+                                            <View style={[me2]}>
+                                                <Image style={[styles.goods_thum]} source={{uri: `http://www.zazaero.com${val.list_img_url}`}}/>
+                                            </View>
+                                            <View style={[wt7,flex_between,align_items_end]}>
+                                                {(val.A_sel_option.map((item,idx)=>(
+                                                    <>
+                                                        <View style={ms1} key={idx}>
+                                                            <View style={[d_flex]}>
+                                                                <Text style={[h14,fw500,{paddingBottom:10,}]}>
+                                                                    기존수량 : {item.option_cnt}개
+                                                                </Text>
+                                                            </View>
+                                                            <View>
+                                                                <Text style={[h14,fw500,{paddingBottom:5,}]}>
+                                                                    취소수량
+                                                                </Text>
+                                                                <TextInput
+                                                                    style={[input]}
+                                                                    onChangeText={(cancel_cnt)=>goInput(`cancel_cnt`,cancel_cnt,val.order_uid)}
+                                                                    value={`${val.cancel_cnt}`}
+                                                                    placeholder="취소수량"
+                                                                    maxLength={3}
+                                                                    keyboardType="numeric"
+                                                                />
+                                                            </View>
+                                                        </View>
+                                                        <View style={[justify_content_end]}>
+                                                            <Text style={[h13]}>( 단가 : {Price(item.option_price)} 원)</Text>
+                                                            {/*단가*/}
+                                                            <Text style={[h16,text_right]}>{Price(item.option_price)} 원</Text>
+                                                            {/*총금액*/}
+                                                        </View>
+                                                    </>
+                                                )))}
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                            </>
+                        ))}
+                    </ScrollView>
+
+                    {/* 저장버튼 */}
+                    <View style={[flex_between]}>
+                        <View style={[wt5,ps1,pe1]}>
+                            <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]} onPress="">
+                                <Text style={[text_center,h18]}>주문취소</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={[wt5,ps1,pe1]}>
+                            <TouchableOpacity style={[btn_primary,{borderRadius:5,paddingTop:7,paddingBottom:7}]} onPress="">
+                                <Text style={[text_white,text_center,h18]}>전체취소</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+
+                </View>
+            </Modal>
+            {/* */}
             <GoOrderForm/>
         </>
     );
@@ -1152,6 +1212,7 @@ export default function OrderDtail({route,navigation}) {
                                             </View>
                                             {/**--------------------------------옵션--------------------------------**/}
                                             {val.A_sel_option.map(items=>{
+
                                                 let goods_price     = items.option_price;
                                                 let goods_cnt       = items.option_cnt;
                                                 let goods_opt_price = items.opt_price;
@@ -1411,96 +1472,6 @@ export default function OrderDtail({route,navigation}) {
                 {/**/}
                 <View style={gray_bar}/>
 
-                {/**--------------------------------모달------------------------**/}
-                <Modal visible={isModalVisible2} animationType="slide">
-                    <View style={[{ paddingTop:Platform.OS === 'ios' ? 70 : 50,}]}>
-
-                        <View style={[flex_between,ps1,pe1]} >
-                            <Text style={[h18,]}>자재목록</Text>
-                            <TouchableOpacity style={[flex,justify_content_end]} onPress={toggleModal2}>
-                                <Close width={20} height={20}/>
-                            </TouchableOpacity>
-                        </View>
-
-                        <ScrollView style={[{height:"80%",borderColor:"#EDEDF1", borderTopWidth:1}]} nestedScrollEnabled={true}>
-                            {/**-----------------반복문 구간---------------------------------------**/}
-                            {result.map((val, idx)=>(
-                                <>
-                                    <View key={idx} style={[styles.CancelDetail_list_items,]} >
-                                        <View style={[container]}>
-                                            <View style={[d_flex, align_items_center, mb1,flex_between]}>
-                                                {/*체크박스*/}
-                                                <Checkbox style={styles.chk_view} color={"#4630eb"} value="" onValueChange={()=>modChk(val.goods_uid)}/>
-                                                <View style={{flex:0.1}}>
-                                                    <Checkbox style={styles.all_check} color={"#4630eb"} value="" onValueChange={()=>modChk(val.goods_uid)}/>
-                                                </View>
-                                                <View style={{flex:1}}>
-                                                    {/*상품명*/}
-                                                    <Text style={[h14]}>{val.goods_name}</Text>
-                                                </View>
-                                            </View>
-
-                                            <View style={[d_flex, align_items_center, mb1]}>
-                                                <View style={[me2]}>
-                                                    <Image style={[styles.goods_thum]} source={{uri: `http://www.zazaero.com${val.list_img_url}`}}/>
-                                                </View>
-                                                <View style={[wt7,flex_between,align_items_end]}>
-                                                    {(val.A_sel_option.map((item,idx)=>(
-                                                        <>
-                                                            <View style={ms1} key={idx}>
-                                                                <View style={[d_flex]}>
-                                                                    <Text style={[h14,fw500,{paddingBottom:10,}]}>
-                                                                        기존수량 : {item.option_cnt}개
-                                                                    </Text>
-                                                                </View>
-                                                                <View style={[align_items_center]}>
-                                                                    <Text style={[h14,fw500,{paddingBottom:10,}]}>
-                                                                        취소수량
-                                                                    </Text>
-                                                                    <TextInput
-                                                                        style={[input,ms1]}
-                                                                        onChangeText={onChangeNumber}
-                                                                        value={number}
-                                                                        placeholder=""
-                                                                        maxLength={3}
-                                                                        keyboardType="numeric"
-                                                                    />
-                                                                </View>
-                                                            </View>
-                                                            <View style={[justify_content_end]}>
-                                                                <Text style={[h13]}>( 단가 : {Price(item.option_price)} 원)</Text>
-                                                                {/*단가*/}
-                                                                <Text style={[h16,text_right]}>{Price(item.option_price)} 원</Text>
-                                                                {/*총금액*/}
-                                                            </View>
-                                                        </>
-                                                    )))}
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </>
-                            ))}
-                        </ScrollView>
-
-                        {/* 저장버튼 */}
-                        <View style={[flex_between]}>
-                            <View style={[wt5,ps1,pe1]}>
-                                <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]} onPress="">
-                                    <Text style={[text_center,h18]}>주문취소</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={[wt5,ps1,pe1]}>
-                                <TouchableOpacity style={[btn_primary,{borderRadius:5,paddingTop:7,paddingBottom:7}]} onPress="">
-                                    <Text style={[text_white,text_center,h18]}>전체취소</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-
-                    </View>
-                </Modal>
-                {/* */}
             </>
         );
     }
