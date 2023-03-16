@@ -108,7 +108,7 @@ import {
     chg_order_item_cnt,
     getAppInfo,
     getOrderInfo, order_cancel,
-    OrderMod,
+    OrderMod, pay_result,
     payDoneCancel,
     PayTry,
 } from "./UTIL_order";
@@ -175,8 +175,6 @@ export default function OrderDtail({route,navigation}) {
         });
         setOrderGoodsList(temp);
     };
-
-
     const goSearch = (type, value) => {
         if(type === 'hope_deli_time') {
             setShow_1(!Show_1);
@@ -243,10 +241,7 @@ export default function OrderDtail({route,navigation}) {
                 }
             }
         });
-
     }
-
-
     /**--------------------------------------------------------페이지 진입시 노출---------------------------------------------------**/
     useEffect(() => {
         /**-------------주문상세정보 출력------------**/
@@ -455,55 +450,73 @@ export default function OrderDtail({route,navigation}) {
         if(cancel_type === 'all') {
             Alert.alert('','자재목록을 전부 취소 하시겠습니까?',[
                 {text:'취소', onPress:()=>{}},
-                {
-                    text:'확인',
+                {text:'확인',
                     onPress:()=>{
+                        // ================1. 결제취소 이벤트 실행====================
                         order_cancel(OrderData, cancel_type, OrderGoodsList, Member).then((res)=>{
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
                                     Alert.alert('','자재가 전부 취소 완료되었습니다.',[
-                                        {
-                                            text:'확인',
-                                            onPress:()=>{navigation.pop()}
+                                        {text:'확인',
+                                            onPress:()=>{
+                                                // ================2. 결제취소 이벤트 결과값 db에 전송====================
+                                                pay_result(OrderData, Member).then((res)=>{
+                                                    if(res) {
+                                                        const {result} = res.data;
+                                                        if(result === 'OK') {
+                                                            console.log('결제 취소 완료');
+                                                            return navigation.pop();
+                                                        } else {
+                                                            return Alert.alert('','결제취소에 실패하였습니다.');
+                                                        }
+                                                    }
+                                                });
+                                            }
                                         }
                                     ]);
                                 } else {
-                                    Alert.alert('','자재가 전부 취소 완료되었습니다.',[
-                                        {
-                                            text:'확인',
-                                            onPress:()=>{navigation.pop()}
-                                        }
-                                    ]);
+                                    Alert.alert('','에러');
                                 }
                             }
                         })
                     }
                 }
-            ])
+            ]);
         } else {
             Alert.alert('','선택하신 자재를 취소하시겠습니까?',[
                 {text:'취소', onPress:()=>{}},
-                {
-                    text:'확인',
+                {text:'확인',
                     onPress:()=>{
+                        // ================1. 결제취소 이벤트 실행====================
+                        let cancel_cnt_chk = OrderGoodsList.map(val=>Number(val.cancel_cnt));
+                        let all_cancel_cnt = 0;
+                        for(let i = 0; cancel_cnt_chk.length > i; i++) {all_cancel_cnt += cancel_cnt_chk[i];}
+                        if(all_cancel_cnt === 0) {return Alert.alert('','취소수량을 입력해주세요.');}
                         order_cancel(OrderData, cancel_type, OrderGoodsList, Member).then((res)=>{
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
                                     Alert.alert('','선택하신 자재가 취소 완료되었습니다.',[
-                                        {
-                                            text:'확인',
-                                            onPress:()=>{navigation.replace('발주상세',{gd_order_uid:OrderData.gd_order_uid})}
+                                        {text:'확인',
+                                            onPress:()=>{
+                                                // ================2. 결제취소 이벤트 결과값 db에 전송====================
+                                                pay_result(OrderData, Member).then((res)=>{
+                                                    if(res) {
+                                                        const {result} = res.data;
+                                                        if(result === 'OK') {
+                                                            console.log('결제 취소 완료');
+                                                            return navigation.replace('발주상세',{gd_order_uid:OrderData.gd_order_uid});
+                                                        } else {
+                                                            return Alert.alert('','결제취소에 실패하였습니다.');
+                                                        }
+                                                    }
+                                                });
+                                            }
                                         }
                                     ]);
                                 } else {
-                                    Alert.alert('','선택하신 자재가 취소 완료되었습니다.',[
-                                        {
-                                            text:'확인',
-                                            onPress:()=>{navigation.replace('발주상세',{gd_order_uid:OrderData.gd_order_uid})}
-                                        }
-                                    ]);
+                                    Alert.alert('','에러');
                                 }
                             }
                         })
@@ -511,8 +524,8 @@ export default function OrderDtail({route,navigation}) {
                 }
             ])
         }
-
     }
+    
     const cntPopup = (goods_uid, order_uid, option_cnt) => {
         // 팝업 노출
         setExpended(!expended);

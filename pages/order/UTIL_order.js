@@ -338,29 +338,38 @@ export const add_order = async (OrderData, Member, add_goods_info) => {
 }
 /**-----------------------------------------결제후 선택 주문 취소 이벤트---------------------------------------------------**/
 export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Member) => {
-
     // 1. 체크박스를 클릭한다
     // refund_type = all, part
-
     let A_goods_uid = OrderGoodsList.map(val=>val.goods_uid);
     let A_order_uid = OrderGoodsList.map(val=>val.order_uid);
     let A_order_item_uid = OrderGoodsList.map(val=>String(val.A_sel_option.map(item=>Number(item.order_item_uid))));
     let A_order_item_cancel_cnt = OrderGoodsList.map(val=>String(val.cancel_cnt));
 
-    console.log(A_goods_uid,'/ 상품');
-    console.log(A_order_uid,'/ 주문');
-    console.log(A_order_item_uid,' / 주문 옵션');
+    console.log(A_goods_uid,'/ goods_uid');
+    console.log(A_order_uid,'/ order_uid');
+    console.log(A_order_item_uid,' / order_item_uid');
     console.log(A_order_item_cancel_cnt,' / 취소수량');
     console.log(cancel_type,' / 취소 타입');
+
+    let data = {
+        act_type                    :"order_cancel",
+        mem_uid                     :Member,
+        gd_order_uid                :OrderData.gd_order_uid,
+        A_goods_uid                 :(cancel_type === 'part') ? A_goods_uid : '',               // 배열 부분취소일때만 전송
+        A_order_uid	                :(cancel_type === 'part') ? A_order_uid : '',               // 배열 부분취소일때만 전송
+        A_order_item_uid            :(cancel_type === 'part') ? A_order_item_uid : '',          // 배열 부분취소일때만 전송
+        A_order_item_cancel_cnt     :(cancel_type === 'part') ? A_order_item_cancel_cnt : '',   // 배열 부분취소일때만 전송
+        cancel_type                 :cancel_type,
+    }
 
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type                    :"order_cancel",
         mem_uid                     :Member,
         gd_order_uid                :OrderData.gd_order_uid,
-        A_goods_uid                 :A_goods_uid,    // 배열
-        A_order_uid	                :A_order_uid,    // 배열
-        A_order_item_uid            :A_order_item_uid,    // 배열
-        A_order_item_cancel_cnt     :A_order_item_cancel_cnt,    // 배열
+        A_goods_uid                 :(cancel_type === 'part') ? A_goods_uid : '',               // 배열 부분취소일때만 전송
+        A_order_uid	                :(cancel_type === 'part') ? A_order_uid : '',               // 배열 부분취소일때만 전송
+        A_order_item_uid            :(cancel_type === 'part') ? A_order_item_uid : '',          // 배열 부분취소일때만 전송
+        A_order_item_cancel_cnt     :(cancel_type === 'part') ? A_order_item_cancel_cnt : '',   // 배열 부분취소일때만 전송
         cancel_type                 :cancel_type,
     },{
         headers: {
@@ -369,23 +378,27 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
     });
     return res;
 
-    // 1)
-    /*
-    *   1. gd_order 테이블에서 해당 발주 상태 ord_status : 'ord_cancel'로 업데이트
-    *   2. gd_cancel 테이블에 해당 발주 저장
-    *   3. AT_cancel_goods 테이블에 해당 발주 상품 저장
-    *   4. AT_cancel_item 테이블에 해당 발주 상품 옵션(수량) 저장
-    *
-    * */
-
-    // 2)
-    /*
-    *
-    *
-    * */
-
+    console.log(data,'/ 주문취소');
 
 }
+
+export const pay_result = async (OrderData, Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type                    :"pay_result",
+        Member                      :Member,
+        imp_uid                     :OrderData.imp_uid,
+        gd_order_uid                :OrderData.gd_order_uid,
+        order_no                    :OrderData.order_no,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
+}
+
+
 
 
 
