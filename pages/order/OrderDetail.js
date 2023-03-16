@@ -474,7 +474,7 @@ export default function OrderDtail({route,navigation}) {
                 }
             ])
         } else {
-            Alert.alert('','자재목록을 전부 취소하시겠습니까?',[
+            Alert.alert('','선택하신 자재를 취소하시겠습니까?',[
                 {text:'취소', onPress:()=>{}},
                 {
                     text:'확인',
