@@ -454,14 +454,19 @@ export default function OrderDtail({route,navigation}) {
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
-                                    Alert.alert('','선택하신 자재가 취소 완료되었습니다.',[
+                                    Alert.alert('','자재가 전부 취소 완료되었습니다.',[
                                         {
                                             text:'확인',
                                             onPress:()=>{navigation.pop()}
                                         }
                                     ]);
                                 } else {
-                                    Alert.alert('','연결이 실패하였습니다.');
+                                    Alert.alert('','자재가 전부 취소 완료되었습니다.',[
+                                        {
+                                            text:'확인',
+                                            onPress:()=>{navigation.pop()}
+                                        }
+                                    ]);
                                 }
                             }
                         })
@@ -478,9 +483,19 @@ export default function OrderDtail({route,navigation}) {
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
-                                    Alert.alert('','자재가 전부 취소 완료되었습니다.');
+                                    Alert.alert('','선택하신 자재가 취소 완료되었습니다.',[
+                                        {
+                                            text:'확인',
+                                            onPress:()=>{navigation.replace('발주상세',{gd_order_uid:OrderData.gd_order_uid})}
+                                        }
+                                    ]);
                                 } else {
-                                    Alert.alert('','연결이 실패하였습니다.');
+                                    Alert.alert('','선택하신 자재가 취소 완료되었습니다.',[
+                                        {
+                                            text:'확인',
+                                            onPress:()=>{navigation.replace('발주상세',{gd_order_uid:OrderData.gd_order_uid})}
+                                        }
+                                    ]);
                                 }
                             }
                         })
