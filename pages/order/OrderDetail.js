@@ -166,7 +166,15 @@ export default function OrderDtail({route,navigation}) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isModalVisible2, setIsModalVisible2] = useState(false);
     const toggleModal = () => {setIsModalVisible(!isModalVisible);};
-    const toggleModal2 = () => {setIsModalVisible2(!isModalVisible2);};
+    const toggleModal2 = () => {setIsModalVisible2(!isModalVisible2);
+        let temp = OrderGoodsList.map(val=>{
+            return {
+                ...val,
+                cancel_cnt:0,
+            }
+        });
+        setOrderGoodsList(temp);
+    };
 
 
     const goSearch = (type, value) => {
@@ -1045,6 +1053,7 @@ export default function OrderDtail({route,navigation}) {
                                                                 <TextInput
                                                                     style={[input]}
                                                                     onChangeText={(cancel_cnt)=>goInput(`cancel_cnt`,cancel_cnt,val.order_uid)}
+                                                                    defaultValue={`0`}
                                                                     value={`${val.cancel_cnt}`}
                                                                     placeholder="취소수량"
                                                                     maxLength={3}
