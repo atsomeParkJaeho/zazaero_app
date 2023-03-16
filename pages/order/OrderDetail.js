@@ -107,7 +107,7 @@ import {
     ATorderDel,
     chg_order_item_cnt,
     getAppInfo,
-    getOrderInfo,
+    getOrderInfo, order_cancel,
     OrderMod,
     payDoneCancel,
     PayTry,
@@ -186,12 +186,9 @@ export default function OrderDtail({route,navigation}) {
             });
         }
     }
-
     /**--------------------------------------주문서 셋팅--------------------------------------------------**/
     const Update = useIsFocused();
-
     /**------------------------------------------------------카드결제완료시 db 로그 전송.----------------------------------------------**/
-
 
     /*수정완료 클릭시 변경사항 저장*/
     const FormMod = () => {
@@ -202,11 +199,9 @@ export default function OrderDtail({route,navigation}) {
                 cnt             :Number(val.option_cnt),
             }
         }));
-
         let temp = order_item.reduce((val,idx)=>{
             return val.concat(idx);
         });
-
         let A_order_item_uid = temp.map(val=>val.order_item_uid);
         let A_order_item_cnt = temp.map(val=>val.cnt);
 
@@ -258,14 +253,11 @@ export default function OrderDtail({route,navigation}) {
                         goods_del: false,
                     }
                 });
-
                 // 1. 주문정보 넣기
                 setOrderDate(gd_order);
                 // 2. 자재정보 넣기
-                setOrderGoodsList(temp);    
-
+                setOrderGoodsList(temp);
                 let status = (gd_order.ord_status === 'pay_ready' || gd_order.ord_status === 'pay_err' || gd_order.ord_status === 'pay_try') ? '결제상태' : '발주상태';
-
                 // 발주상태
                 if(gd_order.ord_status === 'pay_done') {
                     navigation.setOptions({title: gd_order.deli_status_name + ' 상태입니다.'});
@@ -289,7 +281,6 @@ export default function OrderDtail({route,navigation}) {
                 }
             }
         });
-
         getAppInfo().then(res=>{
             if(res.data.result === 'OK') {
                 const {app_info} = res.data;
@@ -302,10 +293,6 @@ export default function OrderDtail({route,navigation}) {
                 setBankCode(temp);
             }
         });
-
-
-
-
     },[Update,Member]);
     /**--------------------------------------------------------------입력폼 입력---------------------------------------------------**/
     const goInput = (keyValue, e, order_uid) => {
@@ -331,11 +318,6 @@ export default function OrderDtail({route,navigation}) {
             });
         }
     }
-    const fullNumber = () => {
-
-    }
-
-
     /**--------------------------------------------------------------------------------------------------------------------------**/
     const goPay = () => {
         if(PayMement === 'bank') {
@@ -350,7 +332,6 @@ export default function OrderDtail({route,navigation}) {
             ]
         );
     }
-
     const donePay = () => {
         let msg = '결제가 완료되었습니다.';
         let N_btn = {text:"확인", onPress:()=>{navigation.replace('결제상태')}};
@@ -370,7 +351,6 @@ export default function OrderDtail({route,navigation}) {
         });
 
     }
-
     const modCart = (goods_uid, order_uid, type, value, goods_price) => {
 
         if(OrderData.ord_status === 'ord_ready' || OrderData.ord_status === 'pay_ready') {
@@ -431,7 +411,6 @@ export default function OrderDtail({route,navigation}) {
             }
         }
     }
-
     // 자재 체크 로직
     const modChk = (goods_uid) => {
         console.log('반응');
@@ -448,7 +427,6 @@ export default function OrderDtail({route,navigation}) {
         console.log(temp);
         setOrderGoodsList(temp);
     }
-
     // 수정하기 버튼
     const ModInfo = () => {
         setMod(!Mod);
@@ -464,9 +442,54 @@ export default function OrderDtail({route,navigation}) {
             textStyle:{textAlign:"center"}
         });
     }
+    // 결제후 취소
+    const order_Cancel = (cancel_type) => {
+        if(cancel_type === 'all') {
+            Alert.alert('','자재목록을 전부 취소 하시겠습니까?',[
+                {text:'취소', onPress:()=>{}},
+                {
+                    text:'확인',
+                    onPress:()=>{
+                        order_cancel(OrderData, cancel_type, OrderGoodsList, Member).then((res)=>{
+                            if(res) {
+                                const {result} = res.data;
+                                if(result === 'OK') {
+                                    Alert.alert('','선택하신 자재가 취소 완료되었습니다.',[
+                                        {
+                                            text:'확인',
+                                            onPress:()=>{navigation.pop()}
+                                        }
+                                    ]);
+                                } else {
+                                    Alert.alert('','연결이 실패하였습니다.');
+                                }
+                            }
+                        })
+                    }
+                }
+            ])
+        } else {
+            Alert.alert('','자재목록을 전부 취소하시겠습니까?',[
+                {text:'취소', onPress:()=>{}},
+                {
+                    text:'확인',
+                    onPress:()=>{
+                        order_cancel(OrderData, cancel_type, OrderGoodsList, Member).then((res)=>{
+                            if(res) {
+                                const {result} = res.data;
+                                if(result === 'OK') {
+                                    Alert.alert('','자재가 전부 취소 완료되었습니다.');
+                                } else {
+                                    Alert.alert('','연결이 실패하였습니다.');
+                                }
+                            }
+                        })
+                    }
+                }
+            ])
+        }
 
-
-
+    }
     const cntPopup = (goods_uid, order_uid, option_cnt) => {
         // 팝업 노출
         setExpended(!expended);
@@ -477,8 +500,6 @@ export default function OrderDtail({route,navigation}) {
         });
 
     }
-
-
     function Popup({goods_uid,order_uid,option_cnt}) {
         const [cntData, setCntData] = useState({
             goods_uid   :goods_uid,
@@ -1035,12 +1056,16 @@ export default function OrderDtail({route,navigation}) {
                     {/* 저장버튼 */}
                     <View style={[flex_between]}>
                         <View style={[wt5,ps1,pe1]}>
-                            <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]} onPress="">
+                            <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]}
+                            onPress={()=>order_Cancel(`part`)}
+                            >
                                 <Text style={[text_center,h18]}>주문취소</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={[wt5,ps1,pe1]}>
-                            <TouchableOpacity style={[btn_primary,{borderRadius:5,paddingTop:7,paddingBottom:7}]} onPress="">
+                            <TouchableOpacity style={[btn_primary,{borderRadius:5,paddingTop:7,paddingBottom:7}]}
+                            onPress={()=>order_Cancel(`all`)}
+                             >
                                 <Text style={[text_white,text_center,h18]}>전체취소</Text>
                             </TouchableOpacity>
                         </View>
