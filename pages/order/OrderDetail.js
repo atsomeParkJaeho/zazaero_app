@@ -1093,15 +1093,15 @@ export default function OrderDtail({route,navigation}) {
                     <View style={[flex_between]}>
                         <View style={[wt5,ps1,pe1]}>
                             <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]}
-                            onPress={()=>order_Cancel(`part`)}
+                                              onPress={()=>order_Cancel(`part`)}
                             >
                                 <Text style={[text_center,h18]}>주문취소</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={[wt5,ps1,pe1]}>
                             <TouchableOpacity style={[btn_primary,{borderRadius:5,paddingTop:7,paddingBottom:7}]}
-                            onPress={()=>order_Cancel(`all`)}
-                             >
+                                              onPress={()=>order_Cancel(`all`)}
+                            >
                                 <Text style={[text_white,text_center,h18]}>전체취소</Text>
                             </TouchableOpacity>
                         </View>
@@ -1389,8 +1389,16 @@ export default function OrderDtail({route,navigation}) {
                     })}
                 </View>
                 {/**/}
+                <View style={[container, {borderBottomWidth: 1,borderColor:"#e6e6e6",}]}>
+                    <View style={[flex_between]}>
+                        <View style={[]}>
+                            <Text style={[h18]}>추가발주목록</Text>
+                        </View>
+                      
+                    </View>
+                </View>
+                {/**-----------------자재목록---------------------------------------**/}
                 <View>
-                    <Text style={[h14]}>나눠지는곳</Text>
                     {/**-----------------반복문 구간---------------------------------------**/}
                     {result.map(val=>{
                         if(val.goods_name !== null) {
@@ -1416,6 +1424,7 @@ export default function OrderDtail({route,navigation}) {
                                             </View>
                                             {/**--------------------------------옵션--------------------------------**/}
                                             {val.A_sel_option.map(items=>{
+
                                                 let goods_price     = items.option_price;
                                                 let goods_cnt       = items.option_cnt;
                                                 let goods_opt_price = items.opt_price;
