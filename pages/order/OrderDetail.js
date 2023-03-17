@@ -971,10 +971,14 @@ export default function OrderDtail({route,navigation}) {
                                                                     </TouchableWithoutFeedback>
                                                                     {/*============수량=================*/}
                                                                     {/**-----상품 uid, 주문 uid 추가----**/}
-                                                                    <TextInput
-                                                                        onChangeText={(goods_cnt)=>A_goInput('goods_cnt',goods_cnt,val.goods_uid)}
-                                                                        value={`${val.goods_cnt}`}
-                                                                    />
+                                                                    <View style={[countinput]}>
+                                                                        <TextInput
+                                                                            onChangeText={(goods_cnt)=>A_goInput('goods_cnt',goods_cnt,val.goods_uid)}
+                                                                            value={`${val.goods_cnt}`}
+                                                                            style={[text_center]}
+                                                                        />
+                                                                    </View>
+
                                                                     {/*=============플러스 버튼============*/}
                                                                     <TouchableWithoutFeedback>
                                                                         <View style={[count_btn]}>
@@ -987,6 +991,9 @@ export default function OrderDtail({route,navigation}) {
                                                             </View>
                                                         </View>
                                                         <View style={justify_content_end}>
+                                                            <TouchableOpacity style={[flex,justify_content_end,mb2]} onPress={toggleModal2}>
+                                                                <Close width={15} height={15}/>
+                                                            </TouchableOpacity>
                                                             <Text style={[h13]}>( 단가 :  원)</Text>
                                                             {/*단가*/}
                                                             <Text style={[h16,text_right]}>원</Text>
@@ -1015,9 +1022,11 @@ export default function OrderDtail({route,navigation}) {
                                 </>
                             )}
                         </View>
-                        <View>
-                            <TouchableOpacity onPress={()=>{navigation.navigate('즐겨찾기',{gd_order_uid:OrderData.gd_order_uid, ord_status:OrderData.ord_status})}}>
-                                <Text>자재추가</Text>
+                        <View style={[ps1,pe1]}>
+                            <TouchableOpacity onPress={()=>{navigation.navigate('즐겨찾기',{gd_order_uid:OrderData.gd_order_uid, ord_status:OrderData.ord_status})}}
+                                              style={[btn_primary,pt1,pb1,{borderRadius:5,}]}
+                            >
+                                <Text style={[text_center,text_white]}>자재추가</Text>
                             </TouchableOpacity>
                         </View>
                     </>
