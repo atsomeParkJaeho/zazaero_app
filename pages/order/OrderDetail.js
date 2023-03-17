@@ -457,7 +457,7 @@ export default function OrderDtail({route,navigation}) {
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
-                                    Alert.alert('','자재가 전부 취소 완료되었습니다.',[
+                                    Alert.alert('','자재가 전부 취소 완료되었습니다.\n(환불은 2~3일 정도 소요됩니다.)',[
                                         {text:'확인',
                                             onPress:()=>{
                                                 // ================2. 결제취소 이벤트 결과값 db에 전송====================
@@ -466,7 +466,7 @@ export default function OrderDtail({route,navigation}) {
                                                         const {result} = res.data;
                                                         if(result === 'OK') {
                                                             console.log('결제 취소 완료');
-                                                            return navigation.pop();
+                                                            return navigation.replace('배송상태');
                                                         } else {
                                                             return Alert.alert('','결제취소에 실패하였습니다.');
                                                         }
@@ -497,7 +497,7 @@ export default function OrderDtail({route,navigation}) {
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
-                                    Alert.alert('','선택하신 자재가 취소 완료되었습니다.',[
+                                    Alert.alert('','선택하신 자재 취소 완료되었습니다.\n(환불은 2~3일 정도 소요됩니다.)',[
                                         {text:'확인',
                                             onPress:()=>{
                                                 // ================2. 결제취소 이벤트 결과값 db에 전송====================
