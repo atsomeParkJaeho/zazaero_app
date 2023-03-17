@@ -329,13 +329,38 @@ export const add_order_goods = async (gd_order_uid, goods_uid) => {
 }
 
 /**-----------------------------------------결제후 추가발주 이벤트---------------------------------------------------**/
-export const add_order = async (OrderData, Member, A_goods_list) => {
+export const add_order = async (OrderData, Member, A_goods_list ,chk_result) => {
 
     let os_type = Platform.OS;
-    let A_goods_cate1_uid   = A_goods_list.map(val=>String(val.cate_1st_uid));
+    // let goods_cate1_uid     = A_goods_list.map(val=>String(val.cate_1st_uid));
     let A_goods_uid         = A_goods_list.map(val=>String(val.goods_uid));
     let A_goods_cnt         = A_goods_list.map(val=>String(val.goods_cnt));
     let A_req_memo          = A_goods_list.map(val=>String(val.req_memo));
+
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type                :'add_gd_order',
+        parent_gd_order_uid     :OrderData.gd_order_uid,        // 최초 발주 uid
+        mem_uid                 :Member,                        // 회원 uid
+        os_type                 :os_type,                       // 기기 타입
+        order_title             :OrderData.order_title,               // 공사명
+        work_uid                :OrderData.work_uid,            // 공사명 uid
+        zonecode                :OrderData.zonecode,            // 우편번호
+        addr1                   :OrderData.addr1,               // 주소
+        addr2                   :OrderData.addr2,               // 상세주소
+        hope_deli_date          :OrderData.hope_deli_date,      // 희망배송일
+        hope_deli_time          :OrderData.hope_deli_time,      // 희망배송시간
+        recv_name               :OrderData.recv_name,           // 현장인도자명
+        recv_phone              :OrderData.recv_phone,          // 현장인도자 연락처
+        order_memo              :OrderData.order_memo,          // 배송메모
+        goods_cate1_uid         :String(chk_result),                            // 공정카테고리 uid
+        A_goods_uid             :A_goods_uid,                            // 추가 자재 uid(배열)
+        A_goods_cnt             :A_goods_cnt,                            // 추가 자재 수량(배열)
+        A_req_memo              :A_req_memo,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
 
     let data = {
         act_type                :'add_gd_order',
@@ -352,14 +377,13 @@ export const add_order = async (OrderData, Member, A_goods_list) => {
         recv_name               :OrderData.recv_name,           // 현장인도자명
         recv_phone              :OrderData.recv_phone,          // 현장인도자 연락처
         order_memo              :OrderData.order_memo,          // 배송메모
-        A_goods_cate1_uid       :A_goods_cate1_uid,                            // 공정카테고리 uid
+        goods_cate1_uid         :String(chk_result),                            // 공정카테고리 uid
         A_goods_uid             :A_goods_uid,                            // 추가 자재 uid(배열)
         A_goods_cnt             :A_goods_cnt,                            // 추가 자재 수량(배열)
-        A_req_memo              :A_req_memo,                            // 추가 자재 옵션 요청 사항(배열)
+        A_req_memo              :A_req_memo,
     }
-    
-    console.log(data,' / 추가 발주 파라미터');
-    
+    console.log(data,'/ 전송용');
+    return res;
 }
 /**-----------------------------------------결제후 선택 주문 취소 이벤트---------------------------------------------------**/
 export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Member) => {

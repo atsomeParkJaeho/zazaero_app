@@ -223,20 +223,26 @@ export default function OrderDtail({route,navigation}) {
     const FormMod = () => {
         if(add_goods_list) {
             /**-------------------------추가 발주시--------------------------------**/
-            add_order(OrderData, Member, A_goods).then((res)=>{
-                // console.log(res);
-                // if(res) {
-                //     const {result} = res.data;
-                //     if(result === 'OK') {
-                //         Alert.alert('','추가발주를 요청 하시겠습니까?',[
-                //             {text:"아니오",onPress:()=>{}},
-                //             {text:"네",onPress:()=>{
-                //                 Alert.alert('','추가발주 요청이\n완료되었습니다.');
-                //                 return navigation.replace('발주상태');
-                //                 }}
-                //         ]);
-                //     }
-                // }
+            let chk = A_goods.map(val=>val.cate_1st_uid);
+            let chk_result = [...new Set(chk)];
+            if(A_goods.length === 0) {return Alert.alert('','자재를 선택해주세요');}
+            if(chk_result.length > 1) {return Alert.alert('','같은 공정 자재만 발주 가능합니다.');}
+            add_order(OrderData, Member, A_goods, chk_result).then((res)=>{
+                if(res) {
+                    console.log(res);
+                    const {result} = res.data;
+                    if(result === 'OK') {
+                        Alert.alert('','추가발주를 요청 하시겠습니까?',[
+                            {text:"아니오",onPress:()=>{}},
+                            {text:"네",onPress:()=>{
+                                Alert.alert('','추가발주 요청이\n완료되었습니다.');
+                                return navigation.replace('발주상태');
+                                }}
+                        ]);
+                    } else {
+                        Alert.alert('','에러');
+                    }
+                }
             });
         } else {
             /**----------------------------일반 수정시---------------------------**/
@@ -246,9 +252,11 @@ export default function OrderDtail({route,navigation}) {
                     cnt             :Number(val.option_cnt),
                 }
             }));
+
             let temp = order_item.reduce((val,idx)=>{
                 return val.concat(idx);
             });
+
             let A_order_item_uid = temp.map(val=>val.order_item_uid);
             let A_order_item_cnt = temp.map(val=>val.cnt);
 
@@ -373,19 +381,60 @@ export default function OrderDtail({route,navigation}) {
             });
         }
     }
-
-    const A_goInput = (keyValue, e, goods_uid) => {
-        let temp = A_goods.map(val=>{
-            if(val.goods_uid === goods_uid) {
-                return {
-                    ...val,
-                    [keyValue]:e,
+    const A_goInput = (keyValue, e, goods_uid, num_type) => {
+        if(num_type === 'minus') {
+            let temp = A_goods.map(val=>{
+                if(val.goods_uid === goods_uid) {
+                    return {
+                        ...val,
+                        [keyValue]:(val.goods_cnt > 1) ? Number(val.goods_cnt - 1) : 1,
+                    }
+                } else {
+                    return val;
                 }
-            } else {
-                return val;
+            });
+            set_A_goods(temp);
+        } else if (num_type === 'plus') {
+            let temp = A_goods.map(val=>{
+                if(val.goods_uid === goods_uid) {
+                    return {
+                        ...val,
+                        [keyValue]:(998 < val.goods_cnt) ? 998:Number(val.goods_cnt + 1) ,
+                    }
+                } else {
+                    return val;
+                }
+            });
+            set_A_goods(temp);
+        } else {
+            let temp = A_goods.map(val=>{
+                if(val.goods_uid === goods_uid) {
+                    return {
+                        ...val,
+                        [keyValue]:e,
+                    }
+                } else {
+                    return val;
+                }
+            });
+            set_A_goods(temp);
+        }
+    }
+    const A_goods_del = (goods_uid) => {
+        Alert.alert('','선택하신 자재를 삭제하시겠습니까?',[
+            {text:"취소",
+            onPress:()=>{},
+            },
+            {text:"확인",
+            onPress:()=>{
+
+                let res = A_goods.filter(val=>val.goods_uid !== goods_uid);
+                set_A_goods(res);
+                Alert.alert('','선택한 자재가 삭제되었습니다.');
             }
-        });
-        set_A_goods(temp);
+            }
+        ])
+
     }
 
     /**--------------------------------------------------------------------------------------------------------------------------**/
@@ -737,7 +786,7 @@ export default function OrderDtail({route,navigation}) {
                         </Text>
                     </View>
                     {/**----------------------------------------------캘린더--------------------------------------------------**/}
-                    {(Mod) && (
+                    {(Mod || add_goods_list) && (
                         <>
                             <View style={[FormStyle.FormGroup, {paddingTop: 5, paddingBottom: 5,}]}>
                                 <CalendarStrip
@@ -774,7 +823,7 @@ export default function OrderDtail({route,navigation}) {
                             {OrderData.hope_deli_time}
                         </Text>
                     </View>
-                    {(Mod) && (
+                    {(Mod || add_goods_list) && (
                         <>
                             {/*==============시간입력==============*/}
                             <View style={[FormStyle.FormGroup]}>
@@ -819,8 +868,8 @@ export default function OrderDtail({route,navigation}) {
                     {/*    */}
                     {/*</View>*/}
                     <View style={[flex,justify_content_end]}>
-                        <TouchableOpacity style={[btn_info,wt2,]} onPress={toggleModal}>
-                            <Text style={[text_white,text_center,h13]}>수정</Text>
+                        <TouchableOpacity style={[btn_info,wt2,]} onPress={()=>navigation.replace('발주상세',{gd_order_uid:OrderData.gd_order_uid})}>
+                            <Text style={[text_white,text_center,h13]}>이전</Text>
                         </TouchableOpacity>
                         {/**/}
                         <Modal visible={isModalVisible} animationType="slide">
@@ -887,7 +936,7 @@ export default function OrderDtail({route,navigation}) {
                         <View style={[FormStyle.FormGroupItems]}>
                             <Text style={[FormStyle.FormLabel]}>현장인도자 성명</Text>
                             <TextInput style={[input,{flex:1}]}
-                                       editable={Mod}
+                                       editable={(Mod || add_goods_list) ? true:false}
                                        onChangeText={(recv_name)=>goInput("recv_name",recv_name)}
                                        placeholder="예 ) 홍길동"
                                        value={OrderData.recv_name}
@@ -900,7 +949,7 @@ export default function OrderDtail({route,navigation}) {
                                 <Text style={[FormStyle.FormLabel]}>현장인도자 연락처</Text>
                                 <TextInput style={[input,{flex:1}]}
                                            keyboardType="number-pad"
-                                           editable={Mod}
+                                           editable={(Mod || add_goods_list) ? true:false}
                                            onChangeText={(recv_mobile)=>goInput("recv_mobile",recv_mobile)}
                                            placeholder="예 ) 010-XXXX-XXXX"
                                            maxLength={13}
@@ -915,7 +964,7 @@ export default function OrderDtail({route,navigation}) {
                                 <Text style={[FormStyle.FormLabel]}>배송 요청 사항</Text>
                                 <TouchableWithoutFeedback>
                                     <TextInput style={[input,{flex:1,height:100,textAlignVertical: "top"}]} multiline={true}
-                                               editable={Mod}
+                                               editable={(Mod || add_goods_list) ? true:false}
                                                onChangeText={(order_memo)=>goInput('order_memo',order_memo)}
                                                numberOfLines={4}
                                                value={OrderData.order_memo}
@@ -935,7 +984,6 @@ export default function OrderDtail({route,navigation}) {
                                 <View style={[]}>
                                     <Text style={[h18]}>추가발주목록</Text>
                                 </View>
-
                             </View>
                         </View>
                         {/**-----------------추가발주목록---------------------------------------**/}
@@ -948,21 +996,33 @@ export default function OrderDtail({route,navigation}) {
                                             <View style={[styles.CancelDetail_list_items]} key={idx}>
                                                 <View style={[container]}>
                                                     {/**--------------------------------옵션--------------------------------**/}
+                                                    <View style={[d_flex, align_items_center, mb1,flex_between]}>
+                                                        {/*체크박스*/}
+                                                        <View style={{flex:1}}>
+                                                            {/*상품명*/}
+                                                            <Text style={[h14]}>{val.goods_name}</Text>
+                                                        </View>
+                                                        <View style={{flex:0.1,paddingLeft:5}}>
+                                                            <TouchableOpacity style={[flex,justify_content_end]} onPress={()=>{A_goods_del(val.goods_uid)}}>
+                                                                <Close width={15} height={15}/>
+                                                            </TouchableOpacity>
+                                                        </View>
+                                                    </View>
                                                     <View style={[flex_between_bottom]}>
                                                         <View style={[flex_end]}>
                                                             <View>
-                                                                <Image style={[styles.goods_thum]} />
+                                                                <Image style={[styles.goods_thum]} source={{uri:`http://www.zazaero.com${val.list_img}`}} />
                                                             </View>
                                                             {/**-------------------수량조절---------------**/}
                                                             <View style={ms2}>
                                                                 <View style={[d_flex]}>
-                                                                    <Text style={[h14,fw500,{paddingBottom:10,}]}>
+                                                                    <Text style={[h14,fw500,{paddingBottom:5,}]}>
                                                                         수량
                                                                     </Text>
                                                                 </View>
                                                                 <View style={[flex]}>
                                                                     {/*=============마이너스 버튼==========*/}
-                                                                    <TouchableWithoutFeedback>
+                                                                    <TouchableWithoutFeedback onPress={()=>A_goInput('goods_cnt','',val.goods_uid,'minus')}>
                                                                         <View style={[count_btn]}>
                                                                             <View style={[pos_center]}>
                                                                                 <Text style={[count_btn_txt]}>－</Text>
@@ -973,14 +1033,14 @@ export default function OrderDtail({route,navigation}) {
                                                                     {/**-----상품 uid, 주문 uid 추가----**/}
                                                                     <View style={[countinput]}>
                                                                         <TextInput
-                                                                            onChangeText={(goods_cnt)=>A_goInput('goods_cnt',goods_cnt,val.goods_uid)}
+                                                                            onChangeText={(goods_cnt)=>A_goInput('goods_cnt',Number(goods_cnt),val.goods_uid)}
                                                                             value={`${val.goods_cnt}`}
                                                                             style={[text_center]}
+                                                                            keyboardType="numeric"
                                                                         />
                                                                     </View>
-
                                                                     {/*=============플러스 버튼============*/}
-                                                                    <TouchableWithoutFeedback>
+                                                                    <TouchableWithoutFeedback onPress={()=>A_goInput('goods_cnt','',val.goods_uid,'plus')}>
                                                                         <View style={[count_btn]}>
                                                                             <View style={[pos_center]}>
                                                                                 <Text style={[count_btn_txt]}>＋</Text>
@@ -991,25 +1051,20 @@ export default function OrderDtail({route,navigation}) {
                                                             </View>
                                                         </View>
                                                         <View style={justify_content_end}>
-                                                            <TouchableOpacity style={[flex,justify_content_end,mb2]} onPress={toggleModal2}>
-                                                                <Close width={15} height={15}/>
-                                                            </TouchableOpacity>
-                                                            <Text style={[h13]}>( 단가 :  원)</Text>
+                                                            <Text style={[h13]}>(단가 : {Price(val.price)}원)</Text>
                                                             {/*단가*/}
-                                                            <Text style={[h16,text_right]}>원</Text>
+                                                            <Text style={[h16,text_right]}>{Price(val.price * val.goods_cnt)}원</Text>
                                                             {/*총금액*/}
                                                         </View>
                                                     </View>
                                                     <View style={[mt1]}>
-                                                        <View style={[]}>
-                                                            <Text style={[h13,text_right]}>요청금액 : <Text style={[text_danger]}>원</Text></Text>
-                                                        </View>
                                                         {/*옵션요청가격*/}
                                                         <View style={[]}>
                                                             <Text style={[h13]}></Text>
-                                                            <TextInput style={[textarea, h13, bg_light]}
+                                                            <TextInput style={[textarea, h13]}
                                                                onChangeText={(req_memo)=>A_goInput('req_memo',req_memo,val.goods_uid)}
                                                                 value={val.req_memo}
+                                                               autoCapitalize="none"
                                                             />
                                                         </View>
                                                         {/*옵션요청글*/}
@@ -1023,8 +1078,8 @@ export default function OrderDtail({route,navigation}) {
                             )}
                         </View>
                         <View style={[ps1,pe1]}>
-                            <TouchableOpacity onPress={()=>{navigation.navigate('즐겨찾기',{gd_order_uid:OrderData.gd_order_uid, ord_status:OrderData.ord_status})}}
-                                              style={[btn_primary,pt1,pb1,{borderRadius:5,}]}
+                            <TouchableOpacity onPress={()=>{navigation.navigate('즐겨찾기',{gd_order_uid:OrderData.gd_order_uid, ord_status:OrderData.ord_status, A_goods_list_o:A_goods})}}
+                            style={[btn_primary,pt1,pb1,{borderRadius:5,}]}
                             >
                                 <Text style={[text_center,text_white]}>자재추가</Text>
                             </TouchableOpacity>
@@ -1363,14 +1418,21 @@ export default function OrderDtail({route,navigation}) {
                                 <View style={[]}>
                                     <Text style={[h18]}>자재목록</Text>
                                 </View>
-                                <View style={[flex]}>
-                                    <TouchableOpacity style={[btn_primary,{paddingVertical:7,paddingHorizontal:7,}]} onPress={add_goods}>
-                                        <Text style={[text_white,text_center,h13]}>추가발주</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={[ms2,btn_warning,{paddingVertical:7,paddingHorizontal:7,}]} onPress={toggleModal2}>
-                                        <Text style={[text_white,text_center,h13]}>주문취소</Text>
-                                    </TouchableOpacity>
-                                </View>
+                                {(
+                                    OrderData.ord_status === 'pay_done'   ||
+                                    OrderData.ord_status === 'deli_ready'
+                                ) && (
+                                    <>
+                                        <View style={[flex]}>
+                                            <TouchableOpacity style={[btn_primary,{paddingVertical:7,paddingHorizontal:7,}]} onPress={add_goods}>
+                                                <Text style={[text_white,text_center,h13]}>추가발주</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity style={[ms2,btn_warning,{paddingVertical:7,paddingHorizontal:7,}]} onPress={toggleModal2}>
+                                                <Text style={[text_white,text_center,h13]}>주문취소</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </>
+                                )}
                             </View>
                         </View>
                         <View>

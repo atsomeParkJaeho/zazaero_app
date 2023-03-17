@@ -62,16 +62,21 @@ import {add_order_goods} from "../order/UTIL_order";
 
 export default function Wishlist({route,navigation}) {
 
+
+
+
     const [Member, setMember] = useState();
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
     const Update = useIsFocused();
-
     console.log('즐겨찾기2');
 
     // ==========1. 상태정의 리스트
     const [WishList, setWishList]       = useState([]);     // 즐겨찾기 상태정의
+
+    // A_goods_list_o 에서 goods_uid만 뽑아서 배열을 만든다.
+    //A_goods_list_o
 
     // ===========2. 불러오기
     useEffect(()=>{
@@ -148,25 +153,49 @@ export default function Wishlist({route,navigation}) {
     
     /**---------------------체크시 상태 변경----------------------------**/
     const goChk = (uid) => {
-        console.log('액션');
-        setWishList(WishList.map((cate)=>{
-            return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
-                if(val.goods_uid === uid) {
-                    return {...val, goods_chk:!val.goods_chk}
-                } else {
-                    return val;
-                }
-                })}
-        }));
+
+
+        // A_goods_list_o의 goods_uid중에 중복되는 경우 alert를 띄우고 체크를 못하도록 한다.
+        if(route.params) {
+
+            const {A_goods_list_o} = route.params;
+            let chk = A_goods_list_o.map(val=>val.goods_uid);
+            let result = chk.includes(uid);
+
+            if(result) {
+                return Alert.alert('','이미 추가하신 자재입니다.');
+            }
+
+            setWishList(WishList.map((cate)=>{
+                return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
+                        if(val.goods_uid === uid) {
+                            return {...val, goods_chk:!val.goods_chk}
+                        } else {
+                            return val;
+                        }
+                    })}
+            }));
+
+        } else {
+            setWishList(WishList.map((cate)=>{
+                return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
+                        if(val.goods_uid === uid) {
+                            return {...val, goods_chk:!val.goods_chk}
+                        } else {
+                            return val;
+                        }
+                    })}
+            }));
+        }
+
+
+
     }
-    let {gd_order_uid, ord_status} = route.params;
-    console.log(gd_order_uid);
-    console.log(ord_status);
     /**---------------------------------자재추가 이벤트----------------------------------------**/
     const AddGoods = () => {
         // 테이블 AT_order, gd_order, AT_order_item
 
-        let {gd_order_uid, ord_status} = route.params;
+        let {gd_order_uid, ord_status ,A_goods_list_o} = route.params;
         console.log(gd_order_uid);
         console.log(ord_status);
 
@@ -190,14 +219,14 @@ export default function Wishlist({route,navigation}) {
                 }
             });
         } else {
-
-            let temp = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true))
-            let A_goods_list = temp.reduce((val,idx)=>{return val.concat(idx)})
-
+            console.log(A_goods_list_o,' / 이전 발주 기록');
+            let temp            = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
+            let A_goods_list    = temp.reduce((val,idx)=>{return val.concat(idx)});
+            let A_filter        = [...new Set([...A_goods_list, ...A_goods_list_o])];
             Alert.alert('','선택하신 자재를 추가하시겠습니까?',[
                 {text:"취소",onPress:()=>{}},
                 {text:"추가",onPress:()=>{
-                    return navigation.navigate('발주상세',{gd_order_uid:gd_order_uid, A_goods_list:A_goods_list})
+                    return navigation.navigate('발주상세',{gd_order_uid:gd_order_uid, A_goods_list:A_filter})
                     }
                 }
             ]);
@@ -264,15 +293,12 @@ export default function Wishlist({route,navigation}) {
                             {(result.length !== 0) ? (
                                 <>
                                     {result.map((cate,idx)=> {
-
                                         let wish_cnt = cate.A_goods_list.filter(val=>val.goods_wish === true);
-
                                         if(wish_cnt.length > 0) {
                                             return(
                                                 <>
                                                     <List.Accordion title={cate.cate_1st_name} style={[container, styles.Accordion_tit]}>
                                                         {cate.A_goods_list.map(val => {
-
                                                             if (val.goods_wish) {
                                                                 return (
                                                                     <>
