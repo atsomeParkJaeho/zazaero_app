@@ -159,37 +159,50 @@ export default function Wishlist({route,navigation}) {
                 })}
         }));
     }
+    let {gd_order_uid, ord_status} = route.params;
+    console.log(gd_order_uid);
+    console.log(ord_status);
     /**---------------------------------자재추가 이벤트----------------------------------------**/
     const AddGoods = () => {
         // 테이블 AT_order, gd_order, AT_order_item
 
-        let {gd_order_uid} = route.params;
-
+        let {gd_order_uid, ord_status} = route.params;
         console.log(gd_order_uid);
+        console.log(ord_status);
 
-        /**------------------------------1. 체크한상품 필터링------------------------**/
-        let temp = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
-        let Add_goods = temp.reduce((val,idx)=>{
-            return val.concat(idx);
-        });
-        let goods_uid = Add_goods.map(val=>val.goods_uid);
-
-        add_order_goods(gd_order_uid, goods_uid).then((res)=>{
-            if(res) {
-                const {result, err_msg} = res.data;
-                console.log(result);
-                if(result === 'OK') {
-                    console.log('연결');
-                    Alert.alert('','자재를 추가하였습니다.\n발주내용중\n자재정보의 변경이 발생하여\n발주검수부터 다시 진행하게 됩니다.');
-                    return navigation.pop();
-                } else {
-                    Alert.alert('',`${err_msg}`);
-                    // return navigation.pop();
+        if(ord_status === undefined) {
+            /**------------------------------1. 체크한상품 필터링------------------------**/
+            let temp = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
+            let Add_goods = temp.reduce((val,idx)=>{return val.concat(idx);});
+            let goods_uid = Add_goods.map(val=>val.goods_uid);
+            add_order_goods(gd_order_uid, goods_uid).then((res)=>{
+                if(res) {
+                    const {result, err_msg} = res.data;
+                    console.log(result);
+                    if(result === 'OK') {
+                        console.log('연결');
+                        Alert.alert('','자재를 추가하였습니다.\n발주내용중\n자재정보의 변경이 발생하여\n발주검수부터 다시 진행하게 됩니다.');
+                        return navigation.pop();
+                    } else {
+                        Alert.alert('',`${err_msg}`);
+                        // return navigation.pop();
+                    }
                 }
-            }
-        });
+            });
+        } else {
 
-        
+            let temp = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true))
+            let A_goods_list = temp.reduce((val,idx)=>{return val.concat(idx)})
+
+            Alert.alert('','선택하신 자재를 추가하시겠습니까?',[
+                {text:"취소",onPress:()=>{}},
+                {text:"추가",onPress:()=>{
+                    return navigation.navigate('발주상세',{gd_order_uid:gd_order_uid, A_goods_list:A_goods_list})
+                    }
+                }
+            ]);
+        }
+
     }
 
 

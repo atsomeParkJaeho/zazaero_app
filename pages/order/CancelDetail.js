@@ -75,6 +75,7 @@ export default function CancelDetail({navigation,route}) {
     },[Member]);
 
     console.log(CancelInfo,'/123');
+
     return (
         <>
             <ScrollView style={[bg_white]}>

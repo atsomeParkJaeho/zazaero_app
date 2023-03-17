@@ -28,6 +28,29 @@ export const getAppInfo = async () =>{
 /**-------------------------------------발주신청 폼-----------------------------------------------------------------------**/
 export const InsOrder = async (order_data,Member,work_uid,goods_cate1_uid) => {
     let ostype = Platform.OS;
+    // let data = {
+    //     act_type            :'ins_order',
+    //     mem_uid             :Member,                                        // 회원 uid
+    //     mgr_mem_uid         :Member,                                        // 회원 uid
+    //     A_order_uid         :order_data.A_order_uid,                        // 주문 uid
+    //     os_type             :ostype,                                        // 기기 os
+    //     order_title         :order_data.order_title,                                        // 기기 os
+    //     recv_name           :order_data.recv_name,                          // 현장인도자 성명
+    //     recv_phone          :order_data.recv_phone,                         // 현자인도자 전화번호
+    //     zonecode            :order_data.zonecode,                           // 우편번호
+    //     addr1               :order_data.addr1,                              // 주소
+    //     addr2               :order_data.addr2,                              // 상세주소
+    //     hope_deli_date      :order_data.hope_deli_date,                     // 희망배송일
+    //     hope_deli_time      :order_data.hope_deli_time,                     // 희망배송시간
+    //     order_memo          :order_data.order_memo,                         // 배송요청사항
+    //     settleprice         :order_data.settleprice,                        // 결제 금액
+    //     tot_order_price     :order_data.tot_order_price,                    // 자재 총 가격
+    //     work_uid            :(work_uid) ? (work_uid):(order_data.work_uid),                                      // 공사명 uid
+    //     goods_cate1_uid     :goods_cate1_uid,
+    // }
+    //
+    // console.log(data,'/발주 데이터');
+
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
         act_type            :'ins_order',
         mem_uid             :Member,                                        // 회원 uid
@@ -306,35 +329,37 @@ export const add_order_goods = async (gd_order_uid, goods_uid) => {
 }
 
 /**-----------------------------------------결제후 추가발주 이벤트---------------------------------------------------**/
+export const add_order = async (OrderData, Member, A_goods_list) => {
 
-export const add_order = async (OrderData, Member, add_goods_info) => {
-    // goods_uid, goods_cnt 배열로 보내기
     let os_type = Platform.OS;
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-        act_type                :"add_order",
-        mem_uid                 :Member,
-        mgr_mem_uid             :Member,
-        os_type                 :os_type,
-        hope_deli_date          :OrderData.hope_deli_date,
-        hope_deli_time          :OrderData.hope_deli_time,
-        recv_name               :OrderData.recv_name,
-        recv_phone              :OrderData.recv_phone,
-        zonecode                :OrderData.zonecode,
-        addr1                   :OrderData.addr1,
-        addr2                   :OrderData.addr2,
-        order_memo	            :OrderData.order_memo,
-        work_uid                :OrderData.work_uid,
-        gd_parent_order_uid     :OrderData.gd_parent_order_uid,
-        A_goods_uid             :add_goods_info.goods_uid,
-        A_goods_cnt             :add_goods_info.goods_cnt,
-        ord_status              :'ord_doing',
+    let A_goods_cate1_uid   = A_goods_list.map(val=>String(val.cate_1st_uid));
+    let A_goods_uid         = A_goods_list.map(val=>String(val.goods_uid));
+    let A_goods_cnt         = A_goods_list.map(val=>String(val.goods_cnt));
+    let A_req_memo          = A_goods_list.map(val=>String(val.req_memo));
 
-    },{
-        headers: {
-            'Content-type': 'multipart/form-data'
-        }
-    });
-    return res;
+    let data = {
+        act_type                :'add_gd_order',
+        parent_gd_order_uid     :OrderData.gd_order_uid,        // 최초 발주 uid
+        mem_uid                 :Member,                        // 회원 uid
+        os_type                 :os_type,                       // 기기 타입
+        order_title             :OrderData.order_title,               // 공사명
+        work_uid                :OrderData.work_uid,            // 공사명 uid
+        zonecode                :OrderData.zonecode,            // 우편번호
+        addr1                   :OrderData.addr1,               // 주소
+        addr2                   :OrderData.addr2,               // 상세주소
+        hope_deli_date          :OrderData.hope_deli_date,      // 희망배송일
+        hope_deli_time          :OrderData.hope_deli_time,      // 희망배송시간
+        recv_name               :OrderData.recv_name,           // 현장인도자명
+        recv_phone              :OrderData.recv_phone,          // 현장인도자 연락처
+        order_memo              :OrderData.order_memo,          // 배송메모
+        A_goods_cate1_uid       :A_goods_cate1_uid,                            // 공정카테고리 uid
+        A_goods_uid             :A_goods_uid,                            // 추가 자재 uid(배열)
+        A_goods_cnt             :A_goods_cnt,                            // 추가 자재 수량(배열)
+        A_req_memo              :A_req_memo,                            // 추가 자재 옵션 요청 사항(배열)
+    }
+    
+    console.log(data,' / 추가 발주 파라미터');
+    
 }
 /**-----------------------------------------결제후 선택 주문 취소 이벤트---------------------------------------------------**/
 export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Member) => {
@@ -397,6 +422,9 @@ export const pay_result = async (OrderData, Member) => {
 
     return res;
 }
+
+
+
 
 
 

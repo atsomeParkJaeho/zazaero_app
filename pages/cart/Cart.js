@@ -92,7 +92,6 @@ export default function Cart({route, navigation}) {
 
     /**---------------------------------장바구니 해당상품 삭제----------------------------------------**/
     const delCart = (order_uid,goods_uid) => {
-
         Alert.alert('','상품을 삭제하시겠습니까?',[
             {
                 text:"취소",
