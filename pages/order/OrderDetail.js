@@ -525,7 +525,6 @@ export default function OrderDtail({route,navigation}) {
             ])
         }
     }
-    
     const cntPopup = (goods_uid, order_uid, option_cnt) => {
         // 팝업 노출
         setExpended(!expended);
