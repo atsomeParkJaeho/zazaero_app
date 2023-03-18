@@ -374,16 +374,16 @@ export default function MemInfo({route, navigation}) {
                                 </View>
                             </View>
                             {/*============ 업태/종목 ============ */}
-                            <View style={styles.formGroup}>
-                                <View style={styles.inputGroup}>
-                                    <Text style={styles.inputTopText}>상호명</Text>
-                                    <TextInput style={[input]}
-                                               onChangeText={(com_biz_name) => goInput("com_biz_name", com_biz_name)}
-                                               ref={val=>(goInput2.current[11] = val)}
-                                               placeholder=""
-                                               value={MemInfo.com_biz_name}/>
-                                </View>
-                            </View>
+                            {/*<View style={styles.formGroup}>*/}
+                            {/*    <View style={styles.inputGroup}>*/}
+                            {/*        <Text style={styles.inputTopText}>상호명</Text>*/}
+                            {/*        <TextInput style={[input]}*/}
+                            {/*                   onChangeText={(com_biz_name) => goInput("com_biz_name", com_biz_name)}*/}
+                            {/*                   ref={val=>(goInput2.current[11] = val)}*/}
+                            {/*                   placeholder=""*/}
+                            {/*                   value={MemInfo.com_biz_name}/>*/}
+                            {/*    </View>*/}
+                            {/*</View>*/}
                             {/*============ 상호명 ============ */}
 
                             <View style={styles.formGroup}>

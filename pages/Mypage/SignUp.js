@@ -35,7 +35,7 @@ import {
     h14,
     text_gray,
     ms2,
-    h15, h18, h17, text_black
+    h15, h18, h17, text_black, bg_primary
 } from '../../common/style/AtStyle';
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
 import axios from "axios";
@@ -74,6 +74,26 @@ export default function SignUp({route, navigation}) {
 
     //
     const [Show, setShow]         = useState(false);    // 셀렉트창 노출 여부
+    let act_btn = !!(
+        SignUp.mem_id &&
+        SignUp.mem_pw &&
+        SignUp.mem_name &&
+        SignUp.com_name &&
+        SignUp.mem_mobile &&
+        SignUp.com_biz_no &&
+        SignUp.road_address &&
+        SignUp.zonecode &&
+        SignUp.addr1 &&
+        SignUp.addr2 &&
+        SignUp.privacy_1 &&
+        SignUp.privacy_2 &&
+        SignUp.privacy_3 &&
+        SignUp.privacy_4 &&
+        SignUp.privacy_5 &&
+        SignUp.mem_pw_chk &&
+        SignUp.all_chk
+    );
+
 
     useEffect(()=>{
 
@@ -213,6 +233,7 @@ export default function SignUp({route, navigation}) {
             Alert.alert('',`업체명을 입력해주세요.`);
             return Chkinput.current[3].focus();
         }
+        
         if(!SignUp.com_biz_no) {  // 사업자 등록증
             Alert.alert('',`사업자 등록증을 입력해주세요.`);
             return Chkinput.current[4].focus();
@@ -286,6 +307,9 @@ export default function SignUp({route, navigation}) {
     }
     // console.log(Selected.select_title);
 
+
+    console.log(act_btn,'/ 전체 채우면 true');
+    console.log(SignUp,' / ');
 
 
     return (
@@ -410,6 +434,17 @@ export default function SignUp({route, navigation}) {
                                 />
                             </View>
                         </View>
+                        {/*<View style={styles.formGroup}>*/}
+                        {/*    <View style={styles.inputGroup}>*/}
+                        {/*        <Text style={styles.inputTopText}>상호명</Text>*/}
+                        {/*        <TextInput style={[input]}*/}
+                        {/*                   placeholder="상호명을 입력해주세요."*/}
+                        {/*                   onChangeText={(com_biz_name)=>goInput('com_biz_name',com_biz_name)}*/}
+                        {/*                   value={SignUp.com_biz_name}*/}
+                        {/*                   ref={val=>(Chkinput.current[3] = val)}*/}
+                        {/*        />*/}
+                        {/*    </View>*/}
+                        {/*</View>*/}
                         {/*업체명 입력창*/}
                         <View style={styles.formGroup}>
                             <View style={styles.inputGroup}>
@@ -604,10 +639,10 @@ export default function SignUp({route, navigation}) {
                     </View>
                 </View>
             </ScrollView>
-            <View style={[styles.form_btn,ios_pb]}>
+            <View style={[styles.form_btn,ios_pb, (act_btn) && bg_primary]}>
                 <TouchableOpacity
                     onPress={goForm}
-                    style={[styles.form_btn_link,styles.form_btn_meminfo_link]} >
+                    style={[styles.form_btn_link,styles.form_btn_meminfo_link,]} >
                     <Text style={styles.form_btn_txt}>회원가입</Text>
                 </TouchableOpacity>
             </View>

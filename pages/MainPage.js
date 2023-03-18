@@ -31,6 +31,7 @@ import {At_db} from "../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Wishlist from "../icons/ico_heart_c.svg";
 import {ABanner, get_cate_list, get_main_info} from "./UTIL_main";
+import {getAppInfo} from "./order/UTIL_order";
 
 //import main1 from '../assets/img/main_1.png'
 
@@ -38,12 +39,13 @@ import {ABanner, get_cate_list, get_main_info} from "./UTIL_main";
 
 // 2차 카테고리 설정
 function Cate2nd({uid,navigation,name}) {
+
+
     console.log('카테고리 uid ',uid);
     console.log('제목 ',name);
     const [Cate2nd, setCate2nd] = useState([]);
-
-
     useEffect(() => {
+        /**------상품리스트 가져오기------**/
         get_cate_list(`2`, uid).then((res) => {
             if (res) {
                 const {result, A_cate} = res.data;
@@ -55,6 +57,8 @@ function Cate2nd({uid,navigation,name}) {
                 }
             }
         });
+
+
     }, []);
     console.log(Cate2nd,' / 2차 카테고리2');
     if(Cate2nd !== null) {
@@ -88,12 +92,18 @@ function Cate2nd({uid,navigation,name}) {
 
 // 상품출력 페이지
 export default function MainPage({route,navigation}) {
+
+    const [Member, setMember] = useState();
+    const mem_uid = AsyncStorage.getItem("member").then((value) => {
+        setMember(value);
+    });
+
     const Update = useIsFocused();
     // 1. 1차 카테고리 추출
     const [Cate1st, setCate1st] = useState([]);   // 1차 카테고리 설정
     // 아코디언 설정
     const [expend, setExpend] = useState(`1`);
-
+    const [com_info, set_com_info] = useState([]);
     // 2. 배너 담기
     const [A_banner, set_A_banner] = useState([]);
 
@@ -111,6 +121,19 @@ export default function MainPage({route,navigation}) {
             }
         }).catch((err) => console.log(err));
 
+        /**------------앱정보 가져오기----------------**/
+        getAppInfo().then((res)=>{
+            if(res) {
+                const {result, app_info} = res.data;
+                if(result === 'OK') {
+                    let {com_info} = app_info
+                    set_com_info(com_info);
+                } else {
+                    Alert.alert('','연결실패');
+                }
+            }
+        });
+
         /**------------------------배너------------------------**/
         ABanner().then((res)=>{
             if(res) {
@@ -125,12 +148,30 @@ export default function MainPage({route,navigation}) {
             }
         });
 
-    }, [Update]);
+    }, [Member, Update]);
 
-    // console.log('1차 카테고리', Cate1st);
 
-    console.log(A_banner,'/배너aaa');
-    console.log(Cate1st,'/배너 123123');
+    let get_link = (link_type, cfg_val1, cfg_val2, cfg_val3, cfg_val4) => {
+        console.log(link_type,'/ 링크 타입');
+        console.log(cfg_val1,'/1차 카테고리 코드');
+        console.log(cfg_val2,'/2차 카테고리 코드');
+        console.log(cfg_val3,'/3차 카테고리 코드');
+        console.log(cfg_val4,'/4차 카테고리 코드');
+        if(!link_type) {
+            console.log('링크 없음');
+        }
+        if(link_type === 'goods_cate') {
+            if(!cfg_val1) { return Alert.alert('','링크 넣어주세요.'); }
+            return navigation.navigate('상품목록',{Cate1stUid:cfg_val1,Cate2ndUid:cfg_val2,Cate3rd:cfg_val3});
+        }
+        if(link_type === 'notice') {
+            if(!cfg_val1) { return Alert.alert('','링크 넣어주세요.'); }
+            return navigation.navigate('공지사항상세',{bd_uid:cfg_val1});
+        }
+    }
+
+    console.log(A_banner,' / 배너2');
+    console.log(com_info.com_name,' / 회사정보');
 
     return (
         /*
@@ -147,11 +188,6 @@ export default function MainPage({route,navigation}) {
                         <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
                             <Search width={30} height={21} style={[styles.icon]}/>
                         </TouchableOpacity>
-                        {/*<TouchableOpacity style={styles.link_signUp} onPress={() => {*/}
-                        {/*    navigation.navigate('알림')*/}
-                        {/*}}>*/}
-                        {/*    <NotificationIcon width={30} height={21} style={[styles.icon, ms1]}/>*/}
-                        {/*</TouchableOpacity>*/}
                     </View>
                 </View>
             </View>
@@ -160,10 +196,16 @@ export default function MainPage({route,navigation}) {
                 <ImageSlider
                     data={
                         A_banner.map(val=>{
-                            return {img:"http://49.50.162.86:80/"+val.img_url}
+                            return {
+                                img:"http://49.50.162.86:80/"+val.img_url,
+                                cfg_val1:val.cfg_val1,
+                                cfg_val2:val.cfg_val2,
+                                cfg_val3:val.cfg_val3,
+                                cfg_val4:val.cfg_val4,
+                            }
                         })
                     }
-                    onClick={()=>console.log('테스트 입니다.')}
+                    onClick={(data)=>get_link(data.cfg_val1,data.cfg_val2,data.cfg_val3,data.cfg_val4)}
                     previewImageStyle={false}
                     caroselImageStyle={{ resizeMode: 'cover', height:180, }}
                     preview={false}
@@ -225,12 +267,24 @@ export default function MainPage({route,navigation}) {
                         </View>
                         {/*  메인풋터 상단  */}
                         <View style={styles.main_footer_disc}>
-                            <Text style={styles.main_footer_disc_txt}>상호명 : (주 스타키움)</Text>
-                            <Text style={styles.main_footer_disc_txt}>대표자명 : 이정환</Text>
-                            <Text style={styles.main_footer_disc_txt}>사업자 번호 : 899-87-01114</Text>
-                            <Text style={styles.main_footer_disc_txt}>고객센터 : 1666-7099</Text>
-                            <Text style={styles.main_footer_disc_txt}>이메일 : daengmo9@starchium.com</Text>
-                            <Text style={styles.main_footer_disc_txt}>사업장 주소 : 경기 성남시 수정구 대왕판교로 815 (시흥동) 7층 776호</Text>
+                            <Text style={styles.main_footer_disc_txt}>
+                                상호명 : {com_info.com_name}
+                            </Text>
+                            <Text style={styles.main_footer_disc_txt}>
+                                대표자명 : {com_info.ceo_name}
+                            </Text>
+                            <Text style={styles.main_footer_disc_txt}>
+                                사업자 번호 : {com_info.biz_no}
+                            </Text>
+                            <Text style={styles.main_footer_disc_txt}>
+                                고객센터 : {com_info.com_phone}
+                            </Text>
+                            <Text style={styles.main_footer_disc_txt}>
+                                이메일 : {com_info.com_email}
+                            </Text>
+                            <Text style={styles.main_footer_disc_txt}>
+                                사업장 주소 : {com_info.addr1} {com_info.addr2}
+                            </Text>
                         </View>
                     </View>
                 </View>

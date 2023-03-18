@@ -87,16 +87,9 @@ export default function GoodsCateList({route, navigation}) {
         return (
             <>
                 <View style={[flex, me1]}>
-                    <TouchableOpacity style={styles.link_signUp} onPress={() => {
-                        navigation.navigate('검색')
-                    }}>
+                    <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
                         <Search width={30} height={21} style={[styles.icon]}/>
                     </TouchableOpacity>
-                    {/*<TouchableOpacity style={styles.link_signUp} onPress={() => {*/}
-                    {/*    navigation.navigate('알림')*/}
-                    {/*}}>*/}
-                    {/*    <NotificationIcon width={30} height={21} style={[styles.icon, ms1]}/>*/}
-                    {/*</TouchableOpacity>*/}
                 </View>
             </>
         );
@@ -303,7 +296,7 @@ export default function GoodsCateList({route, navigation}) {
                                                 {/*========상품명========*/}
                                                 <Text
                                                     style={[styles.cate_2st_btn_txt, (item.goods_wish_chk) ? {color: "red"} : {color: "#000"}]}
-                                                    numberOfLines={1}>{item.goods_name}</Text>
+                                                    numberOfLines={2}>{item.goods_name}</Text>
 
                                         </View>
                                         {/**----------------------장바구니------------------------------**/}

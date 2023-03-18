@@ -26,7 +26,7 @@ import {
     mb2,
     mb4,
     mb5,
-    input, pos_center,
+    input, pos_center, bg_primary,
 } from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 import axios from "axios";
@@ -40,8 +40,6 @@ export default function Login({navigation, route}) {
 
 
     const [Member, setMember] = useState();
-
-
     useEffect(() => {
         AsyncStorage.getItem('member').then((value) => {
             if (value) {
@@ -49,15 +47,8 @@ export default function Login({navigation, route}) {
             }
         });
     }, []);
-
     console.log('회원코드 / ', Member);
-
-
     const ChkValue = useRef([]);
-
-
-
-
     // 1. data로 넘길 status 셋팅
     const [Login, setLogin] = useState({    // 로그인상태 셋팅
         mem_id: "",
@@ -148,7 +139,7 @@ export default function Login({navigation, route}) {
                                 </View>
                             </View>
 
-                            <TouchableOpacity style={styles.loginformbtn} onPress={goLogin}>
+                            <TouchableOpacity style={[styles.loginformbtn, (Login.mem_id && Login.mem_pw) && bg_primary ]} onPress={goLogin}>
                                 <View  style={[pos_center]} >
                                     <Text style={styles.loginformbtntxt}>로그인</Text>
                                 </View>

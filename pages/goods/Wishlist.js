@@ -332,7 +332,7 @@ export default function Wishlist({route,navigation}) {
                                                                                                             {/*========상품명========*/}
                                                                                                             <Text
                                                                                                                 style={[styles.cate_2st_btn_txt, (val.goods_wish_chk_chk) ? {color: "red"} : {color: "#000"}]}
-                                                                                                                numberOfLines={1}>{val.goods_name}</Text>
+                                                                                                                numberOfLines={2}>{val.goods_name}</Text>
                                                                                                         </TouchableOpacity>
                                                                                                     </>
                                                                                                 ):(
@@ -341,7 +341,7 @@ export default function Wishlist({route,navigation}) {
                                                                                                             {/*========상품명========*/}
                                                                                                             <Text
                                                                                                                 style={[styles.cate_2st_btn_txt, (val.goods_wish_chk_chk) ? {color: "red"} : {color: "#000"}]}
-                                                                                                                numberOfLines={1}>{val.goods_name}</Text>
+                                                                                                                numberOfLines={2}>{val.goods_name}</Text>
                                                                                                         </TouchableOpacity>
                                                                                                     </>
                                                                                                 )}

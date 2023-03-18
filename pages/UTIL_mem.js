@@ -69,13 +69,13 @@ export const login = async (Login)=>{
 /**---------------------------------로그인-------------------------------------------**/
 export const Sign_up = async (SignUp) => {
     let reg_mem_os = Platform.OS;
-
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php', {
         act_type         : 'mem_reg',
         mem_id           :SignUp.mem_id,        // 아이디
         mem_pw           :SignUp.mem_pw,        // 비밀번호
         mem_name         :SignUp.mem_name,      // 담당자 명
         com_name         :SignUp.com_name,      // 회사명
+        com_biz_name     :SignUp.com_biz_name,      // 회사명
         mem_mobile       :SignUp.mem_mobile,    // 담당자 연락처
         com_biz_no       :SignUp.com_biz_no,    // 사업자번호
         zonecode         :SignUp.zonecode,      // 우편번호
@@ -88,7 +88,6 @@ export const Sign_up = async (SignUp) => {
             'Content-type': 'multipart/form-data'
         }
     })
-
     return res;
 }
 
