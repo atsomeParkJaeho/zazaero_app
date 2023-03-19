@@ -128,9 +128,7 @@ export default function MyPage({navigation, route}) {
                         {/*</View>*/}
 
                         <View style={styles.mypageListItem}>
-                            <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
-                                navigation.navigate('취소내역')
-                            }}>
+                            <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {navigation.navigate('취소내역')}}>
                                 <View style={styles.flex}>
                                     <View style={styles.mypageListItemTitle}>
                                         <Text style={styles.mypageList_name}>취소,반품내역</Text>

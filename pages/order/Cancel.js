@@ -31,7 +31,7 @@ import {gray_bar, sub_page} from '../../common/style/SubStyle';
 import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {get_order_cancel_list} from "./UTIL_order";
-import {DateChg, Price, refundStatus} from "../../util/util";
+import {cancelType, DateChg, Price, refundStatus} from "../../util/util";
 
 export default function Cancel({navigation, route}) {
     const [Member, setMember] = useState();
@@ -45,12 +45,10 @@ export default function Cancel({navigation, route}) {
     useEffect(()=>{
         get_order_cancel_list(Member).then((res)=>{
             if(res) {
+                console.log(res.data,'/ 데이터 확인123');
                 const {result, err_msg, gd_cancel} = res.data;
                 if(result === 'OK') {
-                    let temp = gd_cancel.sort((a,b)=>{
-                        return b.gd_order_uid - a.gd_order_uid;
-                    });
-                    set_cancel_list(temp);
+                    set_cancel_list(gd_cancel);
                 } else {
                     Alert.alert('','연결실패'+err_msg);
                 }
@@ -58,7 +56,7 @@ export default function Cancel({navigation, route}) {
         });
     },[Member]);
 
-    console.log(cancel_list,'/ 결제취소 리스트2');
+    console.log(cancel_list,'/ 결제취소 리스트');
 
 
     function CancelList({item}) {
@@ -80,11 +78,21 @@ export default function Cancel({navigation, route}) {
                             {/**--------------------공사명----------------------------**/}
                             <View style={[flex, styles.mb_5]}>
                                 <View style={[styles.wt3]}>
+                                    <Text style={[styles.Construction_name, styles.ft_14]}> 취소일 :</Text>
+                                </View>
+                                <View style={[styles.wt7]}>
+                                    <Text
+                                        style={[styles.ft_14]}>{DateChg(item.reg_date)} {item.reg_time}</Text>
+                                </View>
+                            </View>
+                            {/**--------------------공사명----------------------------**/}
+                            <View style={[flex, styles.mb_5]}>
+                                <View style={[styles.wt3]}>
                                     <Text style={[styles.Construction_name, styles.ft_14]}> 공사명 :</Text>
                                 </View>
                                 <View style={[styles.wt7]}>
                                     <Text
-                                        style={[styles.ft_14]}>{item.order_title}</Text>
+                                        style={[styles.ft_14]}>{item.work_name}</Text>
                                 </View>
                             </View>
                             {/**--------------------희망배송일----------------------------**/}
@@ -109,25 +117,24 @@ export default function Cancel({navigation, route}) {
                                     </Text>
                                 </View>
                             </View>
-
                         </View>
                         <View style={[styles.border_b_dotted]}></View>
                         <View style={[container]}>
                             <View style={[flex_between]}>
                                 <View style={[styles.wt2]}>
-                                    <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('취소내역상세',{gd_order_uid:item.gd_order_uid})}>
+                                    <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('취소내역상세',{gd_cancel_uid:item.gd_cancel_uid, gd_order_uid:item.gd_order_uid})}>
                                         <Text style={[text_center, text_white]}>상세내역 </Text>
                                     </TouchableOpacity>
                                 </View>
                                 <View style="">
                                     <View style={[flex, styles.justify_content_end]}>
-                                        <Text>{item.cancel_status}</Text>
+                                        <Text>{cancelType(item.cancel_type)}</Text>
                                     </View>
                                     <View style="">
                                         <View style={flex}>
-                                            <Text style={[h12, styles.color1]}>결제금액 :</Text>
+                                            <Text style={[h12, styles.color1]}>취소금액 :</Text>
                                             <Text style={[ms1, h18]}>
-                                                {Price(item.settleprice)}원
+                                                {Price(item.sum_set_refund_money)}원
                                             </Text>
                                         </View>
                                     </View>
@@ -153,7 +160,8 @@ export default function Cancel({navigation, route}) {
                 </View>
                 <View style={[styles.InquiryTab_item]}>
                     <TouchableOpacity style={[styles.InquiryTab_link]} onPress={() => {
-                        navigation.navigate('반품내역')
+                        // navigation.navigate('반품내역')
+                        Alert.alert('준비중입니다.');
                     }}>
                         <Text style={[styles.InquiryTab_txt]}>반품내역</Text>
                     </TouchableOpacity>

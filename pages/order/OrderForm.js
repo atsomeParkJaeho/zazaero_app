@@ -81,7 +81,7 @@ export default function OrderForm({route,navigation}) {
 
     /**--------------------------------------필수 정보사항--------------------------------------------------**/
     const {order_uid, addr1, zonecode, goods_cate1_uid} = route.params;
-    console.log(goods_cate1_uid,'/asdf');
+    console.log(goods_cate1_uid,'/ 1차 카테고리');
     let order_result_uid = order_uid.map(val=>Number(val.order_uid));
 
     const [Member, setMember]          = useState();
@@ -123,8 +123,19 @@ export default function OrderForm({route,navigation}) {
         addr1           :'',
         order_title     :'',
     });
-    /**---------------------------------------------------------------------------------------------------**/
+    /**-----------------------------------내용존재시 버튼 활성화----------------------------------------------------------------**/
+    let act_btn = !!(
+        OrderData.recv_name &&
+        OrderData.recv_phone &&
+        OrderData.zonecode &&
+        OrderData.addr1 &&
+        OrderData.addr2 &&
+        OrderData.hope_deli_date &&
+        OrderData.hope_deli_time &&
+        OrderData.order_memo
+    );
 
+    console.log(act_btn,' / 버튼 활성화');
 
     /**---------------------------------입력한 배송지 검색---------------------------------------------------**/
     const getDeliList = () => {
@@ -551,7 +562,7 @@ export default function OrderForm({route,navigation}) {
 
                             <TextInput style={[input,{flex:1,marginRight:16},mb1]} placeholder="공사명 입력"
                                        onChangeText={(word)=>setSearch(word)}
-                                       editable={(modAddr === 'add')}
+                                       editable={(modAddr === 'mod')}
                                        value={Search}
                             />
 
@@ -807,7 +818,9 @@ export default function OrderForm({route,navigation}) {
         return(
             <>
                 {/**----------------------------------------------발주신청--------------------------------------------------**/}
-                <View style={[bg_gray, {
+                <View style={[
+                    (act_btn) ? bg_primary : bg_gray,
+                    {
                     paddingTop: 6,
                     paddingBottom: Platform.OS === 'ios' ? 38 : 10,
                     left: 0,

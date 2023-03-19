@@ -28,28 +28,28 @@ export const getAppInfo = async () =>{
 /**-------------------------------------발주신청 폼-----------------------------------------------------------------------**/
 export const InsOrder = async (order_data,Member,work_uid,goods_cate1_uid) => {
     let ostype = Platform.OS;
-    // let data = {
-    //     act_type            :'ins_order',
-    //     mem_uid             :Member,                                        // 회원 uid
-    //     mgr_mem_uid         :Member,                                        // 회원 uid
-    //     A_order_uid         :order_data.A_order_uid,                        // 주문 uid
-    //     os_type             :ostype,                                        // 기기 os
-    //     order_title         :order_data.order_title,                                        // 기기 os
-    //     recv_name           :order_data.recv_name,                          // 현장인도자 성명
-    //     recv_phone          :order_data.recv_phone,                         // 현자인도자 전화번호
-    //     zonecode            :order_data.zonecode,                           // 우편번호
-    //     addr1               :order_data.addr1,                              // 주소
-    //     addr2               :order_data.addr2,                              // 상세주소
-    //     hope_deli_date      :order_data.hope_deli_date,                     // 희망배송일
-    //     hope_deli_time      :order_data.hope_deli_time,                     // 희망배송시간
-    //     order_memo          :order_data.order_memo,                         // 배송요청사항
-    //     settleprice         :order_data.settleprice,                        // 결제 금액
-    //     tot_order_price     :order_data.tot_order_price,                    // 자재 총 가격
-    //     work_uid            :(work_uid) ? (work_uid):(order_data.work_uid),                                      // 공사명 uid
-    //     goods_cate1_uid     :goods_cate1_uid,
-    // }
-    //
-    // console.log(data,'/발주 데이터');
+    let data = {
+        act_type            :'ins_order',
+        mem_uid             :Member,                                        // 회원 uid
+        mgr_mem_uid         :Member,                                        // 회원 uid
+        A_order_uid         :order_data.A_order_uid,                        // 주문 uid
+        os_type             :ostype,                                        // 기기 os
+        order_title         :order_data.order_title,                                        // 기기 os
+        recv_name           :order_data.recv_name,                          // 현장인도자 성명
+        recv_phone          :order_data.recv_phone,                         // 현자인도자 전화번호
+        zonecode            :order_data.zonecode,                           // 우편번호
+        addr1               :order_data.addr1,                              // 주소
+        addr2               :order_data.addr2,                              // 상세주소
+        hope_deli_date      :order_data.hope_deli_date,                     // 희망배송일
+        hope_deli_time      :order_data.hope_deli_time,                     // 희망배송시간
+        order_memo          :order_data.order_memo,                         // 배송요청사항
+        settleprice         :order_data.settleprice,                        // 결제 금액
+        tot_order_price     :order_data.tot_order_price,                    // 자재 총 가격
+        work_uid            :(work_uid) ? (work_uid):(order_data.work_uid),                                      // 공사명 uid
+        goods_cate1_uid     :goods_cate1_uid,
+    }
+
+    console.log(data,'/발주 데이터');
 
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
         act_type            :'ins_order',
@@ -229,11 +229,11 @@ export const get_order_cancel_list = async (Member) => {
     return res;
 }
 /**-------------------------------------주문취소내역출력-----------------------------------------------------------------------**/
-export const gd_cancel_info = async (Member, gd_cancel_uid) => {
+export const gd_cancel_info = async (gd_cancel_uid, gd_order_uid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"gd_cancel_info",
         gd_cancel_uid        :gd_cancel_uid,
-        mem_uid              :Member,
+        gd_order_uid         :gd_order_uid,
     },{
         headers: {
             'Content-type': 'multipart/form-data'

@@ -154,18 +154,20 @@ export default function Wishlist({route,navigation}) {
     /**---------------------체크시 상태 변경----------------------------**/
     const goChk = (uid) => {
 
-
         // A_goods_list_o의 goods_uid중에 중복되는 경우 alert를 띄우고 체크를 못하도록 한다.
         if(route.params) {
 
             const {A_goods_list_o} = route.params;
-            let chk = A_goods_list_o.map(val=>val.goods_uid);
-            let result = chk.includes(uid);
+            if(A_goods_list_o) {
+                let chk = A_goods_list_o.map(val=>val.goods_uid);
+                let result = chk.includes(uid);
 
-            if(result) {
-                return Alert.alert('','이미 추가하신 자재입니다.');
+                if(result) {
+                    return Alert.alert('','이미 추가하신 자재입니다.');
+                }
+
+
             }
-
             setWishList(WishList.map((cate)=>{
                 return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
                         if(val.goods_uid === uid) {
@@ -175,7 +177,6 @@ export default function Wishlist({route,navigation}) {
                         }
                     })}
             }));
-
         } else {
             setWishList(WishList.map((cate)=>{
                 return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
@@ -356,16 +357,13 @@ export default function Wishlist({route,navigation}) {
                                                                                                         <Checkbox
                                                                                                             style={styles.btn_cart}
                                                                                                             value={val.goods_chk}
-                                                                                                            onValueChange={() => {
-                                                                                                                goChk(val.goods_uid);
-                                                                                                            }}/>
+                                                                                                            onValueChange={() => {goChk(val.goods_uid);}}/>
                                                                                                         <View style={{
                                                                                                             flex: 1,
                                                                                                             alignItems: "center",
                                                                                                             justifyContent: "center"
                                                                                                         }}>
-                                                                                                            <Chk width={16}
-                                                                                                                 height={22}></Chk>
+                                                                                                            <Chk width={16} height={22}></Chk>
                                                                                                         </View>
                                                                                                     </View>
                                                                                                 ) : (
@@ -375,9 +373,8 @@ export default function Wishlist({route,navigation}) {
                                                                                                         <Checkbox
                                                                                                             style={styles.btn_cart}
                                                                                                             value={val.goods_chk}
-                                                                                                            onValueChange={() => {
-                                                                                                                goChk(val.goods_uid)
-                                                                                                            }}/>
+                                                                                                            onValueChange={() => {goChk(val.goods_uid)}}
+                                                                                                        />
                                                                                                         <View style={{
                                                                                                             flex: 1,
                                                                                                             alignItems: "center",

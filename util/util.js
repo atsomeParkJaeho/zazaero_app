@@ -933,3 +933,14 @@ export const EmailDomain = [
         value        :"yahoo.com",
     },
 ];
+
+export const cancelType = (type) => {
+    if(type === 'part') { return '부분취소'; }
+    if(type === 'all')  { return '전체취소'; }
+}
+export const cancelStatus = (type) => {
+    if(type === 'none') { return ''; }
+    if(type === 'ready')  { return '처리중'; }
+    if(type === 'done')  { return '취소완료'; }
+}
+

@@ -9,7 +9,7 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    Platform
+    Alert
 } from 'react-native';
 
 
@@ -40,285 +40,209 @@ import {
     pe3,
     pe5,
     me2,
-    text_danger, pe1, textarea, input, align_items_center, bg_primary, text_light,
+    text_danger, pe1, textarea,
 } from '../../common/style/AtStyle';
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
 
 import goodsthum1 from "../../assets/img/goods_thum1.jpg";
 import col3 from "../../assets/img/co3.png";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {gd_cancel_info} from "./UTIL_order";
-import {FormStyle} from "./FormStyle";
 
 
 // 샘플데이터
+import {cancel_d_List, cancelStatus, DateChg, Price, settleKind} from "../../util/util";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {gd_cancel_info} from "./UTIL_order";
 
 
 export default function CancelDetail({navigation,route}) {
-    const {gd_cancel_uid} = route.params;
-    const [Member, setMember] = useState({});
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
-    const [CancelInfo, setCancelInfo] = useState();
 
+    const {gd_cancel_uid, gd_order_uid} = route.params;
+
+    const [Member, setMember] = useState();
+    const mem_uid = AsyncStorage.getItem("member").then((value) => {setMember(value);});
+    const [gd_order, set_gd_order] = useState([]);     // 취소한 자재 출력
+    const [gd_cancel, set_gd_cancel] = useState([]);
+    const [A_order_cancel_item, set_order_cancel_item] = useState([]);
     useEffect(()=>{
-        gd_cancel_info(Member, gd_cancel_uid).then((res)=>{
+        gd_cancel_info(gd_cancel_uid, gd_order_uid).then((res)=>{
             if(res) {
-                console.log(res);
-                const {result, gd_cancel_info} = res.data;
+                console.log(res.data,'/ 데이터 확인');
+                const {result, gd_order, A_cancel_item, gd_cancel} = res.data;
                 if(result === 'OK') {
-                    setCancelInfo(gd_cancel_info);
+                    // setOrderList(gd_cancel_info);
+                    set_gd_order(gd_order);
+                    set_order_cancel_item(A_cancel_item);
+                    set_gd_cancel(gd_cancel);
+                } else {
+                    Alert.alert('','연결에러1');
                 }
             }
-        });
+        })
     },[Member]);
 
-    console.log(CancelInfo,'/123');
+    console.log(gd_order.gd_order_uid,' / 발주정보');
+    console.log(A_order_cancel_item,' / 취소자재 정보');
+    console.log(gd_cancel,' / 취소정보');
+
 
     return (
         <>
-            <ScrollView style={[bg_white]}>
-                <View style={[FormStyle.FormGroup]}>
-                    {/**----------------------------------------------공사명--------------------------------------------------**/}
-                    <View style={[FormStyle.FormGroupItems]}>
-                        <Text style={[FormStyle.FormLabel]}>공사명</Text>
-                        <Text>
-
-                        </Text>
-                    </View>
-                    {/**----------------------------------------------배송지주소 입력--------------------------------------------------**/}
-                    <View style={[FormStyle.FormGroupItems]}>
-                        <Text style={[FormStyle.FormLabel]}>배송지</Text>
-                        <View style={[d_flex,align_items_center]}>
-
+            <View style={[bg_white,sub_page]}>
+                <View style={[styles.CancelDetail]}>
+                    <ScrollView style="">
+                        <View style={[styles.Detail_page_top,d_flex,justify_content_center]}>
+                            <Text style={[text_danger,h16]}>{cancelStatus(gd_order.cancel_status)}</Text>
                         </View>
-                    </View>
-                    {/**----------------------------------------------주소입력--------------------------------------------------**/}
-                    <View style={{paddingBottom:15,}}>
+                        <View style={[styles.CancelDetail_sec]}>
+                            <View style={[container]}>
+                                <Text style={[h18]}>환불 요청 자재</Text>
+                            </View>
+                            <View style={gray_bar}/>
+                            <View style={[styles.CancelDetail_list]}>
+                                {/**--------------------반복문 구간----------------------**/}
+                                {A_order_cancel_item.map((val,idx)=>(
+                                    <>
+                                        <View style={[styles.CancelDetail_list_items]}>
+                                            <View style={[container]}>
+                                                <Text style={[h14,mb1]}>{val.goods_name}</Text>
+                                                <View style={[flex_between_bottom]}>
+                                                    <View style={[flex_end]}>
+                                                        <Image style={styles.goods_thum} source={{uri:`http://www.zazaero.com${val.img_list}`}}/>
+                                                        <View style={ms2}>
+                                                            <Text style={[h14]}>기존수량 : {val.src_cnt}개</Text>
+                                                            <Text style={[h14,fw500]}>취소수량 : -{val.cancel_cnt}개</Text>
+                                                        </View>
 
-                    </View>
-                    {/**----------------------------------------------상세주소--------------------------------------------------**/}
-                    <View>
+                                                    </View>
+                                                    <View style={justify_content_end}>
+                                                        <Text style={[h13]}>( 단가 : {Price(val.price)} 원)</Text>
+                                                        {/*단가*/}
+                                                        <Text style={[h14]}>총 자재금액</Text>
+                                                        <Text style={[h16]}>{Price(val.price * val.src_cnt)}원</Text>
+                                                        {/*총금액*/}
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </>
+                                ))}
 
-                    </View>
-                    {/*다음 api 주소 팝업*/}
-                    {/**----------------------------------------------배송지 입력--------------------------------------------------**/}
+                            </View>
+                            <View style={gray_bar}/>
+                            {/*<View style="">*/}
+                            {/*    <View style={container}>*/}
+                            {/*        <Text style={[h18]}>취소사유</Text>*/}
+                            {/*    </View>*/}
+                            {/*    <View style={[container,styles.borderVertical]}>*/}
+                            {/*        <TextInput*/}
+                            {/*            multiline*/}
+                            {/*            editable={false}*/}
+                            {/*            selectTextOnFocus={false}*/}
+                            {/*            style={[textarea,{padding: 10, backgroundColor:'#eee',}]}*/}
+                            {/*            value="주문건 중복 결제"*/}
+                            {/*        />*/}
+                            {/*    </View>*/}
+                            {/*</View>*/}
+                            {/*취소사유*/}
+                            <View style="">
+                                <View style={container}>
+                                    <Text style={[h18]}>결제 정보</Text>
+                                </View>
+                                <View style={[container,bg_light]}>
+                                    <View style={[d_flex,justify_content_end,pe1]}>
+                                        <View style="">
+                                            <View style={[flex,justify_content_end,mb1]}>
+                                                <Text style={[h14,styles.color1,me2]}>결제일</Text>
+                                                <Text style={[h14]}>{DateChg(gd_order.pay_date)} {gd_order.pay_time}</Text>
+                                            </View>
+                                            {/*결제일*/}
+                                            <View style={[flex,justify_content_end,mb1]}>
+                                                <Text style={[h14,styles.color1,me2]}>결제방식</Text>
+                                                <Text style={[h14]}>{settleKind(gd_order.settlekind)}</Text>
+                                            </View>
+                                            {/*결제일*/}
+                                            <View style={[flex,justify_content_end,mb1]}>
+                                                <Text style={[h14,styles.color1,me2]}>자재 가격</Text>
+                                                <Text style={[h14]}>{Price(gd_order.goodsprice)}원</Text>
+                                            </View>
+                                            {/*자재 가격*/}
+                                            <View style={[flex,justify_content_end,mb1]}>
+                                                <Text style={[h14,styles.color1,me2]}>요청옵션비</Text>
+                                                <Text style={[h14]}>{Price(gd_order.tot_opt_price)} 원</Text>
+                                            </View>
+                                            {/*요청옵션비*/}
+
+                                            <View style={[flex,justify_content_end]}>
+                                                <Text style={[h14,styles.color1,me2]}>총 결제금액</Text>
+                                                <Text style={[h16,text_primary]}>{Price(gd_order.settleprice)}원</Text>
+                                            </View>
+                                            {/*총 결제금액*/}
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                            {/*결제정보*/}
+                            <View style="">
+                                <View style={container}>
+                                    <Text style={[h18]}>환불금액</Text>
+                                </View>
+                                <View style={[container,bg_light]}>
+                                    <View style={[d_flex,justify_content_end,pe1]}>
+                                        <View style="">
+                                            {/*<View style={[flex,justify_content_end]}>*/}
+                                            {/*    <Text style={[h14,styles.color1,me2]}>환불지급일</Text>*/}
+                                            {/*    <Text style={[h16,text_primary]}>{Price(gd_order.settleprice)}원</Text>*/}
+                                            {/*</View>*/}
+                                            <View style={[flex,justify_content_end,mb1]}>
+                                                <Text style={[h14,styles.color1,me2]}>현금</Text>
+                                                <Text style={[h18,text_danger]}>{Price(gd_cancel.sum_refund_money)}원</Text>
+                                            </View>
+                                            {/*현금*/}
+                                            <View style={[flex,justify_content_end,mb1]}>
+                                                <Text style={[h14,styles.color1,me2]}>포인트</Text>
+                                                <Text style={[h18,text_danger]}>{gd_cancel.real_refund_point}P</Text>
+                                            </View>
+                                            {/*포인트*/}
+
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                            {/*환불금액*/}
+                            <View style={[padding_bottom]} />
+                        </View>
+                    </ScrollView>
+                    {/*취소상세*/}
                 </View>
-            </ScrollView>
+            </View>
         </>
+
+
     );
 }
 
-
 const styles = StyleSheet.create({
+    Detail_page_top:{
+        paddingVertical:16,
 
-    AllGoodsChk:{
-        position:"absolute",
-        borderWidth:1,
-        zIndex:99,
-        width:"100%",
-        height:"100%",
-        opacity:0
-    },
-    CancelBtnWrap:{
-        borderWidth:1,
-        borderColor:"#333",
-        width:"48%",
-        borderRadius:5,
-    },
-    CancelBtn:{
-        padding:10,
-    },
-
-
-    all_check:{
-        borderRadius:5,
-    },
-
-    all_check_txt:{
-        marginLeft:5,
-    },
-
-    chk_view:{
-        position:"absolute",
-        opacity:0,
-        zIndex: 99,
-        width:"100%",
-    },
-
-    PopupViewbtn:{
-        width:"48%",
-        padding:10,
-    },
-
-    Popupbtn:{
-        justifyContent:"space-between"
-    },
-
-    PopupViewbg:{
-        backgroundColor:"rgba(0, 0, 0, 0.5)",
-        width:"100%",
-        height:"100%",
-        left:0,
-        top:0,
-        zIndex:200,
-        position:"absolute",
-    },
-
-    PopupView :{
-        position:"absolute",
-        zIndex:99,
-        backgroundColor:"#fff",
-        padding:15,
-        width:"90%",
-        left:"5%",
-        top:"30%",
-    },
-
-    payMement:{
-        width:"100%",
-    },
-
-    payView:{
-        padding:15,
-        paddingBottom:30,
-    },
-
-    btn_fix:{
-        flex:1,
-    },
-
-    goods_thum:{
-        width:75,
-        height:75,
-    },
-
-    border:{
-        borderWidth:1,
-        borderColor:"#EDEDF1",
-        paddingVertical:12,
-        paddingHorizontal:12,
-        borderRadius:5,
-    },
-    ord_tit_list_box:{
-        paddingHorizontal:10,
-        paddingVertical:12,
-        borderLeftWidth:1,
-        borderRightWidth:1,
-        borderBottomWidth:1,
-        borderColor:"#EDEDF1",
-    },
-    Recent_search_list_item:{
-        paddingVertical:5,
-    },
-    formSelect : {
-        borderWidth: 1,
-        borderColor:"#e6e6e6",
-        padding:10,
-    },
-    btn:{
-        paddingVertical:10,
-        paddingHorizontal:60,
-        borderRadius:10,
-    },
-    modalStyle:{
-        color:"#333",
-        // backgroundColor:"rgba(255,255,255,0.5)",
-    },
-    border_Circle:{
-        width:20,
-        height:20,
-        borderWidth:1,
-        borderColor:"#999",
-        borderRadius:50,
-
-    },
-    border_Circle_active:{
-        width:13,
-        height:13,
-        borderRadius:50,
-        backgroundColor:"#3D40E0",
     },
     CancelDetail_list_items:{
         borderBottomWidth:1,
         borderColor:"#EDEDF1",
     },
-    select_box:{
-        position:"relative",
+    goods_thum:{
+        maxWidth:100,
+        width:"100%",
+        minHeight:100,
+        height:"100%",
+        borderRadius:10,
     },
-    select_icon_box:{
-        position: "absolute",
-        top: 0,
-        right: 10,
-        bottom: 0,
-        justifyContent: "center",
-        alignItems: "center",
+    color1:{
+        color:"#696A81",
     },
-    cart_goods_img:{
-        borderRadius:5,
-        width:90,
-        height:80,
-    },
-    wt25: {
-        width: "25%",
-        backgroundColor:"#f8f8f8",
-        padding:8,
-        borderWidth:1,
-        borderColor:"#ddd",
-        borderRightWidth:0,
-        borderBottomWidth:0,
-    },
-    wt75: {
-        width: "75%",
-        padding:8,
-        borderWidth:1,
-        borderColor:"#ddd",
-        borderLeftWidth:0,
-        borderBottomWidth:0,
-    },
-    wt30: {
-        width: "30%",
-        backgroundColor:"#f8f8f8",
-        padding:8,
-        borderWidth:1,
-        borderColor:"#ddd",
-        borderRightWidth:0,
-        borderBottomWidth:0,
-    },
-    wt70: {
-        width: "70%",
-        padding:8,
-        borderWidth:1,
-        borderColor:"#ddd",
-        borderLeftWidth:0,
-        borderBottomWidth:0,
-    },
-    GoodsDetail_info_txt:{
-        fontSize: Platform.OS === 'ios' ? 14 : 13,
-        color:"#333",
-        lineHeight:24,
-        textAlign:"right",
-    },
-    GoodsDetail_info_txt_val:{
-        fontSize: Platform.OS === 'ios' ? 15 : 14,
-        lineHeight:24,
-        fontWeight:"500",
-        textAlign:"right",
-    },
-    select_opt_list_box:{
-        paddingHorizontal:10,
-        paddingVertical:12,
-        borderLeftWidth:1,
-        borderRightWidth:1,
-        borderBottomWidth:1,
-        borderColor:"#EDEDF1",
-        borderBottomLeftRadius:5,
-        borderBottomRightRadius:5,
-    },
-    select_opt_list_itmes:{
-        borderBottomWidth:1,
-        paddingVertical:10,
+    borderVertical:{
+        borderTopWidth:1,
+
         borderColor:"#eee",
-    },
+    }
 });

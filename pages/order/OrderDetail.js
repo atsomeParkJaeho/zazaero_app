@@ -443,8 +443,10 @@ export default function OrderDtail({route,navigation}) {
             if(OrderData.bankAccount === "0")     { return Alert.alert('','입금계좌를 선택해주세요.')}
             if(!OrderData.bankSender)             { return Alert.alert('','예금주명을 입력해주세요.')}
         }
+        let bank_msg = '무통장입금을 진행하시겠습니까?';
+        let card_msg = '결제를 진행하시겠습니까?';
 
-        Alert.alert('','결제하시겠습니까?',
+        Alert.alert('',`${(PayMement === 'bank') ? bank_msg : card_msg}`,
             [
                 {text:'취소', onPress:()=>{},},
                 {text:'확인', onPress:()=>{donePay();},},
@@ -452,7 +454,7 @@ export default function OrderDtail({route,navigation}) {
         );
     }
     const donePay = () => {
-        let msg = '결제가 완료되었습니다.';
+        let msg = '입금확인 후 배송이 진행됩니다.';
         let N_btn = {text:"확인", onPress:()=>{navigation.replace('결제상태')}};
         PayTry(OrderData, PayMement).then((res)=>{
             if(res) {
@@ -548,17 +550,21 @@ export default function OrderDtail({route,navigation}) {
     // 수정하기 버튼
     const ModInfo = () => {
         setMod(!Mod);
-        let msg = '';
-        msg += '발주내용중\n\n';
-        msg += '자재정보의 변경(추가/수정/삭제)시에는\n\n';
-        msg += '발주검수부터 다시 진행하게 됩니다.';
-        Alert.alert('',msg,[
-            {
-                text:"확인",
-            }
-        ],{},{
-            textStyle:{textAlign:"center"}
-        });
+        if(OrderData.ord_status === 'ord_ready') {
+        } else {
+            let msg = '';
+            msg += '발주내용중\n\n';
+            msg += '자재정보의 변경(추가/수정/삭제)시에는\n\n';
+            msg += '발주검수부터 다시 진행하게 됩니다.';
+            Alert.alert('',msg,[
+                {
+                    text:"확인",
+                }
+            ],{},{
+                textStyle:{textAlign:"center"}
+            });
+
+        }
     }
     // 결제후 취소
     const order_Cancel = (cancel_type) => {
