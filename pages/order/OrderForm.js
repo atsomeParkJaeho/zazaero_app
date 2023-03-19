@@ -115,7 +115,8 @@ export default function OrderForm({route,navigation}) {
         order_memo          :'',                              // 배송요청사항
         settleprice         :'',                              // 결제 금액
         tot_order_price     :'',                              // 자재 총 가격
-        work_uid            :'',                              // 공사명 uid
+        work_uid            :'',                              // 공사명 ui
+        goods_cate1_uid     :goods_cate1_uid,
 
     });
     const [Selected, setSelected] = useState({

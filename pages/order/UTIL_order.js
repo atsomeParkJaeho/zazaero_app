@@ -46,7 +46,7 @@ export const InsOrder = async (order_data,Member,work_uid,goods_cate1_uid) => {
         settleprice         :order_data.settleprice,                        // 결제 금액
         tot_order_price     :order_data.tot_order_price,                    // 자재 총 가격
         work_uid            :(work_uid) ? (work_uid):(order_data.work_uid),                                      // 공사명 uid
-        goods_cate1_uid     :goods_cate1_uid,
+        goods_cate1_uid     :order_data.goods_cate1_uid,
     }
 
     console.log(data,'/발주 데이터');
