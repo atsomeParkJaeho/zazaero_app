@@ -257,13 +257,24 @@ export default function Cart({route, navigation}) {
     }
     const ChkDel = (cate_1st_uid) => {
 
-        let filter_uid  = CartList.map(cate=>(cate.cate_1st_uid === cate_1st_uid) && cate.A_goods_list.filter(val=>val.goods_chk));
-        let result      = filter_uid.reduce((val,idx)=>{return val.concat(idx);});
-        let order_uid   = result.map(val=>val.order_uid);
-        
-        console.log(filter_uid,'/ 필터링한 자재');
-        console.log(result,'/ 재배열');
-        console.log(order_uid,'/ order_uid만 추출');
+
+        let A_goods_cate_list = CartList.filter(val=>val.cate_1st_uid === cate_1st_uid);
+        let A_goods_list = A_goods_cate_list.map(val=>val.A_goods_list.filter(chk=>chk.goods_chk));
+        let result = A_goods_list.reduce((val,idx)=>{return val.concat(idx);});
+        let order_uid = result.map(val=>val.order_uid);
+
+
+        if(order_uid.length === 0) {return Alert.alert('','자재를 선택해주세요.');}
+
+
+
+        console.log(A_goods_cate_list,'/1차 카테고리 필터링');
+        console.log(A_goods_list,'/상품 필터링');
+        console.log(result,'/재 배열');
+        console.log(order_uid,'/order_uid만 가져오기');
+       
+
+
         
         Alert.alert('','선택하신 상품을 삭제하시겠습니까??',[
             {text:"취소", onPress:()=>{},},
