@@ -400,16 +400,18 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
     console.log(A_order_item_cancel_cnt,' / 취소수량');
     console.log(cancel_type,' / 취소 타입');
 
-    // let data = {
-    //     act_type                    :"order_cancel",
-    //     mem_uid                     :Member,
-    //     gd_order_uid                :OrderData.gd_order_uid,
-    //     A_goods_uid                 :(cancel_type === 'part') ? A_goods_uid : '',               // 배열 부분취소일때만 전송
-    //     A_order_uid	                :(cancel_type === 'part') ? A_order_uid : '',               // 배열 부분취소일때만 전송
-    //     A_order_item_uid            :(cancel_type === 'part') ? A_order_item_uid : '',          // 배열 부분취소일때만 전송
-    //     A_order_item_cancel_cnt     :(cancel_type === 'part') ? A_order_item_cancel_cnt : '',   // 배열 부분취소일때만 전송
-    //     cancel_type                 :cancel_type,
-    // }
+    let data = {
+        act_type                    :"order_cancel",
+        mem_uid                     :Member,
+        gd_order_uid                :OrderData.gd_order_uid,
+        A_goods_uid                 :(cancel_type === 'part') ? A_goods_uid : '',               // 배열 부분취소일때만 전송
+        A_order_uid	                :(cancel_type === 'part') ? A_order_uid : '',               // 배열 부분취소일때만 전송
+        A_order_item_uid            :(cancel_type === 'part') ? A_order_item_uid : '',          // 배열 부분취소일때만 전송
+        A_order_item_cancel_cnt     :(cancel_type === 'part') ? A_order_item_cancel_cnt : '',   // 배열 부분취소일때만 전송
+        cancel_type                 :cancel_type,
+    }
+
+    console.log(data,'/ 주문취소 데이터 확인');
 
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type                    :"pay_done_gd_cancel",
@@ -426,8 +428,6 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
         }
     });
     return res;
-
-    // console.log(data,'/ 주문취소');
 
 }
 

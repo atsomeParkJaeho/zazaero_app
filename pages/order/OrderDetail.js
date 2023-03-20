@@ -617,7 +617,8 @@ export default function OrderDtail({route,navigation}) {
                                         {text:'확인',
                                             onPress:()=>{
                                                 // ================2. 결제취소 이벤트 결과값 db에 전송====================
-                                                return navigation.replace('발주상세',{gd_order_uid:OrderData.gd_order_uid});
+                                                console.log(res.data,'/주문완료시 파라미터');
+                                                // return navigation.replace('발주상세',{gd_order_uid:OrderData.gd_order_uid});
                                             }
                                         }
                                     ]);
@@ -1071,7 +1072,7 @@ export default function OrderDtail({route,navigation}) {
                                                     <View style={[mt1]}>
                                                         {/*옵션요청가격*/}
                                                         <View style={[]}>
-                                                            <Text style={[h13]}></Text>
+                                                            <Text style={[h13]}>{(val.req_opt_guide_name) ? (val.req_opt_guide_name) : '자재 요청사항을 입력해주세요.'}</Text>
                                                             <TextInput style={[textarea, h13]}
                                                                onChangeText={(req_memo)=>A_goInput('req_memo',req_memo,val.goods_uid)}
                                                                 value={val.req_memo}
@@ -1284,6 +1285,7 @@ export default function OrderDtail({route,navigation}) {
                                                             <Text style={[h16,text_right]}>{Price(item.option_price)} 원</Text>
                                                             {/*총금액*/}
                                                         </View>
+
                                                     </>
                                                 )))}
                                             </View>
@@ -1547,10 +1549,10 @@ export default function OrderDtail({route,navigation}) {
                                                                         )}
                                                                     </View>
                                                                     <View style={justify_content_end}>
-                                                                        <Text style={[h13]}>( 단가 : {Price(items.option_price)} 원)</Text>
                                                                         {/*단가*/}
-                                                                        <Text style={[h16,text_right]}>{Price(goods_price * goods_cnt)} 원</Text>
+                                                                        <Text style={[h13]}>( 단가 : {Price(items.option_price)} 원)</Text>
                                                                         {/*총금액*/}
+                                                                        <Text style={[h16,text_right]}>{Price(goods_price * goods_cnt)} 원</Text>
                                                                     </View>
                                                                 </View>
                                                                 {/*옵션요청글이 있을시 노출한다 */}
@@ -1562,7 +1564,7 @@ export default function OrderDtail({route,navigation}) {
                                                                             </View>
                                                                             {/*옵션요청가격*/}
                                                                             <View style={[]}>
-                                                                                <Text style={[h13]}>{val.goods_guide_name}</Text>
+                                                                                <Text style={[h13]}>{val.req_opt_guide_name}</Text>
                                                                                 {/*<TextInput*/}
                                                                                 {/*    onChangeText={(req_memo)=>reqMemo('req_memo',req_memo,order_item_uid)}*/}
                                                                                 {/*    style={[textarea]}*/}

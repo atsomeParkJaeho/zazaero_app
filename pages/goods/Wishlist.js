@@ -92,6 +92,7 @@ export default function Wishlist({route,navigation}) {
         }).then((res)=>{
             console.log(res.data,'/// 즐겨찾기 불러오기')
             if(res) {
+                console.log(res.data,'/콘솔 확인');
                 const {result, A_zzim} = res.data;
                 if(result === 'OK') {
                     /**1. 장바구니 체크 배열 넣기**/
