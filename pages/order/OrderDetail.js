@@ -227,23 +227,28 @@ export default function OrderDtail({route,navigation}) {
             let chk_result = [...new Set(chk)];
             if(A_goods.length === 0) {return Alert.alert('','자재를 선택해주세요');}
             if(chk_result.length > 1) {return Alert.alert('','같은 공정 자재만 발주 가능합니다.');}
-            add_order(OrderData, Member, A_goods, chk_result).then((res)=>{
-                if(res) {
-                    console.log(res);
-                    const {result} = res.data;
-                    if(result === 'OK') {
-                        Alert.alert('','추가발주를 요청 하시겠습니까?',[
-                            {text:"아니오",onPress:()=>{}},
-                            {text:"네",onPress:()=>{
-                                Alert.alert('','추가발주 요청이\n완료되었습니다.');
-                                return navigation.replace('발주상태');
-                                }}
-                        ]);
-                    } else {
-                        Alert.alert('','에러');
+
+            Alert.alert('','추가발주를 요청 하시겠습니까?',[
+                {text:"취소", onPress:()=>{}},
+                {text:"확인",
+                    onPress:()=>{
+                        add_order(OrderData, Member, A_goods, chk_result).then((res)=>{
+                            if(res) {
+                                console.log(res);
+                                const {result} = res.data;
+                                if(result === 'OK') {
+                                    Alert.alert('','추가발주 요청이\n완료되었습니다.');
+                                    return navigation.replace('발주내역');
+                                } else {
+                                    Alert.alert('','에러');
+                                }
+                            }
+                        });
                     }
                 }
-            });
+            ]);
+
+
         } else {
             /**----------------------------일반 수정시---------------------------**/
             let order_item = OrderGoodsList.map(cate=>cate.A_sel_option.map(val=>{
