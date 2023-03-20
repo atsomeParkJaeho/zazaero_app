@@ -257,25 +257,16 @@ export default function Cart({route, navigation}) {
     }
     const ChkDel = (cate_1st_uid) => {
 
-
         let A_goods_cate_list = CartList.filter(val=>val.cate_1st_uid === cate_1st_uid);
         let A_goods_list = A_goods_cate_list.map(val=>val.A_goods_list.filter(chk=>chk.goods_chk));
         let result = A_goods_list.reduce((val,idx)=>{return val.concat(idx);});
         let order_uid = result.map(val=>val.order_uid);
-
-
         if(order_uid.length === 0) {return Alert.alert('','자재를 선택해주세요.');}
-
-
-
         console.log(A_goods_cate_list,'/1차 카테고리 필터링');
         console.log(A_goods_list,'/상품 필터링');
         console.log(result,'/재 배열');
         console.log(order_uid,'/order_uid만 가져오기');
-       
 
-
-        
         Alert.alert('','선택하신 상품을 삭제하시겠습니까??',[
             {text:"취소", onPress:()=>{},},
             {text:"확인",
@@ -440,7 +431,7 @@ export default function Cart({route, navigation}) {
                                                                            {/*숨김처리*/}
                                                                            <Checkbox onValueChange={() => goFormChk(val.goods_uid, cate.cate_1st_uid)} value={val.goods_chk} style={styles.all_check} color={"#4630eb"}/>
                                                                            <Checkbox onValueChange={() => goFormChk(val.goods_uid, cate.cate_1st_uid)} value={val.goods_chk} style={styles.chk_view} color={"#4630eb"}/>
-                                                                           <Text numberOfLines={1} style={styles.all_check_txt}>
+                                                                           <Text numberOfLines={2} style={[styles.all_check_txt]}>
                                                                                {val.goods_name}
                                                                            </Text>
                                                                        </View>
@@ -463,9 +454,9 @@ export default function Cart({route, navigation}) {
                                                                                <View style={[styles.flex_items, styles.flex_items2]}>
                                                                                    <View style={[flex_between, styles.pd_20]}>
                                                                                        {/*가이드라인*/}
-                                                                                       <View style="">
-                                                                                           <Text style={styles.goods_disc}>
-
+                                                                                       <View style={wt4}>
+                                                                                           <Text style={[styles.goods_disc,{fontSize:12,}]}>
+                                                                                               {val.goods_guide_name}
                                                                                            </Text>
                                                                                        </View>
                                                                                        {/*자재가격*/}
