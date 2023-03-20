@@ -1691,10 +1691,8 @@ export default function OrderDtail({route,navigation}) {
     function OrderTotalPrice() {
         /**----------------총 결제금액은 자재가격 + 요청옵션비 + 배송비 + 포인트----------------**/
             // 총 결제금액
-        let Settlekindprice = 0;
-        Settlekindprice += Number(OrderData.goodsprice);
-        Settlekindprice += Number(OrderData.deli_price);
-        Settlekindprice += Number(OrderData.tot_opt_price);
+        let Settlekindprice = Number(OrderData.goodsprice)+Number(OrderData.deli_price)+Number(OrderData.tot_opt_price);
+
         return(
             <>
                 <View>

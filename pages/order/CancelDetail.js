@@ -87,134 +87,129 @@ export default function CancelDetail({navigation,route}) {
 
     return (
         <>
-            <View style={[bg_white,sub_page]}>
-                <View style={[styles.CancelDetail]}>
-                    <ScrollView style="">
-                        <View style={[styles.Detail_page_top,d_flex,justify_content_center]}>
-                            <Text style={[text_danger,h16]}>{cancelStatus(gd_order.cancel_status)}</Text>
-                        </View>
-                        <View style={[styles.CancelDetail_sec]}>
-                            <View style={[container]}>
-                                <Text style={[h18]}>환불 요청 자재</Text>
-                            </View>
-                            <View style={gray_bar}/>
-                            <View style={[styles.CancelDetail_list]}>
-                                {/**--------------------반복문 구간----------------------**/}
-                                {A_order_cancel_item.map((val,idx)=>(
-                                    <>
-                                        <View style={[styles.CancelDetail_list_items]}>
-                                            <View style={[container]}>
-                                                <Text style={[h14,mb1]}>{val.goods_name}</Text>
-                                                <View style={[flex_between_bottom]}>
-                                                    <View style={[flex_end]}>
-                                                        <Image style={styles.goods_thum} source={{uri:`http://www.zazaero.com${val.img_list}`}}/>
-                                                        <View style={ms2}>
-                                                            <Text style={[h14]}>기존수량 : {val.src_cnt}개</Text>
-                                                            <Text style={[h14,fw500]}>취소수량 : -{val.cancel_cnt}개</Text>
-                                                        </View>
-
-                                                    </View>
-                                                    <View style={justify_content_end}>
-                                                        <Text style={[h13]}>( 단가 : {Price(val.price)} 원)</Text>
-                                                        {/*단가*/}
-                                                        <Text style={[h14]}>총 자재금액</Text>
-                                                        <Text style={[h16]}>{Price(val.price * val.src_cnt)}원</Text>
-                                                        {/*총금액*/}
-                                                    </View>
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </>
-                                ))}
-
-                            </View>
-                            <View style={gray_bar}/>
-                            {/*<View style="">*/}
-                            {/*    <View style={container}>*/}
-                            {/*        <Text style={[h18]}>취소사유</Text>*/}
-                            {/*    </View>*/}
-                            {/*    <View style={[container,styles.borderVertical]}>*/}
-                            {/*        <TextInput*/}
-                            {/*            multiline*/}
-                            {/*            editable={false}*/}
-                            {/*            selectTextOnFocus={false}*/}
-                            {/*            style={[textarea,{padding: 10, backgroundColor:'#eee',}]}*/}
-                            {/*            value="주문건 중복 결제"*/}
-                            {/*        />*/}
-                            {/*    </View>*/}
-                            {/*</View>*/}
-                            {/*취소사유*/}
-                            <View style="">
-                                <View style={container}>
-                                    <Text style={[h18]}>결제 정보</Text>
-                                </View>
-                                <View style={[container,bg_light]}>
-                                    <View style={[d_flex,justify_content_end,pe1]}>
-                                        <View style="">
-                                            <View style={[flex,justify_content_end,mb1]}>
-                                                <Text style={[h14,styles.color1,me2]}>결제일</Text>
-                                                <Text style={[h14]}>{DateChg(gd_order.pay_date)} {gd_order.pay_time}</Text>
-                                            </View>
-                                            {/*결제일*/}
-                                            <View style={[flex,justify_content_end,mb1]}>
-                                                <Text style={[h14,styles.color1,me2]}>결제방식</Text>
-                                                <Text style={[h14]}>{settleKind(gd_order.settlekind)}</Text>
-                                            </View>
-                                            {/*결제일*/}
-                                            <View style={[flex,justify_content_end,mb1]}>
-                                                <Text style={[h14,styles.color1,me2]}>자재 가격</Text>
-                                                <Text style={[h14]}>{Price(gd_order.goodsprice)}원</Text>
-                                            </View>
-                                            {/*자재 가격*/}
-                                            <View style={[flex,justify_content_end,mb1]}>
-                                                <Text style={[h14,styles.color1,me2]}>요청옵션비</Text>
-                                                <Text style={[h14]}>{Price(gd_order.tot_opt_price)} 원</Text>
-                                            </View>
-                                            {/*요청옵션비*/}
-
-                                            <View style={[flex,justify_content_end]}>
-                                                <Text style={[h14,styles.color1,me2]}>총 결제금액</Text>
-                                                <Text style={[h16,text_primary]}>{Price(gd_order.settleprice)}원</Text>
-                                            </View>
-                                            {/*총 결제금액*/}
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                            {/*결제정보*/}
-                            <View style="">
-                                <View style={container}>
-                                    <Text style={[h18]}>환불금액</Text>
-                                </View>
-                                <View style={[container,bg_light]}>
-                                    <View style={[d_flex,justify_content_end,pe1]}>
-                                        <View style="">
-                                            {/*<View style={[flex,justify_content_end]}>*/}
-                                            {/*    <Text style={[h14,styles.color1,me2]}>환불지급일</Text>*/}
-                                            {/*    <Text style={[h16,text_primary]}>{Price(gd_order.settleprice)}원</Text>*/}
-                                            {/*</View>*/}
-                                            <View style={[flex,justify_content_end,mb1]}>
-                                                <Text style={[h14,styles.color1,me2]}>현금</Text>
-                                                <Text style={[h18,text_danger]}>{Price(gd_cancel.sum_refund_money)}원</Text>
-                                            </View>
-                                            {/*현금*/}
-                                            <View style={[flex,justify_content_end,mb1]}>
-                                                <Text style={[h14,styles.color1,me2]}>포인트</Text>
-                                                <Text style={[h18,text_danger]}>{gd_cancel.real_refund_point}P</Text>
-                                            </View>
-                                            {/*포인트*/}
-
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                            {/*환불금액*/}
-                            <View style={[padding_bottom]} />
-                        </View>
-                    </ScrollView>
-                    {/*취소상세*/}
+            <ScrollView style={[bg_white]}>
+                <View style={[styles.Detail_page_top,d_flex,justify_content_center]}>
+                    <Text style={[text_danger,h16]}>{cancelStatus(gd_order.cancel_status)}</Text>
                 </View>
-            </View>
+                <View style={[styles.CancelDetail_sec]}>
+                    <View style={[container]}>
+                        <Text style={[h18]}>환불 요청 자재</Text>
+                    </View>
+                    <View style={gray_bar}/>
+                    <View style={[styles.CancelDetail_list]}>
+                        {/**--------------------반복문 구간----------------------**/}
+                        {A_order_cancel_item.map((val,idx)=>(
+                            <>
+                                <View style={[styles.CancelDetail_list_items]}>
+                                    <View style={[container]}>
+                                        <Text style={[h14,mb1]}>{val.goods_name}</Text>
+                                        <View style={[flex_between_bottom]}>
+                                            <View style={[flex_end]}>
+                                                <Image style={styles.goods_thum} source={{uri:`http://www.zazaero.com${val.img_list}`}}/>
+                                                <View style={ms2}>
+                                                    <Text style={[h14]}>기존수량 : {val.src_cnt}개</Text>
+                                                    <Text style={[h14,fw500]}>취소수량 : -{val.cancel_cnt}개</Text>
+                                                </View>
+
+                                            </View>
+                                            <View style={justify_content_end}>
+                                                <Text style={[h13]}>( 단가 : {Price(val.price)} 원)</Text>
+                                                {/*단가*/}
+                                                <Text style={[h14]}>총 자재금액</Text>
+                                                <Text style={[h16]}>{Price(val.price * val.src_cnt)}원</Text>
+                                                {/*총금액*/}
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                            </>
+                        ))}
+
+                    </View>
+                    <View style={gray_bar}/>
+                    {/*<View style="">*/}
+                    {/*    <View style={container}>*/}
+                    {/*        <Text style={[h18]}>취소사유</Text>*/}
+                    {/*    </View>*/}
+                    {/*    <View style={[container,styles.borderVertical]}>*/}
+                    {/*        <TextInput*/}
+                    {/*            multiline*/}
+                    {/*            editable={false}*/}
+                    {/*            selectTextOnFocus={false}*/}
+                    {/*            style={[textarea,{padding: 10, backgroundColor:'#eee',}]}*/}
+                    {/*            value="주문건 중복 결제"*/}
+                    {/*        />*/}
+                    {/*    </View>*/}
+                    {/*</View>*/}
+                    {/*취소사유*/}
+                    <View style="">
+                        <View style={container}>
+                            <Text style={[h18]}>결제 정보</Text>
+                        </View>
+                        <View style={[container,bg_light]}>
+                            <View style={[d_flex,justify_content_end,pe1]}>
+                                <View style="">
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>결제일</Text>
+                                        <Text style={[h14]}>{DateChg(gd_order.pay_date)} {gd_order.pay_time}</Text>
+                                    </View>
+                                    {/*결제일*/}
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>결제방식</Text>
+                                        <Text style={[h14]}>{settleKind(gd_order.settlekind)}</Text>
+                                    </View>
+                                    {/*결제일*/}
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>자재 가격</Text>
+                                        <Text style={[h14]}>{Price(gd_order.goodsprice)}원</Text>
+                                    </View>
+                                    {/*자재 가격*/}
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>요청옵션비</Text>
+                                        <Text style={[h14]}>{Price(gd_order.tot_opt_price)} 원</Text>
+                                    </View>
+                                    {/*요청옵션비*/}
+
+                                    <View style={[flex,justify_content_end]}>
+                                        <Text style={[h14,styles.color1,me2]}>총 결제금액</Text>
+                                        <Text style={[h16,text_primary]}>{Price(gd_order.settleprice)}원</Text>
+                                    </View>
+                                    {/*총 결제금액*/}
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                    {/*결제정보*/}
+                    <View style="">
+                        <View style={container}>
+                            <Text style={[h18]}>환불금액</Text>
+                        </View>
+                        <View style={[container,bg_light]}>
+                            <View style={[d_flex,justify_content_end,pe1]}>
+                                <View style="">
+                                    {/*<View style={[flex,justify_content_end]}>*/}
+                                    {/*    <Text style={[h14,styles.color1,me2]}>환불지급일</Text>*/}
+                                    {/*    <Text style={[h16,text_primary]}>{Price(gd_order.settleprice)}원</Text>*/}
+                                    {/*</View>*/}
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>현금</Text>
+                                        <Text style={[h18,text_danger]}>{Price(gd_cancel.sum_refund_money)}원</Text>
+                                    </View>
+                                    {/*현금*/}
+                                    <View style={[flex,justify_content_end,mb1]}>
+                                        <Text style={[h14,styles.color1,me2]}>포인트</Text>
+                                        <Text style={[h18,text_danger]}>{gd_cancel.real_refund_point}P</Text>
+                                    </View>
+                                    {/*포인트*/}
+
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                    {/*환불금액*/}
+                    <View style={[padding_bottom]} />
+                </View>
+            </ScrollView>
         </>
 
 

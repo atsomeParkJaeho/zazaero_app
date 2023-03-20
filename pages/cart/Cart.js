@@ -147,14 +147,16 @@ export default function Cart({route, navigation}) {
     }
     /**---------------------------------체크시 배송정보 등록이동창 활성화----------------------------------------**/
     const goFormChk = (uid, cate, price) => {
-        console.log(uid,'/ 123');
-        console.log(cate,'/ 456');
-        console.log(price,'/ 789');
+        console.log(uid,'/ 상품 uid');
+        console.log(cate,'/ 카테 uid');
+        console.log(price,'/ 상품 가격');
         if(cate) {
             setCartUid(cate); // 카테고리 넣기
         } else if(!cate) {
             setCartUid(''); // 카테고리 넣기
         }
+        // setCartUid(cate);
+        setCart1stUid(cate);
         setCartList(CartList.map((cate) => {
             return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
                     if(val.goods_uid === uid) {
@@ -289,6 +291,7 @@ export default function Cart({route, navigation}) {
 
         if(find !== 0) {
             Alert.alert('','동일카테고리만 선택가능합니다');
+            setCart1stUid(``);
             setCartList(CartList.map((cate) => {
                 return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
                         return {...val, goods_chk:false}
