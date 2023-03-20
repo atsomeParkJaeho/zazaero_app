@@ -71,6 +71,16 @@ export default function Cancel({navigation, route}) {
                                             {/*발주번호*/}
                                             <View style={[flex, styles.mb_5]}>
                                                 <View style={[styles.wt3]}>
+                                                    <Text style={[styles.Construction_name, styles.ft_14]}> 취소일 :</Text>
+                                                </View>
+                                                <View style={[styles.wt7]}>
+                                                    <Text
+                                                        style={[styles.Construction_name_val, styles.ft_14]}>{val.Desired_Delivery_Date}</Text>
+                                                </View>
+                                            </View>
+                                            {/*발주번호*/}
+                                            <View style={[flex, styles.mb_5]}>
+                                                <View style={[styles.wt3]}>
                                                     <Text style={[styles.Construction_name, styles.ft_14]}> 공사명 :</Text>
                                                 </View>
                                                 <View style={[styles.wt7]}>
@@ -88,11 +98,21 @@ export default function Cancel({navigation, route}) {
                                                 </View>
                                             </View>
                                             {/*배송지*/}
+                                            <View style={[flex, styles.mb_5]}>
+                                                <View style={[styles.wt3]}>
+                                                    <Text style={[styles.Construction_name, styles.ft_14]}> 취소유형 :</Text>
+                                                </View>
+                                                <View style={[styles.wt7]}>
+                                                    <Text
+                                                        style={[styles.Construction_name_val, styles.ft_14]}>{val.cancel_type2}</Text>
+                                                </View>
+                                            </View>
+                                            {/*공사명*/}
                                         </View>
                                         <View style={[styles.border_b_dotted]}></View>
                                         <View style={[container]}>
                                             <View style={[flex_between]}>
-                                                <View style={[styles.wt4]}>
+                                                <View style={[styles.wt2]}>
                                                     <TouchableOpacity style={[btn_primary, p1,]}
                                                                       onPress={() => navigation.navigate('취소내역상세')}>
                                                         <Text style={[text_center, text_white]}>상세내역 </Text>
@@ -111,7 +131,7 @@ export default function Cancel({navigation, route}) {
                                                     </View>
                                                     <View style="">
                                                         <View style={flex}>
-                                                            <Text style={[h12, styles.color1]}>결제금액 :</Text>
+                                                            <Text style={[h12, styles.color1]}>취소금액 :</Text>
                                                             <Text style={[ms1, h18]}>1,300,000</Text>
                                                         </View>
                                                     </View>

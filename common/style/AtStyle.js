@@ -2,10 +2,12 @@ import {Platform, StyleSheet} from "react-native";
 
 export const styles = StyleSheet.create({});
 
-
-export const padding_bottom = {
-    paddingBottom: 150,
-}
+export const padding_bottom1 = { paddingBottom: 10}
+export const padding_bottom2 = { paddingBottom: 20}
+export const padding_bottom3 = { paddingBottom: 30}
+export const padding_bottom4 = { paddingBottom: 40}
+export const padding_bottom5 = { paddingBottom: 50}
+export const padding_bottom = { paddingBottom: 150}
 
 export const sub_page = {      // 하단 간격 설정
     height:"100%",

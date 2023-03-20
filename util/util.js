@@ -253,38 +253,49 @@ export const cancel_List = [
 
     {
         user_id: "1",                                                 //아이디값
-        goods_num: "A_123451231",                                     //발주번호
+        goods_num: "608505015001",                                     //발주번호
+        Desired_Delivery_Date: "2023-03-17 19:00",                   //취소일
         Construction_name: "호반베르디움 102동 604호 아파트리모델링",                //공사명
-        Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
+
         Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
         cancel_type: "doing",                                               //취소상태
+        cancel_type2: "부분취소",                                            //취소상태
 
 
     },
     {
         user_id: "1",                                                 //아이디값
-        goods_num: "B_123451231",                                     //발주번호
-        Construction_name: "스타리우빌딩 3층 상가리모델링",       //공사명
-        Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
+        goods_num: "608505015001",                                     //발주번호
+        Desired_Delivery_Date: "2023-03-17 19:00",                   //취소일
+        Construction_name: "호반베르디움 102동 604호 아파트리모델링",                //공사명
+
         Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
-        cancel_type: "done",                                            //취소상태
+        cancel_type: "done",                                               //취소상태
+        cancel_type2: "부분취소",                                            //취소상태
+
+
     },
     {
         user_id: "1",                                                 //아이디값
-        goods_num: "C_123451231",                                     //발주번호
-        Construction_name: "석촌호수공원 분수대 옆 호반베르디움 102동 604호 아파트리모델링",       //공사명
-        Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
+        goods_num: "608505015001",                                     //발주번호
+        Desired_Delivery_Date: "2023-03-17 19:00",                   //취소일
+        Construction_name: "스타리우빌딩 3층 상가리모델링",       //공사명
+
         Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
-        cancel_type: "doing",                                               //취소상태
+        cancel_type: "doing",                                            //취소상태
+        cancel_type2: "전체취소",                                            //취소상태
     },
     {
         user_id: "1",                                                 //아이디값
-        goods_num: "A_123451231",                                     //발주번호
+        goods_num: "608505015001",                                     //발주번호
+        Desired_Delivery_Date: "2023-03-17 19:00",                   //취소일
         Construction_name: "스타리우빌딩 3층 상가리모델링",       //공사명
-        Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
+
         Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
         cancel_type: "done",                                            //취소상태
+        cancel_type2: "전체취소",                                            //취소상태
     },
+
 
 ];
 
@@ -297,39 +308,31 @@ export const cancel_d_List = [
         title: "일반석고보드 9.5T X 900 X 1800",                          //상품명
         goods_thum: "../../assets/img/goods_thum1.jpg",             //상품이미지
         count: "15",                                                    //수량
-
+        can_count: "5",                                                    //취소수량
         price: "3,5000",                                                //판매가
-        total_price: "350,000",                                         //총금액
+        total_price: "150,000",                                         //총금액
 
 
     },
     {
         user_id: "1",                                                   //아이디값
         goods_num: "165196846",                                         //상품번호
-        title: "방부목 2×4×12",                          //상품명
-        count: "15",                                                    //수량
-
+        title: "방염벽지_F시리즈(1롤=5평)_1.06m×15.6m",                          //상품명
+        count: "10",                                                    //수량
+        can_count: "5",                                                    //취소수량
         price: "3,5000",                                                //판매가
-        total_price: "350,000",                                         //총금액
+        total_price: "100,000",                                         //총금액
     },
     {
         user_id: "1",                                                   //아이디값
         goods_num: "165196846",                                         //상품번호
-        title: "원목루바 레드파인",                          //상품명
-        count: "15",                                                    //수량
-
+        title: "방염벽지_F시리즈(1롤=5평)_1.06m×15.5m",                          //상품명
+        count: "7",                                                    //수량
+        can_count: "3",                                                    //취소수량
         price: "3,5000",                                                //판매가
-        total_price: "350,000",                                         //총금액
+        total_price: "50,000",                                         //총금액
     },
-    {
-        user_id: "1",                                                   //아이디값
-        goods_num: "165196846",                                         //상품번호
-        title: "오비스기수직사이딩 17*140*3600",                          //상품명
-        count: "15",                                                    //수량
 
-        price: "3,5000",                                                //판매가
-        total_price: "350,000",                                         //총금액
-    },
 
 ];
 
@@ -439,88 +442,88 @@ export const Time1 = [
 
 export const Time2 = [
     {
-        label     :"08:00:00",
+        label     :"08:00",
         value     :"08:00",
     },
     {
-        label     :"08:30:00",
+        label     :"08:30",
         value     :"08:30",
     },
     {
-        label     :"09:00:00",
+        label     :"09:00",
         value     :"09:00",
     },
     {
-        label     :"09:30:00",
+        label     :"09:30",
         value     :"09:30",
     },
     {
-        label     :"10:00:00",
+        label     :"10:00",
         value     :"10:00",
     },
     {
-        label     :"10:30:00",
+        label     :"10:30",
         value     :"10:30",
     },
     {
-        label     :"11:00:00",
+        label     :"11:00",
         value     :"11:00",
     },
     {
-        label     :"11:30:00",
+        label     :"11:30",
         value     :"11:30",
     },
     {
-        label     :"12:00:00",
+        label     :"12:00",
         value     :"12:00",
     },
     {
-        label     :"12:30:00",
+        label     :"12:30",
         value     :"12:30",
     },
 
     {
-        label     :"13:00:00",
+        label     :"13:00",
         value     :"13:00",
     },
     {
-        label     :"13:30:00",
+        label     :"13:30",
         value     :"13:30",
     },
     {
-        label     :"14:00:00",
+        label     :"14:00",
         value     :"14:00",
     },
     {
-        label     :"14:30:00",
+        label     :"14:30",
         value     :"14:30",
     },
     {
-        label     :"15:00:00",
+        label     :"15:00",
         value     :"15:00",
     },
     {
-        label     :"15:30:00",
+        label     :"15:30",
         value     :"15:30",
     },
     {
-        label     :"16:00:00",
+        label     :"16:00",
         value     :"16:00",
     },
     {
-        label     :"16:30:00",
+        label     :"16:30",
         value     :"16:30",
     },
     {
-        label     :"17:00:00",
+        label     :"17:00",
         value     :"17:00",
     },
     {
-        label     :"17:30:00",
+        label     :"17:30",
         value     :"17:30",
     },
     {
-        label     :"18:00:00",
+        label     :"18:00",
         value     :"18:00",
     },
 
