@@ -63,7 +63,6 @@ function Footer({navigation,pages}) {
                                     <Wish width={22} height={18}/>
                                 </>
                             )}
-
                         </View>
                         <View>
                             <Text style={[text_center,(currentRoute === '즐겨찾기') &&  text_primary,fw500]}>즐겨찾기</Text>
@@ -94,7 +93,7 @@ function Footer({navigation,pages}) {
                 <View style={[styles.Tabs,]}>
                     <TouchableOpacity onPress={()=>{navigation.navigate('발주상태')}}>
                         <View style={styles.SvgIcons}>
-                            {(currentRoute === '발주상태') ? (
+                            {(currentRoute === '발주상태' || currentRoute === '결제상태' || currentRoute === '배송상태') ? (
                                 <>
                                     <OrderListAt width={22} height={18}/>
                                 </>
@@ -106,7 +105,7 @@ function Footer({navigation,pages}) {
 
                         </View>
                         <View>
-                            <Text style={[text_center,(currentRoute === '발주상태') &&  text_primary,fw500]}>발주상태</Text>
+                            <Text style={[text_center,(currentRoute === '발주상태' || currentRoute === '결제상태' || currentRoute === '배송상태') &&  text_primary,fw500]}>발주상태</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
