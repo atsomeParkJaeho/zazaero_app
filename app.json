@@ -25,8 +25,8 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.zazaero.www",
-      "buildNumber": "7"
+      "bundleIdentifier": "com.www.zazaero",
+      "buildNumber": "8"
     },
     "android": {
       "adaptiveIcon": {
@@ -34,19 +34,19 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.www.zazaero",
-      "versionCode": 7
+      "versionCode": 8
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "9ec25729-2b97-4efe-935b-7ff81ffb5720"
+        "projectId": "df26d83b-0020-45b2-846c-2a545d26af57"
       }
     },
     "updates": {
       "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/9ec25729-2b97-4efe-935b-7ff81ffb5720"
+      "url": "https://u.expo.dev/df26d83b-0020-45b2-846c-2a545d26af57"
     },
     "runtimeVersion": {
       "policy": "sdkVersion"
