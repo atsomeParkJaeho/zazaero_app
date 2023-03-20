@@ -50,7 +50,7 @@ import {useIsFocused} from "@react-navigation/native";
 import {
     get_cate_list,
     get_goods_cate2nd_list,
-    get_goods_cate3rd_list,
+    get_goods_cate3rd_list, get_goods_info,
     get_goods_list,
     go_goods_cate3rd_list,
     goods_cate, ins_cart, save_wish
@@ -80,7 +80,10 @@ export default function GoodsCateList({route, navigation}) {
     const [Cate3rd, setCate3rd]                 = useState([]);     // 3차 카테고리 담기
     const [Cate2ndActive, setCate2ndActive]     = useState(``);     // 현재 페이지 상태
     const [Cate3rdActive, setCate3rdActive]     = useState(``);     // 현재 페이지 상태
+    const [goods_detail, set_goods_detail]      = useState([]);     // 상세페이지 설정
+    const [GoodsCnt, setGoodsCnt]      = useState(1);     // 상세페이지 설정
 
+    
     const update = useIsFocused();
 
     
@@ -224,7 +227,10 @@ export default function GoodsCateList({route, navigation}) {
                         }
                         return val;
                     });
-
+                    set_goods_detail({
+                        ...goods_detail,
+                        my_zzim_flag:(goods_detail.my_zzim_flag === 'Y') ? 'N':'Y',
+                    });
                     setGoodsList(temp);
                 }
             } else {
@@ -264,163 +270,91 @@ export default function GoodsCateList({route, navigation}) {
     }
     // 체크한 상품 버튼 생성
     let goForm = GoodsList.filter((val) => val.goods_cart_chk);
-
-
     const [modalVisible, setModalVisible] = useState(false);
 
-    const source = {
-        html: ""
-    };
 
+    const goInput = (key, value, type) => {
+
+        console.log(key,' / 키 ');
+        console.log(value,' / 값 ');
+        console.log(type,' / 타입 ');
+
+        if(type === 'plus') {
+            setGoodsCnt(GoodsCnt+1);
+        } else if(type === 'minus') {
+            setGoodsCnt((2 > GoodsCnt) ? 1 : GoodsCnt - 1);
+        } else {
+            setGoodsCnt((0 === value) ? 1 : Number(value));
+        }
+    }
+
+    let goCartDetail = (type,uid) => {
+        if(type === 'cart') {
+
+            if(GoodsCnt === 0) {return Alert.alert('','수량을 입력해주세요');}
+
+            Alert.alert('', '장바구니에 담으시겠습니까?', [
+                    {text: '취소', onPress: () => {}, style: 'destructive'},
+                    {text: '확인 ',
+                        onPress: () => {
+                            ins_cart(Member, uid, GoodsCnt).then((res)=>{
+                                if(res) {
+                                    const {result} = res.data;
+                                    if(result === 'OK') {
+                                        setGoodsCnt(1);
+                                        return Alert.alert('','장바구니에 추가하였습니다.');
+
+
+                                    } else {
+                                        console.log('실패');
+                                        return;
+                                    }
+                                }
+                            })
+                        },
+                        style: 'cancel',
+                    },
+                ],
+                {
+                    cancelable: true,
+                    onDismiss: () => {},
+                },
+            );
+        }
+        if(type === 'order') {
+            navigation.replace('장바구니');
+        }
+    }
+
+    // 상세페이지 노출
+    const go_goods_detail = (goods_uid) => {
+        console.log('이벤트');
+        setModalVisible(!modalVisible); // 모달 노출
+        // 1. 상세페이지 호출
+        get_goods_info(Member, goods_uid).then((res)=>{
+            if(res) {
+                const {result, goods_info} = res.data;
+                if(result === 'OK'){
+                    set_goods_detail(goods_info);
+                } else {
+                    return Alert.alert('','불러오기 실패');
+                }
+            }
+        });
+
+        console.log(goods_detail,' / 상품상세');
+
+    }
+    const source = {
+        html: goods_detail.summary_contents
+    };
     /**--------자재목록-------------**/
     function goodsList ({item}) {
         return (
             <>
                 <View>
-                    <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]}  onPress={() => setModalVisible(true)}>
-                        <Text style={[text_center,h18]}>상세모달</Text>
-                    </TouchableOpacity>
-                    {/**/}
-                    <Modal visible={modalVisible} animationType="slide">
-
-                        <View style={{ backgroundColor: '#fff', paddingTop:Platform.OS === 'ios' ? 70 : 20, }}>
-                            <View style={[flex_between,mb2,{paddingHorizontal:10}]}>
-                                <View style={[]}></View>
-                                <View style={[]}>
-                                    <Text style={[h20]}>상품상세</Text>
-                                </View>
-                                <View style={[]}>
-                                    <TouchableOpacity onPress={() => setModalVisible(false)}>
-                                        <Modal_Close width={17} height={17}/>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            {/* 모달 내용  */}
-                                <ScrollView style={[bg_white,{height:'85%'}]}>
-                                    <View style={[styles.GoodsDetail]}>
-                                        <View style={[container]}>
-                                            <View style={[styles.goods_iamge_box]}>
-                                                <Image style={styles.goods_image} source={{uri:"http://www.zazaero.com/upload/999999994022/goods/60750805536834.jpg"}}/>
-                                            </View>
-                                            {/*상품이미지*/}
-                                            <View style={[styles.GoodsDetail_info]}>
-                                                <Text Style={[styles.GoodsDetail_title]}>
-                                                    적삼목 유절사우나재(1단=10EA)_28T×70×2400
-                                                </Text>
-                                                {/*상품명*/}
-                                                <View style={[flex,mt1]}>
-                                                    <View style={[styles.wt25]}>
-                                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>판매가</Text>
-                                                    </View>
-                                                    <View style={[styles.wt75]}>
-                                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                                            {Price("42700") } 원
-                                                        </Text>
-                                                    </View>
-                                                </View>
-                                                {/**판매가**/}
-                                                <View style={[flex,styles.border_b]}>
-                                                    <View style={[styles.wt25]}>
-                                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재안내</Text>
-                                                    </View>
-                                                    <View style={[styles.wt75]}>
-                                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                                            발주 당일 배송
-                                                        </Text>
-                                                    </View>
-                                                </View>
-                                                {/*자재안내*/}
-                                                <View style={[flex_between_top,mt3]}>
-                                                    <View style="">
-                                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>수량</Text>
-                                                        <View style={[flex]}>
-                                                            {/*===============마이너스 수량==================*/}
-                                                            {/*=============마이너스 버튼==========*/}
-                                                            <TouchableWithoutFeedback onPress="">
-                                                                <View style={[count_btn]}>
-                                                                    <View style={[pos_center]}>
-                                                                        <Text
-                                                                            style={[count_btn_txt]}>－</Text>
-                                                                    </View>
-                                                                </View>
-                                                            </TouchableWithoutFeedback>
-                                                            {/*============수량=================*/}
-                                                            <TextInput style={[countinput,]}
-                                                                       onChangeText=""
-                                                                       value={`0`}
-                                                                       keyboardType="number-pad"
-                                                            />
-                                                            {/*=============플러스 버튼============*/}
-                                                            <TouchableWithoutFeedback onPress="">
-                                                                <View style={[count_btn]}>
-                                                                    <View style={[pos_center]}>
-                                                                        <Text
-                                                                            style={[count_btn_txt]}>＋</Text>
-                                                                    </View>
-                                                                </View>
-                                                            </TouchableWithoutFeedback>
-                                                        </View>
-
-
-                                                    </View>
-                                                    <View style="">
-                                                        <Text style={[styles.GoodsDetail_info_txt]}>총금액</Text>
-                                                        <Text style={[styles.GoodsDetail_total_price]}>
-                                                            {Price("400000")}원
-                                                        </Text>
-                                                    </View>
-                                                </View>
-                                                {/*수량*/}
-
-                                                {/*상품정보*/}
-                                                <View style={[styles.GoodsDetail_more_image,mt5]}>
-                                                    <RenderHtml source={source} contentWidth={380} />
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </ScrollView>
-                                {/*    */}
-                                <View style={[styles.bottom_btn,{height:'25%'}]}>
-                                    <View style={[flex]}>
-                                        <View style={[styles.wt1_5]}>
-                                            <TouchableOpacity style={[styles.md_wish]}  onPress="">
-                                                {/*{(GoodsDetail.my_zzim_flag === 'Y') ? (*/}
-                                                {/*    <>*/}
-                                                {/*        <Wishlist width={35} height={24} />*/}
-                                                {/*    </>*/}
-                                                {/*):(*/}
-                                                {/*    <>*/}
-                                                {/*        <WishlistNon width={35} height={24} />*/}
-                                                {/*    </>*/}
-                                                {/*)}*/}
-                                                <Wishlist width={35} height={24} />
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View style={[styles.wt8_5]}>
-                                            <View style={[flex_around]}>
-                                                {/*<TouchableOpacity style={styles.btn} onPress={() => goForm('cart',GoodsDetail.goods_uid)}>*/}
-                                                <TouchableOpacity style={styles.btn} onPress="">
-                                                    <Text style={[btn_primary,styles.center,styles.boottom_btn]}>장바구니 담기</Text>
-                                                </TouchableOpacity>
-                                                {/*<TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>*/}
-                                                <TouchableOpacity style={styles.btn} onPress="">
-                                                    <Text style={[btn_black,styles.center,styles.boottom_btn]}>장바구니 가기</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                                {/*    */}
-
-                            {/* 모달 내용  */}
-                        </View>
-
-                    </Modal>
-                    {/**/}
-
                     <View style={styles.cate_goods_list_item}>
-                        <TouchableOpacity onPress={() => navigation.navigate('상품상세', {uid: item.goods_uid})}>
+                        <TouchableOpacity onPress={() => go_goods_detail(item.goods_uid)}>
                         <View style={[flex_top]}>
                                 <View style={[styles.flex_item, styles.flex_item1]}>
                                     <View style={[styles.cate_list_Thumbnail_box]}>
@@ -511,6 +445,8 @@ export default function GoodsCateList({route, navigation}) {
     };
 
     // console.log(GoodsList);
+    console.log(goods_detail,'/ 상품상세');
+    console.log(GoodsCnt,'/ 수량');
 
     return (
         /*
@@ -568,7 +504,142 @@ export default function GoodsCateList({route, navigation}) {
             windowSize={3}
             />
 
+            {/**-----------------------------------------------------모달-------------------------------------------------**/}
+            <Modal visible={modalVisible} animationType="slide">
+                <View style={{ backgroundColor: '#fff', paddingTop:Platform.OS === 'ios' ? 70 : 20, }}>
+                    <View style={[flex_between,mb2,{paddingHorizontal:10}]}>
+                        <View style={[]}></View>
+                        <View style={[]}>
+                            <Text style={[h20]}>상품상세</Text>
+                        </View>
+                        <View style={[]}>
+                            <TouchableOpacity onPress={() => setModalVisible(false)}>
+                                <Modal_Close width={17} height={17}/>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    {/* 모달 내용  */}
+                    <ScrollView style={[bg_white,{height:'85%'}]}>
+                        <View style={[styles.GoodsDetail]}>
+                            <View style={[container]}>
+                                <View style={[styles.goods_iamge_box]}>
+                                    <Image style={styles.goods_image} source={{uri:`http://www.zazaero.com${goods_detail.list_img_url}`}}/>
+                                </View>
+                                {/*상품이미지*/}
+                                <View style={[styles.GoodsDetail_info]}>
+                                    <Text Style={[styles.GoodsDetail_title]}>
+                                        {goods_detail.goods_name}
+                                    </Text>
+                                    {/*상품명*/}
+                                    <View style={[flex,mt1]}>
+                                        <View style={[styles.wt25]}>
+                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>판매가</Text>
+                                        </View>
+                                        <View style={[styles.wt75]}>
+                                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                {Price(goods_detail.price) } 원
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    {/**판매가**/}
+                                    <View style={[flex,styles.border_b]}>
+                                        <View style={[styles.wt25]}>
+                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재안내</Text>
+                                        </View>
+                                        <View style={[styles.wt75]}>
+                                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                {goods_detail.goods_guide_name}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    {/*자재안내*/}
+                                    <View style={[flex_between_top,mt3]}>
+                                        <View style="">
+                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>수량</Text>
+                                            <View style={[flex]}>
+                                                {/*===============마이너스 수량==================*/}
+                                                {/*=============마이너스 버튼==========*/}
+                                                <TouchableWithoutFeedback onPress={()=>goInput(`goods_cnt`,GoodsCnt,`minus`)}>
+                                                    <View style={[count_btn]}>
+                                                        <View style={[pos_center]}>
+                                                            <Text
+                                                                style={[count_btn_txt]}>－</Text>
+                                                        </View>
+                                                    </View>
+                                                </TouchableWithoutFeedback>
+                                                {/*============수량=================*/}
+                                                <TextInput style={[countinput,]}
+                                                           onChangeText={(goods_cnt)=>goInput(`goods_cnt`,goods_cnt)}
+                                                           defaultValue={`1`}
+                                                           maxLength={3}
+                                                           value={`${GoodsCnt}`}
+                                                           keyboardType="number-pad"
+                                                />
+                                                {/*=============플러스 버튼============*/}
+                                                <TouchableWithoutFeedback onPress={()=>goInput(`goods_cnt`,GoodsCnt,`plus`)}>
+                                                    <View style={[count_btn]}>
+                                                        <View style={[pos_center]}>
+                                                            <Text
+                                                                style={[count_btn_txt]}>＋</Text>
+                                                        </View>
+                                                    </View>
+                                                </TouchableWithoutFeedback>
+                                            </View>
 
+
+                                        </View>
+                                        <View style="">
+                                            <Text style={[styles.GoodsDetail_info_txt]}>총금액</Text>
+                                            <Text style={[styles.GoodsDetail_total_price]}>
+                                                {Price(goods_detail.price * GoodsCnt)}원
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    {/*수량*/}
+
+                                    {/*상품정보*/}
+                                    <View style={[styles.GoodsDetail_more_image,mt5]}>
+                                        <RenderHtml source={source} contentWidth={380} />
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </ScrollView>
+                    {/*    */}
+                    <View style={[styles.bottom_btn,{height:'25%'}]}>
+                        <View style={[flex]}>
+                            <View style={[styles.wt1_5]}>
+                                <TouchableOpacity style={[styles.md_wish]}  onPress={()=>goWish(goods_detail.goods_uid)}>
+                                    {(goods_detail.my_zzim_flag === 'Y') ? (
+                                        <>
+                                            <Wishlist width={35} height={24} />
+                                        </>
+                                    ):(
+                                        <>
+                                            <WishlistNon width={35} height={24} />
+                                        </>
+                                    )}
+                                    {/*<Wishlist width={35} height={24} />*/}
+                                </TouchableOpacity>
+                            </View>
+                            <View style={[styles.wt8_5]}>
+                                <View style={[flex_around]}>
+                                    <TouchableOpacity style={styles.btn} onPress={()=>goCartDetail(`cart`,goods_detail.goods_uid)}>
+                                        <Text style={[btn_primary,styles.center,styles.boottom_btn]}>장바구니 담기</Text>
+                                    </TouchableOpacity>
+                                    {/*<TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>*/}
+                                    <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('장바구니')}>
+                                        <Text style={[btn_black,styles.center,styles.boottom_btn]}>장바구니 가기</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                    {/*    */}
+                    {/* 모달 내용  */}
+                </View>
+            </Modal>
+            {/**-----------------------------------------------------모달-------------------------------------------------**/}
 
             {/**--------------------------------장바구니 영역----------------------------------------**/}
             {/*========상품체크시 노출=========*/}

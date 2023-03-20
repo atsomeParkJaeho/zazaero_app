@@ -157,13 +157,9 @@ export default function GoodsDetail({route,navigation}) {
 
     let goForm = (type,uid) => {
         if(type === 'cart') {
-            Alert.alert(
-                '',
-                '장바구니에 담으시겠습니까?',
-                [
+            Alert.alert('', '장바구니에 담으시겠습니까?', [
                     {text: '취소', onPress: () => {}, style: 'destructive'},
-                    {
-                        text: '확인 ',
+                    {text: '확인 ',
                         onPress: () => {
                             ins_cart(Member, uid, GoodsCnt).then((res)=>{
                                 if(res) {
@@ -187,11 +183,9 @@ export default function GoodsDetail({route,navigation}) {
                 },
             );
         }
-
         if(type === 'order') {
             navigation.replace('장바구니');
         }
-
     }
 
 
