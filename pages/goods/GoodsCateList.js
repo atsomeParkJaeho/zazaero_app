@@ -5,11 +5,12 @@ import {
     FlatList,
     Text,
     View,
+    Modal,
     Image,
     TouchableOpacity,
     ScrollView,
     Alert,
-    Platform
+    Platform, TouchableWithoutFeedback, TextInput, KeyboardAvoidingView
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import logo from "../../assets/img/top_logo.png";
@@ -18,7 +19,7 @@ import CartBag from "../../icons/cart_bag.svg";
 import WishlistNon from "../../icons/ico_heart_nc.svg";
 import Wishlist from "../../icons/ico_heart_c.svg";
 import Chk from "../../icons/chk.svg";
-
+import Modal_Close from '../../icons/close_black.svg';
 
 import goods_img_1 from '../../assets/img/goods_img_1.png';
 import goods_like from '../../assets/img/ico_heart.png';
@@ -29,15 +30,15 @@ import {
     bg_gray,
     bg_light,
     bg_primary,
-    bg_white,
-    btn_circle,
-    container,
-    d_flex, flex, flex_between,
+    bg_white, btn_black,
+    btn_circle, btn_outline_primary, btn_primary,
+    container, count_btn, count_btn_txt, countinput,
+    d_flex, flex, flex_around, flex_between, flex_between_top,
     flex_top, h13,
-    h18,
-    justify_content_center, justify_content_end, me1,
-    min_height, ms1, pb2,
-    sub_page,
+    h18, h20,
+    justify_content_center, justify_content_end, mb2, me1,
+    min_height, ms1, mt1, mt3, mt5, pb2, pos_center,
+    sub_page, text_center,
     text_light, text_primary, text_right, wt2, wt3, wt4, wt5, wt6, wt7, wt8
 } from "../../common/style/AtStyle";
 import axios from "axios";
@@ -54,6 +55,8 @@ import {
     go_goods_cate3rd_list,
     goods_cate, ins_cart, save_wish
 } from "./UTIL_goods";
+import Close from "../../icons/close_black.svg";
+import RenderHtml from "react-native-render-html";
 
 
 
@@ -262,11 +265,160 @@ export default function GoodsCateList({route, navigation}) {
     // 체크한 상품 버튼 생성
     let goForm = GoodsList.filter((val) => val.goods_cart_chk);
 
+
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const source = {
+        html: ""
+    };
+
     /**--------자재목록-------------**/
     function goodsList ({item}) {
         return (
             <>
                 <View>
+                    <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]}  onPress={() => setModalVisible(true)}>
+                        <Text style={[text_center,h18]}>상세모달</Text>
+                    </TouchableOpacity>
+                    {/**/}
+                    <Modal visible={modalVisible} animationType="slide">
+
+                        <View style={{ backgroundColor: '#fff', paddingTop:Platform.OS === 'ios' ? 70 : 20, }}>
+                            <View style={[flex_between,mb2,{paddingHorizontal:10}]}>
+                                <View style={[]}></View>
+                                <View style={[]}>
+                                    <Text style={[h20]}>상품상세</Text>
+                                </View>
+                                <View style={[]}>
+                                    <TouchableOpacity onPress={() => setModalVisible(false)}>
+                                        <Modal_Close width={17} height={17}/>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            {/* 모달 내용  */}
+                                <ScrollView style={[bg_white,{height:'85%'}]}>
+                                    <View style={[styles.GoodsDetail]}>
+                                        <View style={[container]}>
+                                            <View style={[styles.goods_iamge_box]}>
+                                                <Image style={styles.goods_image} source={{uri:"http://www.zazaero.com/upload/999999994022/goods/60750805536834.jpg"}}/>
+                                            </View>
+                                            {/*상품이미지*/}
+                                            <View style={[styles.GoodsDetail_info]}>
+                                                <Text Style={[styles.GoodsDetail_title]}>
+                                                    적삼목 유절사우나재(1단=10EA)_28T×70×2400
+                                                </Text>
+                                                {/*상품명*/}
+                                                <View style={[flex,mt1]}>
+                                                    <View style={[styles.wt25]}>
+                                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>판매가</Text>
+                                                    </View>
+                                                    <View style={[styles.wt75]}>
+                                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                            {Price("42700") } 원
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                                {/**판매가**/}
+                                                <View style={[flex,styles.border_b]}>
+                                                    <View style={[styles.wt25]}>
+                                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재안내</Text>
+                                                    </View>
+                                                    <View style={[styles.wt75]}>
+                                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                            발주 당일 배송
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                                {/*자재안내*/}
+                                                <View style={[flex_between_top,mt3]}>
+                                                    <View style="">
+                                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>수량</Text>
+                                                        <View style={[flex]}>
+                                                            {/*===============마이너스 수량==================*/}
+                                                            {/*=============마이너스 버튼==========*/}
+                                                            <TouchableWithoutFeedback onPress="">
+                                                                <View style={[count_btn]}>
+                                                                    <View style={[pos_center]}>
+                                                                        <Text
+                                                                            style={[count_btn_txt]}>－</Text>
+                                                                    </View>
+                                                                </View>
+                                                            </TouchableWithoutFeedback>
+                                                            {/*============수량=================*/}
+                                                            <TextInput style={[countinput,]}
+                                                                       onChangeText=""
+                                                                       value={`0`}
+                                                                       keyboardType="number-pad"
+                                                            />
+                                                            {/*=============플러스 버튼============*/}
+                                                            <TouchableWithoutFeedback onPress="">
+                                                                <View style={[count_btn]}>
+                                                                    <View style={[pos_center]}>
+                                                                        <Text
+                                                                            style={[count_btn_txt]}>＋</Text>
+                                                                    </View>
+                                                                </View>
+                                                            </TouchableWithoutFeedback>
+                                                        </View>
+
+
+                                                    </View>
+                                                    <View style="">
+                                                        <Text style={[styles.GoodsDetail_info_txt]}>총금액</Text>
+                                                        <Text style={[styles.GoodsDetail_total_price]}>
+                                                            {Price("400000")}원
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                                {/*수량*/}
+
+                                                {/*상품정보*/}
+                                                <View style={[styles.GoodsDetail_more_image,mt5]}>
+                                                    <RenderHtml source={source} contentWidth={380} />
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </ScrollView>
+                                {/*    */}
+                                <View style={[styles.bottom_btn,{height:'25%'}]}>
+                                    <View style={[flex]}>
+                                        <View style={[styles.wt1_5]}>
+                                            <TouchableOpacity style={[styles.md_wish]}  onPress="">
+                                                {/*{(GoodsDetail.my_zzim_flag === 'Y') ? (*/}
+                                                {/*    <>*/}
+                                                {/*        <Wishlist width={35} height={24} />*/}
+                                                {/*    </>*/}
+                                                {/*):(*/}
+                                                {/*    <>*/}
+                                                {/*        <WishlistNon width={35} height={24} />*/}
+                                                {/*    </>*/}
+                                                {/*)}*/}
+                                                <Wishlist width={35} height={24} />
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={[styles.wt8_5]}>
+                                            <View style={[flex_around]}>
+                                                {/*<TouchableOpacity style={styles.btn} onPress={() => goForm('cart',GoodsDetail.goods_uid)}>*/}
+                                                <TouchableOpacity style={styles.btn} onPress="">
+                                                    <Text style={[btn_primary,styles.center,styles.boottom_btn]}>장바구니 담기</Text>
+                                                </TouchableOpacity>
+                                                {/*<TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>*/}
+                                                <TouchableOpacity style={styles.btn} onPress="">
+                                                    <Text style={[btn_black,styles.center,styles.boottom_btn]}>장바구니 가기</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                                {/*    */}
+
+                            {/* 모달 내용  */}
+                        </View>
+
+                    </Modal>
+                    {/**/}
+
                     <View style={styles.cate_goods_list_item}>
                         <TouchableOpacity onPress={() => navigation.navigate('상품상세', {uid: item.goods_uid})}>
                         <View style={[flex_top]}>
@@ -358,7 +510,7 @@ export default function GoodsCateList({route, navigation}) {
         );
     };
 
-    console.log(GoodsList);
+    // console.log(GoodsList);
 
     return (
         /*
@@ -392,8 +544,8 @@ export default function GoodsCateList({route, navigation}) {
                         </View>
                         {Cate3rd.map((val, idx) => (
                             <>
-                                <View style={[styles.cate_2st_btn,]}>
-                                    <TouchableOpacity key={idx} style={[styles.cate_1st_btn]}
+                                <View style={[styles.cate_2st_btn,]} key={idx}>
+                                    <TouchableOpacity style={[styles.cate_1st_btn]}
                                                       onPress={() => goCate3rd(val.ind_cfg_uid)}>
                                         <Text
                                             style={[styles.cate_2st_btn_txt, (val.ind_cfg_uid === Cate3rdActive) && text_primary]}>
@@ -590,5 +742,92 @@ const styles = StyleSheet.create({
         fontSize: Platform.OS === 'ios' ? 18 : 17,
         fontWeight: "600",
         color: "#222",
+    },
+    goods_iamge_box:{
+        borderWidth:1,
+        borderColor:"#ccc",
+        paddingTop:"100%",
+    },
+    goods_image:{
+        paddingTop:"100%",
+        position: "absolute",
+        width: "100%",
+        marginLeft:"auto",
+        marginRight:"auto",
+    },
+    GoodsDetail_info:{
+        paddingVertical:20,
+    },
+    GoodsDetail_title:{
+        fontSize: Platform.OS === 'ios' ? 20 : 18,
+        fontWeight:"500",
+        color:"#333",
+        lineHeight:28,
+    },
+    wt25: {
+        width: "25%",
+        backgroundColor:"#f8f8f8",
+        padding:8,
+        borderWidth:1,
+        borderColor:"#ddd",
+        borderRightWidth:0,
+        borderBottomWidth:0,
+    },
+    wt75: {
+        width: "75%",
+        padding:8,
+        borderWidth:1,
+        borderColor:"#ddd",
+        borderLeftWidth:0,
+        borderBottomWidth:0,
+    },
+    GoodsDetail_info_txt:{
+        fontSize: Platform.OS === 'ios' ? 14 : 13,
+        color:"#333",
+        lineHeight:24,
+        textAlign:"right",
+    },
+    GoodsDetail_info_txt_val:{
+        fontSize: Platform.OS === 'ios' ? 15 : 14,
+        lineHeight:24,
+        fontWeight:"500",
+        textAlign:"right",
+    },
+    border_b:{
+        borderColor:"#ddd",
+        borderBottomWidth:1,
+    },
+    GoodsDetail_total_price:{
+        fontSize: Platform.OS === 'ios' ? 24 : 23,
+        lineHeight:27,
+        fontWeight:"500",
+        color:"#3D40E0",
+    },
+    wt1_5:{
+        width:"15%",
+        paddingBottom:30,
+    },
+    wt8_5:{
+        width:"85%",
+        paddingBottom:30,
+    },
+    md_wish:{
+        flex:1,
+        alignItems:"center",
+        justifyContent:"center",
+    },
+    btn:{
+        width:"50%",
+    },
+    center:{
+        fontSize:15,
+        textAlign:"center",
+        paddingVertical:20,
+    },
+    bottom_btn:{
+       backgroundColor:"#eee",
+
+
+
     },
 });
