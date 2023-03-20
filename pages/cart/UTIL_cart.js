@@ -23,7 +23,7 @@ export const goDelCart = async (Member, order_uid) => {
         act_type        : "del_cart",
         login_status    : "Y",
         mem_uid         : Member,
-        A_order_uid     : {order_uid},
+        A_order_uid     : order_uid,
     }, {
         headers: {
             'Content-type': 'multipart/form-data'
