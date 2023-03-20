@@ -618,7 +618,7 @@ export default function OrderDtail({route,navigation}) {
                                             onPress:()=>{
                                                 // ================2. 결제취소 이벤트 결과값 db에 전송====================
                                                 console.log(res.data,'/주문완료시 파라미터');
-                                                // return navigation.replace('발주상세',{gd_order_uid:OrderData.gd_order_uid});
+                                                return navigation.replace('발주상세',{gd_order_uid:OrderData.gd_order_uid});
                                             }
                                         }
                                     ]);
