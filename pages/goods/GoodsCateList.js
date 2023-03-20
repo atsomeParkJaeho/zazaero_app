@@ -628,7 +628,7 @@ export default function GoodsCateList({route, navigation}) {
                                         <Text style={[btn_primary,styles.center,styles.boottom_btn]}>장바구니 담기</Text>
                                     </TouchableOpacity>
                                     {/*<TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>*/}
-                                    <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('장바구니')}>
+                                    <TouchableOpacity style={styles.btn} onPress={() => navigation.replace('장바구니')}>
                                         <Text style={[btn_black,styles.center,styles.boottom_btn]}>장바구니 가기</Text>
                                     </TouchableOpacity>
                                 </View>
