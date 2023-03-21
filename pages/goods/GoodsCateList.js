@@ -83,10 +83,10 @@ export default function GoodsCateList({route, navigation}) {
     const [goods_detail, set_goods_detail]      = useState([]);     // 상세페이지 설정
     const [GoodsCnt, setGoodsCnt]      = useState(1);     // 상세페이지 설정
 
-    
+
     const update = useIsFocused();
 
-    
+
 
     // 우측 메뉴 설정
     const headerRight = () => {
@@ -362,22 +362,22 @@ export default function GoodsCateList({route, navigation}) {
                 <View>
                     <View style={styles.cate_goods_list_item}>
                         <TouchableOpacity onPress={() => go_goods_detail(item.goods_uid)}>
-                        <View style={[flex_top]}>
+                            <View style={[flex_top]}>
                                 <View style={[styles.flex_item, styles.flex_item1]}>
                                     <View style={[styles.cate_list_Thumbnail_box]}>
                                         <Image style={styles.cate_list_Thumbnail} source={{uri: 'http://www.zazaero.com' + item.list_img_url}}/>
                                         <View style={styles.goods_like}>
                                             {/*=============찜하기=================*/}
                                             <TouchableOpacity onPress={() => goWish(item.goods_uid)}>
-                                            {(item.my_zzim_flag === 'Y') ? (
-                                                <>
-                                                    <Wishlist width={35} height={24} color={'blue'} zIndex={2000}/>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <WishlistNon width={35} height={24} color={'blue'}/>
-                                                </>
-                                            )}
+                                                {(item.my_zzim_flag === 'Y') ? (
+                                                    <>
+                                                        <Wishlist width={35} height={24} color={'blue'} zIndex={2000}/>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <WishlistNon width={35} height={24} color={'blue'}/>
+                                                    </>
+                                                )}
                                             </TouchableOpacity>
                                         </View>
                                     </View>
@@ -386,10 +386,10 @@ export default function GoodsCateList({route, navigation}) {
                                     <View style={[flex_between, align_items_center, pb2]}>
                                         <View style={[wt8]}>
 
-                                                {/*========상품명========*/}
-                                                <Text
-                                                    style={[styles.cate_2st_btn_txt, (item.goods_wish_chk) ? {color: "red"} : {color: "#000"}]}
-                                                    numberOfLines={2}>{item.goods_name}</Text>
+                                            {/*========상품명========*/}
+                                            <Text
+                                                style={[styles.cate_2st_btn_txt, (item.goods_wish_chk) ? {color: "red"} : {color: "#000"}]}
+                                                numberOfLines={2}>{item.goods_name}</Text>
 
                                         </View>
                                         {/**----------------------장바구니------------------------------**/}
@@ -442,7 +442,7 @@ export default function GoodsCateList({route, navigation}) {
                                     </View>
                                 </View>
 
-                        </View>
+                            </View>
                         </TouchableOpacity>
                         {/**/}
                     </View>
@@ -504,24 +504,24 @@ export default function GoodsCateList({route, navigation}) {
 
             {/**---------------------------자재목록------------------**/}
             <FlatList
-            style={[bg_white]}
-            keyExtractor={(val) => String(val.goods_uid)}
-            data={GoodsList}
-            renderItem={goodsList}
-            windowSize={3}
+                style={[bg_white]}
+                keyExtractor={(val) => String(val.goods_uid)}
+                data={GoodsList}
+                renderItem={goodsList}
+                windowSize={3}
             />
 
             {/**-----------------------------------------------------모달-------------------------------------------------**/}
             <Modal visible={modalVisible} animationType="slide">
                 <View style={{ backgroundColor: '#fff', paddingTop:Platform.OS === 'ios' ? 70 : 20, }}>
-                    <View style={[flex_between,mb2,{paddingHorizontal:10}]}>
+                    <View style={[flex_between,mb2,{paddingHorizontal:20}]}>
                         <View style={[]}></View>
                         <View style={[]}>
                             <Text style={[h20]}>상품상세</Text>
                         </View>
                         <View style={[]}>
                             <TouchableOpacity onPress={() => setModalVisible(false)}>
-                                <Modal_Close width={17} height={17}/>
+                                <Modal_Close width={23} height={23}/>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -903,7 +903,7 @@ const styles = StyleSheet.create({
         paddingVertical:20,
     },
     bottom_btn:{
-       backgroundColor:"#eee",
+        backgroundColor:"#eee",
 
 
 
