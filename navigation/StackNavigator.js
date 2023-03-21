@@ -62,6 +62,7 @@ import DeliDetailDone from "../pages/order/DeliDetailDone";
 import Postcode from "@actbase/react-daum-postcode/lib/app.native";
 import DaumPostCode from "../util/DaumPostCode";
 import Payment from "../util/ImportPay";
+import Push from "../Push";
 
 
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
@@ -106,26 +107,14 @@ const StackNavigator = () => {
 
                 }}
             >
-
-
                 {/*==============비회원===============*/}
-                <Stack.Screen name="로그인"
-                  component={Login}
-                  options={{headerTitle:'',headerStatusBarHeight:0,}}
-                />
-                <Stack.Screen name="회원가입"
-                              component={SignUp}
-                />
+                <Stack.Screen name="로그인" component={Login} options={{headerTitle:'',headerStatusBarHeight:0,}}/>
+                <Stack.Screen name="회원가입" component={SignUp}/>
                 {/*==============메인페이지===============*/}
-                <Stack.Screen
-                    name="메인페이지"
-                    component={MainPage}
-                    options={{headerTitle:'',headerStatusBarHeight:0,}}
-                />
+                <Stack.Screen name="메인페이지" component={MainPage} options={{headerTitle:'',headerStatusBarHeight:0,}}/>
                 {/*==============상단===============*/}
                 {/*<Stack.Screen name="검색" component={GoodsSearch}/>*/}
                 {/*<Stack.Screen name="검색상품" component={GoodsSearchList}/>*/}
-
                 {/*==============마이페이지===============*/}
                 <Stack.Screen name="회원탈퇴" component={MemOut}/>
                 <Stack.Screen name="마이페이지" component={MyPage}/>
@@ -178,7 +167,7 @@ const StackNavigator = () => {
                 <Stack.Screen name="주소검색" component={DaumPostCode}/>
                 {/**--------------------아임포트 결제 모듈 추가-------------------------**/}
                 <Stack.Screen name="카드결제" component={Payment}/>
-
+                <Stack.Screen name="푸시알림" component={Push}/>
             </Stack.Navigator>
         </>
     );

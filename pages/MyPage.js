@@ -57,6 +57,7 @@ export default function MyPage({navigation, route}) {
     }
 
     console.log(mem_info);
+    console.log(Member,'/회원코드');
 
     return (
         <>
@@ -214,22 +215,25 @@ export default function MyPage({navigation, route}) {
                                 </View>
                             </TouchableOpacity>
                         </View>
-
-                        {/*<View style={styles.mypageListItem}>*/}
-                        {/*    <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {*/}
-                        {/*        navigation.navigate('반품요청')*/}
-                        {/*    }}>*/}
-                        {/*        <View style={styles.flex}>*/}
-                        {/*            <View style={styles.mypageListItemTitle}>*/}
-                        {/*                <Text style={styles.mypageList_name}>반품요청</Text>*/}
-                        {/*            </View>*/}
-                        {/*            <View style={styles.mypageListItemIcon}>*/}
-                        {/*                /!*<Icon name="chevron-forward-outline" size={25} color="#000" />*!/*/}
-                        {/*                <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>*/}
-                        {/*            </View>*/}
-                        {/*        </View>*/}
-                        {/*    </TouchableOpacity>*/}
-                        {/*</View>*/}
+                        {(Member === '97') && (
+                            <>
+                                <View style={styles.mypageListItem}>
+                                    <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
+                                        navigation.navigate('푸시알림')
+                                    }}>
+                                        <View style={styles.flex}>
+                                            <View style={styles.mypageListItemTitle}>
+                                                <Text style={styles.mypageList_name}>푸시알림</Text>
+                                            </View>
+                                            <View style={styles.mypageListItemIcon}>
+                                                {/*<Icon name="chevron-forward-outline" size={25} color="#000" />*/}
+                                                <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                        )}
                     </View>
                 </View>
             </ScrollView>

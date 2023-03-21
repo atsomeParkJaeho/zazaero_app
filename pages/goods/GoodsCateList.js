@@ -328,6 +328,9 @@ export default function GoodsCateList({route, navigation}) {
 
     // 상세페이지 노출
     const go_goods_detail = (goods_uid) => {
+
+
+
         console.log('이벤트');
         setModalVisible(!modalVisible); // 모달 노출
         // 1. 상세페이지 호출
@@ -345,11 +348,15 @@ export default function GoodsCateList({route, navigation}) {
         console.log(goods_detail,' / 상품상세');
 
     }
+
     const source = {
         html: goods_detail.summary_contents
     };
+
     /**--------자재목록-------------**/
     function goodsList ({item}) {
+
+
         return (
             <>
                 <View>
