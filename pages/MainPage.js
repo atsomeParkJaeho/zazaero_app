@@ -109,12 +109,10 @@ export default function MainPage({route,navigation}) {
     const [A_banner, set_A_banner] = useState([]);
 
     useEffect(() => {
-        // * 푸시 토큰이 없을시 db로 전송
-        if(!PushToken) {
-            return Notifications.getDevicePushTokenAsync().then((res)=>{
-                AsyncStorage.setItem('push_key',res.data);
-            });
-        }
+
+        Notifications.getDevicePushTokenAsync().then((res)=>{
+            AsyncStorage.setItem('push_key',res.data);
+        });
 
         // 포스트시에 header 셋팅 할것
         get_cate_list(`1`).then((res) => {
