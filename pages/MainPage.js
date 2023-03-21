@@ -94,7 +94,7 @@ function Cate2nd({uid,navigation,name}) {
 export default function MainPage({route,navigation}) {
     /**---------------------------개인정보-----------------------------------**/
     const [Member, setMember] = useState();
-    const [PushToken, setPushToken] = useState();
+    const [PushToken, setPushToken] = useState(``);
     const mem_uid = AsyncStorage.getItem("member").then((value) => {setMember(value);});
     const get_pushk = AsyncStorage.getItem("push_key").then((value) => {setPushToken(value);});
     // 1. member = token 설정
@@ -111,21 +111,11 @@ export default function MainPage({route,navigation}) {
     useEffect(() => {
         // * 푸시 토큰이 없을시 db로 전송
         if(!PushToken) {
-            Notifications.getDevicePushTokenAsync().then((res)=>{
-                mem_push_token(Member,res.data).then((res)=>{
-                    if(res) {
-                        const {result} = res.data;
-                        if(result === 'OK') {
-                            // 푸시를 허용하시겠습니까?
-                            return AsyncStorage.setItem('push_key',res.data);
-                        } else {
-                            console.log('에러');
-                            return Alert.alert('','연결에러');
-                        }
-                    }
-                });
+            return Notifications.getDevicePushTokenAsync().then((res)=>{
+                AsyncStorage.setItem('push_key',res.data);
             });
         }
+
         // 포스트시에 header 셋팅 할것
         get_cate_list(`1`).then((res) => {
             if (res) {
@@ -190,7 +180,7 @@ export default function MainPage({route,navigation}) {
 
     console.log(A_banner,' / 배너2');
     console.log(com_info.com_name,' / 회사정보');
-    console.log(PushToken,' / [푸시키]');
+    console.log(PushToken,' / 토큰확인');
 
     return (
         /*
