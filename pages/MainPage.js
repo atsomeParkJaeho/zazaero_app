@@ -6,7 +6,6 @@ import {List} from 'react-native-paper';
 import {AccordionList} from "accordion-collapse-react-native";
 //이미지 슬라이드
 import {ImageSlider} from "react-native-image-slider-banner";
-
 // 공통 CSS 추가
 import {
     container,
@@ -32,8 +31,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Wishlist from "../icons/ico_heart_c.svg";
 import {ABanner, get_cate_list, get_main_info} from "./UTIL_main";
 import {getAppInfo} from "./order/UTIL_order";
+import * as Notifications from "expo-notifications";
+import {mem_push_token} from "./UTIL_mem";
 
-//import main1 from '../assets/img/main_1.png'
 
 
 
@@ -92,12 +92,13 @@ function Cate2nd({uid,navigation,name}) {
 
 // 상품출력 페이지
 export default function MainPage({route,navigation}) {
-
+    /**---------------------------개인정보-----------------------------------**/
     const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
-
+    const [PushToken, setPushToken] = useState();
+    const mem_uid = AsyncStorage.getItem("member").then((value) => {setMember(value);});
+    const get_pushk = AsyncStorage.getItem("push_key").then((value) => {setPushToken(value);});
+    // 1. member = token 설정
+    /**--------------------------------------------------------------**/
     const Update = useIsFocused();
     // 1. 1차 카테고리 추출
     const [Cate1st, setCate1st] = useState([]);   // 1차 카테고리 설정
@@ -108,6 +109,23 @@ export default function MainPage({route,navigation}) {
     const [A_banner, set_A_banner] = useState([]);
 
     useEffect(() => {
+        // * 푸시 토큰이 없을시 db로 전송
+        if(!PushToken) {
+            Notifications.getDevicePushTokenAsync().then((res)=>{
+                mem_push_token(Member,res.data).then((res)=>{
+                    if(res) {
+                        const {result} = res.data;
+                        if(result === 'OK') {
+                            // 푸시를 허용하시겠습니까?
+                            return AsyncStorage.setItem('push_key',res.data);
+                        } else {
+                            console.log('에러');
+                            return Alert.alert('','연결에러');
+                        }
+                    }
+                });
+            });
+        }
         // 포스트시에 header 셋팅 할것
         get_cate_list(`1`).then((res) => {
             if (res) {
@@ -172,6 +190,7 @@ export default function MainPage({route,navigation}) {
 
     console.log(A_banner,' / 배너2');
     console.log(com_info.com_name,' / 회사정보');
+    console.log(PushToken,' / [푸시키]');
 
     return (
         /*

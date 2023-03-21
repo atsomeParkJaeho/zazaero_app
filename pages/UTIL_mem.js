@@ -167,4 +167,26 @@ export const mem_out_reason_cfg = async (Member) => {
     return res;
 }
 
+/**----------------------------------회원로그인시 푸시알림 설정------------------------------------------------------**/
+export const mem_push_token = async (Member, token) =>{
+    let os_type = Platform.OS;
+    let data = {
+        act_type         :'mem_push_token',
+        mem_uid          :Member,
+        token            :token,
+        os_type          :os_type
+    }
+    console.log(data,'/ db 전송 데이터');
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
+        act_type         :'mem_push_token',
+        mem_uid          :Member,
+        token            :token,
+        os_type          :os_type
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    })
+    return res;
+}
 

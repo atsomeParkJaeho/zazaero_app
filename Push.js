@@ -68,13 +68,20 @@ async function registerForPushNotificationsAsync() {
 }
 
 export default function Push() {
-    const [expoPushToken, setExpoPushToken] = useState('');
+    const [PushToken, setPushToken] = useState('');
     const [notification, setNotification] = useState(false);
     const notificationListener = useRef();
     const responseListener = useRef();
 
     useEffect(() => {
-        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+        
+        // 기기 푸시알림 토큰 저장
+        Notifications.getDevicePushTokenAsync().then((res)=>{
+            if(res) {
+                setPushToken(res.data);
+            }
+        });
 
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
@@ -91,14 +98,14 @@ export default function Push() {
     }, []);
 
     let msg = '';
-    msg += `${expoPushToken} / 푸시알림 토큰\n`;
+    msg += `${PushToken} / 푸시알림 토큰\n`;
     msg += `${notification} / 허용\n`;
 
     console.log(msg);
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-around' }}>
-            <Text>사용자 푸시알림 토큰: {expoPushToken}</Text>
+            <Text>사용자 푸시알림 토큰: {PushToken}</Text>
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                 <Text>제목: {notification && notification.request.content.title} </Text>
                 <Text>본문: {notification && notification.request.content.body}</Text>
@@ -106,7 +113,7 @@ export default function Push() {
             </View>
             <Button
                 title="데이터를 넣으시오"
-                onPress={async () => {await sendPushNotification(expoPushToken);}}
+                onPress={async () => {await sendPushNotification(PushToken);}}
             />
         </View>
     );
