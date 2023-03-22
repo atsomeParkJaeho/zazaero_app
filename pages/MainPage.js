@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Alert, Button} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Alert, Button, Platform} from 'react-native';
 import {useIsFocused, useNavigationState} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {List} from 'react-native-paper';
 import {AccordionList} from "accordion-collapse-react-native";
 //이미지 슬라이드
 import {ImageSlider} from "react-native-image-slider-banner";
-import RenderHTML from "react-native-render-html";
 // 공통 CSS 추가
 import {
     container,
@@ -34,7 +33,8 @@ import {ABanner, get_cate_list, get_main_info} from "./UTIL_main";
 import {getAppInfo} from "./order/UTIL_order";
 import * as Notifications from "expo-notifications";
 import {mem_push_token} from "./UTIL_mem";
-import notifeeJSEventEmitter from "@notifee/react-native/src/NotifeeJSEventEmitter";
+// import firebase from '@react-native-firebase';
+
 // 2차 카테고리 설정
 function Cate2nd({uid,navigation,name}) {
 
@@ -91,9 +91,13 @@ function Cate2nd({uid,navigation,name}) {
 export default function MainPage({route,navigation}) {
     /**---------------------------개인정보-----------------------------------**/
     const [Member, setMember] = useState();
-    const [PushToken, setPushToken] = useState(``);
+    const [PushToken, setPushToken] = useState({
+        os_type:Platform.OS,
+        expo_key:'',
+        app_device_key:'',
+    });
     const mem_uid = AsyncStorage.getItem("member").then((value) => {setMember(value);});
-    const get_pushk = AsyncStorage.getItem("push_key").then((value) => {setPushToken(value);});
+    // const get_pushk = AsyncStorage.getItem("push_key").then((value) => {setPushToken(value);});
     // 1. member = token 설정
     /**--------------------------------------------------------------**/
     const Update = useIsFocused();
@@ -105,18 +109,22 @@ export default function MainPage({route,navigation}) {
     // 2. 배너 담기
     const [A_banner, set_A_banner] = useState([]);
 
-    const source = {
-        html: "<div><h1>반가워</h1><a href='https://www.naver.com/'><img src='http://www.weclo.kr/img/weclo_img/instar_cion.png'></a></div>"
-
-    };
 
 
-    const push_txt =  "안녕";
+
 
     useEffect(() => {
 
+        // expo 푸시키 가져오기
+        Notifications.getExpoPushTokenAsync().then((res)=>{setPushToken({...PushToken, expo_key: res.data})});
+        Notifications.getDevicePushTokenAsync().then((res)=>{setPushToken({...PushToken, app_device_key:res.data})});
+
+
+
 
         /*--------------------------------푸시알림 셋팅-------------------------------------------------*/
+
+
         Notifications.setNotificationHandler({
             handleNotification: async () => ({
                 shouldShowAlert: true,
@@ -135,15 +143,16 @@ export default function MainPage({route,navigation}) {
 
         Notifications.scheduleNotificationAsync({
             content: {
-                title: '회원가입',
-                body: push_txt,
-                data: { data: 'goes here'},
-
+                title: 'My first local notification',
+                body: 'Hello, world!',
+                data: { data: 'goes here' },
             },
             trigger: {
-                seconds: 2,
+                seconds: 5,
             },
         });
+
+
         /*--------------------------------푸시알림 셋팅 끝-------------------------------------------------*/
         // 포스트시에 header 셋팅 할것
         get_cate_list(`1`).then((res) => {
@@ -219,7 +228,7 @@ export default function MainPage({route,navigation}) {
 
     console.log(A_banner,' / 배너2');
     console.log(com_info.com_name,' / 회사정보');
-    console.log(PushToken,' / 토큰확인');
+    console.log(PushToken,' / 일반 기기 푸시토큰');
 
 
     return (
@@ -263,9 +272,6 @@ export default function MainPage({route,navigation}) {
                     timer={1000}
                     indicatorContainerStyle={{top: 0}}
                 />
-
-                <RenderHTML source={source}  />
-
                 <List.AccordionGroup
                     onAccordionPress={(id)=>setExpend(id)}
                     expandedId={expend}
@@ -417,10 +423,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginLeft: 'auto',
         marginRight: 'auto',
-    },
-    ct_img2:{
-        width: 20,
-        height: 20,
     },
     Accordion_items_link_txt: {
         textAlign: "center",
