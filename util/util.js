@@ -25,6 +25,15 @@ export const Time = (time) => {
 }
 
 
+// 1. expo 푸시토큰 -> 2. expo 푸시토큰이 없으면 일반 기기 푸시토큰 받기
+export const expo_pusk_key = () => {
+
+}
+
+export const push_key = () => {
+
+}
+
 
 const locale = {
     name: 'fr',
