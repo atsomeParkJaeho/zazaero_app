@@ -144,7 +144,12 @@ export default function OrderForm({route,navigation}) {
             if (res) {
                 const {result, A_deli_info} = res.data;
                 if (result === 'OK') {
-                    setDeliList(A_deli_info);
+
+                    let temp = A_deli_info.sort((a,b)=>{
+                        return new Date(b.gmd_sno) - new Date(a.gmd_sno);
+                    });
+
+                    setDeliList(temp);
                 } else {
                     console.log('실패');
                 }
