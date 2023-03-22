@@ -26,16 +26,24 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.www.zazaero",
-      "buildNumber": "8"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "buildNumber": "9"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/zazero_icon.png",
         "backgroundColor": "#FFFFFF"
       },
+      "googleServicesFile": "./google-services.json",
       "package": "com.www.zazaero",
-      "versionCode": 8
+      "versionCode": 9
     },
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/perf",
+      "@react-native-firebase/crashlytics",
+      "@notifee/react-native"
+    ],
     "web": {
       "favicon": "./assets/favicon.png"
     },

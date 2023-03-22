@@ -129,7 +129,6 @@ export default function OrderDtail({route,navigation}) {
     const [Member, setMember]          = useState();
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
-        setMember(value);
     });
     const InputFocus = useRef([]);
     /**-----------------------------------------수정 상태 설정-------------------------------------------------------**/
@@ -158,9 +157,9 @@ export default function OrderDtail({route,navigation}) {
         bankAccount         :'',
         bankSender          :'',
     });
-
-    const [Show_1, setShow_1]         = useState(false);
-    const [Show_2, setShow_2]         = useState(false);    // 셀렉트창 노출 여부
+    const [cancel_doing, set_cancel_doing]          = useState(0);
+    const [Show_1, setShow_1]                       = useState(false);
+    const [Show_2, setShow_2]                       = useState(false);    // 셀렉트창 노출 여부
 
     //모달창 오픈
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -187,7 +186,11 @@ export default function OrderDtail({route,navigation}) {
     }
     /**----------------------추가발주 이벤트------------------------**/
     const toggleModal = () => {setIsModalVisible(!isModalVisible);};
-    const toggleModal2 = () => {setIsModalVisible2(!isModalVisible2);
+    const toggleModal2 = () => {
+
+        if(cancel_doing > 0) { return Alert.alert('','기존 취소가 처리된 이후에\n주문취소 하실수 있습니다.') }
+
+        setIsModalVisible2(!isModalVisible2);
         let temp = OrderGoodsList.map(val=>{
             return {
                 ...val,
@@ -311,7 +314,7 @@ export default function OrderDtail({route,navigation}) {
         /**-------------주문상세정보 출력------------**/
         getOrderInfo(gd_order_uid, Member).then(res=> {
             if (res.data.result === 'OK') {
-                const {gd_order} = res.data;
+                const {gd_order, cancel_doing_cnt} = res.data;
                 let temp = gd_order.A_order.map(val => {
                     return {
                         ...val,
@@ -323,6 +326,8 @@ export default function OrderDtail({route,navigation}) {
                 setOrderDate(gd_order);
                 // 2. 자재정보 넣기
                 setOrderGoodsList(temp);
+                // 3. 주문취소중인 상품
+                set_cancel_doing(cancel_doing_cnt);
                 let status = (gd_order.ord_status === 'pay_ready' || gd_order.ord_status === 'pay_err' || gd_order.ord_status === 'pay_try') ? '결제상태' : '발주상태';
                 // 발주상태
                 if(gd_order.ord_status === 'pay_done') {
@@ -675,11 +680,9 @@ export default function OrderDtail({route,navigation}) {
             <>
                 <View style={[styles.PopupViewbg]}>
                     <View style={[styles.PopupView]}>
-
                         <View style={{paddingBottom:20,}}>
                             <Text style={{fontSize:17}}>수량변경</Text>
                         </View>
-
                         <View style={{paddingBottom:15,}}>
                             <TextInput
                                 style={[input]}
@@ -687,7 +690,6 @@ export default function OrderDtail({route,navigation}) {
                                 onChangeText={(text)=>cntCart(text)}
                             />
                         </View>
-
                         <View style={[d_flex, styles.Popupbtn]}>
                             <TouchableOpacity
                                 onPress={()=>setExpended(!expended)}
@@ -708,9 +710,10 @@ export default function OrderDtail({route,navigation}) {
         );
     }
 
-    console.log(OrderData,' / 주문정보');
-    console.log(OrderGoodsList,' / 주문상품 정보');
+    console.log(OrderData,' / 주문정보1');
+    console.log(OrderGoodsList,' / 주문상품 정보1');
     console.log(BankCode,'/ 무통장 입금처 정보');
+    console.log(cancel_doing,'/ 주문취소중인 상품갯수');
 
     return(
         <>

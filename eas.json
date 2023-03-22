@@ -5,6 +5,9 @@
   "build": {
     "development": {
       "developmentClient": true,
+      "android": {
+        "image": "ubuntu-18.04-jdk-11-ndk-r19c"
+      },
       "distribution": "internal",
       "channel": "development"
     },
@@ -20,6 +23,10 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath":"./pc-api-5961167133705272112-485-bf73bab80594.json"
+      }
+    }
   }
 }

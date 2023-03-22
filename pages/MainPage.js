@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Alert} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Alert, Button} from 'react-native';
 import {useIsFocused, useNavigationState} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {List} from 'react-native-paper';
@@ -26,17 +26,14 @@ import Search from '../icons/search.svg';
 import NotificationIcon from "../icons/Notification_icon.svg";
 import Main_logo from '../icons/main_logo.svg';
 import axios from "axios";
-import {At_db} from "../util/util";
+import {At_db, FCM} from "../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Wishlist from "../icons/ico_heart_c.svg";
 import {ABanner, get_cate_list, get_main_info} from "./UTIL_main";
 import {getAppInfo} from "./order/UTIL_order";
 import * as Notifications from "expo-notifications";
 import {mem_push_token} from "./UTIL_mem";
-
-
-
-
+import notifeeJSEventEmitter from "@notifee/react-native/src/NotifeeJSEventEmitter";
 // 2차 카테고리 설정
 function Cate2nd({uid,navigation,name}) {
 
@@ -89,7 +86,6 @@ function Cate2nd({uid,navigation,name}) {
     }
 }
 
-
 // 상품출력 페이지
 export default function MainPage({route,navigation}) {
     /**---------------------------개인정보-----------------------------------**/
@@ -108,11 +104,14 @@ export default function MainPage({route,navigation}) {
     // 2. 배너 담기
     const [A_banner, set_A_banner] = useState([]);
 
-    useEffect(() => {
+    const push_test = async () => {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let msg = '';
+        msg += existingStatus; // granted
+        console.log(msg,' / 푸시알림 테스트 토큰 확인');
+    };
 
-        Notifications.getDevicePushTokenAsync().then((res)=>{
-            AsyncStorage.setItem('push_key',res.data);
-        });
+    useEffect(() => {
 
         // 포스트시에 header 셋팅 할것
         get_cate_list(`1`).then((res) => {
@@ -180,6 +179,7 @@ export default function MainPage({route,navigation}) {
     console.log(com_info.com_name,' / 회사정보');
     console.log(PushToken,' / 토큰확인');
 
+
     return (
         /*
           return 구문 안에서는 {슬래시 + * 방식으로 주석
@@ -195,6 +195,7 @@ export default function MainPage({route,navigation}) {
                         <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
                             <Search width={30} height={21} style={[styles.icon]}/>
                         </TouchableOpacity>
+                        <Button title="푸시알림" onPress={()=>push_test()} />
                     </View>
                 </View>
             </View>
