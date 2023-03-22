@@ -104,15 +104,39 @@ export default function MainPage({route,navigation}) {
     // 2. 배너 담기
     const [A_banner, set_A_banner] = useState([]);
 
-    const push_test = async () => {
-        const { status: existingStatus } = await Notifications.getPermissionsAsync();
-        let msg = '';
-        msg += existingStatus; // granted
-        console.log(msg,' / 푸시알림 테스트 토큰 확인');
-    };
+
 
     useEffect(() => {
 
+
+        /*--------------------------------푸시알림 셋팅-------------------------------------------------*/
+        Notifications.setNotificationHandler({
+            handleNotification: async () => ({
+                shouldShowAlert: true,
+                shouldPlaySound: true,
+                shouldSetBadge: true,
+            }),
+        });
+
+        Notifications.addNotificationReceivedListener((notification) => {
+            console.log(notification,'/ 알림 내용확인');
+        });
+
+        Notifications.addNotificationResponseReceivedListener((response) => {
+            console.log(response,'/ 테스트 12');
+        });
+
+        Notifications.scheduleNotificationAsync({
+            content: {
+                title: 'My first local notification',
+                body: 'Hello, world!',
+                data: { data: 'goes here' },
+            },
+            trigger: {
+                seconds: 5,
+            },
+        });
+        /*--------------------------------푸시알림 셋팅 끝-------------------------------------------------*/
         // 포스트시에 header 셋팅 할것
         get_cate_list(`1`).then((res) => {
             if (res) {
@@ -154,6 +178,16 @@ export default function MainPage({route,navigation}) {
         });
 
     }, [Member, Update]);
+
+
+    // ============================2023-03-22================================//
+    /*----------------------------------------------------------------------*/
+    // ============================푸시알림창=================================//
+
+    // 배포용
+    const push_test = (inboundEmail) => {
+
+    };
 
 
     let get_link = (link_type, cfg_val1, cfg_val2, cfg_val3, cfg_val4) => {
