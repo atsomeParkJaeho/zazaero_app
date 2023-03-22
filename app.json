@@ -7,6 +7,9 @@
     "orientation": "portrait",
     "icon": "./assets/zazero_icon.png",
     "userInterfaceStyle": "light",
+    "notification": {
+      "icon": "./assets/img/zazaero_push_ios.png"
+    },
     "splash": {
       "image": "./assets/zazero_icon.png",
       "resizeMode": "contain",

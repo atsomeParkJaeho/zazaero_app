@@ -6,6 +6,7 @@ import {List} from 'react-native-paper';
 import {AccordionList} from "accordion-collapse-react-native";
 //이미지 슬라이드
 import {ImageSlider} from "react-native-image-slider-banner";
+import RenderHTML from "react-native-render-html";
 // 공통 CSS 추가
 import {
     container,
@@ -104,7 +105,13 @@ export default function MainPage({route,navigation}) {
     // 2. 배너 담기
     const [A_banner, set_A_banner] = useState([]);
 
+    const source = {
+        html: "<div><h1>반가워</h1><a href='https://www.naver.com/'><img src='http://www.weclo.kr/img/weclo_img/instar_cion.png'></a></div>"
 
+    };
+
+
+    const push_txt =  "안녕";
 
     useEffect(() => {
 
@@ -128,12 +135,13 @@ export default function MainPage({route,navigation}) {
 
         Notifications.scheduleNotificationAsync({
             content: {
-                title: 'My first local notification',
-                body: 'Hello, world!',
-                data: { data: 'goes here' },
+                title: '회원가입',
+                body: push_txt,
+                data: { data: 'goes here'},
+
             },
             trigger: {
-                seconds: 5,
+                seconds: 2,
             },
         });
         /*--------------------------------푸시알림 셋팅 끝-------------------------------------------------*/
@@ -255,6 +263,9 @@ export default function MainPage({route,navigation}) {
                     timer={1000}
                     indicatorContainerStyle={{top: 0}}
                 />
+
+                <RenderHTML source={source}  />
+
                 <List.AccordionGroup
                     onAccordionPress={(id)=>setExpend(id)}
                     expandedId={expend}
@@ -406,6 +417,10 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginLeft: 'auto',
         marginRight: 'auto',
+    },
+    ct_img2:{
+        width: 20,
+        height: 20,
     },
     Accordion_items_link_txt: {
         textAlign: "center",
