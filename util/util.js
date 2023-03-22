@@ -2,6 +2,8 @@ import {LocaleConfig} from "react-native-calendars/src/index";
 import 'moment/locale/ko';
 import {Alert} from "react-native";
 import axios from "axios";
+import * as Notifications from "expo-notifications";
+
 export const regId = /^[a-z0-9_]{4,20}$/;
 export const Minlangth = 6;
 
@@ -25,15 +27,22 @@ export const Time = (time) => {
 }
 
 
-// 1. expo 푸시토큰 -> 2. expo 푸시토큰이 없으면 일반 기기 푸시토큰 받기
-export const expo_pusk_key = () => {
+// 푸시키 설정
 
+export const push_key = async () => {
+    // 1. expo 인지 확인한다
+    let {type, data} = await Notifications.getExpoPushTokenAsync();
+    console.log(type);
+    if(type === 'expo') {
+        console.log(data,' / 엑스포키');
+        return data;
+    } else {
+        // expo가 아닐경우
+        let {type, data} = await Notifications.getDevicePushTokenAsync();
+        console.log(data,' / 일반 디바이스 키');
+        return data;
+    }
 }
-
-export const push_key = () => {
-
-}
-
 
 const locale = {
     name: 'fr',

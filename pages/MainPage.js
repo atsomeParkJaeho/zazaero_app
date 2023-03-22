@@ -26,7 +26,7 @@ import Search from '../icons/search.svg';
 import NotificationIcon from "../icons/Notification_icon.svg";
 import Main_logo from '../icons/main_logo.svg';
 import axios from "axios";
-import {At_db, FCM} from "../util/util";
+import {At_db, FCM, push_key} from "../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Wishlist from "../icons/ico_heart_c.svg";
 import {ABanner, get_cate_list, get_main_info} from "./UTIL_main";
@@ -34,6 +34,8 @@ import {getAppInfo} from "./order/UTIL_order";
 import * as Notifications from "expo-notifications";
 import {mem_push_token} from "./UTIL_mem";
 // import firebase from '@react-native-firebase';
+
+
 
 // 2차 카테고리 설정
 function Cate2nd({uid,navigation,name}) {
@@ -106,7 +108,17 @@ export default function MainPage({route,navigation}) {
     // 2. 배너 담기
     const [A_banner, set_A_banner] = useState([]);
 
+    let os_type = Platform;
+    // let device_id = getDeviceId;
 
+    // Expo Go 클라이언트 ID 가져오기
+    // console.log(uniqueId);
+
+
+    console.log(os_type, ' / 플랫폼 정보');
+    console.log(PushToken,' / 기기 토큰');
+    console.log(ExpoToken,' / 엑스포 토큰');
+    // console.log(ids,' / 기기 id');
 
 
 
@@ -116,8 +128,20 @@ export default function MainPage({route,navigation}) {
         Notifications.getExpoPushTokenAsync().then((res)=>{setExpoToken(res.data)});
         Notifications.getDevicePushTokenAsync().then((res)=>{setPushToken({type:res.type, key:res.data})});
 
-        /*--------------------------------푸시알림 셋팅-------------------------------------------------*/
 
+
+
+        /*--------------------------------푸시알림 셋팅-------------------------------------------------*/
+        // Notifications.scheduleNotificationAsync({
+        //     content: {
+        //         title: 'My first local notification',
+        //         body: 'Hello, world!',
+        //         data: { data: 'goes here' },
+        //     },
+        //     trigger: {
+        //         seconds: 5,
+        //     },
+        // });
 
         Notifications.setNotificationHandler({
             handleNotification: async () => ({
@@ -127,24 +151,15 @@ export default function MainPage({route,navigation}) {
             }),
         });
 
-        Notifications.addNotificationReceivedListener((notification) => {
-            console.log(notification,'/ 알림 내용확인');
+        Notifications.addNotificationReceivedListener((res) => {
+            console.log(res,'/알림 내용확인');
         });
 
-        Notifications.addNotificationResponseReceivedListener((response) => {
-            console.log(response,'/ 테스트 12');
+        Notifications.addNotificationResponseReceivedListener((res) => {
+            console.log(res,'/연동확인');
         });
+        //
 
-        Notifications.scheduleNotificationAsync({
-            content: {
-                title: 'My first local notification',
-                body: 'Hello, world!',
-                data: { data: 'goes here' },
-            },
-            trigger: {
-                seconds: 5,
-            },
-        });
 
 
         /*--------------------------------푸시알림 셋팅 끝-------------------------------------------------*/
@@ -222,8 +237,8 @@ export default function MainPage({route,navigation}) {
 
     console.log(A_banner,' / 배너2');
     console.log(com_info.com_name,' / 회사정보');
-    console.log(PushToken,' / 일반디바이스 키');
-    console.log(ExpoToken,' / 엑스포 키');
+    // console.log(PushToken,' / 일반디바이스 키');
+    // console.log(ExpoToken,' / 엑스포 키');
 
 
     return (

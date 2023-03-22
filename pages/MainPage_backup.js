@@ -26,7 +26,7 @@ import Search from '../icons/search.svg';
 import NotificationIcon from "../icons/Notification_icon.svg";
 import Main_logo from '../icons/main_logo.svg';
 import axios from "axios";
-import {At_db, FCM} from "../util/util";
+import {At_db, FCM, push_key} from "../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Wishlist from "../icons/ico_heart_c.svg";
 import {ABanner, get_cate_list, get_main_info} from "./UTIL_main";
@@ -104,27 +104,28 @@ export default function MainPage({route,navigation}) {
     // 2. 배너 담기
     const [A_banner, set_A_banner] = useState([]);
 
-
+    console.log(PushToken,'/123');
 
     useEffect(() => {
 
 
+
         /*--------------------------------푸시알림 셋팅-------------------------------------------------*/
-        Notifications.setNotificationHandler({
-            handleNotification: async () => ({
-                shouldShowAlert: true,
-                shouldPlaySound: true,
-                shouldSetBadge: false,
-            }),
-        });
-
-        Notifications.addNotificationReceivedListener((notification) => {
-            console.log(notification,'/ 알림 내용확인');
-        });
-
-        Notifications.addNotificationResponseReceivedListener((response) => {
-            console.log(response,'/ 테스트 12');
-        });
+        // Notifications.setNotificationHandler({
+        //     handleNotification: async () => ({
+        //         shouldShowAlert: true,
+        //         shouldPlaySound: true,
+        //         shouldSetBadge: false,
+        //     }),
+        // });
+        //
+        // Notifications.addNotificationReceivedListener((notification) => {
+        //     console.log(notification,'/ 알림 내용확인');
+        // });
+        //
+        // Notifications.addNotificationResponseReceivedListener((response) => {
+        //     console.log(response,'/ 테스트 12');
+        // });
 
         /*--------------------------------푸시알림 셋팅 끝-------------------------------------------------*/
         // 포스트시에 header 셋팅 할것
@@ -172,6 +173,7 @@ export default function MainPage({route,navigation}) {
 
     // ============================2023-03-22================================//
     /*----------------------------------------------------------------------*/
+
     // ============================푸시알림창=================================//
 
     // 배포용
