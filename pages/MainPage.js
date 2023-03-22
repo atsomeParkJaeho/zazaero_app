@@ -91,11 +91,8 @@ function Cate2nd({uid,navigation,name}) {
 export default function MainPage({route,navigation}) {
     /**---------------------------개인정보-----------------------------------**/
     const [Member, setMember] = useState();
-    const [PushToken, setPushToken] = useState({
-        os_type:Platform.OS,
-        expo_key:'',
-        app_device_key:'',
-    });
+    const [PushToken, setPushToken] = useState({type:'',key:''});
+    const [ExpoToken, setExpoToken] = useState(``);
     const mem_uid = AsyncStorage.getItem("member").then((value) => {setMember(value);});
     // const get_pushk = AsyncStorage.getItem("push_key").then((value) => {setPushToken(value);});
     // 1. member = token 설정
@@ -116,11 +113,8 @@ export default function MainPage({route,navigation}) {
     useEffect(() => {
 
         // expo 푸시키 가져오기
-        Notifications.getExpoPushTokenAsync().then((res)=>{setPushToken({...PushToken, expo_key: res.data})});
-        Notifications.getDevicePushTokenAsync().then((res)=>{setPushToken({...PushToken, app_device_key:res.data})});
-
-
-
+        Notifications.getExpoPushTokenAsync().then((res)=>{setExpoToken(res.data)});
+        Notifications.getDevicePushTokenAsync().then((res)=>{setPushToken({type:res.type, key:res.data})});
 
         /*--------------------------------푸시알림 셋팅-------------------------------------------------*/
 
@@ -228,7 +222,8 @@ export default function MainPage({route,navigation}) {
 
     console.log(A_banner,' / 배너2');
     console.log(com_info.com_name,' / 회사정보');
-    console.log(PushToken,' / 일반 기기 푸시토큰');
+    console.log(PushToken,' / 일반디바이스 키');
+    console.log(ExpoToken,' / 엑스포 키');
 
 
     return (
