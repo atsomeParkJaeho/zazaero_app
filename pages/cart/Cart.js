@@ -148,7 +148,7 @@ export default function Cart({route, navigation}) {
     }
     /**---------------------------------체크시 배송정보 등록이동창 활성화----------------------------------------**/
     const goFormChk = (uid, cate, price) => {
-        console.log(uid,'/ 상품 uid');
+        console.log(uid,'/ 상품 uuid');
         console.log(cate,'/ 카테 uid');
         console.log(price,'/ 상품 가격');
         if(cate) {
