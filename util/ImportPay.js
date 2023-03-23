@@ -11,7 +11,7 @@ import {pay_done_log, pay_result, pay_try_cancel} from "./UTIL_pay";
 function Payment({ route,navigation }) {
 
     const {OrderData} = route.params;
-    console.log(OrderData,'/데이터 확인123123');
+    console.log(OrderData,'/결제창 데이터 확인');
 
     let tot_price = Number(OrderData.settleprice) + Number(OrderData.tot_opt_price) + Number(OrderData.deli_price);
 
@@ -38,22 +38,26 @@ function Payment({ route,navigation }) {
 
     function callback(rsp) {
 
-        console.log(rsp);
+        console.log(rsp,'/ 아임포트 콜백함수');
 
-        const {imp_uid, success, merchant_uid} = rsp;
+        const {imp_uid, success, merchant_uid, error_msg} = rsp;
 
         /* 1. 아임포트 결제관리창에서 api 찾는다.*/
 
         /* 2. 아임포트 결제관리창에서 찾은 api를 관리자로 보낸다. */
+
+        if(error_msg) {return Alert.alert('',`에러 메시지 / ${error_msg}`)}
 
         pay_result(imp_uid, OrderData).then((res)=>{
             if(res) {
                 console.log(res.data);
                 const {result, gd_order} = res.data;
                 if(result === 'OK') {
-                    console.log(gd_order);
+                    console.log(gd_order,'/ [결제 정보 데이터]');
                     console.log('결제완료');
                     Alert.alert('','결제가 완료되었습니다.');
+                } else {
+                    Alert.alert('',`에러 / ${res.data}`);
                 }
             }
         });

@@ -470,7 +470,6 @@ export default function OrderDtail({route,navigation}) {
             if(res) {
                 const {result} = res.data;
                 if(result === 'OK') {
-
                     if(PayMement === 'bank') {
                         Alert.alert('',msg,[N_btn]);
                     } else {

@@ -31,9 +31,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Wishlist from "../icons/ico_heart_c.svg";
 import {ABanner, get_cate_list, get_main_info} from "./UTIL_main";
 import {getAppInfo} from "./order/UTIL_order";
-import * as Notifications from "expo-notifications";
+
 import {mem_push_token} from "./UTIL_mem";
-// import firebase from '@react-native-firebase';
+import {device_chk} from "../device_chk";
+import PushSetting from "../UTIL_push";
 
 
 
@@ -93,8 +94,6 @@ function Cate2nd({uid,navigation,name}) {
 export default function MainPage({route,navigation}) {
     /**---------------------------개인정보-----------------------------------**/
     const [Member, setMember] = useState();
-    const [PushToken, setPushToken] = useState({type:'',key:''});
-    const [ExpoToken, setExpoToken] = useState(``);
     const mem_uid = AsyncStorage.getItem("member").then((value) => {setMember(value);});
     // const get_pushk = AsyncStorage.getItem("push_key").then((value) => {setPushToken(value);});
     // 1. member = token 설정
@@ -116,49 +115,12 @@ export default function MainPage({route,navigation}) {
 
 
     console.log(os_type, ' / 플랫폼 정보');
-    console.log(PushToken,' / 기기 토큰');
-    console.log(ExpoToken,' / 엑스포 토큰');
+
     // console.log(ids,' / 기기 id');
 
 
 
     useEffect(() => {
-
-        // expo 푸시키 가져오기
-        Notifications.getExpoPushTokenAsync().then((res)=>{setExpoToken(res.data)});
-        Notifications.getDevicePushTokenAsync().then((res)=>{setPushToken({type:res.type, key:res.data})});
-
-
-
-
-        /*--------------------------------푸시알림 셋팅-------------------------------------------------*/
-        // Notifications.scheduleNotificationAsync({
-        //     content: {
-        //         title: 'My first local notification',
-        //         body: 'Hello, world!',
-        //         data: { data: 'goes here' },
-        //     },
-        //     trigger: {
-        //         seconds: 5,
-        //     },
-        // });
-
-        Notifications.setNotificationHandler({
-            handleNotification: async () => ({
-                shouldShowAlert: true,
-                shouldPlaySound: true,
-                shouldSetBadge: true,
-            }),
-        });
-
-        Notifications.addNotificationReceivedListener((res) => {
-            console.log(res,'/알림 내용확인');
-        });
-
-        Notifications.addNotificationResponseReceivedListener((res) => {
-            console.log(res,'/연동확인');
-        });
-        //
 
 
 
@@ -200,6 +162,20 @@ export default function MainPage({route,navigation}) {
                 } else {
                     Alert.alert('','에러');
                 }
+            }
+        });
+
+
+        /**------------------------푸시알림 체크루틴------------------------**/
+        device_chk().then((res)=>{
+            // 1. 엑스포일 경우 엑스포 전용 푸시알림 호출한다.
+            if(res === 'expo') {
+                console.log(`[${res}] 엑스포 푸시알림이 호출한다.`);
+            } else {
+            // 2. 배포용일 경우 파이어베이스 fcm 푸시알림이 호춣한다.
+                console.log(`[${res}] 배포용 푸시알림이 호출한다.`);
+                // 3-1. 파이어 베이스 푸시알림 호출
+                return PushSetting();
             }
         });
 
