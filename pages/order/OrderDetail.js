@@ -306,7 +306,9 @@ export default function OrderDtail({route,navigation}) {
             let temp = res.map(val=>{return {...val, req_memo    :'', goods_cnt   :1,}})
             set_A_goods(temp);
         }
-        /**-------------주문상세정보 출력------------**/
+
+
+
         getOrderInfo(gd_order_uid, Member).then(res=> {
             if (res.data.result === 'OK') {
                 const {gd_order, cancel_doing_cnt} = res.data;

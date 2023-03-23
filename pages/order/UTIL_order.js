@@ -13,6 +13,7 @@ export const getOrderInfo = async (gd_order_uid, Member) =>{
         }
     });
     return res;
+
 }
 /**-------------------------------------앱정보 출력-----------------------------------------------------------------------**/
 export const getAppInfo = async () =>{
@@ -141,6 +142,25 @@ export const OrderMod = async (OrderData, OrderGoodsList, Member, A_goods, A_ord
     console.log(A_add_goods_uid,'/ 자재추가 상품 uid');
     console.log(A_add_goods_cnt,'/ 자재추가 상품 수량');
 
+    let data = {
+        act_type             :"mod_recv_info",
+        gd_order_uid         :OrderData.gd_order_uid,
+        mem_uid              :Member,
+        addr1                :OrderData.addr1,
+        addr2                :OrderData.addr2,
+        hope_deli_date       :OrderData.hope_deli_date,
+        hope_deli_time       :OrderData.hope_deli_time,
+        zonecode             :OrderData.zonecode,
+        recv_name            :OrderData.recv_name,
+        recv_mobile          :OrderData.recv_mobile,
+        A_order_uid          :A_order_uid,
+        A_order_item_uid     :A_order_item_uid,
+        A_order_item_cnt     :A_order_item_cnt,
+        A_add_goods_uid      :A_add_goods_uid,
+        A_add_goods_cnt      :A_add_goods_cnt,
+    }
+    console.log(data,' / [전송 파라미터]');
+
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"mod_recv_info",
         gd_order_uid         :OrderData.gd_order_uid,
@@ -162,6 +182,8 @@ export const OrderMod = async (OrderData, OrderGoodsList, Member, A_goods, A_ord
             'Content-type': 'multipart/form-data'
         }
     });
+
+
 
     return res;
 
