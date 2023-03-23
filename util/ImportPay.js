@@ -45,7 +45,7 @@ function Payment({ route,navigation }) {
     // 결제전 취소 처리
 
     const goCancel = () => {
-        Alert.alert('','이전으로 되돌아가시겠습니까?',[
+        Alert.alert('','이전으로 돌아가시겠습니까?',[
             {text:"아니오"},
             {text:"예",
                 onPress:()=>{
