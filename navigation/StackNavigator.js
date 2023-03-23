@@ -63,6 +63,7 @@ import Postcode from "@actbase/react-daum-postcode/lib/app.native";
 import DaumPostCode from "../util/DaumPostCode";
 import Payment from "../util/ImportPay";
 import Push from "../Push";
+import {LogBox, YellowBox} from "react-native";
 
 
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
@@ -72,9 +73,7 @@ const Stack = createStackNavigator();
 
 const StackNavigator = () => {
 
-
-
-
+    console.disableYellowBox = true;
     // 회원접속상태 확인
     console.log('네비게이션');
     const [Member, setMember] = useState();

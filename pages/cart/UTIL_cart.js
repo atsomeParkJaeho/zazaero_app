@@ -65,3 +65,31 @@ export const save_req_memo = async (Member, AT_order_item_uid, req_memo) => {
 
     return res;
 }
+
+/**--즐겨찾기 이벤트 정리--**/
+export const get_my_zzim_list_new = async (Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
+        act_type        :"get_my_zzim_list_new",
+        login_status    :"Y",
+        mem_uid         :Member,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}
+
+export const set_my_zzim = async (uid, Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
+        act_type        : "set_my_zzim",
+        login_status    : "Y",
+        mem_uid         : Member,
+        link_uid        : uid,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}

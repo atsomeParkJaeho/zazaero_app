@@ -57,50 +57,46 @@ import WishIcon from "../../icons/ico_heart_c.svg";
 import { useIsFocused } from '@react-navigation/native';
 import {ins_cart} from "./UTIL_goods";
 import Wish from "../../icons/ico_heart_nc.svg";
-import {ins_order_goods} from "../order/UTIL_order";
+import {add_order_goods} from "../order/UTIL_order";
+import {get_my_zzim_list_new, set_my_zzim} from "../cart/UTIL_cart";
 
 
 export default function Wishlist({route,navigation}) {
+
+
+
 
     const [Member, setMember] = useState();
     const mem_uid = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
     const Update = useIsFocused();
-
     console.log('즐겨찾기2');
 
     // ==========1. 상태정의 리스트
     const [WishList, setWishList]       = useState([]);     // 즐겨찾기 상태정의
 
+    // A_goods_list_o 에서 goods_uid만 뽑아서 배열을 만든다.
+    //A_goods_list_o
+
     // ===========2. 불러오기
     useEffect(()=>{
         // ==============2) 즐겨찾기 리스트 불러오기
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
-            act_type        :"get_my_zzim_list_new",
-            login_status    :"Y",
-            mem_uid         :Member,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
-            console.log(res.data,'/// 즐겨찾기 불러오기')
+        get_my_zzim_list_new(Member).then((res)=>{
+            console.log(res.data,'/즐겨찾기 불러오기')
             if(res) {
+                console.log(res.data,'/콘솔 확인');
                 const {result, A_zzim} = res.data;
                 if(result === 'OK') {
                     /**1. 장바구니 체크 배열 넣기**/
-
                     /* 즐겨찾기 체크        : goods_chk */
                     /* 즐겨찾기 리스트 삭제  : goods_wish */
-
                     let temp = A_zzim.map((cate)=>{
                         return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
                                 return {...val, goods_chk:false, goods_wish:true}
                             })}
                     })
                     setWishList(temp);
-
                 } else {
                     console.log('실패');
                 }
@@ -112,16 +108,7 @@ export default function Wishlist({route,navigation}) {
     /**---------------------즐겨찾기에 삭제----------------------------**/
     const delWish = (uid) => {
         // 즐겨찾기 상품리스트 가져오기
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
-            act_type        : "set_my_zzim",
-            login_status    : "Y",
-            mem_uid         : Member,
-            link_uid        : uid,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
+        set_my_zzim(uid, Member).then((res)=>{
             if(res) {
                 const {result, my_zzim_flag} = res.data;
                 if(result === 'OK') {
@@ -148,65 +135,85 @@ export default function Wishlist({route,navigation}) {
 
     /**---------------------체크시 상태 변경----------------------------**/
     const goChk = (uid) => {
-        console.log('액션');
-        setWishList(WishList.map((cate)=>{
-            return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
-                    if(val.goods_uid === uid) {
-                        return {...val, goods_chk:!val.goods_chk}
-                    } else {
-                        return val;
-                    }
-                })}
-        }));
+
+        // A_goods_list_o의 goods_uid중에 중복되는 경우 alert를 띄우고 체크를 못하도록 한다.
+        if(route.params) {
+
+            const {A_goods_list_o} = route.params;
+            if(A_goods_list_o) {
+                let chk = A_goods_list_o.map(val=>val.goods_uid);
+                let result = chk.includes(uid);
+
+                if(result) {
+                    return Alert.alert('','이미 추가하신 자재입니다.');
+                }
+
+
+            }
+            setWishList(WishList.map((cate)=>{
+                return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
+                        if(val.goods_uid === uid) {
+                            return {...val, goods_chk:!val.goods_chk}
+                        } else {
+                            return val;
+                        }
+                    })}
+            }));
+        } else {
+            setWishList(WishList.map((cate)=>{
+                return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
+                        if(val.goods_uid === uid) {
+                            return {...val, goods_chk:!val.goods_chk}
+                        } else {
+                            return val;
+                        }
+                    })}
+            }));
+        }
+
+
+
     }
     /**---------------------------------자재추가 이벤트----------------------------------------**/
     const AddGoods = () => {
         // 테이블 AT_order, gd_order, AT_order_item
 
-        let {gd_order_uid} = route.params;
-
+        let {gd_order_uid, ord_status ,A_goods_list_o} = route.params;
         console.log(gd_order_uid);
+        console.log(ord_status);
 
-        /**------------------------------1. 체크한상품 필터링------------------------**/
-        let temp = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
-        let Add_goods = temp.reduce((val,idx)=>{
-            return val.concat(idx);
-        });
-        let goods_uid = Add_goods.map(val=>val.goods_uid);
-
-
-        console.log(Add_goods);
-
-        Add_goods.map(val=>{
-            /**------------------------------2. db로 보내기-----------------------------**/
-            ins_order_goods(gd_order_uid, val.goods_uid).then((res)=>{
+        if(ord_status === undefined) {
+            /**------------------------------1. 체크한상품 필터링------------------------**/
+            let temp = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
+            let Add_goods = temp.reduce((val,idx)=>{return val.concat(idx);});
+            let goods_uid = Add_goods.map(val=>val.goods_uid);
+            add_order_goods(gd_order_uid, goods_uid).then((res)=>{
                 if(res) {
-                    const {result} = res.data;
+                    const {result, err_msg} = res.data;
                     console.log(result);
                     if(result === 'OK') {
                         console.log('연결');
-                    }
-
-                    if(result === 'NG_dup_goods_uid') {
-                        console.log('이미 주문에 존재한 상품입니다.');
-                        return Alert.alert('','이미 주문에 존재한 상품입니다.',[
-                            {
-                                text:"확인",
-                                onPress:()=>{
-                                    navigation.pop();
-                                }
-                            },
-                        ]);
+                        Alert.alert('','자재를 추가하였습니다.\n발주내용중\n자재정보의 변경이 발생하여\n발주검수부터 다시 진행하게 됩니다.');
+                        return navigation.pop();
                     } else {
-                        console.log('실패');
+                        Alert.alert('',`${err_msg}`);
+                        // return navigation.pop();
                     }
                 }
             });
-        });
-        /**------------------------------3. 완료 액션후 페이지 이동------------------------**/
-
-        Alert.alert('','자재 추가가 완료되었습니다.');
-        navigation.pop();
+        } else {
+            console.log(A_goods_list_o,' / 이전 발주 기록');
+            let temp            = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
+            let A_goods_list    = temp.reduce((val,idx)=>{return val.concat(idx)});
+            let A_filter        = [...new Set([...A_goods_list, ...A_goods_list_o])];
+            Alert.alert('','선택하신 자재를 추가하시겠습니까?',[
+                {text:"취소",onPress:()=>{}},
+                {text:"추가",onPress:()=>{
+                        return navigation.navigate('발주상세',{gd_order_uid:gd_order_uid, A_goods_list:A_filter})
+                    }
+                }
+            ]);
+        }
 
     }
 
@@ -269,15 +276,12 @@ export default function Wishlist({route,navigation}) {
                         {(result.length !== 0) ? (
                             <>
                                 {result.map((cate,idx)=> {
-
                                     let wish_cnt = cate.A_goods_list.filter(val=>val.goods_wish === true);
-
                                     if(wish_cnt.length > 0) {
                                         return(
                                             <>
                                                 <List.Accordion title={cate.cate_1st_name} style={[container, styles.Accordion_tit]}>
                                                     {cate.A_goods_list.map(val => {
-
                                                         if (val.goods_wish) {
                                                             return (
                                                                 <>
@@ -311,7 +315,7 @@ export default function Wishlist({route,navigation}) {
                                                                                                         {/*========상품명========*/}
                                                                                                         <Text
                                                                                                             style={[styles.cate_2st_btn_txt, (val.goods_wish_chk_chk) ? {color: "red"} : {color: "#000"}]}
-                                                                                                            numberOfLines={1}>{val.goods_name}</Text>
+                                                                                                            numberOfLines={2}>{val.goods_name}</Text>
                                                                                                     </TouchableOpacity>
                                                                                                 </>
                                                                                             ):(
@@ -320,7 +324,7 @@ export default function Wishlist({route,navigation}) {
                                                                                                         {/*========상품명========*/}
                                                                                                         <Text
                                                                                                             style={[styles.cate_2st_btn_txt, (val.goods_wish_chk_chk) ? {color: "red"} : {color: "#000"}]}
-                                                                                                            numberOfLines={1}>{val.goods_name}</Text>
+                                                                                                            numberOfLines={2}>{val.goods_name}</Text>
                                                                                                     </TouchableOpacity>
                                                                                                 </>
                                                                                             )}
@@ -335,16 +339,13 @@ export default function Wishlist({route,navigation}) {
                                                                                                     <Checkbox
                                                                                                         style={styles.btn_cart}
                                                                                                         value={val.goods_chk}
-                                                                                                        onValueChange={() => {
-                                                                                                            goChk(val.goods_uid);
-                                                                                                        }}/>
+                                                                                                        onValueChange={() => {goChk(val.goods_uid);}}/>
                                                                                                     <View style={{
                                                                                                         flex: 1,
                                                                                                         alignItems: "center",
                                                                                                         justifyContent: "center"
                                                                                                     }}>
-                                                                                                        <Chk width={16}
-                                                                                                             height={22}></Chk>
+                                                                                                        <Chk width={16} height={22}></Chk>
                                                                                                     </View>
                                                                                                 </View>
                                                                                             ) : (
@@ -354,9 +355,8 @@ export default function Wishlist({route,navigation}) {
                                                                                                     <Checkbox
                                                                                                         style={styles.btn_cart}
                                                                                                         value={val.goods_chk}
-                                                                                                        onValueChange={() => {
-                                                                                                            goChk(val.goods_uid)
-                                                                                                        }}/>
+                                                                                                        onValueChange={() => {goChk(val.goods_uid)}}
+                                                                                                    />
                                                                                                     <View style={{
                                                                                                         flex: 1,
                                                                                                         alignItems: "center",

@@ -58,6 +58,7 @@ import { useIsFocused } from '@react-navigation/native';
 import {ins_cart} from "./UTIL_goods";
 import Wish from "../../icons/ico_heart_nc.svg";
 import {add_order_goods} from "../order/UTIL_order";
+import {get_my_zzim_list_new, set_my_zzim} from "../cart/UTIL_cart";
 
 
 export default function Wishlist({route,navigation}) {
@@ -81,32 +82,21 @@ export default function Wishlist({route,navigation}) {
     // ===========2. 불러오기
     useEffect(()=>{
         // ==============2) 즐겨찾기 리스트 불러오기
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
-            act_type        :"get_my_zzim_list_new",
-            login_status    :"Y",
-            mem_uid         :Member,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
-            console.log(res.data,'/// 즐겨찾기 불러오기')
+        get_my_zzim_list_new(Member).then((res)=>{
+            console.log(res.data,'/즐겨찾기 불러오기')
             if(res) {
                 console.log(res.data,'/콘솔 확인');
                 const {result, A_zzim} = res.data;
                 if(result === 'OK') {
                     /**1. 장바구니 체크 배열 넣기**/
-                    
                     /* 즐겨찾기 체크        : goods_chk */
                     /* 즐겨찾기 리스트 삭제  : goods_wish */
-                    
                     let temp = A_zzim.map((cate)=>{
                         return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
                             return {...val, goods_chk:false, goods_wish:true}
                             })}
                     })
                     setWishList(temp);
-
                 } else {
                     console.log('실패');
                 }
@@ -118,16 +108,7 @@ export default function Wishlist({route,navigation}) {
     /**---------------------즐겨찾기에 삭제----------------------------**/
     const delWish = (uid) => {
         // 즐겨찾기 상품리스트 가져오기
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php',{
-            act_type        : "set_my_zzim",
-            login_status    : "Y",
-            mem_uid         : Member,
-            link_uid        : uid,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
+        set_my_zzim(uid, Member).then((res)=>{
             if(res) {
                 const {result, my_zzim_flag} = res.data;
                 if(result === 'OK') {
@@ -196,32 +177,25 @@ export default function Wishlist({route,navigation}) {
     /**---------------------------------자재추가 이벤트----------------------------------------**/
     const AddGoods = () => {
         // 테이블 AT_order, gd_order, AT_order_item
-
         let {gd_order_uid, ord_status ,A_goods_list_o} = route.params;
-        console.log(gd_order_uid);
-        console.log(ord_status);
+        console.log(gd_order_uid,'/ 발주 uid');
+        console.log(ord_status,'/ 발주 상태');
 
-        if(ord_status === undefined) {
+        if(ord_status === 'ord_ready' || ord_status === 'pay_ready') {
             /**------------------------------1. 체크한상품 필터링------------------------**/
-            let temp = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
-            let Add_goods = temp.reduce((val,idx)=>{return val.concat(idx);});
-            let goods_uid = Add_goods.map(val=>val.goods_uid);
-            add_order_goods(gd_order_uid, goods_uid).then((res)=>{
-                if(res) {
-                    const {result, err_msg} = res.data;
-                    console.log(result);
-                    if(result === 'OK') {
-                        console.log('연결');
-                        Alert.alert('','자재를 추가하였습니다.\n발주내용중\n자재정보의 변경이 발생하여\n발주검수부터 다시 진행하게 됩니다.');
-                        return navigation.pop();
-                    } else {
-                        Alert.alert('',`${err_msg}`);
-                        // return navigation.pop();
+            console.log(A_goods_list_o,' / 결제전 자재추가');
+            let temp            = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
+            let A_goods_list    = temp.reduce((val,idx)=>{return val.concat(idx)});
+            let A_filter        = [...new Set([...A_goods_list, ...A_goods_list_o])];
+            Alert.alert('','선택하신 자재를 추가하시겠습니까?',[
+                {text:"취소",onPress:()=>{}},
+                {text:"추가",onPress:()=>{
+                        return navigation.navigate('발주상세',{gd_order_uid:gd_order_uid, A_goods_list:A_filter})
                     }
                 }
-            });
+            ]);
         } else {
-            console.log(A_goods_list_o,' / 이전 발주 기록');
+            console.log(A_goods_list_o,' / 결제후 자재추가');
             let temp            = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
             let A_goods_list    = temp.reduce((val,idx)=>{return val.concat(idx)});
             let A_filter        = [...new Set([...A_goods_list, ...A_goods_list_o])];

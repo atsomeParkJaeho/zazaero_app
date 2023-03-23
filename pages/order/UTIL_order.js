@@ -124,20 +124,29 @@ export const ATorderDel = async (OrderData, Member, order_uid) => {
     return res;
 }
 /**-------------------------------------발주정보 수정-----------------------------------------------------------------------**/
-export const OrderMod = async (OrderData, Member, addr1, zonecode, gd_order_uid, A_order_item_uid, A_order_item_cnt) => {
+export const OrderMod = async (OrderData, Member, A_goods) => {
+
+    console.log(OrderData,'/ 발주정보');
+    console.log(Member,'/ 회원정보');
+    console.log(A_goods,'/ 자재추가한 자재');
+
+    let A_add_goods_uid         = A_goods.map(val=>String(val.goods_uid));
+    let A_add_goods_cnt         = A_goods.map(val=>String(val.goods_cnt));
+    // let A_req_memo          = A_goods_list.map(val=>String(val.req_memo));
+
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"mod_recv_info",
-        gd_order_uid         :gd_order_uid,
+        gd_order_uid         :OrderData.gd_order_uid,
         mem_uid              :Member,
-        addr1                :(addr1) ? (addr1):OrderData.addr1,
+        addr1                :OrderData.addr1,
         addr2                :OrderData.addr2,
         hope_deli_date       :OrderData.hope_deli_date,
         hope_deli_time       :OrderData.hope_deli_time,
-        zonecode             :(zonecode) ? (zonecode):OrderData.zonecode,
+        zonecode             :OrderData.zonecode,
         recv_name            :OrderData.recv_name,
         recv_mobile          :OrderData.recv_mobile,
-        A_order_item_uid     :A_order_item_uid,
-        A_order_item_cnt     :A_order_item_cnt,
+        A_add_goods_uid      :A_add_goods_uid,
+        A_add_goods_cnt      :A_add_goods_cnt,
     },{
         headers: {
             'Content-type': 'multipart/form-data'
@@ -316,10 +325,10 @@ export const chg_order_item_cnt = async (order_item_uid, cnt) => {
 
 export const add_order_goods = async (gd_order_uid, goods_uid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-        act_type        :"add_order_goods",
-        gd_order_uid    :gd_order_uid,
-        A_goods_uid     :goods_uid,
-        cnt             :1,
+        act_type            :"add_order_goods",
+        gd_order_uid        :gd_order_uid,
+        A_add_goods_uid     :A_add_goods_uid,
+        A_add_goods_cnt     :A_add_goods_cnt,
     },{
         headers: {
             'Content-type': 'multipart/form-data'
@@ -462,6 +471,20 @@ export const pay_cancel = async (OrderData, Member) => {
     return res;
 }
 
+/**-----------------------------------------결제전 자재추가 2023-03-23-----------------------------------------------------------------**/
+export const add_goods = async () => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type                    :"pay_cancel",
+        gd_order_uid                :OrderData.gd_order_uid,
+        Member                      :OrderData.mem_uid,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
+}
 
 
 

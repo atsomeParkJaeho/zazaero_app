@@ -113,7 +113,6 @@ export default function MainPage({route,navigation}) {
     // Expo Go 클라이언트 ID 가져오기
     // console.log(uniqueId);
 
-
     console.log(os_type, ' / 플랫폼 정보');
 
     // console.log(ids,' / 기기 id');
