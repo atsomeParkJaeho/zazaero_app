@@ -124,15 +124,24 @@ export const ATorderDel = async (OrderData, Member, order_uid) => {
     return res;
 }
 /**-------------------------------------발주정보 수정-----------------------------------------------------------------------**/
-export const OrderMod = async (OrderData, Member, A_goods) => {
+export const OrderMod = async (OrderData, OrderGoodsList, Member, A_goods) => {
+
+
+
+    let A_order_uid                 = OrderGoodsList.map((val)=>val.order_uid);
+    let A_order_item_uid            = OrderGoodsList.map((val1)=>String(val1.A_sel_option.map(val2=>val2.order_item_uid)));
+    let A_order_item_cnt            = OrderGoodsList.map((val1)=>String(val1.A_sel_option.map(val2=>val2.option_cnt)));
+    let A_add_goods_uid             = A_goods.map(val=>String(val.goods_uid));
+    let A_add_goods_cnt             = A_goods.map(val=>String(val.goods_cnt));
 
     console.log(OrderData,'/ 발주정보');
     console.log(Member,'/ 회원정보');
     console.log(A_goods,'/ 자재추가한 자재');
-
-    let A_add_goods_uid         = A_goods.map(val=>String(val.goods_uid));
-    let A_add_goods_cnt         = A_goods.map(val=>String(val.goods_cnt));
-    // let A_req_memo          = A_goods_list.map(val=>String(val.req_memo));
+    console.log(A_order_uid,'/ 주문상품 uid');
+    console.log(A_order_item_uid,'/ 주문옵션 uid');
+    console.log(A_order_item_cnt,'/ 상품 수량');
+    console.log(A_add_goods_uid,'/ 자재추가 상품 uid');
+    console.log(A_add_goods_cnt,'/ 자재추가 상품 수량');
 
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"mod_recv_info",
@@ -145,6 +154,9 @@ export const OrderMod = async (OrderData, Member, A_goods) => {
         zonecode             :OrderData.zonecode,
         recv_name            :OrderData.recv_name,
         recv_mobile          :OrderData.recv_mobile,
+        A_order_uid          :A_order_uid,
+        A_order_item_uid     :A_order_item_uid,
+        A_order_item_cnt     :A_order_item_cnt,
         A_add_goods_uid      :A_add_goods_uid,
         A_add_goods_cnt      :A_add_goods_cnt,
     },{

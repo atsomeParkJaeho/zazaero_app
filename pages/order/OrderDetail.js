@@ -231,7 +231,7 @@ export default function OrderDtail({route,navigation}) {
             if(A_goods.length === 0) {return Alert.alert('','자재를 선택해주세요');}
             if(chk_result.length > 1) {return Alert.alert('','같은 공정 자재만 발주 가능합니다.');}
             /**-------------------------발주서 정보 변경시------------------------------**/
-            OrderMod(OrderData, Member, A_goods).then((res)=>{
+            OrderMod(OrderData, OrderGoodsList, Member, A_goods).then((res)=>{
                 if(res) {
                     console.log(res.data);
                     const {result, err_msg} = res.data;
