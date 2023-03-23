@@ -230,8 +230,23 @@ export default function OrderDtail({route,navigation}) {
             let chk_result = [...new Set(chk)];
             if(A_goods.length === 0) {return Alert.alert('','자재를 선택해주세요');}
             if(chk_result.length > 1) {return Alert.alert('','같은 공정 자재만 발주 가능합니다.');}
+
+            let order_item = OrderGoodsList.map(cate=>cate.A_sel_option.map(val=>{
+                return {
+                    order_item_uid  :Number(val.order_item_uid),
+                    cnt             :Number(val.option_cnt),
+                }
+            }));
+
+            let temp = order_item.reduce((val,idx)=>{
+                return val.concat(idx);
+            });
+
+            let A_order_item_uid = temp.map(val=>val.order_item_uid);
+            let A_order_item_cnt = temp.map(val=>val.cnt);
+
             /**-------------------------발주서 정보 변경시------------------------------**/
-            OrderMod(OrderData, OrderGoodsList, Member, A_goods).then((res)=>{
+            OrderMod(OrderData, OrderGoodsList, Member, A_goods, A_order_item_uid, A_order_item_cnt).then((res)=>{
                 if(res) {
                     console.log(res.data);
                     const {result, err_msg} = res.data;
