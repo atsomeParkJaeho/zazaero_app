@@ -7,10 +7,10 @@ export const device_chk = async () => {
     // 1. 엑스포 기기인지 체크한다
     if(type === 'expo') {
         console.log(data,' / 엑스포 기기토큰');
+        return type;
     } else {
         let {data, type} = await Notifications.getDevicePushTokenAsync();
         console.log(`기기 : ${type}\n토큰 : ${data}`);
+        return type;
     }
-
-    return type;
 }

@@ -171,11 +171,16 @@ export default function MainPage({route,navigation}) {
             // 1. 엑스포일 경우 엑스포 전용 푸시알림 호출한다.
             if(res === 'expo') {
                 console.log(`[${res}] 엑스포 푸시알림이 호출한다.`);
+                return
             } else {
             // 2. 배포용일 경우 파이어베이스 fcm 푸시알림이 호춣한다.
                 console.log(`[${res}] 배포용 푸시알림이 호출한다.`);
                 // 3-1. 파이어 베이스 푸시알림 호출
-                return PushSetting();
+                if(res === 'android') {
+                    return PushSetting();
+                } else {
+
+                }
             }
         });
 
@@ -185,11 +190,6 @@ export default function MainPage({route,navigation}) {
     // ============================2023-03-22================================//
     /*----------------------------------------------------------------------*/
     // ============================푸시알림창=================================//
-
-    // 배포용
-    const push_test = (inboundEmail) => {
-
-    };
 
 
     let get_link = (link_type, cfg_val1, cfg_val2, cfg_val3, cfg_val4) => {

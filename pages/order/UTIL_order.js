@@ -447,6 +447,20 @@ export const pay_result = async (OrderData, Member) => {
     return res;
 }
 
+/**---------------------------------------결제창 나올시 이벤트--------------------------------------------------------**/
+export const pay_cancel = async (OrderData, Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type                    :"pay_cancel",
+        gd_order_uid                :OrderData.gd_order_uid,
+        Member                      :OrderData.mem_uid,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
+}
 
 
 

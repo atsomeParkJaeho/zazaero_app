@@ -1,8 +1,12 @@
 import IMP from 'iamport-react-native';
 import {IMPcode} from "./util";
-import {View, Text, StyleSheet, Alert} from 'react-native';
+import {View, Text, StyleSheet, Alert, TouchableOpacity} from 'react-native';
 import axios from "axios";
 import {pay_done_log, pay_result, pay_try_cancel} from "./UTIL_pay";
+import {useEffect} from "react";
+import LeftArrow from "../icons/left_arrow.svg";
+
+import {pay_cancel} from "../pages/order/UTIL_order";
 
 
 
@@ -15,10 +19,51 @@ function Payment({ route,navigation }) {
 
     let tot_price = Number(OrderData.settleprice) + Number(OrderData.tot_opt_price) + Number(OrderData.deli_price);
 
-    console.log(OrderData,'/123');
+    console.log(OrderData,'/주문데이터');
     console.log(OrderData.tot_opt_price,'/옵션 요청비');
     console.log(OrderData.settleprice,'/상품금액');
     console.log(tot_price,'/합계금액');
+
+
+    useEffect(()=>{
+        console.log('/ use이펙트 실행');
+        navigation.setOptions({
+            headerLeft          :()=>{
+                return(
+                    <>
+                        <View style={{paddingLeft:3}}>
+                            <TouchableOpacity onPress={()=>goCancel()}>
+                                <LeftArrow width={25} height={20}/>
+                            </TouchableOpacity>
+                        </View>
+                    </>
+                )
+            }
+        });
+    },[]);
+
+    // 결제전 취소 처리
+
+    const goCancel = () => {
+        Alert.alert('','이전으로 되돌아가시겠습니까?',[
+            {text:"아니오"},
+            {text:"예",
+                onPress:()=>{
+                    pay_cancel(OrderData).then((res)=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                return navigation.pop();
+                            }
+                        } else {
+                            Alert.alert('','에러');
+                        }
+                    })
+                }
+            }
+        ]);
+    }
+
 
     const data = {
         pg                      :'kcp',
