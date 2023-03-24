@@ -32,11 +32,12 @@ import Wishlist from "../icons/ico_heart_c.svg";
 import {ABanner, get_cate_list, get_main_info} from "./UTIL_main";
 import {getAppInfo} from "./order/UTIL_order";
 
-import {mem_push_token} from "./UTIL_mem";
+import {app_download_info, chk_test, mem_push_token} from "./UTIL_mem";
 import {device_chk} from "../device_chk";
 import PushSetting from "../UTIL_push";
+import * as Device from "expo-device";
 // import DeviceInfo from "react-native-device-info";
-
+// import firebase from "react-native-firebase";
 
 // 2차 카테고리 설정
 function Cate2nd({uid,navigation,name}) {
@@ -109,12 +110,25 @@ export default function MainPage({route,navigation}) {
 
     let os_type = Platform;
 
-    // let device = DeviceInfo.getUniqueId();
+    console.log(Device.deviceName,'/디바이스 정보');
+    console.log(Device.modelName,'/디바이스 정보');
+    console.log(Device.osBuildId,'/디바이스 정보');
+    console.log(Device.osInternalBuildId,'/디바이스 정보');
+    // console.log(Device.deviceName,'/디바이스 정보');
 
-
+    // console.log(app_test);
 
     useEffect(() => {
         /*--------------------------------푸시알림 셋팅 끝-------------------------------------------------*/
+        chk_test().then((res)=>{
+            if(res === 'android') {
+                console.log('[파이어베이스 푸시 실행]');
+                return PushSetting();
+            } else {
+                console.log('[안드로이드 푸시 실행]');
+            }
+        });
+
         // 포스트시에 header 셋팅 할것
         get_cate_list(`1`).then((res) => {
             if (res) {

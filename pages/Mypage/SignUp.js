@@ -183,10 +183,7 @@ export default function SignUp({route, navigation}) {
 
         let regPw = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
 
-        if(!SignUp.mem_id) {  /*아이디 */
-            Alert.alert('',`아이디를 입력해주세요.`);
-            return Chkinput.current[0].focus();
-        }
+        if(!SignUp.mem_id) {  /*아이디 */Alert.alert('',`아이디를 입력해주세요.`);return Chkinput.current[0].focus();}
 
         if(Minlangth >= SignUp.mem_id.length) {     // 아이디 최소
             Alert.alert('',`${Minlangth}자 이상 입력해주세요.`);
@@ -280,14 +277,12 @@ export default function SignUp({route, navigation}) {
         }
 
         /**--------------------------첨부파일 요청---------------------------------------**/
-
-
         Sign_up(SignUp).then((res)=>{
             if(res) {
                 const {result} = res.data;
                 console.log(result);
                 if(result === 'OK') {
-                    Alert.alert('','축하합니다.\n\n 회원가입이 완료되었습니다. 로그인 해주세요.');
+                    Alert.alert('','축하합니다.\n회원가입이 완료되었습니다. 로그인 해주세요.');
                     return navigation.navigate('로그인');
                 } else {
                     console.log('실패');

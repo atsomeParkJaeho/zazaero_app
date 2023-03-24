@@ -120,6 +120,7 @@ import platform from "react-native-web/dist/exports/Platform";
 import Close from '../../icons/close_black.svg';
 
 
+
 export default function OrderDtail({route,navigation}) {
 
 

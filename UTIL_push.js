@@ -4,21 +4,28 @@
 //
 // // 배포용 푸시알림 셋팅
 // export default function PushSetting() {
+//     // Background, Quit 상태일 경우
+//     messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+//         //  여기에 로직을 작성한다.
+//         //  remoteMessage.data로 메세지에 접근가능
+//         //  remoteMessage.from 으로 topic name 또는 message identifier
+//         //  remoteMessage.messageId 는 메시지 고유값 id
+//         //  remoteMessage.notification 메시지와 함께 보내진 추가 데이터
+//         //  remoteMessage.sentTime 보낸시간
+//     });
 //
-//     // const FCM_token = async ()=>{
-//     //     let token_id = await messaging.getToken();
-//     // }
-//     // 1. 사용자 fcm 토큰 가져오기
+//
+//     // Foreground 상태인 경우
 //     useEffect(() => {
-//         const temp = messaging().onMessage(async res => {
-//             Alert.alert('새로운 메세지 알림입니다.', JSON.stringify(res));
+//         const unsubscribe = messaging().onMessage(async remoteMessage => {
+//             Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
 //         });
-//         return temp;
-//     }, []);
+//         return unsubscribe;
+//     });
 //
-//     return(
+//     return (
 //         <>
-//             <Text></Text>
+//             <Text>푸시알림 확인창</Text>
 //         </>
 //     );
 // }

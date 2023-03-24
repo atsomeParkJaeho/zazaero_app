@@ -67,9 +67,7 @@ import * as PropTypes from "prop-types";
 import 'moment';
 import 'moment/locale/ko';
 import {RadioButton} from "react-native-paper";  // language must match config
-import Postcode from '@actbase/react-daum-postcode';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {AddrMatch, Phone, Price, Time, Time1, Time2, cancel_List, cancel_d_List, DateChg, DateChg2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import {del_deli_addr, get_deli_addr_list, get_order_ready, InsOrder, SaveDeliAddr, setDeliList} from "./UTIL_order";
@@ -588,7 +586,7 @@ export default function OrderForm({route,navigation}) {
                                                         <View>
                                                             <View style={[flex, justify_content_end]}>
                                                                 <Text style={[h14, text_gray]}>
-                                                                    {DateChg(Date(val.gmd_regdate))}
+                                                                    {DateChg(val.gmd_regdate)}
                                                                 </Text>
                                                                 <TouchableOpacity style={ms2}
                                                                                   onPress={() => delDeli(val.gmd_sno)}>

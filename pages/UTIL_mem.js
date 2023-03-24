@@ -1,5 +1,8 @@
 import axios from "axios";
 import {Platform} from "react-native";
+import * as Device from "expo-device";
+// import {getDeviceId} from "react-native-device-info";
+import {getDevicePushTokenAsync} from "expo-notifications";
 
 
 /**---------------------------------회원가입-------------------------------------------**/
@@ -66,8 +69,47 @@ export const login = async (Login)=>{
 
     return res;
 }
+
+export const chk_test = async () => {
+    let os_type = Platform.OS;
+    if(os_type === 'ios') {
+        console.log('/타입체크 [아이폰]');
+    } else {
+        console.log('/타입체크 [안드로이드]');
+    }
+    return os_type;
+}
+
+/**---------------------------------설치정보 db 저장----------------------------------------------**/
+export const app_download_info = async (Member)=>{
+
+    let os_type = Platform.OS;
+    let device_id = (await getDevicePushTokenAsync()).data;
+    console.log(device_id,'/ed');
+    console.log(test,'/sa');
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php', {
+        act_type         :'app_device_info',
+        device_id        :device_id,
+        os_type          :os_type,
+        mem_uid          :Member,
+        app_version      :'',
+        app_build        :'',
+        os_version       :'',
+        push_id          :'',
+        expo_push_id     :'',
+    }, {
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
+}
+
 /**---------------------------------로그인-------------------------------------------**/
 export const Sign_up = async (SignUp) => {
+    let app_device_id = (await getDevicePushTokenAsync()).data;
+    let test = (await Device.getDeviceTypeAsync());
     let reg_mem_os = Platform.OS;
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php', {
         act_type         : 'mem_reg',
@@ -83,6 +125,9 @@ export const Sign_up = async (SignUp) => {
         addr1            :SignUp.addr1,         // 주소
         addr2            :SignUp.addr2,         // 상세주소
         reg_mem_os       :reg_mem_os,
+        // 가입자 푸시토큰 저장
+        app_device_id    :app_device_id,
+
     }, {
         headers: {
             'Content-type': 'multipart/form-data'
