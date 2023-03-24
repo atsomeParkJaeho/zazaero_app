@@ -35,7 +35,7 @@ import {getAppInfo} from "./order/UTIL_order";
 import {mem_push_token} from "./UTIL_mem";
 import {device_chk} from "../device_chk";
 import PushSetting from "../UTIL_push";
-
+// import DeviceInfo from "react-native-device-info";
 
 
 // 2차 카테고리 설정
@@ -108,21 +108,12 @@ export default function MainPage({route,navigation}) {
     const [A_banner, set_A_banner] = useState([]);
 
     let os_type = Platform;
-    // let device_id = getDeviceId;
 
-    // Expo Go 클라이언트 ID 가져오기
-    // console.log(uniqueId);
-
-    console.log(os_type, ' / 플랫폼 정보');
-
-    // console.log(ids,' / 기기 id');
+    // let device = DeviceInfo.getUniqueId();
 
 
 
     useEffect(() => {
-
-
-
         /*--------------------------------푸시알림 셋팅 끝-------------------------------------------------*/
         // 포스트시에 header 셋팅 할것
         get_cate_list(`1`).then((res) => {
@@ -136,7 +127,6 @@ export default function MainPage({route,navigation}) {
                 }
             }
         }).catch((err) => console.log(err));
-
         /**------------앱정보 가져오기----------------**/
         getAppInfo().then((res)=>{
             if(res) {
@@ -149,7 +139,6 @@ export default function MainPage({route,navigation}) {
                 }
             }
         });
-
         /**------------------------배너------------------------**/
         ABanner().then((res)=>{
             if(res) {
@@ -163,8 +152,6 @@ export default function MainPage({route,navigation}) {
                 }
             }
         });
-
-
         /**------------------------푸시알림 체크루틴------------------------**/
         // device_chk();
 

@@ -237,14 +237,9 @@ export default function OrderDtail({route,navigation}) {
                     cnt             :Number(val.option_cnt),
                 }
             }));
-
-            let temp = order_item.reduce((val,idx)=>{
-                return val.concat(idx);
-            });
-
+            let temp = order_item.reduce((val,idx)=>{return val.concat(idx);});
             let A_order_item_uid = temp.map(val=>val.order_item_uid);
             let A_order_item_cnt = temp.map(val=>val.cnt);
-
             /**-------------------------발주서 정보 변경시------------------------------**/
             OrderMod(OrderData, OrderGoodsList, Member, A_goods, A_order_item_uid, A_order_item_cnt).then((res)=>{
                 if(res) {
