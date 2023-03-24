@@ -630,7 +630,7 @@ export default function OrderForm({route,navigation}) {
                                                 console.log(img_src);
                                                 return(
                                                     <>
-                                                        <View style={[flex_between_bottom]}>
+                                                        <View style={[flex_between_bottom, mb1]}>
                                                             <View style={[flex_end]}>
                                                                 <Image style={[styles.goods_thum]} source={{uri: 'http://www.zazaero.com' + img_src}}/>
                                                                 <View style={ms2}>
@@ -645,6 +645,9 @@ export default function OrderForm({route,navigation}) {
                                                                 <Text style={[h16]}>{Price(val.sum_order_price)} 원</Text>
                                                                 {/*총금액*/}
                                                             </View>
+                                                        </View>
+                                                        <View>
+                                                            <Text>{items.req_memo}</Text>
                                                         </View>
                                                     </>
                                                 );
