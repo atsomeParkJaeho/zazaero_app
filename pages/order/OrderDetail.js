@@ -128,9 +128,7 @@ export default function OrderDtail({route,navigation}) {
     const {gd_order_uid, imp_log, addr1, zonecode, A_goods_list} = route.params;
     /**--------------------------------------필수 정보사항--------------------------------------------------**/
     const [Member, setMember]          = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     const InputFocus = useRef([]);
     /**-----------------------------------------수정 상태 설정-------------------------------------------------------**/
     const [Mod, setMod] = useState(false);          // 발주상태시 수정 변경가능
@@ -229,7 +227,7 @@ export default function OrderDtail({route,navigation}) {
             /**----------------------------일반 수정시---------------------------**/
             let chk = A_goods.map(val=>val.cate_1st_uid);
             let chk_result = [...new Set(chk)];
-            if(A_goods.length === 0) {return Alert.alert('','자재를 선택해주세요');}
+            // if(A_goods.length === 0) {return Alert.alert('','자재를 선택해주세요');}
             if(chk_result.length > 1) {return Alert.alert('','같은 공정 자재만 발주 가능합니다.');}
 
             let order_item = OrderGoodsList.map(cate=>cate.A_sel_option.map(val=>{
@@ -385,6 +383,7 @@ export default function OrderDtail({route,navigation}) {
         }
     }
     const A_goInput = (keyValue, e, goods_uid, num_type) => {
+
         if(num_type === 'minus') {
             let temp = A_goods.map(val=>{
                 if(val.goods_uid === goods_uid) {
@@ -1377,7 +1376,6 @@ export default function OrderDtail({route,navigation}) {
             }
         }
 
-
         if(OrderData.ord_status === 'ord_ready' || OrderData.ord_status === 'pay_ready' || OrderData.ord_status === 'pay_err' || OrderData.ord_status === 'pay_try') {
             if(Mod) {
                 return (
@@ -1581,10 +1579,9 @@ export default function OrderDtail({route,navigation}) {
                         
                         
                         {/**--------------------------------결제전 추가 자재 목록----------------------------------------**/}
-
                         {(OrderData.ord_status === 'ord_ready' || OrderData.ord_status === 'pay_ready') && (
                             <>
-                                {(A_goods) && (
+                                {(A_goods.length > 0) && (
                                     <>
                                         <View style={[container, {borderBottomWidth: 1,borderColor:"#e6e6e6",}]}>
                                             <View style={[flex_between]}>
@@ -1684,8 +1681,6 @@ export default function OrderDtail({route,navigation}) {
                     </>
                 )}
                 {/**-----------------자재목록---------------------------------------**/}
-
-
                 {/**/}
                 <View style={gray_bar}/>
             </>
@@ -1786,28 +1781,14 @@ export default function OrderDtail({route,navigation}) {
         /**----------------총 결제금액은 자재가격 + 요청옵션비 + 배송비 + 포인트----------------**/
             // 총 결제금액
         let Settlekindprice = Number(OrderData.goodsprice)+Number(OrderData.deli_price)+Number(OrderData.tot_opt_price);
-
         return(
             <>
                 <View>
-
-
                     {/**---------------배송정보---------------**/}
-                    {(OrderData.deli_mem_name) && (
+                    {(OrderData.deli_mem_mobile) && (
                         <>
                             <View style={container}>
                                 <Text style={[h18]}>배송정보</Text>
-                            </View>
-                            {/**------------------------배송기사명------------------------**/}
-                            <View style={[flex,mt1]}>
-                                <View style={[styles.wt30]}>
-                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송기사명</Text>
-                                </View>
-                                <View style={[styles.wt70]}>
-                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                        {OrderData.deli_mem_name}
-                                    </Text>
-                                </View>
                             </View>
                             {/**------------------------배송기사 연락처------------------------**/}
                             <View style={[flex]}>
@@ -1816,7 +1797,7 @@ export default function OrderDtail({route,navigation}) {
                                 </View>
                                 <View style={[styles.wt70]}>
                                     <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                        {OrderData.deli_mem_mobile}
+                                        {(OrderData.deli_mem_mobile) ? OrderData.deli_mem_mobile : `미정`}
                                     </Text>
                                 </View>
                             </View>
@@ -1844,7 +1825,6 @@ export default function OrderDtail({route,navigation}) {
                                     </View>
                                 </View>
                             )}
-
                         </>
                     )}
 

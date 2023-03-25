@@ -59,14 +59,10 @@ import {
     text_gray, select_box, select_txt, select_icon_box, text_black, h17
 } from '../../common/style/AtStyle';
 import {sub_page, gary_bar, gray_bar} from '../../common/style/SubStyle';
-import axios from "axios";
 import {FormStyle} from "./FormStyle";
 import CalendarStrip from 'react-native-calendar-strip';
-import { Calendar, CalendarList ,Agenda } from 'react-native-calendars';
-import * as PropTypes from "prop-types";
 import 'moment';
 import 'moment/locale/ko';
-import {RadioButton} from "react-native-paper";  // language must match config
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {AddrMatch, Phone, Price, Time, Time1, Time2, cancel_List, cancel_d_List, DateChg, DateChg2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
@@ -83,9 +79,7 @@ export default function OrderForm({route,navigation}) {
     let order_result_uid = order_uid.map(val=>Number(val.order_uid));
 
     const [Member, setMember]          = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     const InputFocus = useRef([]);
 
     const [Show, setShow]         = useState(false);    // 셀렉트창 노출 여부

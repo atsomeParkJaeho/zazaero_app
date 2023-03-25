@@ -13,8 +13,6 @@ import {
     Alert, FlatList
 } from 'react-native';
 import {NavigationContainer, useIsFocused} from '@react-navigation/native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-
 // 공통 CSS 추가
 import {
     container,
@@ -40,22 +38,19 @@ import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
 // 샘플데이터
 import {DateChg, order_List, ordStatus} from "../../util/util";
-import axios from "axios";
 import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {get_order_list} from "./UTIL_order";
 
 
 function OrderStatus({route, navigation}) {
-
-
     /**-------------------기본 회원정보 셋팅-----------------------**/
-    const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
+    const [Member, setMember]               = useState();
+    const mem_uid                           = AsyncStorage.getItem("member").then((value) => {
         setMember(value);
     });
-    const Update = useIsFocused();
-    const [OrderList, setOrderList] = useState([]);     // 발주내역 출력
+    const Update                            = useIsFocused();
+    const [OrderList, setOrderList]         = useState([]);     // 발주내역 출력
     console.log('전달 2값 / ',Member);
     /**-----------------------------주문서정보 출력----------------------------**/
     const getOrderStatus = () => {

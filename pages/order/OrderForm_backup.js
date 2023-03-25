@@ -85,9 +85,7 @@ export default function OrderForm({route,navigation}) {
     let order_result_uid = order_uid.map(val=>Number(val.order_uid));
 
     const [Member, setMember]          = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     const InputFocus = useRef([]);
 
     const [Show, setShow]         = useState(false);    // 셀렉트창 노출 여부

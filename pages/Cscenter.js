@@ -1,7 +1,5 @@
 import React from 'react'
 import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Linking, Platform} from 'react-native'
-import logo from "../assets/img/top_logo.png";
-import Icon from "react-native-vector-icons/AntDesign";
 import {bg_white, text_primary} from "../common/style/AtStyle";
 import ArrowRight from "../icons/arrow_r.svg";
 

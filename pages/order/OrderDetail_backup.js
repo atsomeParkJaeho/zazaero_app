@@ -50,9 +50,7 @@ export default function OrderDtail({route,navigation}) {
     const {gd_order_uid, imp_log, addr1, zonecode} = route.params;
     /**--------------------------------------필수 정보사항--------------------------------------------------**/
     const [Member, setMember]          = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     const InputFocus = useRef([]);
     /**-----------------------------------------수정 상태 설정-------------------------------------------------------**/
     const [Mod, setMod] = useState(false);          // 발주상태시 수정 변경가능

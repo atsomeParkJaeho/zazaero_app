@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Button, CheckBox, Text, TextInput, View, Image, TouchableOpacity, ScrollView,useWindowDimensions} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
 
 // 공통 CSS 추가
 import {container, bg_white, flex_between, input, flex, flex_top, padding_bottom} from '../../common/style/AtStyle';
@@ -9,7 +9,6 @@ import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
 // 샘플데이터
 import {order_List} from "../../util/util";
-import axios from "axios";
 
 export default function Order({navigation, route}) {
 
