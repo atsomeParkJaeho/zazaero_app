@@ -56,9 +56,7 @@ export default function Cart({route, navigation}) {
     const [CartUid, setCartUid]      = useState(``);
     const [Cart1stUid, setCart1stUid]      = useState(``);
     const [CartList, setCartList]    = useState([]);           // 장바구니 1차 카테고리 출력
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     const Update = useIsFocused();
 
     /**---------------------------------페이지 진입시 노출----------------------------------------**/

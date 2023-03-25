@@ -35,9 +35,7 @@ import {cancelType, DateChg, Price, refundStatus} from "../../util/util";
 
 export default function Cancel({navigation, route}) {
     const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
 
     const [cancel_list, set_cancel_list] = useState([]);
 

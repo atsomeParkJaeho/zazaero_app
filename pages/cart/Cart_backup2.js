@@ -52,9 +52,7 @@ import {OnlyNum, Price} from "../../util/util";
 export default function Cart({route, navigation}) {
 
     const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
 
 
     console.log('장바구니');
