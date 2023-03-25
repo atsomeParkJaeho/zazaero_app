@@ -247,7 +247,7 @@ export default function OrderDtail({route,navigation}) {
                     if(result === 'OK') {
                         setMod(!Mod);
                         Alert.alert('','저장되었습니다.',[
-                            {text:"OK", onPress:()=>{navigation.pop()}
+                            {text:"OK", onPress:()=>{navigation.replace('발주상세', {gd_order_uid:OrderData.gd_order_uid})}
                             }
                         ]);
                     } else if(result === 'OK_ord_chg') {

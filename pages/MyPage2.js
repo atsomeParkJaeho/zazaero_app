@@ -3,7 +3,7 @@ import {View,Text,StyleSheet,Image, TouchableOpacity} from 'react-native'
 
 
 export default function MyPage2(){
-    const aboutImage = "https://firebasestorage.googleapis.com/v0/b/sparta-image.appspot.com/o/lecture%2FaboutImage.png?alt=media&token=13e1c4f6-b802-4975-9773-e305fc7475c4"
+    // const aboutImage = "https://firebasestorage.googleapis.com/v0/b/sparta-image.appspot.com/o/lecture%2FaboutImage.png?alt=media&token=13e1c4f6-b802-4975-9773-e305fc7475c4"
     return (
         <View style={styles.container}>
             <Text style={styles.title}>HI! 자재로 앱개발 반에 오신것을 환영합니다</Text>

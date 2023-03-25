@@ -273,6 +273,7 @@ export default function OrderForm({route,navigation}) {
                                 <Text style={[FormStyle.FormLabel]}>공사명</Text>
                                 <TextInput style={[input,{flex:1}]}
                                            placeholder="공사명"
+                                           editable={(modAddr !== 'mod')}
                                            value={OrderData.order_title}
                                            onChangeText={(order_title)=>goInput("order_title",order_title)}
                                            ref={el => (InputFocus.current[0] = el)}

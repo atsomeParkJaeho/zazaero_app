@@ -71,7 +71,7 @@ export default function GoodsCateList({route, navigation}) {
     const [Cate2ndActive, setCate2ndActive]     = useState(``);     // 현재 페이지 상태
     const [Cate3rdActive, setCate3rdActive]     = useState(``);     // 현재 페이지 상태
     const [goods_detail, set_goods_detail]      = useState([]);     // 상세페이지 설정
-    const [GoodsCnt, setGoodsCnt]      = useState(1);     // 상세페이지 설정
+    const [GoodsCnt, setGoodsCnt]               = useState(1);     // 상세페이지 설정
 
 
     const update = useIsFocused();
@@ -106,7 +106,7 @@ export default function GoodsCateList({route, navigation}) {
                     console.log('확인');
                     setGoodsList(A_goods);
                 } else {
-                    console.log('실패');
+                    Alert.alert('','실패');
                 }
             }
         });
@@ -117,7 +117,7 @@ export default function GoodsCateList({route, navigation}) {
                 if (result === 'OK') {
                     setCate2List(A_cate_2nd);
                 } else {
-                    console.log('실패');
+                    Alert.alert('','실패');
                 }
             }
         });
@@ -128,7 +128,7 @@ export default function GoodsCateList({route, navigation}) {
                 if (result === 'OK') {
                     setCate3rd(A_cate);
                 } else {
-                    console.log('실패');
+                    Alert.alert('','실패');
                 }
             }
         });
@@ -138,7 +138,7 @@ export default function GoodsCateList({route, navigation}) {
 
     const goCate2nd = (Cate2ndUid) => {
         setCate2ndActive(Cate2ndUid);
-        setCate3rdActive(Cate2ndUid);
+        setCate3rdActive(``);
         console.log('2차 카테고리 uid', Cate2ndUid);
         // ==============2차 카테고리 상품 불러오기==============//
         get_goods_cate2nd_list(Cate1stUid, Cate2ndUid).then((res) => {
@@ -148,7 +148,7 @@ export default function GoodsCateList({route, navigation}) {
                     console.log('확인');
                     setGoodsList(A_goods);
                 } else {
-                    console.log('실패');
+                    Alert.alert('','실패');
                 }
             }
         });
@@ -160,7 +160,7 @@ export default function GoodsCateList({route, navigation}) {
                 if (result === 'OK') {
                     setCate3rd(A_cate);
                 } else {
-                    console.log('실패');
+                    Alert.alert('','실패');
                 }
             }
         });
@@ -178,7 +178,7 @@ export default function GoodsCateList({route, navigation}) {
                     console.log('확인');
                     setGoodsList(A_goods);
                 } else {
-                    console.log('실패');
+                    Alert.alert('','실패');
                 }
             }
         });
@@ -442,6 +442,9 @@ export default function GoodsCateList({route, navigation}) {
     };
 
     // console.log(GoodsList);
+    console.log(Cate2ndActive,'/ 2차 카테고리 상태');
+    console.log(Cate3rdActive,'/ 3차 카테고리 상태');
+    console.log(goods_detail,'/ 상품상세');
     console.log(goods_detail,'/ 상품상세');
     console.log(GoodsCnt,'/ 수량');
 
@@ -470,7 +473,7 @@ export default function GoodsCateList({route, navigation}) {
                     <>
                         <View style={[styles.cate_2st_btn,]}>
                             <TouchableOpacity style={[styles.cate_1st_btn]} onPress={() => goCate2nd(Cate2ndActive)}>
-                                <Text style={[styles.cate_2st_btn_txt, (Cate2ndActive === Cate3rdActive) && text_primary]}>
+                                <Text style={[styles.cate_2st_btn_txt, (!Cate3rdActive) && text_primary]}>
                                     전체
                                 </Text>
                             </TouchableOpacity>

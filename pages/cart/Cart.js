@@ -52,11 +52,11 @@ import {goDelCart, getCartList, goodsUpdate, save_req_memo} from "./UTIL_cart";
 // 장바구니 레이아웃 출력
 export default function Cart({route, navigation}) {
 
-    const [Member, setMember]        = useState();
-    const [CartUid, setCartUid]      = useState(``);
+    const [Member, setMember]              = useState();
+    const [CartUid, setCartUid]            = useState(``);
     const [Cart1stUid, setCart1stUid]      = useState(``);
-    const [CartList, setCartList]    = useState([]);           // 장바구니 1차 카테고리 출력
-    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
+    const [CartList, setCartList]          = useState([]);           // 장바구니 1차 카테고리 출력
+    const mem_uid                          = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     const Update = useIsFocused();
 
     /**---------------------------------페이지 진입시 노출----------------------------------------**/
@@ -131,12 +131,8 @@ export default function Cart({route, navigation}) {
     /**---------------------------------체크시 배송정보 등록이동창 활성화----------------------------------------**/
     const goFormChk = (uid, cate, price) => {
 
-        if(cate) {
-            setCartUid(cate); // 카테고리 넣기
-        } else if(!cate) {
-            setCartUid(''); // 카테고리 넣기
-        }
-        // setCartUid(cate);
+        if(cate) {setCartUid(cate); // 카테고리 넣기
+        } else if(!cate) {setCartUid('');}  // 카테고리 넣기
         setCart1stUid(cate);
         setCartList(CartList.map((cate) => {
             return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
@@ -294,13 +290,24 @@ export default function Cart({route, navigation}) {
     }
     /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
     const goOrderForm = () => {
+
         // 중복상품 제어용 카테고리 cateUid
-        let temp = CartList.map(cate=>cate.A_goods_list.filter(val=>(val.goods_chk === true)));
-        let total = temp.reduce((val,idx)=>{
-            return val.concat(idx);
-        });
-        let result = total.map(val=>val.cate_1st_uid);
-        let find = result.indexOf(CartUid);
+        let temp    = CartList.map(cate=>cate.A_goods_list.filter(val=>(val.goods_chk === true)));
+        let total   = temp.reduce((val,idx)=>{return val.concat(idx);});
+        let result  = total.map(val=>val.cate_1st_uid);
+        let chk     = total.map(val=>String(val.A_sel_option.map(item=>item.option_cnt)));
+        let find    = result.indexOf(CartUid);
+
+        if(chk.includes('0')) {
+            console.log(chk.includes('0'));
+            return Alert.alert('',`수량을 입력해주세요.`);
+        }
+
+        console.log(temp,' / [체크상품확인]');
+        console.log(total,' / [상품 재배열]');
+        console.log(result,' / [1차 카테고리 확인]');
+        console.log(chk,' / [수량]');
+        console.log(find,' / [1차 카테고리 중복 찾기]');
 
         if(find !== 0) {
             Alert.alert('','동일카테고리만 선택가능합니다');
@@ -355,19 +362,10 @@ export default function Cart({route, navigation}) {
     });
     /**-----------------------------------------------------------------------------------------------------------------**/
     let list              = CartList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
-    let cart_chk_price    = list.map(cate=>cate.map(val=>val.A_sel_option.map(items=>{
-        return Number(items.option_price * items.option_cnt);
-    })));
     let cart_chk          = list.map(val=>val.length);
     let list_goods_cnt    = 0;
-    let list_goods_price  = 0;
-    for (let i = 0; i < cart_chk.length; i++) {
-        list_goods_cnt   += cart_chk[i];
-        list_goods_price += Number(cart_chk_price[i]);
-    }
-
+    for (let i = 0; i < cart_chk.length; i++) {list_goods_cnt   += cart_chk[i];}
     console.log(CartList,' / [장바구니 상품 목록리스트]');
-
     return (
         <>
             <KeyboardAvoidingView style={{height:"100%"}} behavior={Platform.select({ios: 'padding'})}>
