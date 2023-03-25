@@ -67,9 +67,7 @@ export default function Wishlist({route,navigation}) {
 
 
     const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     const Update = useIsFocused();
     console.log('즐겨찾기2');
 

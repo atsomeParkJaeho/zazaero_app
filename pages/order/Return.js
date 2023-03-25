@@ -17,9 +17,6 @@ import {
     text_light, text_center, text_white, padding_bottom
 } from '../../common/style/AtStyle';
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
-import col1 from "../../assets/img/co1.png";
-import col2 from "../../assets/img/co2.png";
-import col3 from "../../assets/img/co3.png";
 
 
 // 샘플데이터

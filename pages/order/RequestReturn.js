@@ -38,8 +38,6 @@ import {
     d_flex,
     justify_content_center, align_items_center, text_light, text_dark, bg_gray, justify_content_between, pos_center
 } from '../../common/style/AtStyle';
-import {sub_page, gary_bar} from '../../common/style/SubStyle';
-import axios from "axios";
 
 import CameraIcon from '../../icons/camera_icon.svg';
 

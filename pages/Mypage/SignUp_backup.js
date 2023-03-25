@@ -33,14 +33,10 @@ import {
     ios_pb, justify_content_end, justify_content_between, d_flex, text_center
 } from '../../common/style/AtStyle';
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
-import axios from "axios";
 import {AddrMatch, bizNum, Minlangth, OnlyEng, Phone, PwChk, regId, regPW} from "../../util/util";
-import CameraIcon from "../../icons/camera_icon.svg";
 import {useIsFocused} from "@react-navigation/native";
 import {chk_dup_id, Sign_up} from "../UTIL_mem";
-import {DeviceInfo} from "react-native-web";
 import PriModal from "./PriModal";
-import {getAppInfo} from "../order/UTIL_order";
 export default function SignUp({route, navigation}) {
 
 

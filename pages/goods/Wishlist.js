@@ -37,27 +37,16 @@ import {
     text_primary,
     justify_content_center, text_light, ms1, padding_bottom, mt10, mt2, h15, text_center
 } from '../../common/style/AtStyle';
-import {sub_page} from '../../common/style/SubStyle';
-
-//이미지 추가
-import col1 from "../../assets/img/co1.png";
-import col2 from "../../assets/img/co2.png";
-import col3 from "../../assets/img/co3.png";
-import goods_img_1 from "../../assets/img/goods_img_1.png";
-import goods_like from "../../assets/img/ico_heart.png";
 import Footer from "../Footer";
 
 import {Price} from "../../util/util";
-import axios from "axios";
 import Chk from "../../icons/chk.svg";
 import CartBag from "../../icons/cart_bag.svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import WishlistNon from "../../icons/ico_heart_nc.svg";
 import WishIcon from "../../icons/ico_heart_c.svg";
 import { useIsFocused } from '@react-navigation/native';
 import {ins_cart} from "./UTIL_goods";
 import Wish from "../../icons/ico_heart_nc.svg";
-import {add_order_goods} from "../order/UTIL_order";
 import {get_my_zzim_list_new, set_my_zzim} from "../cart/UTIL_cart";
 
 
@@ -67,9 +56,7 @@ export default function Wishlist({route,navigation}) {
 
 
     const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     const Update = useIsFocused();
     console.log('즐겨찾기2');
 

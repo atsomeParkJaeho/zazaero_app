@@ -34,9 +34,6 @@ import {
 import {gray_bar, sub_page} from '../../common/style/SubStyle';
 
 import goodsthum1 from "../../assets/img/goods_thum1.jpg";
-import col3 from "../../assets/img/co3.png";
-
-
 // 샘플데이터
 import {cancel_d_List} from "../../util/util";
 

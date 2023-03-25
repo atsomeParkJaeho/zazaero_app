@@ -13,7 +13,7 @@ import {
     FlatList
 } from 'react-native';
 import {NavigationContainer, useIsFocused} from '@react-navigation/native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
 
 // 공통 CSS 추가
 import {
@@ -48,9 +48,7 @@ function PayStatus({route, navigation}) {
 
     const [Member, setMember] = useState();
     const Update = useIsFocused();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
 
     console.log('전달 3값 / ',Member);
 
