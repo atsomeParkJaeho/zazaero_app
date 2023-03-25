@@ -27,10 +27,6 @@ import {
     mb1,
     h14, justify_content_end, text_gray, select_box, select_icon_box, text_center, h17, mt2
 } from '../../common/style/AtStyle';
-import {sub_page} from '../../common/style/SubStyle';
-import Wishlist from "../../icons/ico_heart_c.svg";
-import WishlistNon from "../../icons/ico_heart_nc.svg";
-import {DateChg, Time2} from "../../util/util";
 import {mem_out, mem_out_reason_cfg} from "../UTIL_mem";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {reloadAsync} from "expo-updates";

@@ -19,30 +19,24 @@ import {
 } from '../common/style/AtStyle';
 
 // 이미지 추가
-// import logo from '../assets/img/top_logo.png';
+
 import Footer from "./Footer";
 
 import Search from '../icons/search.svg';
-import NotificationIcon from "../icons/Notification_icon.svg";
+
 import Main_logo from '../icons/main_logo.svg';
-import axios from "axios";
-import {At_db, FCM, push_key} from "../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Wishlist from "../icons/ico_heart_c.svg";
-import {ABanner, get_cate_list, get_main_info} from "./UTIL_main";
+
+import {ABanner, get_cate_list} from "./UTIL_main";
 import {getAppInfo} from "./order/UTIL_order";
 
 import {app_download_info, chk_test, mem_push_token} from "./UTIL_mem";
-import {device_chk} from "../device_chk";
 import PushSetting from "../UTIL_push";
 import * as Device from "expo-device";
-// import DeviceInfo from "react-native-device-info";
-// import firebase from "react-native-firebase";
+
 
 // 2차 카테고리 설정
 function Cate2nd({uid,navigation,name}) {
-
-
     console.log('카테고리 uid ',uid);
     console.log('제목 ',name);
     const [Cate2nd, setCate2nd] = useState([]);
@@ -198,10 +192,6 @@ export default function MainPage({route,navigation}) {
 
     console.log(A_banner,' / 배너2');
     console.log(com_info.com_name,' / 회사정보');
-    // console.log(PushToken,' / 일반디바이스 키');
-    // console.log(ExpoToken,' / 엑스포 키');
-
-
     return (
         /*
           return 구문 안에서는 {슬래시 + * 방식으로 주석
@@ -217,7 +207,7 @@ export default function MainPage({route,navigation}) {
                         <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
                             <Search width={30} height={21} style={[styles.icon]}/>
                         </TouchableOpacity>
-                        <Button title="푸시알림" onPress={()=>push_test()} />
+                        {/*<Button title="푸시알림" onPress={()=>push_test()} />*/}
                     </View>
                 </View>
             </View>

@@ -1,26 +1,18 @@
 import React, {useEffect, useState} from 'react'
 import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView} from 'react-native'
-import logo from "../assets/img/top_logo.png";
-import Icon from "react-native-vector-icons/AntDesign";
 
 // 공통 CSS 추가
 import {container, bg_white, flex_around, wt10, wt4, wt5, wt1} from '../common/style/AtStyle';
-import {sub_page} from '../common/style/SubStyle';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Footer from "./Footer";
-
 import ArrowRight from '../icons/arrow_r.svg'
 import {reloadAsync} from "expo-updates";
 
 
 export default function MyPage({navigation, route}) {
-
-
-    const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    })
+    const [Member, setMember]               = useState();
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     console.log('마이페이지');
     console.log('회원코드 / ' + Member);
 
@@ -43,7 +35,6 @@ export default function MyPage({navigation, route}) {
                 }
             }
         });
-
     }, [Member]);
 
     // 로그아웃 로직

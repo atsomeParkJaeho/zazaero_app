@@ -25,10 +25,7 @@ import {
     mt2,
     text_danger, text_black, text_center, h17, mb1, d_flex
 } from '../../common/style/AtStyle';
-import {gray_bar, sub_page} from '../../common/style/SubStyle';
-
 import {AddrMatch, BankCode, bizNum, EmailDomain, Minlangth, Phone, regPW,} from "../../util/util";
-import CameraIcon from "../../icons/camera_icon.svg";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";

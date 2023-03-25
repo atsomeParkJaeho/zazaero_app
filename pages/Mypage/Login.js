@@ -29,11 +29,7 @@ import {
     input, pos_center, bg_primary,
 } from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
-import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-//import * as Update from "expo-updates";
-import {reloadAsync} from "expo-updates";
-import HomeLogo from "../../icons/home_logo.svg";
 import {login} from "../UTIL_mem";
 
 export default function Login({navigation, route}) {

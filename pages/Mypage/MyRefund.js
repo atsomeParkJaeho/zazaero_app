@@ -4,7 +4,6 @@ import { StyleSheet, Text, TextInput, View, Image, TouchableOpacity, ScrollView}
 
 // 공통 CSS 추가
 import {container, bg_white,flex_between} from '../../common/style/AtStyle';
-import {sub_page} from '../../common/style/SubStyle';
 
 
 export default function MyRefund({navigation,route}) {
