@@ -13,16 +13,11 @@ import {
     Platform, TouchableWithoutFeedback, TextInput, KeyboardAvoidingView
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
-import logo from "../../assets/img/top_logo.png";
-import Icon from "react-native-vector-icons/AntDesign";
 import CartBag from "../../icons/cart_bag.svg";
 import WishlistNon from "../../icons/ico_heart_nc.svg";
 import Wishlist from "../../icons/ico_heart_c.svg";
 import Chk from "../../icons/chk.svg";
 import Modal_Close from '../../icons/close_black.svg';
-
-import goods_img_1 from '../../assets/img/goods_img_1.png';
-import goods_like from '../../assets/img/ico_heart.png';
 import Footer from "../Footer";
 import {
     align_items_center,
@@ -41,10 +36,8 @@ import {
     sub_page, text_center,
     text_light, text_primary, text_right, wt2, wt3, wt4, wt5, wt6, wt7, wt8
 } from "../../common/style/AtStyle";
-import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Search from "../../icons/search.svg";
-import NotificationIcon from "../../icons/Notification_icon.svg";
 import {Price} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import {
@@ -55,7 +48,6 @@ import {
     go_goods_cate3rd_list,
     goods_cate, ins_cart, save_wish
 } from "./UTIL_goods";
-import Close from "../../icons/close_black.svg";
 import RenderHtml from "react-native-render-html";
 
 
@@ -65,9 +57,7 @@ import RenderHtml from "react-native-render-html";
 
 export default function GoodsCateList({route, navigation}) {
     const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     let {Cate1stUid, Cate2ndUid, name} = route.params; // 카테고리 uid
     console.log(Cate1stUid);
     console.log(Cate2ndUid);

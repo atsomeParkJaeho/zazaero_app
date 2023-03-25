@@ -29,14 +29,8 @@ import {
     wt7, wt3, justify_content_end
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
-
-
-import BackArrow from '../../icons/back_arrow.svg';
 import Search from '../../icons/search.svg';
 import search_none from "../../assets/img/search_none.png";
-import col2 from "../../assets/img/co2.png";
-import col3 from "../../assets/img/co3.png";
-import goods_image from "../../assets/img/goods_image.jpg";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
@@ -47,9 +41,7 @@ export default function GoodsSearch({route,navigation}) {
 
 
     const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
 
     // 1. 상태정의
     const [GoodsSearch, setGoodsSearch] = useState({    // 검색어 확인

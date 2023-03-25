@@ -13,8 +13,6 @@ import {
     text_center,
     pt1, pb1, h20, mt2, pt3, pb3, text_white
 } from '../../common/style/AtStyle';
-import {sub_page} from '../../common/style/SubStyle';
-
 
 
 export default function FindPw({navigation,route}) {

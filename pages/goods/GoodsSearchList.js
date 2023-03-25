@@ -38,21 +38,7 @@ import {
     bg_light,
     justify_content_center, text_light, sub_page, min_height, text_primary
 } from '../../common/style/AtStyle';
-
-
-
-import BackArrow from '../../icons/back_arrow.svg';
 import Search from '../../icons/search.svg';
-import search_none from "../../assets/img/search_none.png";
-import col2 from "../../assets/img/co2.png";
-import col3 from "../../assets/img/co3.png";
-import goods_image from "../../assets/img/goods_image.jpg";
-import goods_img_1 from "../../assets/img/goods_img_1.png";
-import goods_like from "../../assets/img/ico_heart.png";
-import Icon from "react-native-vector-icons/AntDesign";
-import axios from "axios";
-import Wishlist from "../../icons/ico_heart_c.svg";
-import WishlistNon from "../../icons/ico_heart_nc.svg";
 import Checkbox from "expo-checkbox";
 import Chk from "../../icons/chk.svg";
 import CartBag from "../../icons/cart_bag.svg";

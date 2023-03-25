@@ -47,9 +47,7 @@ import {
 
 export default function GoodsCateList({route, navigation}) {
     const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     let {Cate1stUid, Cate2ndUid, name} = route.params; // 카테고리 uid
     console.log(Cate1stUid);
     console.log(Cate2ndUid);

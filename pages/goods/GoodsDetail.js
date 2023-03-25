@@ -42,16 +42,13 @@ import {
     count_btn_txt,
     wt1, wt9, text_center, mt1, bg_danger
 } from '../../common/style/AtStyle';
-import {sub_page, gary_bar, sub_container} from '../../common/style/SubStyle';
 
 //더미데이터
 import {goodsDetail, Price} from "../../util/util";
 
 import WishlistNon from "../../icons/ico_heart_nc.svg";
 import Wishlist from "../../icons/ico_heart_c.svg";
-import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import RenderHTML from "react-native-render-html";
 import {get_goods_info, ins_cart, save_wish} from "./UTIL_goods";
 import {add_order_goods} from "../order/UTIL_order";
 
@@ -63,9 +60,7 @@ export default function GoodsDetail({route,navigation}) {
 
     let {uid} = route.params;
     const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     // ===========1. 상품상세정보 상태 정의======
     const [GoodsDetail,setGoodsDetail] = useState([]);
     const [GoodsCnt, setGoodsCnt] = useState(1);
