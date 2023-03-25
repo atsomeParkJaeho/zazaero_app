@@ -23,7 +23,6 @@ import {
     text_center,
     pt1, pb1, h20
 } from '../../common/style/AtStyle';
-import {sub_page} from '../../common/style/SubStyle';
 import axios from "axios";
 import {Phone} from "../../util/util";
 

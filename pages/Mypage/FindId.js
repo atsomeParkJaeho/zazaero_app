@@ -21,11 +21,8 @@ import {
     pt2,
     pb2, h20, pt1, pb1, mt3
 } from '../../common/style/AtStyle';
-import {sub_page} from '../../common/style/SubStyle';
 import {Phone} from "../../util/util";
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 
 
 export default function FindId({route, navigation}) {
