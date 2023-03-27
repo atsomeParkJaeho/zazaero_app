@@ -7,7 +7,7 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    KeyboardAvoidingView, Alert, Platform,
+    KeyboardAvoidingView, Alert, Platform, TouchableWithoutFeedback, Keyboard,
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
@@ -31,11 +31,13 @@ import {
 import {sub_page} from '../../common/style/SubStyle';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {login} from "../UTIL_mem";
+import inputRef from "react-native/Libraries/Components/DrawerAndroid/DrawerLayoutAndroid";
 
 export default function Login({navigation, route}) {
 
 
     const [Member, setMember] = useState();
+    const inputRef = useRef();
     useEffect(() => {
         AsyncStorage.getItem('member').then((value) => {
             if (value) {
@@ -44,7 +46,7 @@ export default function Login({navigation, route}) {
         });
     }, []);
     console.log('회원코드 / ', Member);
-    const ChkValue = useRef([]);
+
     // 1. data로 넘길 status 셋팅
     const [Login, setLogin] = useState({    // 로그인상태 셋팅
         mem_id: "",
@@ -95,79 +97,79 @@ export default function Login({navigation, route}) {
 
     }, []);
 
+
     console.log(Platform.OS);
 
     if (Member === undefined) {
 
         return ready ? <Loading/> : (
             <>
-                <KeyboardAvoidingView style={[styles.avoidingView]} behavior={Platform.select({ios: 'padding'})}>
-                    <View style={[sub_page, styles.login]}>
-                        <View style={[container]}>
-                            {/*자재로 로고*/}
-                            <View style={[flex,justify_content_center,mb5]}>
-                                <Logo width={191} height={51} />
-                            </View>
-                            {/*아이디 입력창*/}
-                            <View style={styles.formGroup}>
-                                <View style={styles.inputGroup}>
-                                    <Text style={styles.inputTopText}>아이디</Text>
-                                    <TextInput style={[input]} onChangeText={(mem_id) => goInput("mem_id", mem_id)}
-                                    value={Login.mem_id} placeholder="아이디를 입력해주세요"
-                                    ref={value=>(ChkValue.current[0] = value)}
-                                    onSubmitEditing={()=>ChkValue.current[1].focus()}
-                                    autoCapitalize="none"
-                                    returnKeyType="next"
-                                    />
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <KeyboardAvoidingView style={[styles.avoidingView]} behavior={Platform.select({ios: 'padding'})}>
+
+                            <View style={[sub_page, styles.login]}>
+                                <View style={[container]}>
+                                {/*자재로 로고*/}
+                                <View style={[flex,justify_content_center,mb5]}>
+                                    <Logo width={191} height={51} />
                                 </View>
-                            </View>
-                            <View style={styles.formGroup}>
-                                <View style={styles.inputGroup}>
-                                    <Text style={styles.inputTopText}>비밀번호</Text>
-                                    <TextInput style={[input]} secureTextEntry={true}
-                                     onChangeText={(mem_pw) => goInput("mem_pw", mem_pw)} value={Login.mem_pw}
-                                     placeholder="비밀번호를 입력해주세요."
-                                     ref={value=>(ChkValue.current[1] = value)}
-                                     onSubmitEditing={goLogin}
-                                     autoCapitalize="none"
-                                     returnKeyType="done"
-                                    />
+                                {/*아이디 입력창*/}
+                                <View style={styles.formGroup}>
+                                    <View style={styles.inputGroup}>
+                                        <Text style={styles.inputTopText}>아이디</Text>
+                                            <TextInput style={[input]}
+                                            onChangeText={(mem_id) => goInput("mem_id", mem_id)}
+                                            value={Login.mem_id} placeholder="아이디를 입력해주세요"
+                                           autoCapitalize="none"
+                                            />
+                                    </View>
                                 </View>
+                                <View style={styles.formGroup}>
+                                    <View style={styles.inputGroup}>
+                                        <Text style={styles.inputTopText}>비밀번호</Text>
+                                        <TextInput style={[input]} secureTextEntry={true}
+                                         onChangeText={(mem_pw) => goInput("mem_pw", mem_pw)} value={Login.mem_pw}
+                                         placeholder="비밀번호를 입력해주세요."
+                                           autoCapitalize="none"
+                                        />
+                                    </View>
+                                </View>
+
+                                <TouchableOpacity style={[styles.loginformbtn, (Login.mem_id && Login.mem_pw) && bg_primary ]} onPress={goLogin}>
+                                    <View  style={[pos_center]} >
+                                        <Text style={styles.loginformbtntxt}>로그인</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                {/*로그인 버튼*/}
+                                <View style={styles.link_idpw}>
+                                    <View style={[styles.findId, styles.br_1]}>
+                                        <TouchableOpacity style={styles.link_find_id} onPress={() => {navigation.navigate('아이디 찾기')}}>
+                                            <Text style={[styles.link_find_txt, ]}>아이디 찾기</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.findpw}>
+                                        <TouchableOpacity style={styles.link_find_pw} onPress={() => {navigation.navigate('비밀번호 찾기')}}>
+                                            <Text style={styles.link_find_txt}>비밀번호 찾기</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                {/*아이디/비밀번호 찾기*/}
+                                <View style={styles.signUpbox}>
+                                    <Text style={styles.link_txt}>
+                                        회원이 아니신가요?
+                                    </Text>
+                                    <TouchableOpacity style={styles.link_signUp} onPress={() => {
+                                        navigation.navigate('회원가입')
+                                    }}>
+                                        <Text style={styles.link_signUp_txt}>회원가입하기</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                {/*회원가입*/}
+                            </View>
                             </View>
 
-                            <TouchableOpacity style={[styles.loginformbtn, (Login.mem_id && Login.mem_pw) && bg_primary ]} onPress={goLogin}>
-                                <View  style={[pos_center]} >
-                                    <Text style={styles.loginformbtntxt}>로그인</Text>
-                                </View>
-                            </TouchableOpacity>
-                            {/*로그인 버튼*/}
-                            <View style={styles.link_idpw}>
-                                <View style={[styles.findId, styles.br_1]}>
-                                    <TouchableOpacity style={styles.link_find_id} onPress={() => {navigation.navigate('아이디 찾기')}}>
-                                        <Text style={[styles.link_find_txt, ]}>아이디 찾기</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.findpw}>
-                                    <TouchableOpacity style={styles.link_find_pw} onPress={() => {navigation.navigate('비밀번호 찾기')}}>
-                                        <Text style={styles.link_find_txt}>비밀번호 찾기</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            {/*아이디/비밀번호 찾기*/}
-                            <View style={styles.signUpbox}>
-                                <Text style={styles.link_txt}>
-                                    회원이 아니신가요?
-                                </Text>
-                                <TouchableOpacity style={styles.link_signUp} onPress={() => {
-                                    navigation.navigate('회원가입')
-                                }}>
-                                    <Text style={styles.link_signUp_txt}>회원가입하기</Text>
-                                </TouchableOpacity>
-                            </View>
-                            {/*회원가입*/}
-                        </View>
-                    </View>
-                </KeyboardAvoidingView>
+                    </KeyboardAvoidingView>
+                </TouchableWithoutFeedback>
             </>
 
         );
@@ -179,7 +181,9 @@ export default function Login({navigation, route}) {
 
 const styles = StyleSheet.create({
     avoidingView: {
+        backgroundColor:"#fff",
         flex: 1,
+        paddingBottom:(Platform.OS === 'ios') ? 0:0,
     },
     login: {
         //앱의 배경 색

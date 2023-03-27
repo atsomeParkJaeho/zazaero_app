@@ -114,7 +114,6 @@ export default function OrderForm({route,navigation}) {
     const [Selected, setSelected] = useState({
         zonecode        :'',
         addr1           :'',
-        order_title     :'',
     });
     /**-----------------------------------내용존재시 버튼 활성화----------------------------------------------------------------**/
     let act_btn = !!(
@@ -124,8 +123,7 @@ export default function OrderForm({route,navigation}) {
         OrderData.addr1 &&
         OrderData.addr2 &&
         OrderData.hope_deli_date &&
-        OrderData.hope_deli_time &&
-        OrderData.order_memo
+        OrderData.hope_deli_time
     );
 
     console.log(act_btn,' / 버튼 활성화');
@@ -134,6 +132,7 @@ export default function OrderForm({route,navigation}) {
     const getDeliList = () => {
         get_deli_addr_list(Member).then((res)=>{
             if (res) {
+                console.log(res.data,'/[][][][][1231231231231231321]');
                 const {result, A_deli_info} = res.data;
                 if (result === 'OK') {
                     let temp = A_deli_info.sort((a,b)=>{
@@ -197,7 +196,6 @@ export default function OrderForm({route,navigation}) {
             setmodAddr(type);
             setOrderDate({
                 ...OrderData,
-                order_title :'',
                 addr1       :'',
                 addr2       :'',
                 zonecode    :'',
@@ -206,7 +204,6 @@ export default function OrderForm({route,navigation}) {
         if(type === 'mod') {
             setSelected({
                 ...Selected,
-                order_title:'',
             });
             setmodAddr(type);
         }
@@ -508,7 +505,7 @@ export default function OrderForm({route,navigation}) {
         const [Search, setSearch]     = useState(``);
         const [Show, setShow]         = useState(false);    // 검색창 노출 여부
 
-        let find = DeliList.filter(text=>(text.gmd_address.includes(Search) && text));
+        let find = DeliList.filter(text=>(text.gmd_title.includes(Search) && text));
 
         const goSearch = (gmd_zonecode, gmd_address, gmd_address_sub, gmd_title, work_uid) => {
 
@@ -535,6 +532,7 @@ export default function OrderForm({route,navigation}) {
         }
 
         console.log(Selected);
+        console.log(find);
 
         return(
             <>
@@ -581,7 +579,7 @@ export default function OrderForm({route,navigation}) {
                                                         <View>
                                                             <View style={[flex, justify_content_end]}>
                                                                 <Text style={[h14, text_gray]}>
-                                                                    {DateChg(val.gmd_regdate)}
+                                                                    {val.gmd_regdate}
                                                                 </Text>
                                                                 <TouchableOpacity style={ms2}
                                                                                   onPress={() => delDeli(val.gmd_sno)}>
@@ -818,15 +816,7 @@ export default function OrderForm({route,navigation}) {
         return(
             <>
                 {/**----------------------------------------------발주신청--------------------------------------------------**/}
-                <View style={[
-                    (act_btn) ? bg_primary : bg_gray,
-                    {
-                    paddingTop: 6,
-                    paddingBottom: Platform.OS === 'ios' ? 38 : 10,
-                    left: 0,
-                    bottom: 0,
-                    width: "100%"
-                }]}>
+                <View style={[(act_btn) ? bg_primary : bg_gray, styles.form_btn]}>
                     <TouchableOpacity onPress={goForm}>
                         <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
                             <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
@@ -844,6 +834,17 @@ export default function OrderForm({route,navigation}) {
 }
 
 const styles = StyleSheet.create({
+
+    
+    // 최하단 버튼 설정
+    form_btn:{
+        paddingTop: 6,
+        paddingBottom: Platform.OS === 'ios' ? 38 : 38,
+        left: 0,
+        bottom: 0,
+        width: "100%"
+    },
+    
     goods_thum:{
         width:50,
         height:50,

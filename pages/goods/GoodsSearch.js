@@ -104,6 +104,7 @@ export default function GoodsSearch({route,navigation}) {
             if (res) {
                 const {result, A_goods, que} = res.data;
                 console.log(que);
+                console.log(res.data,'/ [검색결과]');
                 if (result === 'OK') {
                     if(A_goods.length === 0) {
                         Alert.alert('','검색하신 상품이 없습니다');

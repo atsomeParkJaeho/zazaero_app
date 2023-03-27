@@ -711,13 +711,16 @@ const styles = StyleSheet.create({
     },
     form_btn: {
         backgroundColor: "#B1B2C3",
-        paddingVertical: 20,
+        paddingTop:32,
+        paddingBottom:38,
+
     },
     form_btn_txt: {
         textAlign: "center",
         fontSize: 17,
-        lineHeight: 24,
+        // lineHeight: 24,
         color: "#fff",
+
     },
     flex_item1: {
         width: "45%",

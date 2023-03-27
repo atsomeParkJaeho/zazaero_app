@@ -37,7 +37,7 @@ import {
     ms1,
     text_gray,
     mt2,
-    text_center, h15, mt7, mt10, wt2, h12, h13
+    text_center, h15, mt7, mt10, wt2, h12, h13, text_danger, me1
 } from '../../common/style/AtStyle';
 
 //이미지 추가
@@ -48,6 +48,7 @@ import {useIsFocused} from "@react-navigation/native";
 import {Price} from "../../util/util";
 import CartIcon from "../../icons/uncart.svg";
 import {goDelCart, getCartList, goodsUpdate, save_req_memo} from "./UTIL_cart";
+import Search from "../../icons/search.svg";
 
 // 장바구니 레이아웃 출력
 export default function Cart({route, navigation}) {
@@ -59,28 +60,82 @@ export default function Cart({route, navigation}) {
     const mem_uid                          = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     const Update = useIsFocused();
 
+
+    
+
     /**---------------------------------페이지 진입시 노출----------------------------------------**/
     useEffect(() => {
-        // //====================장바구니 목록을 출력=================///
+        // ====================장바구니 목록을 출력=================///
         getCartList(Member).then((res) => {
             if (res) {
                 const {result ,A_order} = res.data;
                 if (result === 'OK') {
-                    return setCartList(A_order);
+                    setCartList(A_order);
+                    navigation.setOptions({
+                        title: '장바구니',     // 상단 설정
+                        headerRight: ()=>headerRight(A_order),
+                    });
+                    return
                 } else {
                     // return Alert.alert('','연결에러');
                 }
             }
         });
 
-    }, [Update, Member]);
 
 
+    }, [Member,Update]);
+
+
+
+    // 전체삭제 기능
+    const allDel = (A_order) => {
+
+
+        let temp = A_order.map(val=>val.A_goods_list.map(item=>String(item.order_uid)));
+        let order_uid = temp.reduce((val,idx)=>{
+            return val.concat(idx);
+        });
+        console.log(order_uid);
+
+
+        Alert.alert('','장바구니에 있는 자재를\n전체 삭제하시겠습니까?',[
+            {text:'취소'},
+            {text:'확인',
+                onPress:()=>{
+                    goDelCart(Member,order_uid).then((res)=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                Alert.alert('','삭제완료하였습니다.');
+                                return navigation.replace('장바구니');
+                            } else {
+                                Alert.alert('',`${res.data}`);
+                            }
+                        }
+                    });
+                }
+            }
+        ]);
+    }
+
+    // 우측 메뉴 설정
+    const headerRight = (A_order) => {
+        return (
+            <>
+                <View style={[flex, me1]}>
+                    <TouchableOpacity style={styles.link_signUp} onPress={()=>allDel(A_order)}>
+                        <Text style={[text_gray]}>
+                            전체삭제
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </>
+        );
+    }
     /**---------------------------------장바구니 해당상품 삭제----------------------------------------**/
     const delCart = (order_uid,goods_uid) => {
-
         let AT_order_uid = [order_uid];
-
         Alert.alert('','상품을 삭제하시겠습니까?',[
             {text:"취소", onPress:()=>{}},
             {text:"확인", onPress:()=>{
@@ -110,9 +165,6 @@ export default function Cart({route, navigation}) {
                 }
             },
         ])
-
-
-
     }
     /**---------------------------------옵션요청사항 있을시 체크----------------------------------------**/
     const CartOption = (uid) => {
@@ -209,7 +261,8 @@ export default function Cart({route, navigation}) {
         /**----------------------------상품수량 수기조절--------------------------**/
         if(type === 'order_item_cnt') {
             console.log(type,'/ 수기입력');
-            // let val = Number(value);
+            let cnt = Number(value);
+            let price = Number(goods_price) ;
             setCartList(CartList.map((cate) => {
                 return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
                         if(val.goods_uid === goods_uid) {
@@ -221,6 +274,7 @@ export default function Cart({route, navigation}) {
                         }
                     })}
             }));
+            goForm(cnt, price, order_uid, goods_uid);
         }
     }
     const allMod = (type, cate_uid, cate_name) => {
@@ -245,6 +299,7 @@ export default function Cart({route, navigation}) {
         let result = A_goods_list.reduce((val,idx)=>{return val.concat(idx);});
         let order_uid = result.map(val=>val.order_uid);
         if(order_uid.length === 0) {return Alert.alert('','자재를 선택해주세요.');}
+
         console.log(A_goods_cate_list,'/1차 카테고리 필터링');
         console.log(A_goods_list,'/상품 필터링');
         console.log(result,'/재 배열');
@@ -281,9 +336,6 @@ export default function Cart({route, navigation}) {
                             }
                         }
                     });
-
-
-
                 }
             }
         ]);
@@ -445,6 +497,14 @@ export default function Cart({route, navigation}) {
                                                                                                {val.goods_guide_name}
                                                                                            </Text>
                                                                                        </View>
+                                                                                       {/*반품가능여부*/}
+                                                                                       {(val.disable_cancel === 'Y') && (
+                                                                                           <View style={wt4}>
+                                                                                               <Text style={[text_danger, styles.goods_disc]}>
+                                                                                                   결제 후 반품/취소 불가
+                                                                                               </Text>
+                                                                                           </View>
+                                                                                       )}
                                                                                        {/*자재가격*/}
                                                                                        <View style="">
                                                                                            <Text style={styles.goods_price}>
@@ -471,7 +531,7 @@ export default function Cart({route, navigation}) {
                                                                                                maxLength={3}
                                                                                                onChangeText={(order_item_cnt)=>modCart(val.goods_uid, val.order_uid, 'order_item_cnt', order_item_cnt, item.goods_price)}
                                                                                                defaultValue={`${item.option_cnt}`}
-                                                                                               onBlur={()=>modCart(val.goods_uid, val.order_uid, 'order_item_cnt', Number(item.option_cnt), item.goods_price)}
+                                                                                               onBlur={()=>modCart(val.goods_uid, val.order_uid, 'order_item_cnt', item.option_cnt, item.goods_price)}
                                                                                                value={`${item.option_cnt}`}
                                                                                            />
                                                                                        </View>
@@ -536,7 +596,7 @@ export default function Cart({route, navigation}) {
                 {
                     (list_goods_cnt > 0) && (
                     <>
-                        <View style={[styles.go_cart, bg_primary, {paddingBottom: 36, paddingTop: 7,}]}>
+                        <View style={[styles.go_cart, bg_primary, {paddingBottom: 38, paddingTop: 7,}]}>
                             <TouchableOpacity onPress={goOrderForm}>
                                 <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
                                     <View style={{

@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
     ScrollView,
     Alert,
-    KeyboardAvoidingView
+    KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard
 } from 'react-native';
 
 
@@ -25,6 +25,7 @@ import {
 } from '../../common/style/AtStyle';
 import axios from "axios";
 import {Phone} from "../../util/util";
+
 
 
 
@@ -103,51 +104,56 @@ export default function FindPw({navigation,route}) {
     console.log(FindId)
 
     return   (
-
-        <KeyboardAvoidingView style={[styles.avoidingView]} behavior={Platform.select({ios: 'padding'})}>
-            <View style={[styles.FindId]}>
-                <View style={[styles.container,{paddingTop:0}]}>
-                    <View style={styles.center_middle}>
-                        <Text style={styles.FindId_txt}>
-                            담당자의 아이디/연락처{`\n`}
-                            인증을 통해 비밀번호를{`\n`}
-                            찾을 수 있습니다.
-                        </Text>
-                        {/*아이디*/}
-                        <TextInput
-                            style={[styles.input,{marginBottom: 15}]}
-                            onChangeText={(mem_id)=>goInput('mem_id',mem_id)}
-                            value={`${FindId.mem_id}`}
-                            ref={val=>ChkInput.current[0] = val}
-                            returnKeyType="next"
-                            placeholder="아이디"
-                        />
-                        {/*이름*/}
-                        <TextInput
-                            style={[styles.input,{marginBottom: 15}]}
-                            onChangeText={(mem_name)=>goInput('mem_name',mem_name)}
-                            value={`${FindId.mem_name}`}
-                            ref={val=>ChkInput.current[1] = val}
-                            returnKeyType="next"
-                            placeholder="이름"
-                        />
-                        {/*전화번호*/}
-                        <TextInput
-                            onChangeText={(mem_mobile)=>goInput('mem_mobile',mem_mobile)}
-                            style={styles.input}
-                            value={Phone(FindId.mem_mobile)}
-                            ref={val=>ChkInput.current[2] = val}
-                            placeholder="전화번호"
-                        />
-                        <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={()=>goFind()}>
-                            <Text style={[text_primary,text_center,pt1,pb1,h20]}>본인인증</Text>
-                        </TouchableOpacity>
+        <>
+            <KeyboardAvoidingView style={[styles.avoidingView]} behavior={Platform.select({ios: 'padding'})}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={[styles.FindId]}>
+                        <View style={[styles.container,{paddingTop:0}]}>
+                            <View style={styles.center_middle}>
+                                <Text style={styles.FindId_txt}>
+                                    담당자의 아이디/연락처{`\n`}
+                                    인증을 통해 비밀번호를{`\n`}
+                                    찾을 수 있습니다.
+                                </Text>
+                                {/*아이디*/}
+                                <TextInput
+                                    style={[styles.input,{marginBottom: 15}]}
+                                    onChangeText={(mem_id)=>goInput('mem_id',mem_id)}
+                                    value={`${FindId.mem_id}`}
+                                    ref={val=>ChkInput.current[0] = val}
+                                    returnKeyType="next"
+                                    autoCapitalize="none"
+                                    placeholder="아이디"
+                                />
+                                {/*이름*/}
+                                <TextInput
+                                    style={[styles.input,{marginBottom: 15}]}
+                                    onChangeText={(mem_name)=>goInput('mem_name',mem_name)}
+                                    value={`${FindId.mem_name}`}
+                                    ref={val=>ChkInput.current[1] = val}
+                                    returnKeyType="next"
+                                    autoCapitalize="none"
+                                    placeholder="이름"
+                                />
+                                {/*전화번호*/}
+                                <TextInput
+                                    onChangeText={(mem_mobile)=>goInput('mem_mobile',mem_mobile)}
+                                    style={styles.input}
+                                    value={Phone(FindId.mem_mobile)}
+                                    ref={val=>ChkInput.current[2] = val}
+                                    autoCapitalize="none"
+                                    placeholder="전화번호"
+                                    keyboardType="number-pad"
+                                />
+                                <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={()=>goFind()}>
+                                    <Text style={[text_primary,text_center,pt1,pb1,h20]}>본인인증</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     </View>
-                </View>
-            </View>
-        </KeyboardAvoidingView>
-
-
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+        </>
     );
 }
 

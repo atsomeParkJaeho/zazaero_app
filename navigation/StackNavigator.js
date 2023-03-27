@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 //설치한 스택 네비게이션 라이브러리를 가져옵니다
-import {createStackNavigator} from '@react-navigation/stack';
+import {CardStyleInterpolators, createStackNavigator, HeaderStyleInterpolators} from '@react-navigation/stack';
 
 //페이지로 만든 컴포넌트들을 불러옵니다
 //비회원
@@ -57,12 +57,24 @@ import Postcode from "@actbase/react-daum-postcode/lib/app.native";
 import DaumPostCode from "../util/DaumPostCode";
 import Payment from "../util/ImportPay";
 import Push from "../Push";
-import {LogBox, YellowBox} from "react-native";
+import {Animated, LogBox, YellowBox} from "react-native";
 
 
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
 //그래서 이렇게 항상 상단에 선언하고 시작하는게 규칙입니다!
 const Stack = createStackNavigator();
+
+const config = {
+    animation: 'spring',
+    config: {
+        stiffness: 1000,
+        damping: 500,
+        mass: 3,
+        overshootClamping: true,
+        restDisplacementThreshold: 0.01,
+        restSpeedThreshold: 0.01,
+    },
+};
 
 
 const StackNavigator = () => {
@@ -81,6 +93,11 @@ const StackNavigator = () => {
 
     console.log('회원코드 / ', Member);
 
+    const forFade = ({ current }) => ({
+        cardStyle: {
+            opacity: current.progress,
+        },
+    });
 
     return (
         <>
@@ -104,13 +121,21 @@ const StackNavigator = () => {
                 <Stack.Screen name="로그인" component={Login} options={{headerTitle:'',headerStatusBarHeight:0,}}/>
                 <Stack.Screen name="회원가입" component={SignUp}/>
                 {/*==============메인페이지===============*/}
-                <Stack.Screen name="메인페이지" component={MainPage} options={{headerTitle:'',headerStatusBarHeight:0,}}/>
+                <Stack.Screen name="메인페이지" component={MainPage} options={
+                    {
+                        headerTitle:'',
+                        headerStatusBarHeight:0,
+                        cardStyleInterpolator: forFade,
+                    }
+                }/>
                 {/*==============상단===============*/}
                 {/*<Stack.Screen name="검색" component={GoodsSearch}/>*/}
                 {/*<Stack.Screen name="검색상품" component={GoodsSearchList}/>*/}
                 {/*==============마이페이지===============*/}
                 <Stack.Screen name="회원탈퇴" component={MemOut}/>
-                <Stack.Screen name="마이페이지" component={MyPage}/>
+                <Stack.Screen name="마이페이지" component={MyPage} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
                 <Stack.Screen name="회원정보수정" component={MemInfo}/>
                 <Stack.Screen name="포인트내역" component={MyPoint}/>
                 <Stack.Screen name="환불내역" component={MyRefund}/>

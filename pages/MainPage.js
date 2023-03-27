@@ -181,11 +181,14 @@ export default function MainPage({route,navigation}) {
             console.log('링크 없음');
         }
         if(link_type === 'goods_cate') {
-            if(!cfg_val1) { return Alert.alert('','링크 넣어주세요.'); }
-            return navigation.navigate('상품목록',{Cate1stUid:cfg_val1,Cate2ndUid:cfg_val2,Cate3rd:cfg_val3});
+            if(!cfg_val1) {
+                return false;
+            } else  {
+                return navigation.navigate('상품목록',{Cate1stUid:cfg_val1,Cate2ndUid:cfg_val2,Cate3rd:cfg_val3});
+            }
         }
         if(link_type === 'notice') {
-            if(!cfg_val1) { return Alert.alert('','링크 넣어주세요.'); }
+            if(!cfg_val1) { return navigation.navigate('공지사항'); }
             return navigation.navigate('공지사항상세',{bd_uid:cfg_val1});
         }
     }
@@ -288,7 +291,8 @@ export default function MainPage({route,navigation}) {
                         {/*  메인풋터 상단  */}
                         <View style={styles.main_footer_disc}>
                             <Text style={styles.main_footer_disc_txt}>
-                                상호명 : {com_info.com_name}
+                                {/*상호명 : {com_info.com_name}*/}
+                                상호명 : ㈜스타키움 자재로
                             </Text>
                             <Text style={styles.main_footer_disc_txt}>
                                 대표자명 : {com_info.ceo_name}

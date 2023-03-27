@@ -191,7 +191,6 @@ export default function GoodsDetail({route,navigation}) {
         img: {
 
         },
-
     };
 
     console.log('상품정보 확인 / ',GoodsDetail);
@@ -225,6 +224,18 @@ export default function GoodsDetail({route,navigation}) {
                                         </Text>
                                     </View>
                                 </View>
+                                {(GoodsDetail.disable_cancel === 'Y') && (
+                                    <View style={[flex]}>
+                                        <View style={[styles.wt25]}>
+                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>반품여부</Text>
+                                        </View>
+                                        <View style={[styles.wt75]}>
+                                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                {(GoodsDetail.disable_cancel === 'Y') ? '결제 후 반품/취소 불가능':' '}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                )}
                                 {/**판매가**/}
                                 <View style={[flex,styles.border_b]}>
                                     <View style={[styles.wt25]}>

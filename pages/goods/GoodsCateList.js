@@ -31,9 +31,9 @@ import {
     d_flex, flex, flex_around, flex_between, flex_between_top,
     flex_top, h13,
     h18, h20,
-    justify_content_center, justify_content_end, mb2, me1,
+    justify_content_center, justify_content_end, mb1, mb2, me1,
     min_height, ms1, mt1, mt3, mt5, pb2, pos_center,
-    sub_page, text_center,
+    sub_page, text_center, text_danger,
     text_light, text_primary, text_right, wt2, wt3, wt4, wt5, wt6, wt7, wt8
 } from "../../common/style/AtStyle";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -343,6 +343,8 @@ export default function GoodsCateList({route, navigation}) {
         html: goods_detail.summary_contents
     };
 
+    console.log(GoodsList);
+
     /**--------자재목록-------------**/
     function goodsList ({item}) {
 
@@ -421,8 +423,13 @@ export default function GoodsCateList({route, navigation}) {
                                     <View style={[]}>
                                         {/*-----------------------------가이드 안내-----------------------------*/}
                                         <View style={[]}>
+                                            {/**자재안내**/}
                                             <Text style={styles.cate_list_disc} numberOfLines={1}>
                                                 {(item.goods_guide_name) ? item.goods_guide_name : ''}
+                                            </Text>
+                                            {/**반품가능여부**/}
+                                            <Text style={[styles.cate_list_disc, text_danger]} numberOfLines={1}>
+                                                {(item.disable_cancel === 'Y') && '결제 후 취소/반품 불가'}
                                             </Text>
                                         </View>
                                         <View style={[]}>
@@ -506,138 +513,151 @@ export default function GoodsCateList({route, navigation}) {
 
             {/**-----------------------------------------------------모달-------------------------------------------------**/}
             <Modal visible={modalVisible} animationType="slide">
-                <View style={{ backgroundColor: '#fff', paddingTop:Platform.OS === 'ios' ? 70 : 20, }}>
-                    <View style={[flex_between,mb2,{paddingHorizontal:20}]}>
-                        <View style={[]}></View>
-                        <View style={[]}>
-                            <Text style={[h20]}>상품상세</Text>
+
+                <View style={[d_flex, flex_between,mb2,{paddingVertial:20, paddingTop:(Platform.OS === 'ios') ? 50:20,}]}>
+                    <View style={{paddingLeft:20}}></View>
+                    <View style={[]}>
+                        <Text style={[h20]}>상품상세</Text>
+                    </View>
+                    <View style={{paddingRight:20}}>
+                        <TouchableOpacity onPress={() => setModalVisible(false)}>
+                            <Modal_Close width={23} height={23}/>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                <ScrollView style={[bg_white ,{height:"50%"}]}>
+                    <View style={[styles.GoodsDetail]}>
+                        <View style={[container]}>
+                            <View style={[styles.goods_iamge_box]}>
+                                <Image style={styles.goods_image} source={{uri:`http://www.zazaero.com${goods_detail.list_img_url}`}}/>
+                            </View>
+                            {/*상품이미지*/}
+                            <View style={[styles.GoodsDetail_info]}>
+                                <Text Style={[styles.GoodsDetail_title]}>
+                                    {goods_detail.goods_name}
+                                </Text>
+                                {/*상품명*/}
+                                <View style={[flex,mt1]}>
+                                    <View style={[styles.wt25]}>
+                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>판매가</Text>
+                                    </View>
+                                    <View style={[styles.wt75]}>
+                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                            {Price(goods_detail.price) } 원
+                                        </Text>
+                                    </View>
+                                </View>
+                                {(goods_detail.disable_cancel === 'Y') && (
+                                    <View style={[flex]}>
+                                        <View style={[styles.wt25]}>
+                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>반품여부</Text>
+                                        </View>
+                                        <View style={[styles.wt75]}>
+                                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                {(goods_detail.disable_cancel === 'Y') ? '결제 후 반품/취소 불가능':' '}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                )}
+
+                                {/**판매가**/}
+                                <View style={[flex,styles.border_b]}>
+                                    <View style={[styles.wt25]}>
+                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재안내</Text>
+                                    </View>
+                                    {/**--자재안내--**/}
+                                    <View style={[styles.wt75]}>
+                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                            {goods_detail.goods_guide_name}
+                                        </Text>
+                                    </View>
+                                </View>
+                                
+                                {/*자재안내*/}
+                                <View style={[flex_between_top,mt3]}>
+                                    <View style="">
+                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>수량</Text>
+                                        <View style={[flex]}>
+                                            {/*===============마이너스 수량==================*/}
+                                            {/*=============마이너스 버튼==========*/}
+                                            <TouchableWithoutFeedback onPress={()=>goInput(`goods_cnt`,GoodsCnt,`minus`)}>
+                                                <View style={[count_btn]}>
+                                                    <View style={[pos_center]}>
+                                                        <Text
+                                                            style={[count_btn_txt]}>－</Text>
+                                                    </View>
+                                                </View>
+                                            </TouchableWithoutFeedback>
+                                            {/*============수량=================*/}
+                                            <TextInput style={[countinput,]}
+                                                       onChangeText={(goods_cnt)=>goInput(`goods_cnt`,goods_cnt)}
+                                                       defaultValue={`1`}
+                                                       maxLength={3}
+                                                       value={`${GoodsCnt}`}
+                                                       keyboardType="number-pad"
+                                            />
+                                            {/*=============플러스 버튼============*/}
+                                            <TouchableWithoutFeedback onPress={()=>goInput(`goods_cnt`,GoodsCnt,`plus`)}>
+                                                <View style={[count_btn]}>
+                                                    <View style={[pos_center]}>
+                                                        <Text
+                                                            style={[count_btn_txt]}>＋</Text>
+                                                    </View>
+                                                </View>
+                                            </TouchableWithoutFeedback>
+                                        </View>
+
+
+                                    </View>
+                                    <View style="">
+                                        <Text style={[styles.GoodsDetail_info_txt]}>총금액</Text>
+                                        <Text style={[styles.GoodsDetail_total_price]}>
+                                            {Price(goods_detail.price * GoodsCnt)}원
+                                        </Text>
+                                    </View>
+                                </View>
+                                {/*수량*/}
+
+                                {/*상품정보*/}
+                                <View style={[styles.GoodsDetail_more_image,mt5]}>
+                                    <RenderHtml source={source} contentWidth={380} />
+                                </View>
+                            </View>
                         </View>
-                        <View style={[]}>
-                            <TouchableOpacity onPress={() => setModalVisible(false)}>
-                                <Modal_Close width={23} height={23}/>
+                    </View>
+                </ScrollView>
+
+                <View style={[styles.bottom_btn]}>
+                    <View style={[flex]}>
+                        <View style={[styles.wt1_5]}>
+                            <TouchableOpacity style={[styles.md_wish]}  onPress={()=>goWish(goods_detail.goods_uid)}>
+                                {(goods_detail.my_zzim_flag === 'Y') ? (
+                                    <>
+                                        <Wishlist width={35} height={24} />
+                                    </>
+                                ):(
+                                    <>
+                                        <WishlistNon width={35} height={24} />
+                                    </>
+                                )}
+                                {/*<Wishlist width={35} height={24} />*/}
                             </TouchableOpacity>
                         </View>
-                    </View>
-                    {/* 모달 내용  */}
-                    <ScrollView style={[bg_white,{height:'85%'}]}>
-                        <View style={[styles.GoodsDetail]}>
-                            <View style={[container]}>
-                                <View style={[styles.goods_iamge_box]}>
-                                    <Image style={styles.goods_image} source={{uri:`http://www.zazaero.com${goods_detail.list_img_url}`}}/>
-                                </View>
-                                {/*상품이미지*/}
-                                <View style={[styles.GoodsDetail_info]}>
-                                    <Text Style={[styles.GoodsDetail_title]}>
-                                        {goods_detail.goods_name}
-                                    </Text>
-                                    {/*상품명*/}
-                                    <View style={[flex,mt1]}>
-                                        <View style={[styles.wt25]}>
-                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>판매가</Text>
-                                        </View>
-                                        <View style={[styles.wt75]}>
-                                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                                {Price(goods_detail.price) } 원
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    {/**판매가**/}
-                                    <View style={[flex,styles.border_b]}>
-                                        <View style={[styles.wt25]}>
-                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재안내</Text>
-                                        </View>
-                                        <View style={[styles.wt75]}>
-                                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                                {goods_detail.goods_guide_name}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    {/*자재안내*/}
-                                    <View style={[flex_between_top,mt3]}>
-                                        <View style="">
-                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>수량</Text>
-                                            <View style={[flex]}>
-                                                {/*===============마이너스 수량==================*/}
-                                                {/*=============마이너스 버튼==========*/}
-                                                <TouchableWithoutFeedback onPress={()=>goInput(`goods_cnt`,GoodsCnt,`minus`)}>
-                                                    <View style={[count_btn]}>
-                                                        <View style={[pos_center]}>
-                                                            <Text
-                                                                style={[count_btn_txt]}>－</Text>
-                                                        </View>
-                                                    </View>
-                                                </TouchableWithoutFeedback>
-                                                {/*============수량=================*/}
-                                                <TextInput style={[countinput,]}
-                                                           onChangeText={(goods_cnt)=>goInput(`goods_cnt`,goods_cnt)}
-                                                           defaultValue={`1`}
-                                                           maxLength={3}
-                                                           value={`${GoodsCnt}`}
-                                                           keyboardType="number-pad"
-                                                />
-                                                {/*=============플러스 버튼============*/}
-                                                <TouchableWithoutFeedback onPress={()=>goInput(`goods_cnt`,GoodsCnt,`plus`)}>
-                                                    <View style={[count_btn]}>
-                                                        <View style={[pos_center]}>
-                                                            <Text
-                                                                style={[count_btn_txt]}>＋</Text>
-                                                        </View>
-                                                    </View>
-                                                </TouchableWithoutFeedback>
-                                            </View>
-
-
-                                        </View>
-                                        <View style="">
-                                            <Text style={[styles.GoodsDetail_info_txt]}>총금액</Text>
-                                            <Text style={[styles.GoodsDetail_total_price]}>
-                                                {Price(goods_detail.price * GoodsCnt)}원
-                                            </Text>
-                                        </View>
-                                    </View>
-                                    {/*수량*/}
-
-                                    {/*상품정보*/}
-                                    <View style={[styles.GoodsDetail_more_image,mt5]}>
-                                        <RenderHtml source={source} contentWidth={380} />
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-                    </ScrollView>
-                    {/*    */}
-                    <View style={[styles.bottom_btn,{height:'25%'}]}>
-                        <View style={[flex]}>
-                            <View style={[styles.wt1_5]}>
-                                <TouchableOpacity style={[styles.md_wish]}  onPress={()=>goWish(goods_detail.goods_uid)}>
-                                    {(goods_detail.my_zzim_flag === 'Y') ? (
-                                        <>
-                                            <Wishlist width={35} height={24} />
-                                        </>
-                                    ):(
-                                        <>
-                                            <WishlistNon width={35} height={24} />
-                                        </>
-                                    )}
-                                    {/*<Wishlist width={35} height={24} />*/}
+                        <View style={[styles.wt8_5]}>
+                            <View style={[flex_around]}>
+                                <TouchableOpacity style={styles.btn} onPress={()=>goCartDetail(`cart`,goods_detail.goods_uid)}>
+                                    <Text style={[btn_primary,styles.center,styles.boottom_btn,styles.cart_btn]}>장바구니 담기</Text>
+                                </TouchableOpacity>
+                                {/*<TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>*/}
+                                <TouchableOpacity style={[styles.btn]} onPress={() => navigation.replace('장바구니')}>
+                                    <Text style={[btn_black,styles.center,styles.boottom_btn,styles.cart_btn]}>장바구니 가기</Text>
                                 </TouchableOpacity>
                             </View>
-                            <View style={[styles.wt8_5]}>
-                                <View style={[flex_around]}>
-                                    <TouchableOpacity style={styles.btn} onPress={()=>goCartDetail(`cart`,goods_detail.goods_uid)}>
-                                        <Text style={[btn_primary,styles.center,styles.boottom_btn]}>장바구니 담기</Text>
-                                    </TouchableOpacity>
-                                    {/*<TouchableOpacity style={styles.btn} onPress={() => goForm('order',GoodsDetail.goods_uid)}>*/}
-                                    <TouchableOpacity style={styles.btn} onPress={() => navigation.replace('장바구니')}>
-                                        <Text style={[btn_black,styles.center,styles.boottom_btn]}>장바구니 가기</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
                         </View>
                     </View>
-                    {/*    */}
-                    {/* 모달 내용  */}
                 </View>
+
             </Modal>
             {/**-----------------------------------------------------모달-------------------------------------------------**/}
 
@@ -647,7 +667,7 @@ export default function GoodsCateList({route, navigation}) {
                 <>
                     <View style={[styles.go_cart, bg_primary,]}>
                         <TouchableOpacity onPress={goCart}>
-                            <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
+                            <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10, }]}>
                                 <View style={{
                                     width: 20,
                                     height: 20,
@@ -681,9 +701,12 @@ export default function GoodsCateList({route, navigation}) {
 
 const styles = StyleSheet.create({
 
+    cart_btn:{
+        paddingBottom:38,
+        paddingTop:33,
+    },
     GoodsCateList: {
         backgroundColor:"#fff",
-
     },
     cate_1st_btn: {
         padding: 12,
@@ -739,7 +762,7 @@ const styles = StyleSheet.create({
         zIndex: 10,
     },
     go_cart: {
-        paddingBottom: (Platform.OS === 'android') ? 15 : 50,
+        paddingBottom: (Platform.OS === 'ios') ? 42 : 38,
         paddingTop: 7,
         position: "absolute",
         left: 0,

@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
     ScrollView,
     Alert,
-    KeyboardAvoidingView
+    KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard
 } from 'react-native';
 
 // 공통 CSS 추가
@@ -23,6 +23,7 @@ import {
 } from '../../common/style/AtStyle';
 import {Phone} from "../../util/util";
 import axios from "axios";
+import {search_id} from "../UTIL_mem";
 
 
 export default function FindId({route, navigation}) {
@@ -47,31 +48,23 @@ export default function FindId({route, navigation}) {
 
     // 3. 본인 인증창 실행
     const goFind = () => {
-        let { mem_name, mem_mobile} = FindId;
-        if(mem_name === '') {
+        if(FindId.mem_name === '') {
             Alert.alert('','이름을 입력해주세요.');
             return ChkInput.current[0].focus();
         }
 
-        if(mem_mobile === '') {
+        if(FindId.mem_mobile === '') {
             Alert.alert('','휴대폰번호를 입력해주세요.');
             return ChkInput.current[1].focus();
         }
 
-        axios.post('http://49.50.162.86:80/ajax/UTIL_search.php', {
-            act_type        :'search_id',
-            mem_name        :mem_name,
-            mem_mobile      :mem_mobile,
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        search_id(FindId).then((res) => {
             if (res) {
                 console.log(res.data);
                 const {result, mem_info, alert_msg} = res.data;
                 if (result === 'OK') {
                     navigation.replace('아이디 찾기결과',{mem_id:mem_info});
+                    return Alert.alert('','등록하신 연락처로 인증번호가 전송되었습니다.');
                 }
                 if(alert_msg) {
                     Alert.alert('',`${alert_msg}`);
@@ -85,36 +78,41 @@ export default function FindId({route, navigation}) {
     return   (
             <>
                 <KeyboardAvoidingView style={[styles.avoidingView]} behavior={Platform.select({ios: 'padding'})}>
-                    <View style={[styles.FindId]}>
-                        <View style={[styles.container,{paddingTop:0}]}>
-                            <View style={styles.center_middle}>
-                                <Text style={styles.FindId_txt}>
-                                    가입시 입력하신 {'\n'}
-                                    담당자의 연락처 인증을 통해{'\n'}
-                                    아이디를 찾을 수 있습니다.
-                                </Text>
-                                {/*이름*/}
-                                <TextInput
-                                    style={[styles.input,{marginBottom: 15}]}
-                                    onChangeText={(mem_name)=>goInput('mem_name',mem_name)}
-                                    value={`${FindId.mem_name}`}
-                                    ref={val=>ChkInput.current[0] = val}
-                                    placeholder="이름"
-                                />
-                                {/*전화번호*/}
-                                <TextInput
-                                    onChangeText={(mem_mobile)=>goInput('mem_mobile',mem_mobile)}
-                                    style={styles.input}
-                                    value={Phone(FindId.mem_mobile)}
-                                    ref={val=>ChkInput.current[1] = val}
-                                    placeholder="전화번호"
-                                />
-                                <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={()=>goFind()}>
-                                    <Text style={[text_primary,text_center,pt1,pb1,h20]}>본인인증</Text>
-                                </TouchableOpacity>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View style={[styles.FindId]}>
+                            <View style={[styles.container,{paddingTop:0}]}>
+                                <View style={styles.center_middle}>
+                                    <Text style={styles.FindId_txt}>
+                                        가입시 입력하신 {'\n'}
+                                        담당자의 연락처 인증을 통해{'\n'}
+                                        아이디를 찾을 수 있습니다.
+                                    </Text>
+                                    {/*이름*/}
+                                    <TextInput
+                                        style={[styles.input,{marginBottom: 15}]}
+                                        onChangeText={(mem_name)=>goInput('mem_name',mem_name)}
+                                        value={`${FindId.mem_name}`}
+                                        ref={val=>ChkInput.current[0] = val}
+                                        placeholder="이름"
+                                        autoCapitalize="none"
+                                    />
+                                    {/*전화번호*/}
+                                    <TextInput
+                                        onChangeText={(mem_mobile)=>goInput('mem_mobile',mem_mobile)}
+                                        style={styles.input}
+                                        value={Phone(FindId.mem_mobile)}
+                                        ref={val=>ChkInput.current[1] = val}
+                                        placeholder="전화번호"
+                                        keyboardType="number-pad"
+                                        autoCapitalize="none"
+                                    />
+                                    <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={()=>goFind()}>
+                                        <Text style={[text_primary,text_center,pt1,pb1,h20]}>본인인증</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
-                    </View>
+                    </TouchableWithoutFeedback>
                 </KeyboardAvoidingView>
 
             </>

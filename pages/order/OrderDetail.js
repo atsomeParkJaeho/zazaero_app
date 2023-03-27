@@ -144,7 +144,7 @@ export default function OrderDtail({route,navigation}) {
     const [BankCode,        setBankCode]                    = useState([]);          // 관리자 무통장입금계좌 출력
     const [PayMement,       setPayMement]                   = useState('bank');      // 결제창 노출 여부
     const [OrderData,       setOrderDate]                   = useState({
-        order_title         :'',
+        work_name           :'',
         zonecode            :'',
         addr1               :'',
         addr2               :'',
@@ -725,8 +725,8 @@ export default function OrderDtail({route,navigation}) {
                         <Text style={[FormStyle.FormLabel]}>공사명</Text>
                         <TextInput style={[input,{flex:1}]}
                                    editable={Mod} placeholder="공사명"
-                                   value={OrderData.order_title}
-                                   onChangeText={(order_title)=>goInput("order_title",order_title)}
+                                   value={OrderData.work_name}
+                                   onChangeText={(work_name)=>goInput("work_name",work_name)}
                                    ref={el => (InputFocus.current[0] = el)}
                         />
                     </View>
@@ -1731,7 +1731,7 @@ export default function OrderDtail({route,navigation}) {
                     ) :(
                         <>
                             <View style={[bg_gray, {
-                                paddingTop      : 6,
+                                paddingTop      : 7,
                                 paddingBottom   : 38,
                                 width           : "100%",
                                 position        : "relative",

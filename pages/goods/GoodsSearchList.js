@@ -36,7 +36,7 @@ import {
     btn_circle,
     bg_primary,
     bg_light,
-    justify_content_center, text_light, sub_page, min_height, text_primary
+    justify_content_center, text_light, sub_page, min_height, text_primary, h13, text_danger
 } from '../../common/style/AtStyle';
 import Search from '../../icons/search.svg';
 import Checkbox from "expo-checkbox";
@@ -236,7 +236,7 @@ export default function GoodsSearchList({route,navigation}) {
                                         <View style={[wt8]}>
                                             <TouchableOpacity style="" onPress={() => {navigation.navigate('상품상세',{uid:val.goods_uid})}}>
                                                 {/*========상품명========*/}
-                                                <Text style={[styles.cate_2st_btn_txt,(val.goods_wish_chk) ? {color:"red"}:{color:"#000"}]} numberOfLines={1}>{val.goods_name}</Text>
+                                                <Text style={[styles.cate_2st_btn_txt,(val.goods_wish_chk) ? {color:"red"}:{color:"#000"}]} numberOfLines={2}>{val.goods_name}</Text>
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[wt2,d_flex,justify_content_end]}>
@@ -268,9 +268,16 @@ export default function GoodsSearchList({route,navigation}) {
                                     </View>
                                     <View style={styles.flex_bottom}>
                                         <View style="">
-                                            <Text style={styles.cate_list_disc}>
+                                            <Text style={[styles.cate_list_disc, h13]} numberOfLines={1}>
                                                 {val.goods_guide_name}
                                             </Text>
+                                            {(val.disable_cancel === 'Y') && (
+                                                <>
+                                                    <Text style={[styles.cate_list_disc, h13, text_danger]} numberOfLines={1}>
+                                                        결제 후 취소/반품 불가
+                                                    </Text>
+                                                </>
+                                            )}
                                         </View>
                                         <View style="">
                                             <Text style={styles.cate_list_price}>{Price(val.price)}원</Text>

@@ -35,7 +35,7 @@ import {
     bg_light,
     h13,
     text_primary,
-    justify_content_center, text_light, ms1, padding_bottom, mt10, mt2, h15, text_center
+    justify_content_center, text_light, ms1, padding_bottom, mt10, mt2, h15, text_center, h12, text_danger
 } from '../../common/style/AtStyle';
 import Footer from "../Footer";
 
@@ -353,9 +353,14 @@ export default function Wishlist({route,navigation}) {
                                                                                         <View style={styles.flex_bottom}>
                                                                                             <View style="">
                                                                                                 <Text
-                                                                                                    style={styles.cate_list_disc}>
-                                                                                                    {(val.goods_guide_txt) && val.goods_guide_txt}
+                                                                                                    style={[styles.cate_list_disc,h13]}>
+                                                                                                    {(val.goods_guide_name) && val.goods_guide_name}
                                                                                                 </Text>
+                                                                                                {(val.disable_cancel === 'Y') && (
+                                                                                                <Text style={[styles.cate_list_disc,h13, text_danger]}>
+                                                                                                    결제 후 반품/취소 불가
+                                                                                                </Text>
+                                                                                                )}
                                                                                             </View>
                                                                                             <View style="">
                                                                                                 <Text

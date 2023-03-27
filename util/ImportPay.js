@@ -64,11 +64,10 @@ function Payment({ route,navigation }) {
         ]);
     }
 
-
     const data = {
         pg                      :'kcp',
         pay_method              :'card',
-        name                    :OrderData.order_title,
+        name                    :OrderData.work_name,
         merchant_uid            :OrderData.order_no,
         amount                  :tot_price,
         buyer_name              :OrderData.recv_name,

@@ -1,5 +1,14 @@
-import React,{useState,useEffect} from 'react';
-import { StyleSheet, Text, TextInput, View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    TouchableWithoutFeedback, Keyboard
+} from 'react-native';
 
 // 공통 CSS 추가
 import {
@@ -17,31 +26,62 @@ import {
 
 export default function FindId({route ,navigation}) {
 
+    const [chk_num, set_chk_num] = useState({
+        chk_num:'',
+    });
+    const ChkInput = useRef();
     console.log('아이디 확인');
     
     // 인증 전달값
     let mem_info = route.params.mem_id;
+    const goInput = (key, value) => {
+        set_chk_num({
+            ...FindId,
+            [key]:value,
+        });
+    }
+    const goChk_num = (chk_num) => {
+
+    }
+
+
+    console.log(chk_num);
 
     return   (
         <>
             <View style={[styles.FindId]}>
-                <View style={[styles.container,{paddingTop:0}]}>
-                    <View style={styles.center_middle}>
-                        <Text style={styles.FindId_txt}>
-                            가입시 아이디는 {'\n'}
-                            {mem_info.mem_id} 입니다.
-                        </Text>
-                        <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={() => {navigation.navigate('로그인')}}>
-                            <Text style={[text_primary,text_center,pt1,pb1,h20]}>닫기</Text>
-                        </TouchableOpacity>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={[styles.container,{paddingTop:0}]}>
+                        <View style={styles.center_middle}>
+                            <Text style={styles.FindId_txt}>
+                                인증번호를 입력해주세요.
+                                {/*{mem_info.mem_id} 입니다.*/}
+                            </Text>
+                            <TextInput
+                                style={[styles.input,{marginBottom: 15}]}
+                                onChangeText={(chk_num)=>goInput('chk_num',chk_num)}
+                                value={`${chk_num.chk_num}`}
+                                // ref={val=>ChkInput.current = val}
+                                placeholder="인증번호를 입력해주세요."
+                                keyboardType="number-pad"
+                                autoCapitalize="none"
+                            />
+                            <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={()=>{}}>
+                                <Text style={[text_primary,text_center,pt1,pb1,h20]}>확인</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
+                </TouchableWithoutFeedback>
             </View>
         </>
     );
 }
 
 const styles = StyleSheet.create({
+    avoidingView: {
+        flex: 1,
+    },
+
     FindId:{
         flex:1,
         justifyContent:'center',
@@ -72,5 +112,16 @@ const styles = StyleSheet.create({
     },
     border_radius:{
         borderRadius:5,
-    }
+    },
+    input: {
+        height: 46,
+        margin: 0,
+        borderRadius:5,
+        borderWidth: 1,
+        paddingVertical:7,
+        paddingHorizontal: 18,
+        borderColor:"#ededf1",
+        fontSize:12,
+        marginBottom:0,
+    },
 });

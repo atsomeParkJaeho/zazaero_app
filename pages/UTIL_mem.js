@@ -38,6 +38,10 @@ export const mem_reg = async (SignUp) => {
     })
     return res;
 }
+
+/**-------------------------------------아이디 찾기---------------------------------------------------**/
+
+
 /**---------------------------------아이디 중복체크-------------------------------------------**/
 export const chk_dup_id = async (SignUp) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
@@ -112,7 +116,7 @@ export const Sign_up = async (SignUp) => {
     let test = (await Device.getDeviceTypeAsync());
     let reg_mem_os = Platform.OS;
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php', {
-        act_type         : 'mem_reg',
+        act_type         :'mem_reg',
         mem_id           :SignUp.mem_id,        // 아이디
         mem_pw           :SignUp.mem_pw,        // 비밀번호
         mem_name         :SignUp.mem_name,      // 담당자 명
@@ -137,14 +141,15 @@ export const Sign_up = async (SignUp) => {
 }
 
 export const search_id = async (FindId) => {
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
-        act_type         : 'mem_reg',
-    },{
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_search.php', {
+        act_type        :'search_id',
+        mem_name        :FindId.mem_name,
+        mem_mobile      :FindId.mem_mobile,
+    }, {
         headers: {
             'Content-type': 'multipart/form-data'
         }
     })
-
     return res;
 }
 

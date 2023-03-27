@@ -117,7 +117,7 @@ function PayStatus({route, navigation}) {
                                     :</Text>
                             </View>
                             <View style={[styles.wt7]}>
-                                <Text style={[styles.Construction_name_val, h14]} numberOfLines={1}>{item.order_title}</Text>
+                                <Text style={[styles.Construction_name_val, h14]} numberOfLines={1}>{item.work_name}</Text>
                             </View>
                         </View>
                         {/**-------------------------희망배송일----------------------------**/}
