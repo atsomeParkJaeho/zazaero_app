@@ -170,11 +170,7 @@ export default function OrderDtail({route,navigation}) {
     const add_goods = () => {
         Alert.alert('','자재추가시 \n추가발주가 생성됩니다.',[
             {text:"취소", onPress:()=>{}},
-            {text:"확인",
-                onPress:()=>{
-                    add_goods_open();
-                }
-            }
+            {text:"확인", onPress:()=>{add_goods_open();}}
         ]);
 
         let add_goods_open = () => {
@@ -292,15 +288,12 @@ export default function OrderDtail({route,navigation}) {
     console.log(A_goods,'/실시간 확인');
     /**--------------------------------------------------------페이지 진입시 노출---------------------------------------------------**/
     useEffect(() => {
-
         /**--추가발주 상품 append 하기--**/
         if(A_goods_list) {
             let res = A_goods_list.filter((val,idx)=> A_goods_list.indexOf(val.goods_uid) !== idx);
             let temp = res.map(val=>{return {...val, req_memo    :'', goods_cnt   :1,}})
             set_A_goods(temp);
         }
-
-
 
         getOrderInfo(gd_order_uid, Member).then(res=> {
             if (res.data.result === 'OK') {
@@ -743,7 +736,7 @@ export default function OrderDtail({route,navigation}) {
                     <View style={[FormStyle.FormGroupItems]}>
                         <Text style={[FormStyle.FormLabel]}>공사명</Text>
                         <TextInput style={[input,{flex:1}]}
-                                   editable={Mod} placeholder="공사명"
+                                   editable={false} placeholder="공사명"
                                    value={OrderData.work_name}
                                    onChangeText={(work_name)=>goInput("work_name",work_name)}
                                    ref={el => (InputFocus.current[0] = el)}
@@ -794,7 +787,7 @@ export default function OrderDtail({route,navigation}) {
                                    placeholder="상세주소"
                                    value={OrderData.addr2}
                                    returnKeyType="done"
-                                   editable={Mod}
+                                   editable={false}
                                    ref={el => (InputFocus.current[3] = el)}
                         />
                     </View>

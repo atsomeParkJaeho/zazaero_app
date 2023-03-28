@@ -137,7 +137,7 @@ export const OrderMod = async (OrderData, OrderGoodsList, Member, A_goods, A_ord
     console.log(Member,'/ 회원정보');
     console.log(A_goods,'/ 자재추가한 자재');
 
-    console.log(A_order_uid,'/ 주문상품 uid');
+    console.log(A_order_uid,'/ 주문상품 uid');f
     console.log(A_order_item_uid,'/ 주문옵션 uid');
     console.log(A_order_item_cnt,'/ 상품 수량');
 
