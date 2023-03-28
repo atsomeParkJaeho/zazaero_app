@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView} from 'react-native'
+import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert} from 'react-native'
 
 // 공통 CSS 추가
 import {container, bg_white, flex_around, wt10, wt4, wt5, wt1} from '../common/style/AtStyle';
@@ -8,33 +8,31 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Footer from "./Footer";
 import ArrowRight from '../icons/arrow_r.svg'
 import {reloadAsync} from "expo-updates";
+import {get_Member, my_page} from "./UTIL_mem";
 
 
 export default function MyPage({navigation, route}) {
-    const [Member, setMember]               = useState();
-    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
-    console.log('마이페이지');
-    console.log('회원코드 / ' + Member);
-
+    const [Member, setMember]                  = useState();
     const [mem_info, set_mem_info] = useState([]);   // 회원정보 셋팅
     useEffect(() => {
-        axios.get('http://49.50.162.86:80/ajax/UTIL_mem_info.php', {
-            params: {
-                act_type:"my_page",
-                mem_uid: Member,
-            }
-        }).then((res) => {
-            if(res) {
-                const {result, test, mem_info} = res.data;
-                if(result === 'OK') {
-                    console.log('정상');
-                    set_mem_info(mem_info);
-                }
-                if(result === 'NG') {
-                    console.log('비정상');
-                }
+
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
             }
         });
+
+        my_page(Member).then((res) => {
+            if(res) {
+                const {result, mem_info} = res.data;
+                if(result === 'OK') {
+                    set_mem_info(mem_info);
+                }
+            } else {
+                Alert.alert('',`실패`);
+            }
+        });
+
     }, [Member]);
 
     // 로그아웃 로직

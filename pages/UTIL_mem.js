@@ -3,14 +3,28 @@ import {Platform} from "react-native";
 import * as Device from "expo-device";
 // import {getDeviceId} from "react-native-device-info";
 import {getDevicePushTokenAsync} from "expo-notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 
 
 /**---------------------------------회원정보 추출------------------------------------------------**/
-//
-// export const mem_info = async () => {
-//     let res = await axios.get
-// }
+
+export const get_Member = async () => {
+    const Member = await AsyncStorage.getItem('member');
+    console.log(Member,'/[추출]]');
+    return Member;
+}
+
+export const my_page = async (Member) => {
+    let res = await axios.get('http://49.50.162.86:80/ajax/UTIL_mem_info.php', {
+        params: {
+            act_type:"my_page",
+            mem_uid: Member,
+        }
+    });
+    return res;
+}
 
 /**---------------------------------회원가입-------------------------------------------**/
 export const mem_reg = async (SignUp) => {

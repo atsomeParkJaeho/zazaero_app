@@ -118,6 +118,7 @@ import LeftArrow from "../../icons/left_arrow.svg";
 import HomeLogoAt from "../../icons/home_logo_at.svg";
 import platform from "react-native-web/dist/exports/Platform";
 import Close from '../../icons/close_black.svg';
+import {get_Member} from "../UTIL_mem";
 
 
 
@@ -128,7 +129,6 @@ export default function OrderDtail({route,navigation}) {
     const {gd_order_uid, imp_log, addr1, zonecode, A_goods_list} = route.params;
     /**--------------------------------------필수 정보사항--------------------------------------------------**/
     const [Member, setMember]          = useState();
-    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     const InputFocus = useRef([]);
     /**-----------------------------------------수정 상태 설정-------------------------------------------------------**/
     const [Mod, setMod] = useState(false);          // 발주상태시 수정 변경가능
@@ -288,7 +288,11 @@ export default function OrderDtail({route,navigation}) {
     console.log(A_goods,'/실시간 확인');
     /**--------------------------------------------------------페이지 진입시 노출---------------------------------------------------**/
     useEffect(() => {
-
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
         /**--추가발주 상품 append 하기--**/
         if(A_goods_list) {
             let res = A_goods_list.filter((val,idx)=> A_goods_list.indexOf(val.goods_uid) !== idx);

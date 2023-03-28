@@ -51,6 +51,7 @@ import Wishlist from "../../icons/ico_heart_c.svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {get_goods_info, ins_cart, save_wish} from "./UTIL_goods";
 import {add_order_goods} from "../order/UTIL_order";
+import {get_Member} from "../UTIL_mem";
 
 
 
@@ -60,13 +61,17 @@ export default function GoodsDetail({route,navigation}) {
 
     let {uid} = route.params;
     const [Member, setMember] = useState();
-    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     // ===========1. 상품상세정보 상태 정의======
     const [GoodsDetail,setGoodsDetail] = useState([]);
     const [GoodsCnt, setGoodsCnt] = useState(1);
 
     // ============2. 상품출력===============
     useEffect(()=>{
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
         get_goods_info(Member, uid).then((res)=>{
             if(res) {
                 const {result, goods_info} = res.data;

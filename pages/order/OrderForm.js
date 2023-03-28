@@ -69,6 +69,7 @@ import {useIsFocused} from "@react-navigation/native";
 import {del_deli_addr, get_deli_addr_list, get_order_ready, InsOrder, SaveDeliAddr, setDeliList} from "./UTIL_order";
 import HomeLogoAt from "../../icons/home_logo_at.svg";
 import HomeLogo from "../../icons/home_logo.svg";
+import {get_Member} from "../UTIL_mem";
 
 
 
@@ -81,7 +82,6 @@ export default function OrderForm({route,navigation}) {
     let order_result_uid = order_uid.map(val=>Number(val.order_uid));
 
     const [Member, setMember]          = useState();
-    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     const InputFocus = useRef([]);
 
     const [Show, setShow]         = useState(false);    // 셀렉트창 노출 여부
@@ -170,6 +170,11 @@ export default function OrderForm({route,navigation}) {
     }
     /**---------------------------------페이지 진입시 노출---------------------------------------------------**/
     useEffect(() => {
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
         // daumApi();  // 다음 api
         getCartList();  // 장바구니
         getDeliList();  // 최근배송지

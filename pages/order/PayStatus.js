@@ -10,7 +10,7 @@ import {
     TouchableOpacity,
     ScrollView,
     useWindowDimensions,
-    FlatList
+    FlatList, Alert
 } from 'react-native';
 import {NavigationContainer, useIsFocused} from '@react-navigation/native';
 
@@ -41,6 +41,7 @@ import {DateChg, order_List, ordStatus} from "../../util/util";
 import axios from "axios";
 import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {get_Member} from "../UTIL_mem";
 
 
 function PayStatus({route, navigation}) {
@@ -48,12 +49,20 @@ function PayStatus({route, navigation}) {
 
     const [Member, setMember] = useState();
     const Update = useIsFocused();
-    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
 
     console.log('전달 3값 / ',Member);
 
     const [OrderList, setOrderList] = useState([]);     // 발주내역 출력
     useEffect(()=>{
+
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
+
+
+
         // ======================= db 연결용==================//
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
             act_type        :"get_order_list",

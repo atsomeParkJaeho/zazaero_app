@@ -29,7 +29,7 @@ import {AddrMatch, BankCode, bizNum, EmailDomain, Minlangth, Phone, regPW,} from
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
-import {mod_mem_info} from "../UTIL_mem";
+import {get_Member, mod_mem_info} from "../UTIL_mem";
 
 
 export default function MemInfo({route, navigation}) {
@@ -40,9 +40,7 @@ export default function MemInfo({route, navigation}) {
 
     const goInput2 = useRef([]);                // 입력값 위치 설정
     const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    })
+
     console.log(Member);
     // 1. data로 넘길 status 셋팅
     const [MemInfo, setMemInfo] = useState({});
@@ -50,6 +48,13 @@ export default function MemInfo({route, navigation}) {
     const [Show_2, setShow_2]         = useState(false);    // 셀렉트창 노출 여부
     const Update = useIsFocused();
     useEffect(() => {
+
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
+
         axios.post('http://49.50.162.86:80/ajax/UTIL_app.php', {
             act_type    :"get_mem_info",
             mem_uid     :Member,

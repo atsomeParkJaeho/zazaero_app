@@ -30,7 +30,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {ABanner, get_cate_list} from "./UTIL_main";
 import {getAppInfo} from "./order/UTIL_order";
 
-import {app_download_info, chk_test, mem_push_token} from "./UTIL_mem";
+import {app_download_info, chk_test, get_Member, mem_push_token} from "./UTIL_mem";
 import PushSetting from "../UTIL_push";
 import * as Device from "expo-device";
 
@@ -89,7 +89,6 @@ function Cate2nd({uid,navigation,name}) {
 export default function MainPage({route,navigation}) {
     /**---------------------------개인정보-----------------------------------**/
     const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {setMember(value);});
     // const get_pushk = AsyncStorage.getItem("push_key").then((value) => {setPushToken(value);});
     // 1. member = token 설정
     /**--------------------------------------------------------------**/
@@ -113,6 +112,11 @@ export default function MainPage({route,navigation}) {
     // console.log(app_test);
 
     useEffect(() => {
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
         /*--------------------------------푸시알림 셋팅 끝-------------------------------------------------*/
         chk_test().then((res)=>{
             if(res === 'android') {

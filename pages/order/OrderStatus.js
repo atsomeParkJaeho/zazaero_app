@@ -41,14 +41,13 @@ import {DateChg, order_List, ordStatus} from "../../util/util";
 import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {get_order_list} from "./UTIL_order";
+import {get_Member} from "../UTIL_mem";
 
 
 function OrderStatus({route, navigation}) {
     /**-------------------기본 회원정보 셋팅-----------------------**/
     const [Member, setMember]               = useState();
-    const mem_uid                           = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    });
+
     const Update                            = useIsFocused();
     const [OrderList, setOrderList]         = useState([]);     // 발주내역 출력
     console.log('전달 2값 / ',Member);
@@ -76,6 +75,13 @@ function OrderStatus({route, navigation}) {
     }
     /**---------------------------출력리스트----------------------------------**/
     useEffect(()=>{
+
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
+
         getOrderStatus();
     },[Member, Update]);
 

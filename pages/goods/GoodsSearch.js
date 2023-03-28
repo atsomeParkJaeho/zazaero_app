@@ -34,6 +34,7 @@ import search_none from "../../assets/img/search_none.png";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
+import {get_Member} from "../UTIL_mem";
 
 
 
@@ -41,7 +42,6 @@ export default function GoodsSearch({route,navigation}) {
 
 
     const [Member, setMember] = useState();
-    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
 
     // 1. 상태정의
     const [GoodsSearch, setGoodsSearch] = useState({    // 검색어 확인
@@ -52,6 +52,13 @@ export default function GoodsSearch({route,navigation}) {
     const update = useIsFocused();
 
     useEffect(()=>{
+
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
+
         // 최근검색목록을 불러온다
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
             act_type        : "get_mem_search_log_list",

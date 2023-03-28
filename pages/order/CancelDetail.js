@@ -52,6 +52,7 @@ import col3 from "../../assets/img/co3.png";
 import {cancel_d_List, cancelStatus, DateChg, Price, settleKind} from "../../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {gd_cancel_info} from "./UTIL_order";
+import {get_Member} from "../UTIL_mem";
 
 
 export default function CancelDetail({navigation,route}) {
@@ -59,11 +60,16 @@ export default function CancelDetail({navigation,route}) {
     const {gd_cancel_uid, gd_order_uid} = route.params;
 
     const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {setMember(value);});
     const [gd_order, set_gd_order] = useState([]);     // 취소한 자재 출력
     const [gd_cancel, set_gd_cancel] = useState([]);
     const [A_order_cancel_item, set_order_cancel_item] = useState([]);
     useEffect(()=>{
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
+
         gd_cancel_info(gd_cancel_uid, gd_order_uid).then((res)=>{
             if(res) {
                 console.log(res.data,'/ 데이터 확인');

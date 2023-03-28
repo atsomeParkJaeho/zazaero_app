@@ -45,15 +45,13 @@ import CartBag from "../../icons/cart_bag.svg";
 import {Price} from "../../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {get_goods_search, save_cart, save_wish} from "./UTIL_goods";
+import {get_Member} from "../UTIL_mem";
 
 
 
 export default function GoodsSearchList({route,navigation}) {
 
     const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    })
     const {search} = route.params;
 
     // 1. 상태정의
@@ -61,6 +59,12 @@ export default function GoodsSearchList({route,navigation}) {
 
     // 2. 검색상품 출력
     useEffect(()=>{
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
+
         get_goods_search(search).then((res) => {
             if (res) {
                 const {result, A_goods} = res.data;

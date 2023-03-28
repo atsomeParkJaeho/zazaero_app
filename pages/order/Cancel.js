@@ -32,15 +32,21 @@ import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {get_order_cancel_list} from "./UTIL_order";
 import {cancelType, DateChg, Price, refundStatus} from "../../util/util";
+import {get_Member} from "../UTIL_mem";
 
 export default function Cancel({navigation, route}) {
     const [Member, setMember] = useState();
-    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
-
     const [cancel_list, set_cancel_list] = useState([]);
 
     /**1. 주문취소 내역 리스트 출력 **/
     useEffect(()=>{
+
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
+
         get_order_cancel_list(Member).then((res)=>{
             if(res) {
                 console.log(res.data,'/ 데이터 확인123');

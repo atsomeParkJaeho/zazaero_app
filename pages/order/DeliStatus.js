@@ -1,5 +1,17 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Button, CheckBox, Text, TextInput, View, Image, TouchableOpacity, ScrollView,useWindowDimensions} from 'react-native';
+import {
+    StyleSheet,
+    Button,
+    CheckBox,
+    Text,
+    TextInput,
+    View,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    useWindowDimensions,
+    Alert
+} from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
 
 // 공통 CSS 추가
@@ -29,6 +41,7 @@ import {DateChg, deliStatus, order_List, ordStatus} from "../../util/util";
 import axios from "axios";
 import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {get_Member} from "../UTIL_mem";
 
 
 function DeliStatus({route, navigation}) {
@@ -37,12 +50,16 @@ function DeliStatus({route, navigation}) {
 
     const [Member, setMember] = useState();
     const Update = useIsFocused();
-    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
 
     console.log('전달 3값 / ',Member);
 
     const [OrderList, setOrderList] = useState([]);     // 발주내역 출력
     useEffect(()=>{
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
         // ======================= db 연결용==================//
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
             act_type        :"get_order_list",

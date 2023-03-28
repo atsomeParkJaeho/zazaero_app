@@ -48,6 +48,7 @@ import { useIsFocused } from '@react-navigation/native';
 import {ins_cart} from "./UTIL_goods";
 import Wish from "../../icons/ico_heart_nc.svg";
 import {get_my_zzim_list_new, set_my_zzim} from "../cart/UTIL_cart";
+import {get_Member} from "../UTIL_mem";
 
 
 export default function Wishlist({route,navigation}) {
@@ -56,7 +57,6 @@ export default function Wishlist({route,navigation}) {
 
 
     const [Member, setMember] = useState();
-    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     const Update = useIsFocused();
     console.log('즐겨찾기2');
 
@@ -68,6 +68,13 @@ export default function Wishlist({route,navigation}) {
 
     // ===========2. 불러오기
     useEffect(()=>{
+
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
+
         // ==============2) 즐겨찾기 리스트 불러오기
         get_my_zzim_list_new(Member).then((res)=>{
             console.log(res.data,'/즐겨찾기 불러오기')

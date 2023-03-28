@@ -49,6 +49,7 @@ import {Price} from "../../util/util";
 import CartIcon from "../../icons/uncart.svg";
 import {goDelCart, getCartList, goodsUpdate, save_req_memo} from "./UTIL_cart";
 import Search from "../../icons/search.svg";
+import {get_Member} from "../UTIL_mem";
 
 // 장바구니 레이아웃 출력
 export default function Cart({route, navigation}) {
@@ -57,7 +58,6 @@ export default function Cart({route, navigation}) {
     const [CartUid, setCartUid]            = useState(``);
     const [Cart1stUid, setCart1stUid]      = useState(``);
     const [CartList, setCartList]          = useState([]);           // 장바구니 1차 카테고리 출력
-    const mem_uid                          = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     const Update = useIsFocused();
 
 
@@ -65,6 +65,11 @@ export default function Cart({route, navigation}) {
 
     /**---------------------------------페이지 진입시 노출----------------------------------------**/
     useEffect(() => {
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
         // ====================장바구니 목록을 출력=================///
         getCartList(Member).then((res) => {
             if (res) {
