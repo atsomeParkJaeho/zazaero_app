@@ -88,7 +88,7 @@ import {FormStyle} from "./FormStyle";
 import {
     AddrMatch,
     bacnkAccount,
-    DateChg,
+    DateChg, maxDate, minDate,
     ordStatus,
     payStatus,
     Phone,
@@ -810,32 +810,32 @@ export default function OrderDtail({route,navigation}) {
                     {/**----------------------------------------------캘린더--------------------------------------------------**/}
                     {(Mod || add_goods_list) && (
                         <>
-
+                            <View style={[FormStyle.FormGroup, {paddingTop: 5, paddingBottom: 5,}]}>
+                                <CalendarStrip
+                                    scrollable
+                                    onDateSelected={(Date) => {
+                                        setOrderDate({
+                                            ...OrderData,
+                                            hope_deli_date: String(Date.format('YYYY-MM-DD')),
+                                        });
+                                    }
+                                    }
+                                    startingDate={`${OrderData.hope_deli_date}`}
+                                    minDate={`${today}`}
+                                    maxDate={`${maxDate(today)}`}
+                                    style={{height: 150, paddingTop: 20, paddingBottom: 10}}
+                                    daySelectionAnimation={{type: "background", highlightColor: "#3D40E0",}}
+                                    selectedDate={`${OrderData.hope_deli_date}`}
+                                    highlightDateNameStyle={{color: "#fff", fontSize: 12, paddingBottom: 5,}}
+                                    highlightDateNumberStyle={{color: "#fff", fontSize: 16,}}
+                                    weekendDateNameStyle={{color: "#452"}}
+                                    dateNameStyle={{fontSize: 12, color: "#666", paddingBottom: 5,}}
+                                    dateNumberStyle={{fontSize: 16}}
+                                />
+                            </View>
                         </>
                     )}
-                    <View style={[FormStyle.FormGroup, {paddingTop: 5, paddingBottom: 5,}]}>
-                        <CalendarStrip
-                            scrollable
-                            onDateSelected={(Date) => {
-                                setOrderDate({
-                                    ...OrderData,
-                                    hope_deli_date: String(Date.format('YYYY-MM-DD')),
-                                });
-                            }
-                            }
-                            startingDate={`${Date(OrderData.hope_deli_date)}`}
-                            minDate={`${today}`}
-                            maxDate={`2024-12-31`}
-                            style={{height: 150, paddingTop: 20, paddingBottom: 10}}
-                            daySelectionAnimation={{type: "background", highlightColor: "#3D40E0",}}
-                            selectedDate={`${Date(OrderData.hope_deli_date)}`}
-                            highlightDateNameStyle={{color: "#fff", fontSize: 12, paddingBottom: 5,}}
-                            highlightDateNumberStyle={{color: "#fff", fontSize: 16,}}
-                            weekendDateNameStyle={{color: "#452"}}
-                            dateNameStyle={{fontSize: 12, color: "#666", paddingBottom: 5,}}
-                            dateNumberStyle={{fontSize: 16}}
-                        />
-                    </View>
+
                 </View>
                 {/**----------------------------------------------희망배송시간 선택--------------------------------------------------**/}
                 <View>

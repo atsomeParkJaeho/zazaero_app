@@ -400,6 +400,17 @@ export const DateChg2 = (text) => {
     return String(dateFormat1);
 }
 
+export const minDate = (text) => {
+    let today = new Date(text);
+    let dateFormat1 = (today.getFullYear()-2) + '-' + (today.getMonth()+1) + '-' + today.getDate();
+    return String(dateFormat1);
+}
+
+export const maxDate = (text) => {
+    let today = new Date(text);
+    let dateFormat1 = (today.getFullYear()+2) + '-' + (today.getMonth()+1) + '-' + today.getDate();
+    return String(dateFormat1);
+}
 
 export const IMPcode = 'imp45563562';
 
