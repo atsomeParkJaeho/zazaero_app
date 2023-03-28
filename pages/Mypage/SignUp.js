@@ -85,9 +85,8 @@ export default function SignUp({route, navigation}) {
         SignUp.privacy_2 &&
         SignUp.privacy_3 &&
         SignUp.privacy_4 &&
-        SignUp.privacy_5 &&
-        SignUp.mem_pw_chk &&
-        SignUp.all_chk
+        SignUp.mem_pw_chk
+        // SignUp.all_chk
     );
 
 
