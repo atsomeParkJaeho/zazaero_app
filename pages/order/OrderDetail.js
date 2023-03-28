@@ -250,9 +250,10 @@ export default function OrderDtail({route,navigation}) {
                         ]);
                     } else if(result === 'OK_ord_chg') {
                         setMod(!Mod);
-                        Alert.alert('',err_msg,[
-                            {text:"OK", onPress:()=>{navigation.pop()}
-                            }
+                        let msg = '발주내용중\n\n자재정보의 변경이 발생하여\n\n발주검수부터 다시 진행하게 됩니다.';
+                        console.log(err_msg);
+                        Alert.alert('',msg,[
+                            {text:"OK", onPress:()=>{navigation.pop()}}
                         ]);
                     } else {
 
