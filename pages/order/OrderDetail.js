@@ -1123,7 +1123,7 @@ export default function OrderDtail({route,navigation}) {
                                                             {/*옵션요청가격*/}
                                                             {(Mod) ? (
                                                                 <View style={[]}>
-                                                                    <Text style={[h13]}>{val.req_opt_guide_name}</Text>
+                                                                    <Text style={[h13]}>{val.cate_3rd_guide_name}</Text>
                                                                     <TextInput
                                                                     style={[textarea, h13]}
                                                                     onChangeText={(req_memo)=>reqMemo('req_memo',req_memo,val.goods_uid)}
@@ -1709,7 +1709,6 @@ export default function OrderDtail({route,navigation}) {
 
         if(
             OrderData.ord_status === 'ord_ready' ||
-            OrderData.ord_status === 'ord_edit' ||
             OrderData.ord_status === 'pay_ready' ||
             OrderData.ord_status === 'pay_err' ||
             OrderData.ord_status === 'pay_try'
