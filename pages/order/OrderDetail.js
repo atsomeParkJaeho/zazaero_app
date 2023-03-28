@@ -823,7 +823,7 @@ export default function OrderDtail({route,navigation}) {
                                 });
                             }
                             }
-                            startingDate={`${new Date(OrderData.hope_deli_date)}`}
+                            startingDate={`${Date(OrderData.hope_deli_date)}`}
                             minDate={`${today}`}
                             maxDate={`2024-12-31`}
                             style={{height: 150, paddingTop: 20, paddingBottom: 10}}
