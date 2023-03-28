@@ -899,11 +899,11 @@ const styles = StyleSheet.create({
     },
     wt1_5:{
         width:"15%",
-        paddingBottom:30,
+        paddingBottom:Platform.OS === 'ios' ? 30 : 0,
     },
     wt8_5:{
         width:"85%",
-        paddingBottom:30,
+        paddingBottom:Platform.OS === 'ios' ? 30 : 0,
     },
     md_wish:{
         flex:1,
@@ -920,8 +920,5 @@ const styles = StyleSheet.create({
     },
     bottom_btn:{
         backgroundColor:"#eee",
-
-
-
     },
 });
