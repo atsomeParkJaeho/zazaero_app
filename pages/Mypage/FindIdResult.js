@@ -7,7 +7,7 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    TouchableWithoutFeedback, Keyboard
+    TouchableWithoutFeedback, Keyboard, Alert
 } from 'react-native';
 
 // 공통 CSS 추가
@@ -20,32 +20,57 @@ import {
     pt2,
     pb2, h20, pt1, pb1, mt3
 } from '../../common/style/AtStyle';
+import {find_chk_mem} from "../UTIL_mem";
 
 
 
 
 export default function FindId({route ,navigation}) {
-
+    let {FindId} = route.params;
     const [chk_num, set_chk_num] = useState({
         chk_num:'',
     });
     const ChkInput = useRef();
-    console.log('아이디 확인');
-    
-    // 인증 전달값
-    let mem_info = route.params.mem_id;
+
+    useEffect(()=>{
+        navigation.setOptions({
+            title:(FindId.type === 'id') ? '아이디 찾기':'비밀번호 찾기'
+        });
+    },[]);
+
     const goInput = (key, value) => {
         set_chk_num({
-            ...FindId,
             [key]:value,
         });
     }
-    const goChk_num = (chk_num) => {
+    
+    const goFindMem = () => {
+        console.log(FindId.type,'/ 찾기 옵션');
+        console.log(FindId.mem_id,'/ 아이디');
+        console.log(FindId.mem_name,'/ 담당자명');
+        console.log(FindId.mem_mobile,'/ 담당자 연락처');
+        // 인증번호 체크
 
+        return  navigation.replace('비밀번호 찾기결과');
+        // find_chk_mem(FindId).then((res)=>{
+        //     if(res) {
+        //       const {result} = res.data;
+        //       if(result === 'OK') {
+        //           if(FindId.type === 'id') {
+        //             return Alert.alert('',``);
+        //           } else {
+        //               return  navigation.replace('비밀번호 찾기결과');
+        //           }
+        //       } else {
+        //           return  Alert.alert('',`${res.data}`);
+        //       }
+        //     }
+        // });
+        
     }
 
 
-    console.log(chk_num);
+    console.log(route.params, '/ 인증번호 확인');
 
     return   (
         <>
@@ -66,7 +91,7 @@ export default function FindId({route ,navigation}) {
                                 keyboardType="number-pad"
                                 autoCapitalize="none"
                             />
-                            <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={()=>{}}>
+                            <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={()=>{goFindMem()}}>
                                 <Text style={[text_primary,text_center,pt1,pb1,h20]}>확인</Text>
                             </TouchableOpacity>
                         </View>

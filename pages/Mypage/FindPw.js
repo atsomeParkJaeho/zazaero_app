@@ -25,6 +25,7 @@ import {
 } from '../../common/style/AtStyle';
 import axios from "axios";
 import {Phone} from "../../util/util";
+import {search_pw_mobile} from "../UTIL_mem";
 
 
 
@@ -36,6 +37,7 @@ export default function FindPw({navigation,route}) {
 
     // 1. 전달값 셋팅
     const [FindId,setFindId] = useState({
+        type            :'pw',
         mem_id          :'',
         mem_name        :'',
         mem_mobile      :'',
@@ -68,24 +70,14 @@ export default function FindPw({navigation,route}) {
             return ChkInput.current[2].focus();
         }
 
-        axios.post('http://49.50.162.86:80/ajax/UTIL_search.php', {
-            act_type        :'search_pw_mobile',
-            mem_id          :mem_id,
-            mem_name        :mem_name,
-            mem_mobile      :mem_mobile,
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        search_pw_mobile(FindId).then((res) => {
             if (res) {
                 console.log(res.data);
                 const {result} = res.data;
                 if (result === 'OK') {
-                    Alert.alert('본인인증','회원님의 연락처로 비밀번호가 문자전송되었습니다.');
-                    navigation.navigate('로그인');
+                    Alert.alert('본인인증','회원님의 연락처로 인증번호가 전송되었습니다.');
+                    return navigation.replace('아이디 찾기결과',{FindId:FindId});
                 }
-
                 if(result === 'NG') {
                     Alert.alert('','계정정보가 없습니다.');
                     return ChkInput.current[0].focus();

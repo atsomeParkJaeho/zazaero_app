@@ -125,7 +125,7 @@ const StackNavigator = () => {
                     {
                         headerTitle:'',
                         headerStatusBarHeight:0,
-                        cardStyleInterpolator: forFade,
+                        // cardStyleInterpolator: forFade,
                     }
                 }/>
                 {/*==============상단===============*/}
@@ -134,7 +134,7 @@ const StackNavigator = () => {
                 {/*==============마이페이지===============*/}
                 <Stack.Screen name="회원탈퇴" component={MemOut}/>
                 <Stack.Screen name="마이페이지" component={MyPage} options={{
-                    cardStyleInterpolator: forFade
+                    // cardStyleInterpolator: forFade
                 }}/>
                 <Stack.Screen name="회원정보수정" component={MemInfo}/>
                 <Stack.Screen name="포인트내역" component={MyPoint}/>
@@ -145,11 +145,10 @@ const StackNavigator = () => {
                 <Stack.Screen name="장바구니" component={Cart}/>
                 <Stack.Screen name="즐겨찾기" component={Wishlist}/>
                 <Stack.Screen name="아이디 찾기" component={FindId}/>
-                <Stack.Screen name="아이디 찾기결과" options={{title:'아이디 찾기'}} component={FindIdResult}/>
+                <Stack.Screen name="아이디 찾기결과" component={FindIdResult}/>
                 <Stack.Screen name="비밀번호 찾기" component={FindPw}/>
                 <Stack.Screen name="비밀번호 찾기결과" options={{title:'비밀번호 찾기'}} component={FindPwResult}/>
                 <Stack.Screen name="약관/개인정보처리방침" component={Provision}/>
-
                 <Stack.Screen name="상품목록" component={GoodsCateList} />
                 <Stack.Screen name="상품상세" component={GoodsDetail}/>
                 <Stack.Screen name="발주상세" component={OrderDetail}/>

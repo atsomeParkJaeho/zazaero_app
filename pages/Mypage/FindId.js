@@ -35,6 +35,7 @@ export default function FindId({route, navigation}) {
 
     // 1. 전달값 셋팅
     const [FindId,setFindId] = useState({
+        type          :'id',
         mem_name      :'',
         mem_mobile    :'',
     });
@@ -61,10 +62,10 @@ export default function FindId({route, navigation}) {
         search_id(FindId).then((res) => {
             if (res) {
                 console.log(res.data);
-                const {result, mem_info, alert_msg} = res.data;
+                const {result, alert_msg} = res.data;
                 if (result === 'OK') {
-                    navigation.replace('아이디 찾기결과',{mem_id:mem_info});
-                    return Alert.alert('','등록하신 연락처로 인증번호가 전송되었습니다.');
+                    navigation.replace('아이디 찾기결과',{FindId:FindId});
+                    return Alert.alert('','회원님의 연락처로 인증번호가 전송되었습니다.');
                 }
                 if(alert_msg) {
                     Alert.alert('',`${alert_msg}`);

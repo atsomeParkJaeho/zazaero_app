@@ -5,6 +5,13 @@ import * as Device from "expo-device";
 import {getDevicePushTokenAsync} from "expo-notifications";
 
 
+
+/**---------------------------------회원정보 추출------------------------------------------------**/
+//
+// export const mem_info = async () => {
+//     let res = await axios.get
+// }
+
 /**---------------------------------회원가입-------------------------------------------**/
 export const mem_reg = async (SignUp) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php', {
@@ -140,6 +147,21 @@ export const Sign_up = async (SignUp) => {
     return res;
 }
 
+export const search_pw_mobile = async (FindId) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_search.php', {
+        act_type        :'search_pw_mobile',
+        mem_id          :FindId.mem_id,
+        mem_name        :FindId.mem_name,
+        mem_mobile      :FindId.mem_mobile,
+    }, {
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
+}
+
 export const search_id = async (FindId) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_search.php', {
         act_type        :'search_id',
@@ -237,6 +259,21 @@ export const mem_push_token = async (Member, token) =>{
             'Content-type': 'multipart/form-data'
         }
     })
+    return res;
+}
+
+/**-------------------------------------인증번호 전송-------------------------------------------**/
+export const find_chk_mem = async (FindId) => {
+    let res = await  axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
+        act_type            :'find_chk_mem',
+        mem_id              :FindId.mem_id,
+        mem_name            :FindId.mem_name,
+        mem_mobile          :FindId.mem_mobile,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
     return res;
 }
 
