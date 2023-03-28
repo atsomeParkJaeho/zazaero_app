@@ -228,7 +228,7 @@ export default function SignUp({route, navigation}) {
         }
         
         if(!SignUp.com_biz_no) {  // 사업자 등록증
-            Alert.alert('',`사업자 등록증을 입력해주세요.`);
+            Alert.alert('',`사업자 등록번호를 입력해주세요.`);
             return Chkinput.current[4].focus();
         }
         if(!SignUp.zonecode) {  // 우편번호
@@ -437,7 +437,7 @@ export default function SignUp({route, navigation}) {
                                                value={bizNum(SignUp.com_biz_no)}
                                                ref={val=>(Chkinput.current[4] = val)}
                                                maxLength={12}
-                                               placeholder="12345-51-687891"
+                                               placeholder="12345-51-67890"
                                                keyboardType="numeric"
                                     />
                                 </View>
