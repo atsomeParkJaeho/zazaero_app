@@ -1118,9 +1118,11 @@ export default function OrderDtail({route,navigation}) {
                                                         </View>
                                                         {/*옵션요청글이 있을시 노출한다 */}
                                                         <View style={[mt1]}>
-                                                            <View style={[]}>
-                                                                <Text style={[h13,text_right]}>요청금액 : <Text style={[text_danger]}>{Price(items.opt_price)}원</Text></Text>
-                                                            </View>
+                                                            {(items.req_memo) && (
+                                                                <View style={[]}>
+                                                                    <Text style={[h13,text_right]}>요청금액 : <Text style={[text_danger]}>{Price(items.opt_price)}원</Text></Text>
+                                                                </View>
+                                                            )}
                                                             {/*옵션요청가격*/}
                                                             {(Mod) ? (
                                                                 <View style={[]}>
