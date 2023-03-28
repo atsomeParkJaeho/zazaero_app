@@ -757,15 +757,15 @@ export default function OrderDtail({route,navigation}) {
                                        ref={el => (InputFocus.current[1] = el)}
                             />
                             {/*주소찾기*/}
-                            {(Mod) && (
-                                <>
-                                    <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"발주상세", gd_order_uid:gd_order_uid})}>
-                                        <View style={[bg_primary,{padding:8,borderRadius:5, marginLeft:16,}]}>
-                                            <Text style={[text_light]}>주소찾기</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </>
-                            )}
+                            {/*{(Mod) && (*/}
+                            {/*    <>*/}
+                            {/*        <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"발주상세", gd_order_uid:gd_order_uid})}>*/}
+                            {/*            <View style={[bg_primary,{padding:8,borderRadius:5, marginLeft:16,}]}>*/}
+                            {/*                <Text style={[text_light]}>주소찾기</Text>*/}
+                            {/*            </View>*/}
+                            {/*        </TouchableOpacity>*/}
+                            {/*    </>*/}
+                            {/*)}*/}
                         </View>
                     </View>
                     {/**----------------------------------------------주소입력--------------------------------------------------**/}
