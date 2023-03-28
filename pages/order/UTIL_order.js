@@ -130,6 +130,8 @@ export const OrderMod = async (OrderData, OrderGoodsList, Member, A_goods, A_ord
     let A_order_uid                 = OrderGoodsList.map((val)=>val.order_uid);
     let A_add_goods_uid             = A_goods.map(val=>String(val.goods_uid));
     let A_add_goods_cnt             = A_goods.map(val=>String(val.goods_cnt));
+    let A_add_goods_req_memo        = A_goods.map(val=>String(val.req_memo));
+
 
     console.log(OrderData,'/ 발주정보');
     console.log(Member,'/ 회원정보');
@@ -177,6 +179,7 @@ export const OrderMod = async (OrderData, OrderGoodsList, Member, A_goods, A_ord
         A_order_item_cnt     :A_order_item_cnt,
         A_add_goods_uid      :A_add_goods_uid,
         A_add_goods_cnt      :A_add_goods_cnt,
+        A_add_goods_req_memo :A_add_goods_req_memo,
     },{
         headers: {
             'Content-type': 'multipart/form-data'

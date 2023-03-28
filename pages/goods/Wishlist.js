@@ -157,9 +157,6 @@ export default function Wishlist({route,navigation}) {
                     })}
             }));
         }
-
-
-
     }
     /**---------------------------------자재추가 이벤트----------------------------------------**/
     const AddGoods = () => {

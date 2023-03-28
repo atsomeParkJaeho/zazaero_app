@@ -381,6 +381,22 @@ export default function OrderDtail({route,navigation}) {
             });
         }
     }
+
+    console.log(OrderGoodsList,'/자재확인');
+    const reqMemo = (key, value, goods_uid) =>{
+        let temp = OrderGoodsList.map(val=>{
+            if(val.goods_uid === goods_uid) {
+                return {...val, A_sel_option:val.A_sel_option.map(item=>{
+                    return {...item, [key]:value}
+                    })}
+            } else {
+                return val;
+            }
+        });
+
+        setOrderGoodsList(temp);
+    }
+
     const A_goInput = (keyValue, e, goods_uid, num_type) => {
 
         if(num_type === 'minus') {
@@ -706,6 +722,8 @@ export default function OrderDtail({route,navigation}) {
         );
     }
 
+    console.log(OrderData,'/[자재 확인]');
+    
     return(
         <>
             {/**-------------------------상태상단------------------------**/}
@@ -1029,20 +1047,10 @@ export default function OrderDtail({route,navigation}) {
                                             {val.A_sel_option.map(items=>{
                                                 let goods_price     = items.option_price;
                                                 let goods_cnt       = items.option_cnt;
-                                                let goods_opt_price = items.opt_price;
                                                 let order_item_uid  = items.order_item_uid;
-                                                const reqMemo = (key, value, uid) =>{
-                                                    let temp = OrderGoodsList.map((cate)=>{
-                                                        return {...cate, A_sel_option:cate.A_sel_option.map(val=>{
-                                                                if(uid === val.order_item_uid) {
-                                                                    return {...cate, req_memo:value}
-                                                                } else {
-                                                                    return cate;
-                                                                }
-                                                            })}
-                                                    });
-                                                    setOrderGoodsList(temp);
-                                                }
+
+                                                console.log(items.req_memo,'/[자재 확인]');
+
                                                 return(
                                                     <>
                                                         <View style={[flex_between_bottom]}>
@@ -1108,22 +1116,22 @@ export default function OrderDtail({route,navigation}) {
                                                             </View>
                                                         </View>
                                                         {/*옵션요청글이 있을시 노출한다 */}
-                                                        {(items.req_memo) && (
-                                                            <>
-                                                                <View style={[mt1]}>
-                                                                    <View style={[]}>
-                                                                        <Text style={[h13,text_right]}>요청금액 : <Text style={[text_danger]}>{Price(goods_opt_price)}원</Text></Text>
-                                                                    </View>
-                                                                    {/*옵션요청가격*/}
-                                                                    <View style={[]}>
-                                                                        <Text style={[h13]}>{val.req_opt_guide_name}</Text>
-                                                                        <Text style={[textarea, h13, bg_light]}>{items.req_memo}</Text>
-                                                                    </View>
-                                                                    {/*옵션요청글*/}
-                                                                </View>
-                                                            </>
-                                                        )}
+                                                        <View style={[mt1]}>
+                                                            <View style={[]}>
+                                                                <Text style={[h13,text_right]}>요청금액 : <Text style={[text_danger]}>{Price(items.opt_price)}원</Text></Text>
+                                                            </View>
+                                                            {/*옵션요청가격*/}
+                                                            <View style={[]}>
+                                                                <Text style={[h13]}>{val.req_opt_guide_name}</Text>
+                                                                <TextInput
+                                                                style={[textarea, h13, bg_light]}
+                                                                onChangeText={(req_memo)=>reqMemo('req_memo',req_memo,val.goods_uid)}
+                                                                value={`${items.req_memo}`}
+                                                                />
 
+                                                            </View>
+                                                            {/*옵션요청글*/}
+                                                        </View>
                                                     </>
                                                 );
                                             })}
