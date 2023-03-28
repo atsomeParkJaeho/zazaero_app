@@ -288,12 +288,14 @@ export default function OrderDtail({route,navigation}) {
     console.log(A_goods,'/실시간 확인');
     /**--------------------------------------------------------페이지 진입시 노출---------------------------------------------------**/
     useEffect(() => {
+
         /**--추가발주 상품 append 하기--**/
         if(A_goods_list) {
             let res = A_goods_list.filter((val,idx)=> A_goods_list.indexOf(val.goods_uid) !== idx);
             let temp = res.map(val=>{return {...val, req_memo    :'', goods_cnt   :1,}})
             set_A_goods(temp);
         }
+
 
         getOrderInfo(gd_order_uid, Member).then(res=> {
             if (res.data.result === 'OK') {
@@ -580,6 +582,8 @@ export default function OrderDtail({route,navigation}) {
     // 자재목록 필터링
     const result = OrderGoodsList.filter((val)=>val.goods_del === false);
 
+    let today = new Date();
+
 
     // 결제후 취소
     const order_Cancel = (cancel_type) => {
@@ -806,31 +810,32 @@ export default function OrderDtail({route,navigation}) {
                     {/**----------------------------------------------캘린더--------------------------------------------------**/}
                     {(Mod || add_goods_list) && (
                         <>
-                            <View style={[FormStyle.FormGroup, {paddingTop: 5, paddingBottom: 5,}]}>
-                                <CalendarStrip
-                                    // scrollable
-                                    onDateSelected={(Date) => {
-                                        setOrderDate({
-                                            ...OrderData,
-                                            hope_deli_date: String(Date.format('YYYY-MM-DD')),
-                                        });
-                                    }
-                                    }
-                                    startingDate={`${OrderData.hope_deli_date}`}
-                                    minDate={`${Date}`}
-                                    maxDate={`2024-12-31`}
-                                    style={{height: 150, paddingTop: 20, paddingBottom: 10}}
-                                    daySelectionAnimation={{type: "background", highlightColor: "#3D40E0",}}
-                                    selectedDate={`${OrderData.hope_deli_date}`}
-                                    highlightDateNameStyle={{color: "#fff", fontSize: 12, paddingBottom: 5,}}
-                                    highlightDateNumberStyle={{color: "#fff", fontSize: 16,}}
-                                    weekendDateNameStyle={{color: "#452"}}
-                                    dateNameStyle={{fontSize: 12, color: "#666", paddingBottom: 5,}}
-                                    dateNumberStyle={{fontSize: 16}}
-                                />
-                            </View>
+
                         </>
                     )}
+                    <View style={[FormStyle.FormGroup, {paddingTop: 5, paddingBottom: 5,}]}>
+                        <CalendarStrip
+                            scrollable
+                            onDateSelected={(Date) => {
+                                setOrderDate({
+                                    ...OrderData,
+                                    hope_deli_date: String(Date.format('YYYY-MM-DD')),
+                                });
+                            }
+                            }
+                            startingDate={`${new Date(OrderData.hope_deli_date)}`}
+                            minDate={`${today}`}
+                            maxDate={`2024-12-31`}
+                            style={{height: 150, paddingTop: 20, paddingBottom: 10}}
+                            daySelectionAnimation={{type: "background", highlightColor: "#3D40E0",}}
+                            selectedDate={`${Date(OrderData.hope_deli_date)}`}
+                            highlightDateNameStyle={{color: "#fff", fontSize: 12, paddingBottom: 5,}}
+                            highlightDateNumberStyle={{color: "#fff", fontSize: 16,}}
+                            weekendDateNameStyle={{color: "#452"}}
+                            dateNameStyle={{fontSize: 12, color: "#666", paddingBottom: 5,}}
+                            dateNumberStyle={{fontSize: 16}}
+                        />
+                    </View>
                 </View>
                 {/**----------------------------------------------희망배송시간 선택--------------------------------------------------**/}
                 <View>

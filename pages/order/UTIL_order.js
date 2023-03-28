@@ -137,7 +137,7 @@ export const OrderMod = async (OrderData, OrderGoodsList, Member, A_goods, A_ord
     console.log(Member,'/ 회원정보');
     console.log(A_goods,'/ 자재추가한 자재');
 
-    console.log(A_order_uid,'/ 주문상품 uid');f
+    console.log(A_order_uid,'/ 주문상품 uid');
     console.log(A_order_item_uid,'/ 주문옵션 uid');
     console.log(A_order_item_cnt,'/ 상품 수량');
 
@@ -169,6 +169,7 @@ export const OrderMod = async (OrderData, OrderGoodsList, Member, A_goods, A_ord
         mem_uid              :Member,
         addr1                :OrderData.addr1,
         addr2                :OrderData.addr2,
+        order_memo           :OrderData.order_memo,
         hope_deli_date       :OrderData.hope_deli_date,
         hope_deli_time       :OrderData.hope_deli_time,
         zonecode             :OrderData.zonecode,
@@ -179,7 +180,7 @@ export const OrderMod = async (OrderData, OrderGoodsList, Member, A_goods, A_ord
         A_order_item_cnt     :A_order_item_cnt,
         A_add_goods_uid      :A_add_goods_uid,
         A_add_goods_cnt      :A_add_goods_cnt,
-        A_add_goods_req_memo :A_add_goods_req_memo,
+        A_add_goods_req_memo :A_add_goods_req_memo
     },{
         headers: {
             'Content-type': 'multipart/form-data'
