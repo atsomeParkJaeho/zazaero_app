@@ -67,6 +67,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {AddrMatch, Phone, Price, Time, Time1, Time2, cancel_List, cancel_d_List, DateChg, DateChg2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import {del_deli_addr, get_deli_addr_list, get_order_ready, InsOrder, SaveDeliAddr, setDeliList} from "./UTIL_order";
+import HomeLogoAt from "../../icons/home_logo_at.svg";
+import HomeLogo from "../../icons/home_logo.svg";
 
 
 
@@ -639,9 +641,17 @@ export default function OrderForm({route,navigation}) {
                                                                 {/*총금액*/}
                                                             </View>
                                                         </View>
-                                                        <View>
-                                                            <Text>{items.req_memo}</Text>
-                                                        </View>
+                                                        {(items.req_memo) ? (
+                                                            <>
+                                                                <View style={[textarea,bg_light]}>
+                                                                    <Text>{items.req_memo}</Text>
+                                                                </View>
+                                                            </>
+                                                        ):(
+                                                            <>
+                                                            </>
+                                                        )}
+
                                                     </>
                                                 );
                                             })}
@@ -835,7 +845,7 @@ export default function OrderForm({route,navigation}) {
 
 const styles = StyleSheet.create({
 
-    
+
     // 최하단 버튼 설정
     form_btn:{
         paddingTop: 6,
@@ -844,7 +854,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: "100%"
     },
-    
+
     goods_thum:{
         width:50,
         height:50,
