@@ -35,18 +35,22 @@ export default function NoticeList({navigation}) {
             <ScrollView style={styles.container}>
                 <View style={styles.mypageList}>
                     {NoticeList.map((val,idx)=>(
-                        <View style={styles.mypageListItem} key={idx}>
-                            <TouchableOpacity onPress={() => navigation.navigate('공지사항상세',{bd_uid:val.bd_uid})}>
-                                {/*===========제목=========*/}
-                                <View style={styles.mypageListItemTitle}>
-                                    <Text style={styles.mypageList_name}>{val.bd_title}</Text>
+                        <>
+                            {(val.hide_flag === 'N') && (
+                                <View style={styles.mypageListItem} key={idx}>
+                                    <TouchableOpacity onPress={() => navigation.navigate('공지사항상세',{bd_uid:val.bd_uid})}>
+                                        {/*===========제목=========*/}
+                                        <View style={styles.mypageListItemTitle}>
+                                            <Text style={styles.mypageList_name}>{val.bd_title}</Text>
+                                        </View>
+                                        {/*===========날짜============*/}
+                                        <View style={styles.mypageListItemIcon}>
+                                            <Text style={styles.mypageList_name2}>{val.reg_date}</Text>
+                                        </View>
+                                    </TouchableOpacity>
                                 </View>
-                                {/*===========날짜============*/}
-                                <View style={styles.mypageListItemIcon}>
-                                    <Text style={styles.mypageList_name2}>{val.reg_date}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+                            )}
+                        </>
                     ))}
                 </View>
             </ScrollView>
