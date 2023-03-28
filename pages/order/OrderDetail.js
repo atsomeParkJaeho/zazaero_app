@@ -1121,15 +1121,25 @@ export default function OrderDtail({route,navigation}) {
                                                                 <Text style={[h13,text_right]}>요청금액 : <Text style={[text_danger]}>{Price(items.opt_price)}원</Text></Text>
                                                             </View>
                                                             {/*옵션요청가격*/}
-                                                            <View style={[]}>
-                                                                <Text style={[h13]}>{val.req_opt_guide_name}</Text>
-                                                                <TextInput
-                                                                style={[textarea, h13, bg_light]}
-                                                                onChangeText={(req_memo)=>reqMemo('req_memo',req_memo,val.goods_uid)}
-                                                                value={`${items.req_memo}`}
-                                                                />
-
-                                                            </View>
+                                                            {(Mod) ? (
+                                                                <View style={[]}>
+                                                                    <Text style={[h13]}>{val.req_opt_guide_name}</Text>
+                                                                    <TextInput
+                                                                    style={[textarea, h13]}
+                                                                    onChangeText={(req_memo)=>reqMemo('req_memo',req_memo,val.goods_uid)}
+                                                                    value={`${items.req_memo}`}
+                                                                    />
+                                                                </View>
+                                                            ) : (
+                                                                <>
+                                                                    {(items.req_memo) && (
+                                                                    <View style={[]}>
+                                                                        <Text style={[h13]}>{val.req_opt_guide_name}</Text>
+                                                                        <Text style={[textarea, h13, bg_light]}>{items.req_memo}</Text>
+                                                                    </View>
+                                                                    )}
+                                                                </>
+                                                            )}
                                                             {/*옵션요청글*/}
                                                         </View>
                                                     </>
