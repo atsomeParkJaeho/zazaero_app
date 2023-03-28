@@ -23,7 +23,7 @@ import {
     pos_center,
     ios_pb,
     mt2,
-    text_danger, text_black, text_center, h17, mb1, d_flex
+    text_danger, text_black, text_center, h17, mb1, d_flex, bg_primary
 } from '../../common/style/AtStyle';
 import {AddrMatch, BankCode, bizNum, EmailDomain, Minlangth, Phone, regPW,} from "../../util/util";
 import axios from "axios";
@@ -47,6 +47,27 @@ export default function MemInfo({route, navigation}) {
     const [Show_1, setShow_1]         = useState(false);    // 셀렉트창 노출 여부
     const [Show_2, setShow_2]         = useState(false);    // 셀렉트창 노출 여부
     const Update = useIsFocused();
+
+
+    let act_btn = !!(
+        MemInfo.road_address &&
+        MemInfo.com_name &&
+        MemInfo.mem_name &&
+        MemInfo.rank_name &&
+        MemInfo.mem_mobile &&
+        MemInfo.mem_email1 &&
+        MemInfo.mem_email2 &&
+        MemInfo.com_biz_no &&
+        MemInfo.addr1 &&
+        MemInfo.addr2 &&
+        MemInfo.tax_calc_email1 &&
+        MemInfo.tax_calc_email2 &&
+        MemInfo.pay_bank_code &&
+        MemInfo.pay_bank_owner &&
+        MemInfo.pay_bank_no
+        // SignUp.all_chk
+    );
+
     useEffect(() => {
 
         get_Member().then((res)=>{
@@ -555,10 +576,10 @@ export default function MemInfo({route, navigation}) {
                         </View>
                     </View>
                 </ScrollView>
-                <View style={[styles.form_btn, styles.form_meminfo_btn]}>
+                <View style={[styles.form_btn,(act_btn) && bg_primary, styles.form_meminfo_btn]}>
                     <TouchableOpacity
                         onPress={goForm}
-                        style={[styles.form_btn_link, styles.form_btn_meminfo_link]}>
+                        style={[styles.form_btn_link,  styles.form_btn_meminfo_link]}>
                         <Text style={styles.form_btn_txt}>정보변경</Text>
                     </TouchableOpacity>
                 </View>
