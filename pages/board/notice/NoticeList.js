@@ -3,23 +3,14 @@ import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView} from 'react
 import logo from "../../../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
 import axios from "axios";
+import {bd_list} from "../UTIL_bd";
 
 
 export default function NoticeList({navigation}) {
     console.log('공지사항');
     const [NoticeList, setNoticeList] = useState([]);  // 공지사항 불러오기
     useEffect(() => {
-        // 1. 설정
-        let data = {
-            act_type: "bd_list",
-            bd_type: "notice",
-        }
-        // 3. 연결 추출
-        axios.post('http://49.50.162.86:80/ajax/UTIL_bd.php', data, {
-            headers: {
-                'Content-type': 'multipart/form-data',
-            }
-        }).then((res) => {
+        bd_list().then((res) => {
             if (res) {
                 const {bd_list} = res.data;
                 let temp = bd_list.sort((a,b)=>{
