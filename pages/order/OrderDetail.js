@@ -758,7 +758,7 @@ export default function OrderDtail({route,navigation}) {
                             <View style={[d_flex,align_items_center]}>
                                 {/*우편번호*/}
                                 <TextInput style={[input,{flex:1},bg_light]}
-                                           editable={false}
+                                           editable={Mod}
                                            placeholder="우편번호"
                                            value={(zonecode) ? (zonecode):(OrderData.zonecode)}
                                            onChangeText={(zonecode)=>goInput("zonecode",zonecode)}
@@ -767,22 +767,22 @@ export default function OrderDtail({route,navigation}) {
                                            ref={el => (InputFocus.current[1] = el)}
                                 />
                                 {/*주소찾기*/}
-                                {/*{(Mod) && (*/}
-                                {/*    <>*/}
-                                {/*        <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"발주상세", gd_order_uid:gd_order_uid})}>*/}
-                                {/*            <View style={[bg_primary,{padding:8,borderRadius:5, marginLeft:16,}]}>*/}
-                                {/*                <Text style={[text_light]}>주소찾기</Text>*/}
-                                {/*            </View>*/}
-                                {/*        </TouchableOpacity>*/}
-                                {/*    </>*/}
-                                {/*)}*/}
+                                {(Mod) && (
+                                    <>
+                                        <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"발주상세", gd_order_uid:gd_order_uid})}>
+                                            <View style={[bg_primary,{padding:8,borderRadius:5, marginLeft:16,}]}>
+                                                <Text style={[text_light]}>주소찾기</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </>
+                                )}
                             </View>
                         </View>
                         {/**----------------------------------------------주소입력--------------------------------------------------**/}
                         <View style={{paddingBottom:15,}}>
                             <TextInput
                                 style={[input,{flex:1},bg_light]}
-                                editable={false}
+                                editable={Mod}
                                 placeholder="주소"
                                 value={(addr1) ? (addr1):(OrderData.addr1)}
                                 returnKeyType="next"
@@ -797,7 +797,7 @@ export default function OrderDtail({route,navigation}) {
                                        placeholder="상세주소"
                                        value={OrderData.addr2}
                                        returnKeyType="done"
-                                       editable={false}
+                                       editable={Mod}
                                        ref={el => (InputFocus.current[3] = el)}
                             />
                         </View>

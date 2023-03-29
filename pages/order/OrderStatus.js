@@ -51,28 +51,7 @@ function OrderStatus({route, navigation}) {
     const Update                            = useIsFocused();
     const [OrderList, setOrderList]         = useState([]);     // 발주내역 출력
     console.log('전달 2값 / ',Member);
-    /**-----------------------------발주서정보 출력----------------------------**/
-    const getOrderStatus = () => {
-        get_order_list(Member).then((res)=>{
-            const {result, A_gd_order, query} = res.data;
-            console.log(result,'/ 확인');
-            if(result === 'OK') {
-                console.log(A_gd_order);
-                let temp = A_gd_order.filter(
-                    val=>
-                        val.ord_status === 'ord_ready'  ||
-                        val.ord_status === 'ord_doing'  ||
-                        val.ord_status === 'ord_edit'
-                );
-                let desc = temp.sort((a,b)=>{
-                    return new Date(b.gd_order_uid) - new Date(a.gd_order_uid);
-                });
-                return setOrderList(desc);
-            } else {
-                console.log('에러');
-            }
-        });
-    }
+
     /**---------------------------출력리스트----------------------------------**/
     useEffect(()=>{
 
@@ -81,9 +60,30 @@ function OrderStatus({route, navigation}) {
                 Alert.alert(``,`실패`);
             }
         });
-        getOrderStatus();
+        getOrderStatus(Member);
 
     },[Member, Update]);
+
+
+    /**-----------------------------발주서정보 출력----------------------------**/
+    const getOrderStatus = async (Member) => {
+        let {data:{result, A_gd_order, query}} = await get_order_list(Member);
+        if(result === 'OK') {
+
+            let temp = A_gd_order.filter(
+                val=>
+                    val.ord_status === 'ord_ready'  ||
+                    val.ord_status === 'ord_doing'  ||
+                    val.ord_status === 'ord_edit'
+            );
+            let desc = temp.sort((a,b)=>{
+                return new Date(b.gd_order_uid) - new Date(a.gd_order_uid);
+            });
+            return setOrderList(desc);
+        }
+        // return Alert.alert(``,`에러`);
+
+    }
 
     console.log(OrderList,' / 리스트22');
 

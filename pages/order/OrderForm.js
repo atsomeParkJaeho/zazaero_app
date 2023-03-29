@@ -203,6 +203,7 @@ export default function OrderForm({route,navigation}) {
             setmodAddr(type);
             setOrderDate({
                 ...OrderData,
+                order_title :'',
                 addr1       :'',
                 addr2       :'',
                 zonecode    :'',
@@ -716,6 +717,11 @@ export default function OrderForm({route,navigation}) {
     /**-----------------------------------------------발주신청------------------------------------------------------**/
     function GoOrderForm() {
 
+        // 공사명 체크 루틴
+
+        let gmd_title = DeliList.map(val=>val.gmd_title);
+        console.log(gmd_title);
+
         /**---------------------------------발주하기---------------------------------------------------**/
         const goForm = () => {
             /**-------------------------1. 입력창 체크 루틴-----------------------------**/
@@ -727,6 +733,13 @@ export default function OrderForm({route,navigation}) {
                 Alert.alert('','공사명이 없습니다.');
                 return InputFocus.current[0].focus();
             }
+
+            if(modAddr === 'add') {
+                if(gmd_title.includes(order_data.order_title)) {
+                    return Alert.alert(``,`동일한 공사명이 존재합니다.`);
+                }
+            }
+
             /**2. ------우편번호 ----**/
             if(!order_data.zonecode) {
                 Alert.alert('','우편번호를 입력하세요.');

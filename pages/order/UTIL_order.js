@@ -194,6 +194,12 @@ export const OrderMod = async (OrderData, OrderGoodsList, Member, A_goods, A_ord
 
 }
 
+
+/**---------------------------------발주상태 리스트 설정---------------------------------------**/
+
+
+
+
 /**-------------------------------------발주취소-----------------------------------------------------------------------**/
 export const payDoneCancel = async (Member, type, OrderData, chk_cancel_goods) => {
 
