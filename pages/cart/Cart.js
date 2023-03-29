@@ -367,7 +367,7 @@ export default function Cart({route, navigation}) {
         console.log(find,' / [1차 카테고리 중복 찾기]');
 
         if(find !== 0) {
-            Alert.alert('','동일카테고리만 선택가능합니다');
+            Alert.alert('','동일 공정의 자재만 발주 가능합니다');
             setCart1stUid(``);
             setCartList(CartList.map((cate) => {
                 return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
