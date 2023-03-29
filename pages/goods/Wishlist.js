@@ -35,7 +35,7 @@ import {
     bg_light,
     h13,
     text_primary,
-    justify_content_center, text_light, ms1, padding_bottom, mt10, mt2, h15, text_center, h12, text_danger
+    justify_content_center, text_light, ms1, padding_bottom, mt10, mt2, h15, text_center, h12, text_danger, bg_success
 } from '../../common/style/AtStyle';
 import Footer from "../Footer";
 
@@ -47,7 +47,7 @@ import WishIcon from "../../icons/ico_heart_c.svg";
 import { useIsFocused } from '@react-navigation/native';
 import {ins_cart} from "./UTIL_goods";
 import Wish from "../../icons/ico_heart_nc.svg";
-import {get_my_zzim_list_new, set_my_zzim} from "../cart/UTIL_cart";
+import {get_my_zzim_list_new, getCartList, set_my_zzim} from "../cart/UTIL_cart";
 import {get_Member} from "../UTIL_mem";
 
 
@@ -58,23 +58,21 @@ export default function Wishlist({route,navigation}) {
 
     const [Member, setMember] = useState();
     const Update = useIsFocused();
-    console.log('즐겨찾기2');
+
 
     // ==========1. 상태정의 리스트
     const [WishList, setWishList]       = useState([]);     // 즐겨찾기 상태정의
-
+    const [cart_list, set_cart_list]            = useState([]);   // 장바구니 가져오기
     // A_goods_list_o 에서 goods_uid만 뽑아서 배열을 만든다.
     //A_goods_list_o
 
     // ===========2. 불러오기
     useEffect(()=>{
-
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
                 Alert.alert(``,`실패`);
             }
         });
-
         // ==============2) 즐겨찾기 리스트 불러오기
         get_my_zzim_list_new(Member).then((res)=>{
             console.log(res.data,'/즐겨찾기 불러오기')
@@ -96,8 +94,22 @@ export default function Wishlist({route,navigation}) {
                 }
             }
         });
+        get_cart_list(Member);
+
     },[Member]);
 
+
+    const get_cart_list = async (Member)=>{
+        let {data:{result, query, A_order}} = await getCartList(Member);
+        if(result === 'OK') {
+            let res = A_order.map(val=>val.A_goods_list.map(item=>String(item.goods_uid)));
+            let temp = res.reduce((val,idx)=>{return val.concat(idx); })
+            return set_cart_list(temp);
+        } else {
+            // Alert.alert(``,`${result}`);
+        }
+    }
+    console.log(cart_list,'/장바구니 리스트 확인');
 
     /**---------------------즐겨찾기에 삭제----------------------------**/
     const delWish = (uid) => {
@@ -129,6 +141,8 @@ export default function Wishlist({route,navigation}) {
     
     /**---------------------체크시 상태 변경----------------------------**/
     const goChk = (uid) => {
+
+        if(cart_list.includes(uid)) {return Alert.alert(``,`이미 장바구니에 추가된 자재입니다.`);}
 
         // A_goods_list_o의 goods_uid중에 중복되는 경우 alert를 띄우고 체크를 못하도록 한다.
         if(route.params) {
@@ -316,41 +330,63 @@ export default function Wishlist({route,navigation}) {
                                                                                             </View>
                                                                                             <View
                                                                                                 style={[wt2, d_flex, justify_content_end]}>
-                                                                                                {(val.goods_chk) ? (
-                                                                                                    // 체크시에 노출
-                                                                                                    <View
-                                                                                                        style={[btn_circle, bg_primary]}>
-                                                                                                        <Checkbox
-                                                                                                            style={styles.btn_cart}
-                                                                                                            value={val.goods_chk}
-                                                                                                            onValueChange={() => {goChk(val.goods_uid);}}/>
-                                                                                                        <View style={{
-                                                                                                            flex: 1,
-                                                                                                            alignItems: "center",
-                                                                                                            justifyContent: "center"
-                                                                                                        }}>
-                                                                                                            <Chk width={16} height={22}></Chk>
+                                                                                                {(cart_list.includes(val.goods_uid)) ? (
+                                                                                                    <>
+                                                                                                        <View
+                                                                                                            style={[btn_circle, bg_success]}>
+                                                                                                            <Checkbox
+                                                                                                                style={styles.btn_cart}
+                                                                                                                value={val.goods_chk}
+                                                                                                                onValueChange={() => {goChk(val.goods_uid);}}/>
+                                                                                                            <View style={{
+                                                                                                                flex: 1,
+                                                                                                                alignItems: "center",
+                                                                                                                justifyContent: "center"
+                                                                                                            }}>
+                                                                                                                <Chk width={16} height={22}></Chk>
+                                                                                                            </View>
                                                                                                         </View>
-                                                                                                    </View>
-                                                                                                ) : (
-                                                                                                    // 체크가 없을시 노출
-                                                                                                    <View
-                                                                                                        style={[btn_circle, bg_light]}>
-                                                                                                        <Checkbox
-                                                                                                            style={styles.btn_cart}
-                                                                                                            value={val.goods_chk}
-                                                                                                            onValueChange={() => {goChk(val.goods_uid)}}
-                                                                                                        />
-                                                                                                        <View style={{
-                                                                                                            flex: 1,
-                                                                                                            alignItems: "center",
-                                                                                                            justifyContent: "center"
-                                                                                                        }}>
-                                                                                                            <CartBag width={16}
-                                                                                                                     height={22}></CartBag>
-                                                                                                        </View>
-                                                                                                    </View>
+                                                                                                    </>
+                                                                                                ):(
+                                                                                                    <>
+                                                                                                        {(val.goods_chk) ? (
+                                                                                                            // 체크시에 노출
+                                                                                                            <View
+                                                                                                                style={[btn_circle, bg_primary]}>
+                                                                                                                <Checkbox
+                                                                                                                    style={styles.btn_cart}
+                                                                                                                    value={val.goods_chk}
+                                                                                                                    onValueChange={() => {goChk(val.goods_uid);}}/>
+                                                                                                                <View style={{
+                                                                                                                    flex: 1,
+                                                                                                                    alignItems: "center",
+                                                                                                                    justifyContent: "center"
+                                                                                                                }}>
+                                                                                                                    <Chk width={16} height={22}></Chk>
+                                                                                                                </View>
+                                                                                                            </View>
+                                                                                                        ) : (
+                                                                                                            // 체크가 없을시 노출
+                                                                                                            <View
+                                                                                                                style={[btn_circle, bg_light]}>
+                                                                                                                <Checkbox
+                                                                                                                    style={styles.btn_cart}
+                                                                                                                    value={val.goods_chk}
+                                                                                                                    onValueChange={() => {goChk(val.goods_uid)}}
+                                                                                                                />
+                                                                                                                <View style={{
+                                                                                                                    flex: 1,
+                                                                                                                    alignItems: "center",
+                                                                                                                    justifyContent: "center"
+                                                                                                                }}>
+                                                                                                                    <CartBag width={16}
+                                                                                                                             height={22}></CartBag>
+                                                                                                                </View>
+                                                                                                            </View>
+                                                                                                        )}
+                                                                                                    </>
                                                                                                 )}
+
 
                                                                                             </View>
                                                                                         </View>

@@ -50,6 +50,7 @@ import CartIcon from "../../icons/uncart.svg";
 import {goDelCart, getCartList, goodsUpdate, save_req_memo} from "./UTIL_cart";
 import Search from "../../icons/search.svg";
 import {get_Member} from "../UTIL_mem";
+import WrappedText from "react-native-wrapped-text";
 
 // 장바구니 레이아웃 출력
 export default function Cart({route, navigation}) {
@@ -80,7 +81,6 @@ export default function Cart({route, navigation}) {
                         title: '장바구니',     // 상단 설정
                         headerRight: ()=>headerRight(A_order),
                     });
-                    return
                 } else {
                     // return Alert.alert('','연결에러');
                 }
@@ -497,10 +497,10 @@ export default function Cart({route, navigation}) {
                                                                                <View style={[styles.flex_items, styles.flex_items2]}>
                                                                                    <View style={[flex_between, styles.pd_20]}>
                                                                                        {/*가이드라인*/}
-                                                                                       <View style={wt4}>
-                                                                                           <Text style={styles.goods_disc}>
+                                                                                       <View style={[wt4]}>
+                                                                                           <WrappedText textStyle={[styles.goods_disc]} numberOfLines={2}>
                                                                                                {val.goods_guide_name}
-                                                                                           </Text>
+                                                                                           </WrappedText>
                                                                                        </View>
                                                                                        {/*반품가능여부*/}
                                                                                        {(val.disable_cancel === 'Y') && (

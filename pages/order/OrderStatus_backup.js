@@ -54,7 +54,7 @@ function OrderStatus({route, navigation}) {
     const Update = useIsFocused();
     const [OrderList, setOrderList] = useState([]);     // 발주내역 출력
     console.log('전달 2값 / ',Member);
-    /**-----------------------------주문서정보 출력----------------------------**/
+    /**-----------------------------발주서정보 출력----------------------------**/
     const getOrderStatus = () => {
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
             act_type        :"get_order_list",

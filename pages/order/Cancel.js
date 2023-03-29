@@ -38,7 +38,7 @@ export default function Cancel({navigation, route}) {
     const [Member, setMember] = useState();
     const [cancel_list, set_cancel_list] = useState([]);
 
-    /**1. 주문취소 내역 리스트 출력 **/
+    /**1. 발주취소 내역 리스트 출력 **/
     useEffect(()=>{
 
         get_Member().then((res)=>{

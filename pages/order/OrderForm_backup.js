@@ -96,12 +96,12 @@ export default function OrderForm({route,navigation}) {
     const Update = useIsFocused();
     const ostype = Platform.OS;
 
-    /**--------------------------------------주문서 셋팅--------------------------------------------------**/
+    /**--------------------------------------발주서 셋팅--------------------------------------------------**/
     const [OrderData, setOrderDate]                = useState({
         act_type            :'ins_order',
         mem_uid             :Member,                          // 회원 uid
         mgr_mem_uid         :Member,                          // 회원 uid
-        A_order_uid         :order_result_uid,                // 주문 uid
+        A_order_uid         :order_result_uid,                // 발주 uid
         os_type             :ostype,                          // 기기 os
         recv_name           :'',                              // 현장인도자 성명
         recv_phone          :'',                              // 현자인도자 전화번호
@@ -731,7 +731,7 @@ export default function OrderForm({route,navigation}) {
     /**-----------------------------------------------발주신청------------------------------------------------------**/
     function GoOrderForm() {
 
-        /**---------------------------------주문하기---------------------------------------------------**/
+        /**---------------------------------발주하기---------------------------------------------------**/
         const goForm = () => {
             /**-------------------------1. 입력창 체크 루틴-----------------------------**/
             let order_data = OrderData;
@@ -784,7 +784,7 @@ export default function OrderForm({route,navigation}) {
 
 
             /**-------------------------2. 최종입력창--------------------------------**/
-            Alert.alert('','주문하시겠습니까?',[
+            Alert.alert('','발주하시겠습니까?',[
                 // left
                 {text:'취소',
                     style: 'destructive',
@@ -800,9 +800,9 @@ export default function OrderForm({route,navigation}) {
         const goOrder = (order_data) => {
 
             let msg = '발주신청이 완료되었습니다.';
-            msg += '\n 주문자 성명 :'    +order_data.recv_name;
+            msg += '\n 발주자 성명 :'    +order_data.recv_name;
             msg += '\n 공사명 :'    +order_data.order_title;
-            msg += '\n 주문자 전화번호 :' +order_data.recv_phone;
+            msg += '\n 발주자 전화번호 :' +order_data.recv_phone;
             msg += '\n 우편번호 : '      +order_data.zonecode;
             msg += '\n 주소 : '         +order_data.addr1;
             msg += '\n 상세주소 : '      +order_data.addr2;

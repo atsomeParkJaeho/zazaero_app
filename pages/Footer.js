@@ -1,4 +1,4 @@
-import {Platform, Text, TouchableOpacity, View} from "react-native";
+import {Alert, Platform, Text, TouchableOpacity, View} from "react-native";
 import styleSheet from "react-native-web/dist/exports/StyleSheet";
 import HomeLogo from '../icons/home_logo.svg';
 import HomeLogoAt from '../icons/home_logo_at.svg';
@@ -10,10 +10,13 @@ import OrderList from '../icons/order_list.svg';
 import OrderListAt from '../icons/order_list_at.svg';
 import Mypage from '../icons/mypage.svg';
 import MypageAt from '../icons/mypage_at.svg';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {fw500, pos_center, text_center, text_primary} from "../common/style/AtStyle";
 import {useNavigationState} from "@react-navigation/native";
+import {get_Member} from "./UTIL_mem";
+import {getCartList} from "./cart/UTIL_cart";
+import {get_order_list} from "./order/UTIL_order";
 
 
 
@@ -22,10 +25,58 @@ import {useNavigationState} from "@react-navigation/native";
 function Footer({navigation,pages}) {
 
 
+
+    const [Member, setMember]               = useState();
+    const [order_list, set_order_list]      = useState([]);  // 발주수량 설정
+    const [cart_list, set_cart_list]        = useState([]);  // 장바구니 수량 설정
+    
+
+    useEffect(()=>{
+
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
+
+        get_cart_list(Member);   /**--장바구니 수량 가져오기--**/
+
+        get_orderlist(Member);   /**--장바구니 수량 가져오기--**/
+
+
+    },[Member]);
+
+    /**-------------------------장바구니 수량 가져오기--------------------------**/
+    const get_cart_list = async (Member) => {
+        let {data:{result, query, A_order}} = await getCartList(Member);
+        if(result === 'OK') {
+            let res = A_order.map(val=>val.A_goods_list);
+            let temp = res.reduce((val,idx)=>{return val.concat(idx); })
+            return set_cart_list(temp.length);
+        } else {
+            // Alert.alert(``,`${result}`);
+        }
+    }
+    /**-------------------------발주수량 가져오기------------------------------**/
+    const get_orderlist = async (Member) => {
+        let {data:{A_gd_order, result}} = await get_order_list(Member);
+        let cnt = A_gd_order.length
+        console.log(A_gd_order,'[발주확인]');
+        if(result === 'OK') {
+            return  set_order_list(A_gd_order.length);
+        } else {
+            // Alert.alert(``,`${result}`);
+        }
+    }
+
     const routes = useNavigationState(state => state.routes)
     const currentRoute = routes[routes.length -1].name
-
+    console.log('[푸터페이지]');
     console.log(currentRoute);
+    console.log(order_list,' / 발주수량 설정');
+    console.log(cart_list,' / 장바구니 수량');
+
+
 
     return(
         <>

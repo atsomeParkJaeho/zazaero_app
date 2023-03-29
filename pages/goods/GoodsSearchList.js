@@ -36,7 +36,7 @@ import {
     btn_circle,
     bg_primary,
     bg_light,
-    justify_content_center, text_light, sub_page, min_height, text_primary, h13, text_danger
+    justify_content_center, text_light, sub_page, min_height, text_primary, h13, text_danger, bg_success
 } from '../../common/style/AtStyle';
 import Search from '../../icons/search.svg';
 import Checkbox from "expo-checkbox";
@@ -46,6 +46,7 @@ import {Price} from "../../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {get_goods_search, save_cart, save_wish} from "./UTIL_goods";
 import {get_Member} from "../UTIL_mem";
+import {getCartList} from "../cart/UTIL_cart";
 
 
 
@@ -56,7 +57,7 @@ export default function GoodsSearchList({route,navigation}) {
 
     // 1. 상태정의
     const [GoodsList, setGoodsList] = useState([]);
-
+    const [cart_list, set_cart_list]            = useState([]);   // 장바구니 가져오기
     // 2. 검색상품 출력
     useEffect(()=>{
         get_Member().then((res)=>{
@@ -75,9 +76,21 @@ export default function GoodsSearchList({route,navigation}) {
                 }
             }
         });
-    },[]);
+        get_cart_list(Member);
 
+    },[Member]);
 
+    const get_cart_list = async (Member)=>{
+        let {data:{result, query, A_order}} = await getCartList(Member);
+        if(result === 'OK') {
+            let res = A_order.map(val=>val.A_goods_list.map(item=>String(item.goods_uid)));
+            let temp = res.reduce((val,idx)=>{return val.concat(idx); })
+            return set_cart_list(temp);
+        } else {
+            // Alert.alert(``,`${result}`);
+        }
+    }
+    console.log(cart_list,'/장바구니 리스트 확인');
     // 1. 상태정의
     const [GoodsSearch, setGoodsSearch] = useState({    // 검색어 확인
         search:'',
@@ -97,6 +110,9 @@ export default function GoodsSearchList({route,navigation}) {
 
     // 4. ================상품체크시 상태변경=======================
     const goChk = (uid) => {
+
+        if(cart_list.includes(uid)) {return Alert.alert(``,`이미 장바구니에 추가된 자재입니다.`); }
+
         let temp = GoodsList.map((val) => {
             if (uid === val.goods_uid) {
                 return {...val, goods_cart_chk: !val.goods_cart_chk,};
@@ -244,29 +260,46 @@ export default function GoodsSearchList({route,navigation}) {
                                             </TouchableOpacity>
                                         </View>
                                         <View style={[wt2,d_flex,justify_content_end]}>
-                                            {(val.goods_cart_chk) ? (
-                                                // 체크시에 노출
-                                                <View style={[btn_circle, bg_primary]}>
-                                                    <Checkbox style={styles.btn_cart} value={val.goods_cart_chk}
-                                                              onValueChange={() => {
-                                                                  goChk(val.goods_uid);
-                                                              }}/>
-                                                    <View style={{flex: 1,alignItems: "center",justifyContent: "center"}}>
-                                                        <Chk width={16} height={22}></Chk>
+                                            {(cart_list.includes(val.goods_uid)) ? (
+                                                <>
+                                                    <View style={[btn_circle, bg_success]}>
+                                                        <Checkbox style={styles.btn_cart} value={val.goods_cart_chk}
+                                                                  onValueChange={() => {
+                                                                      goChk(val.goods_uid);
+                                                                  }}/>
+                                                        <View style={{flex: 1,alignItems: "center",justifyContent: "center"}}>
+                                                            <Chk width={16} height={22}></Chk>
+                                                        </View>
                                                     </View>
-                                                </View>
-                                            ) : (
-                                                // 체크가 없을시 노출
-                                                <View style={[btn_circle, bg_light]}>
-                                                    <Checkbox style={styles.btn_cart} value={val.goods_cart_chk}
-                                                              onValueChange={() => {
-                                                                  goChk(val.goods_uid)
-                                                              }}/>
-                                                    <View style={{flex: 1,alignItems: "center",justifyContent: "center"}}>
-                                                        <CartBag width={16} height={22}></CartBag>
-                                                    </View>
-                                                </View>
+                                                </>
+                                            ):(
+                                                <>
+                                                    {(val.goods_cart_chk) ? (
+                                                        // 체크시에 노출
+                                                        <View style={[btn_circle, bg_primary]}>
+                                                            <Checkbox style={styles.btn_cart} value={val.goods_cart_chk}
+                                                                      onValueChange={() => {
+                                                                          goChk(val.goods_uid);
+                                                                      }}/>
+                                                            <View style={{flex: 1,alignItems: "center",justifyContent: "center"}}>
+                                                                <Chk width={16} height={22}></Chk>
+                                                            </View>
+                                                        </View>
+                                                    ) : (
+                                                        // 체크가 없을시 노출
+                                                        <View style={[btn_circle, bg_light]}>
+                                                            <Checkbox style={styles.btn_cart} value={val.goods_cart_chk}
+                                                                      onValueChange={() => {
+                                                                          goChk(val.goods_uid)
+                                                                      }}/>
+                                                            <View style={{flex: 1,alignItems: "center",justifyContent: "center"}}>
+                                                                <CartBag width={16} height={22}></CartBag>
+                                                            </View>
+                                                        </View>
+                                                    )}
+                                                </>
                                             )}
+
 
                                         </View>
                                     </View>

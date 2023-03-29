@@ -52,6 +52,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {get_goods_info, ins_cart, save_wish} from "./UTIL_goods";
 import {add_order_goods} from "../order/UTIL_order";
 import {get_Member} from "../UTIL_mem";
+import {getCartList} from "../cart/UTIL_cart";
 
 
 
@@ -64,7 +65,7 @@ export default function GoodsDetail({route,navigation}) {
     // ===========1. 상품상세정보 상태 정의======
     const [GoodsDetail,setGoodsDetail] = useState([]);
     const [GoodsCnt, setGoodsCnt] = useState(1);
-
+    const [cart_list, set_cart_list]            = useState([]);   // 장바구니 가져오기
     // ============2. 상품출력===============
     useEffect(()=>{
         get_Member().then((res)=>{
@@ -82,7 +83,21 @@ export default function GoodsDetail({route,navigation}) {
                 }
             }
         });
+        get_cart_list(Member);
+
     },[Member]);
+
+    const get_cart_list = async (Member)=>{
+        let {data:{result, query, A_order}} = await getCartList(Member);
+        if(result === 'OK') {
+            let res = A_order.map(val=>val.A_goods_list.map(item=>String(item.goods_uid)));
+            let temp = res.reduce((val,idx)=>{return val.concat(idx); })
+            return set_cart_list(temp);
+        } else {
+            // Alert.alert(``,`${result}`);
+        }
+    }
+    console.log(cart_list,'/장바구니 리스트 확인');
 
     // 5. 즐겨찾기 액션
     const goWish = (link_uid) => {
@@ -156,7 +171,12 @@ export default function GoodsDetail({route,navigation}) {
     //자재 상세데이터
 
     let goForm = (type,uid) => {
+
+
         if(type === 'cart') {
+
+            if(cart_list.includes(uid)) {return Alert.alert(``,`이미 장바구니에 추가된 자재입니다.`); }
+
             Alert.alert('', '장바구니에 담으시겠습니까?', [
                     {text: '취소', onPress: () => {}, style: 'destructive'},
                     {text: '확인 ',

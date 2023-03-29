@@ -51,7 +51,7 @@ function OrderStatus({route, navigation}) {
     const Update                            = useIsFocused();
     const [OrderList, setOrderList]         = useState([]);     // 발주내역 출력
     console.log('전달 2값 / ',Member);
-    /**-----------------------------주문서정보 출력----------------------------**/
+    /**-----------------------------발주서정보 출력----------------------------**/
     const getOrderStatus = () => {
         get_order_list(Member).then((res)=>{
             const {result, A_gd_order, query} = res.data;
@@ -81,8 +81,8 @@ function OrderStatus({route, navigation}) {
                 Alert.alert(``,`실패`);
             }
         });
-
         getOrderStatus();
+
     },[Member, Update]);
 
     console.log(OrderList,' / 리스트22');

@@ -33,7 +33,7 @@ export const InsOrder = async (order_data,Member,work_uid,goods_cate1_uid) => {
         act_type            :'ins_order',
         mem_uid             :Member,                                        // 회원 uid
         mgr_mem_uid         :Member,                                        // 회원 uid
-        A_order_uid         :order_data.A_order_uid,                        // 주문 uid
+        A_order_uid         :order_data.A_order_uid,                        // 발주 uid
         os_type             :ostype,                                        // 기기 os
         order_title         :order_data.order_title,                                        // 기기 os
         recv_name           :order_data.recv_name,                          // 현장인도자 성명
@@ -56,7 +56,7 @@ export const InsOrder = async (order_data,Member,work_uid,goods_cate1_uid) => {
         act_type            :'ins_order',
         mem_uid             :Member,                                        // 회원 uid
         mgr_mem_uid         :Member,                                        // 회원 uid
-        A_order_uid         :order_data.A_order_uid,                        // 주문 uid
+        A_order_uid         :order_data.A_order_uid,                        // 발주 uid
         os_type             :ostype,                                        // 기기 os
         order_title         :order_data.order_title,                                        // 기기 os
         recv_name           :order_data.recv_name,                          // 현장인도자 성명
@@ -96,7 +96,7 @@ export const SaveDeliAddr = async (Member, order_data) => {
     });
     return res;
 }
-/**-------------------------------------결제전 주문취소()-----------------------------------------------------------------------**/
+/**-------------------------------------결제전 발주취소()-----------------------------------------------------------------------**/
 export const AllgdOrderDel = async (OrderData, Member) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type        :"del_gd_order",
@@ -137,8 +137,8 @@ export const OrderMod = async (OrderData, OrderGoodsList, Member, A_goods, A_ord
     console.log(Member,'/ 회원정보');
     console.log(A_goods,'/ 자재추가한 자재');
 
-    console.log(A_order_uid,'/ 주문상품 uid');
-    console.log(A_order_item_uid,'/ 주문옵션 uid');
+    console.log(A_order_uid,'/ 발주상품 uid');
+    console.log(A_order_item_uid,'/ 발주옵션 uid');
     console.log(A_order_item_cnt,'/ 상품 수량');
 
     console.log(A_add_goods_uid,'/ 자재추가 상품 uid');
@@ -273,7 +273,7 @@ export const get_order_cancel_list = async (Member) => {
 
     return res;
 }
-/**-------------------------------------주문취소내역출력-----------------------------------------------------------------------**/
+/**-------------------------------------발주취소내역출력-----------------------------------------------------------------------**/
 export const gd_cancel_info = async (gd_cancel_uid, gd_order_uid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"gd_cancel_info",
@@ -430,7 +430,7 @@ export const add_order = async (OrderData, Member, A_goods_list ,chk_result) => 
     console.log(data,'/ 전송용');
     return res;
 }
-/**-----------------------------------------결제후 선택 주문 취소 이벤트---------------------------------------------------**/
+/**-----------------------------------------결제후 선택 발주 취소 이벤트---------------------------------------------------**/
 export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Member) => {
     // 1. 체크박스를 클릭한다
     // refund_type = all, part
@@ -456,7 +456,7 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
         cancel_type                 :cancel_type,
     }
 
-    console.log(data,'/ 주문취소 데이터 확인');
+    console.log(data,'/ 발주취소 데이터 확인');
 
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type                    :"pay_done_gd_cancel",

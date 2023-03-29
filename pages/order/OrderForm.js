@@ -92,12 +92,12 @@ export default function OrderForm({route,navigation}) {
     const Update = useIsFocused();
     const ostype = Platform.OS;
 
-    /**--------------------------------------주문서 셋팅--------------------------------------------------**/
+    /**--------------------------------------발주서 셋팅--------------------------------------------------**/
     const [OrderData, setOrderDate]                = useState({
         act_type            :'ins_order',
         mem_uid             :Member,                          // 회원 uid
         mgr_mem_uid         :Member,                          // 회원 uid
-        A_order_uid         :order_result_uid,                // 주문 uid
+        A_order_uid         :order_result_uid,                // 발주 uid
         os_type             :ostype,                          // 기기 os
         recv_name           :'',                              // 현장인도자 성명
         recv_phone          :'',                              // 현자인도자 전화번호
@@ -249,7 +249,7 @@ export default function OrderForm({route,navigation}) {
     let today = new Date();
     console.log(DateChg2(today));
     console.log(route.params,' / 라우터 파라미터');
-    console.log(OrderData,' / 주문 데이터');
+    console.log(OrderData,' / 발주 데이터');
     console.log(DeliList,' / 공사명일시');
 
     return (
@@ -716,7 +716,7 @@ export default function OrderForm({route,navigation}) {
     /**-----------------------------------------------발주신청------------------------------------------------------**/
     function GoOrderForm() {
 
-        /**---------------------------------주문하기---------------------------------------------------**/
+        /**---------------------------------발주하기---------------------------------------------------**/
         const goForm = () => {
             /**-------------------------1. 입력창 체크 루틴-----------------------------**/
             let order_data = OrderData;
@@ -769,7 +769,7 @@ export default function OrderForm({route,navigation}) {
 
 
             /**-------------------------2. 최종입력창--------------------------------**/
-            Alert.alert('','주문하시겠습니까?',[
+            Alert.alert('','발주요청 하시겠습니까?',[
                 // left
                 {text:'취소',
                     style: 'destructive',
@@ -798,7 +798,7 @@ export default function OrderForm({route,navigation}) {
                             if(res) {
                                 const {result, order_no} = res.data;
                                 if(result === 'OK') {
-                                    msg += '\n 주문번호 : '+order_no;
+                                    msg += '\n발주번호 : '+order_no;
                                     Alert.alert('',msg,[{
                                         text:'확인',
                                         onPress:()=>{navigation.replace('발주상태')}
@@ -813,7 +813,7 @@ export default function OrderForm({route,navigation}) {
                             if(res) {
                                 const {result, order_no} = res.data;
                                 if(result === 'OK') {
-                                    msg += '\n 주문번호 : '+order_no;
+                                    msg += '\n발주번호 : '+order_no;
                                     Alert.alert('',msg,[{
                                         text:'확인',
                                         onPress:()=>{navigation.replace('발주상태')}

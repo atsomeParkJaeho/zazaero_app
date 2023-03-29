@@ -140,7 +140,7 @@ export default function OrderDtail({route,navigation}) {
     });
     /**--------------------------------------상태값 셋팅--------------------------------------------------**/
     const toastRef = useRef();
-    const [OrderGoodsList,  setOrderGoodsList]              = useState([]);             // 주문상품상태정의
+    const [OrderGoodsList,  setOrderGoodsList]              = useState([]);             // 발주상품상태정의
     const [BankCode,        setBankCode]                    = useState([]);          // 관리자 무통장입금계좌 출력
     const [PayMement,       setPayMement]                   = useState('bank');      // 결제창 노출 여부
     const [OrderData,       setOrderDate]                   = useState({
@@ -187,7 +187,7 @@ export default function OrderDtail({route,navigation}) {
     const toggleModal = () => {setIsModalVisible(!isModalVisible);};
     const toggleModal2 = () => {
 
-        if(cancel_doing > 0) { return Alert.alert('','기존 취소가 처리된 이후에\n주문취소 하실수 있습니다.') }
+        if(cancel_doing > 0) { return Alert.alert('','기존 취소가 처리된 이후에\n발주취소 하실수 있습니다.') }
 
         setIsModalVisible2(!isModalVisible2);
         let temp = OrderGoodsList.map(val=>{
@@ -217,7 +217,7 @@ export default function OrderDtail({route,navigation}) {
     }
 
 
-    /**--------------------------------------주문서 셋팅--------------------------------------------------**/
+    /**--------------------------------------발주서 셋팅--------------------------------------------------**/
     const Update = useIsFocused();
     /**------------------------------------------------------카드결제완료시 db 로그 전송.----------------------------------------------**/
 
@@ -313,11 +313,11 @@ export default function OrderDtail({route,navigation}) {
                         goods_del: false,
                     }
                 });
-                // 1. 주문정보 넣기
+                // 1. 발주정보 넣기
                 setOrderDate(gd_order);
                 // 2. 자재정보 넣기
                 setOrderGoodsList(temp);
-                // 3. 주문취소중인 상품
+                // 3. 발주취소중인 상품
                 set_cancel_doing(cancel_doing_cnt);
                 let status = (gd_order.ord_status === 'pay_ready' || gd_order.ord_status === 'pay_err' || gd_order.ord_status === 'pay_try') ? '결제상태' : '발주상태';
                 // 발주상태
@@ -613,7 +613,7 @@ export default function OrderDtail({route,navigation}) {
                                         {text:'확인',
                                             onPress:()=>{
                                                 // ================2. 결제취소 이벤트 결과값 db에 전송====================
-                                                console.log(res.data,'/주문완료시 파라미터');
+                                                console.log(res.data,'/발주완료시 파라미터');
                                                 return navigation.replace('발주상세',{gd_order_uid:OrderData.gd_order_uid});
                                             }
                                         }
@@ -701,10 +701,10 @@ export default function OrderDtail({route,navigation}) {
         );
     }
 
-    console.log(OrderData,' / 주문정보1');
-    console.log(OrderGoodsList,' / 주문상품 정보1');
+    console.log(OrderData,' / 발주정보1');
+    console.log(OrderGoodsList,' / 발주상품 정보1');
     console.log(BankCode,'/ 무통장 입금처 정보');
-    console.log(cancel_doing,'/ 주문취소중인 상품갯수');
+    console.log(cancel_doing,'/ 발주취소중인 상품갯수');
 
     return(
         <>
@@ -1036,7 +1036,7 @@ export default function OrderDtail({route,navigation}) {
                                                                         </View>
                                                                     </TouchableWithoutFeedback>
                                                                     {/*============수량=================*/}
-                                                                    {/**-----상품 uid, 주문 uid 추가----**/}
+                                                                    {/**-----상품 uid, 발주 uid 추가----**/}
                                                                     <View style={[countinput]}>
                                                                         <TextInput
                                                                             onChangeText={(goods_cnt)=>A_goInput('goods_cnt',Number(goods_cnt),val.goods_uid)}
@@ -1296,7 +1296,7 @@ export default function OrderDtail({route,navigation}) {
                             <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]}
                                               onPress={()=>order_Cancel(`part`)}
                             >
-                                <Text style={[text_center,h18]}>주문취소</Text>
+                                <Text style={[text_center,h18]}>발주취소</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={[wt5,ps1,pe1]}>
@@ -1325,7 +1325,7 @@ export default function OrderDtail({route,navigation}) {
             navigation.navigate('즐겨찾기',{gd_order_uid:OrderData.gd_order_uid, ord_status:OrderData.ord_status, A_goods_list_o:A_goods});
         }
 
-        /**-------------------------------전체주문취소--------------------------------**/
+        /**-------------------------------전체발주취소--------------------------------**/
         const AlldelOrder = () => {
             Alert.alert('','전체취소 하시겠습니까?',[
                 {text:"취소", onPress:()=>{}},
@@ -1346,7 +1346,7 @@ export default function OrderDtail({route,navigation}) {
             }
         }
 
-        /**----------------------------선택주문취소-----------------------------------**/
+        /**----------------------------선택발주취소-----------------------------------**/
         const ChkdelOrder = () => {
             let result = OrderGoodsList.filter(val=>val.goods_chk);
             let order_uid = result.map(val=>val.order_uid);
@@ -1439,7 +1439,7 @@ export default function OrderDtail({route,navigation}) {
                                                 <Text style={[text_white,text_center,h13]}>추가발주</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity style={[ms2,btn_warning,{paddingVertical:7,paddingHorizontal:7,}]} onPress={toggleModal2}>
-                                                <Text style={[text_white,text_center,h13]}>주문취소</Text>
+                                                <Text style={[text_white,text_center,h13]}>발주취소</Text>
                                             </TouchableOpacity>
                                         </View>
                                     </>
@@ -1516,7 +1516,7 @@ export default function OrderDtail({route,navigation}) {
                                                                                             </View>
                                                                                         </TouchableWithoutFeedback>
                                                                                         {/*============수량=================*/}
-                                                                                        {/**-----상품 uid, 주문 uid 추가----**/}
+                                                                                        {/**-----상품 uid, 발주 uid 추가----**/}
                                                                                         <TouchableOpacity onPress={()=>cntPopup(val.goods_uid, val.order_uid, items.option_cnt)} style={[countinput]}>
                                                                                             <Text style={[text_center]}>
                                                                                                 {items.option_cnt}
@@ -1634,7 +1634,7 @@ export default function OrderDtail({route,navigation}) {
                                                                             </View>
                                                                         </TouchableWithoutFeedback>
                                                                         {/*============수량=================*/}
-                                                                        {/**-----상품 uid, 주문 uid 추가----**/}
+                                                                        {/**-----상품 uid, 발주 uid 추가----**/}
                                                                         <View style={[countinput]}>
                                                                             <TextInput
                                                                                 onChangeText={(goods_cnt)=>A_goInput('goods_cnt',Number(goods_cnt),val.goods_uid)}

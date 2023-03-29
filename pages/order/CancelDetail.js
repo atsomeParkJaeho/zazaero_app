@@ -143,7 +143,7 @@ export default function CancelDetail({navigation,route}) {
                     {/*            editable={false}*/}
                     {/*            selectTextOnFocus={false}*/}
                     {/*            style={[textarea,{padding: 10, backgroundColor:'#eee',}]}*/}
-                    {/*            value="주문건 중복 결제"*/}
+                    {/*            value="발주건 중복 결제"*/}
                     {/*        />*/}
                     {/*    </View>*/}
                     {/*</View>*/}

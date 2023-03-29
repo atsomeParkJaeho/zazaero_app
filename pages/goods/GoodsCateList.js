@@ -24,7 +24,7 @@ import {
     bg_danger,
     bg_gray,
     bg_light,
-    bg_primary,
+    bg_primary, bg_success,
     bg_white, btn_black,
     btn_circle, btn_outline_primary, btn_primary,
     container, count_btn, count_btn_txt, countinput,
@@ -49,6 +49,8 @@ import {
     goods_cate, ins_cart, save_wish
 } from "./UTIL_goods";
 import RenderHtml from "react-native-render-html";
+import {get_Member} from "../UTIL_mem";
+import {getCartList} from "../cart/UTIL_cart";
 
 
 
@@ -57,7 +59,6 @@ import RenderHtml from "react-native-render-html";
 
 export default function GoodsCateList({route, navigation}) {
     const [Member, setMember] = useState();
-    const mem_uid                           = AsyncStorage.getItem("member").then((value)=>{setMember(value);});
     let {Cate1stUid, Cate2ndUid, name} = route.params; // 카테고리 uid
     console.log(Cate1stUid);
     console.log(Cate2ndUid);
@@ -72,10 +73,11 @@ export default function GoodsCateList({route, navigation}) {
     const [Cate3rdActive, setCate3rdActive]     = useState(``);     // 현재 페이지 상태
     const [goods_detail, set_goods_detail]      = useState([]);     // 상세페이지 설정
     const [GoodsCnt, setGoodsCnt]               = useState(1);     // 상세페이지 설정
+    const [cart_list, set_cart_list]            = useState([]);   // 장바구니 가져오기
 
+    
 
     const update = useIsFocused();
-
 
 
     // 우측 메뉴 설정
@@ -98,6 +100,15 @@ export default function GoodsCateList({route, navigation}) {
             title: name,     // 상단 설정
             headerRight: headerRight,
         });
+
+        get_cart_list(Member);
+
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
+        });
+
         // ==========================상품 불러오기 2023.01.02 수정 ========================== //
         get_goods_list(Member, Cate1stUid, Cate2ndUid).then((res) => {
             if (res) {
@@ -132,9 +143,21 @@ export default function GoodsCateList({route, navigation}) {
                 }
             }
         });
-
-
     }, [Member, update]);
+
+
+    const get_cart_list = async (Member)=>{
+        let {data:{result, query, A_order}} = await getCartList(Member);
+        if(result === 'OK') {
+            let res = A_order.map(val=>val.A_goods_list.map(item=>String(item.goods_uid)));
+            let temp = res.reduce((val,idx)=>{return val.concat(idx); })
+            return set_cart_list(temp);
+        } else {
+            // Alert.alert(``,`${result}`);
+        }
+    }
+    console.log(cart_list,'/장바구니 리스트 확인');
+
 
     const goCate2nd = (Cate2ndUid) => {
         setCate2ndActive(Cate2ndUid);
@@ -186,9 +209,14 @@ export default function GoodsCateList({route, navigation}) {
 
 
     // 4. ================상품체크시 상태변경=======================
-    const goChk = (uid) => {
+    const goChk = (goods_uid) => {
+
+        if(cart_list.includes(goods_uid)) {
+            return Alert.alert(``,`장바구니에 있습니다.`);
+        }
+
         let temp = GoodsList.map((val) => {
-            if (uid === val.goods_uid) {
+            if (goods_uid === val.goods_uid) {
                 return {...val, goods_cart_chk: !val.goods_cart_chk,};
             }
             return val;
@@ -280,7 +308,9 @@ export default function GoodsCateList({route, navigation}) {
 
     let goCartDetail = (type,uid) => {
         if(type === 'cart') {
-
+            
+            if(cart_list.includes(uid)) {return Alert.alert(``,`이미 장바구니에 추가된 자재입니다.`)}
+            
             if(GoodsCnt === 0) {return Alert.alert('','수량을 입력해주세요');}
 
             Alert.alert('', '장바구니에 담으시겠습니까?', [
@@ -347,8 +377,6 @@ export default function GoodsCateList({route, navigation}) {
 
     /**--------자재목록-------------**/
     function goodsList ({item}) {
-
-
         return (
             <>
                 <View>
@@ -386,36 +414,56 @@ export default function GoodsCateList({route, navigation}) {
                                         </View>
                                         {/**----------------------장바구니------------------------------**/}
                                         <View style={[wt2, d_flex, justify_content_end]}>
-                                            {(item.goods_cart_chk) ? (
-                                                // 체크시에 노출
-                                                <View style={[btn_circle, bg_primary]}>
-                                                    <Checkbox style={styles.btn_cart} value={item.goods_cart_chk}
-                                                              onValueChange={() => {
-                                                                  goChk(item.goods_uid);
-                                                              }}/>
-                                                    <View style={{
-                                                        flex: 1,
-                                                        alignItems: "center",
-                                                        justifyContent: "center"
-                                                    }}>
-                                                        <Chk width={16} height={22}></Chk>
+                                            {(cart_list.includes(item.goods_uid)) ? (
+                                                <>
+                                                    <View style={[btn_circle, bg_success]}>
+                                                        <Checkbox style={styles.btn_cart} value={item.goods_cart_chk}
+                                                                  onValueChange={() => {
+                                                                      goChk(item.goods_uid);
+                                                                  }}/>
+                                                        <View style={{
+                                                            flex: 1,
+                                                            alignItems: "center",
+                                                            justifyContent: "center"
+                                                        }}>
+                                                            <Chk width={16} height={22}></Chk>
+                                                        </View>
                                                     </View>
-                                                </View>
-                                            ) : (
-                                                // 체크가 없을시 노출
-                                                <View style={[btn_circle, bg_light]}>
-                                                    <Checkbox style={styles.btn_cart} value={item.goods_cart_chk}
-                                                              onValueChange={() => {
-                                                                  goChk(item.goods_uid)
-                                                              }}/>
-                                                    <View style={{
-                                                        flex: 1,
-                                                        alignItems: "center",
-                                                        justifyContent: "center"
-                                                    }}>
-                                                        <CartBag width={16} height={22} style={[styles.CartBagIcon]}></CartBag>
-                                                    </View>
-                                                </View>
+                                                </>
+                                            ):(
+                                                <>
+                                                    {(item.goods_cart_chk) ? (
+                                                        // 체크시에 노출
+                                                        <View style={[btn_circle, bg_primary]}>
+                                                            <Checkbox style={styles.btn_cart} value={item.goods_cart_chk}
+                                                                      onValueChange={() => {
+                                                                          goChk(item.goods_uid);
+                                                                      }}/>
+                                                            <View style={{
+                                                                flex: 1,
+                                                                alignItems: "center",
+                                                                justifyContent: "center"
+                                                            }}>
+                                                                <Chk width={16} height={22}></Chk>
+                                                            </View>
+                                                        </View>
+                                                    ) : (
+                                                        // 체크가 없을시 노출
+                                                        <View style={[btn_circle, bg_light]}>
+                                                            <Checkbox style={styles.btn_cart} value={item.goods_cart_chk}
+                                                                      onValueChange={() => {
+                                                                          goChk(item.goods_uid)
+                                                                      }}/>
+                                                            <View style={{
+                                                                flex: 1,
+                                                                alignItems: "center",
+                                                                justifyContent: "center"
+                                                            }}>
+                                                                <CartBag width={16} height={22} style={[styles.CartBagIcon]}></CartBag>
+                                                            </View>
+                                                        </View>
+                                                    )}
+                                                </>
                                             )}
 
                                         </View>

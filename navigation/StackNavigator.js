@@ -126,6 +126,7 @@ const StackNavigator = () => {
                         headerTitle:'',
                         headerStatusBarHeight:0,
                         // cardStyleInterpolator: forFade,
+                        // headerLeftContainerStyle:
                     }
                 }/>
                 {/*==============상단===============*/}
