@@ -75,7 +75,7 @@ export default function FindPw({navigation,route}) {
                 console.log(res.data);
                 const {result} = res.data;
                 if (result === 'OK') {
-                    Alert.alert('본인인증','회원님의 연락처로 인증번호가 전송되었습니다.');
+                    Alert.alert('본인인증','회원님의 연락처로 인증번호가\n전송되었습니다.');
                     return navigation.replace('아이디 찾기결과',{FindId:FindId});
                 }
                 if(result === 'NG') {
