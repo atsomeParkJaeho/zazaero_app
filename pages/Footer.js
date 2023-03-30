@@ -14,9 +14,10 @@ import React, {useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {fw500, pos_center, text_center, text_primary} from "../common/style/AtStyle";
 import {useNavigationState} from "@react-navigation/native";
-import {get_Member} from "./UTIL_mem";
+import {get_Member, my_page} from "./UTIL_mem";
 import {getCartList} from "./cart/UTIL_cart";
 import {get_order_list} from "./order/UTIL_order";
+import {reloadAsync} from "expo-updates";
 
 
 
@@ -26,24 +27,22 @@ function Footer({navigation,pages}) {
 
 
 
-    const [Member, setMember]               = useState();
-    const [order_list, set_order_list]      = useState([]);  // 발주수량 설정
-    const [cart_list, set_cart_list]        = useState([]);  // 장바구니 수량 설정
+    const [Member,          setMember]               = useState();
+    const [order_list, set_order_list]               = useState([]);  // 발주수량 설정
+    const [cart_list,   set_cart_list]               = useState([]);  // 장바구니 수량 설정
+    const [get_mem_info, set_get_mem_info]           = useState([]);  // 회원정보 추출
+    
     
 
     useEffect(()=>{
-
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
                 Alert.alert(``,`실패`);
             }
         });
-
         get_cart_list(Member);   /**--장바구니 수량 가져오기--**/
-
         get_orderlist(Member);   /**--장바구니 수량 가져오기--**/
-
-
+        mem_info(Member);
     },[Member]);
 
     /**-------------------------장바구니 수량 가져오기--------------------------**/
@@ -67,6 +66,19 @@ function Footer({navigation,pages}) {
         } else {
             // Alert.alert(``,`${result}`);
         }
+    }
+    /**-------------------------회원정보 가져오기------------------------------**/
+    const mem_info = async (Member) => {
+        let {data:{result, mem_info}} = await my_page(Member);
+        if(result === 'OK') {
+            if(mem_info.mem_use_flag === 'N') {
+                await AsyncStorage.clear();
+                await reloadAsync();
+                navigation.replace('로그인');
+                return Alert.alert(``,`미승인 회원입니다. 휴면계정 해제 신청 후 사용 가능합니다.`);
+            }
+        }
+        console.log(data,'/회원정보');
     }
 
     const routes = useNavigationState(state => state.routes)
