@@ -25,7 +25,9 @@ import OrderForm from '../pages/order/OrderForm';                           //�
 import MyPage from '../pages/MyPage';                                        //마이페이지
 import MyPoint from '../pages/Mypage/MyPoint';                               //포인트 내역
 import MyRefund from "../pages/Mypage/MyRefund";                            //환불상세내역
-import ConstructionStatus from "../pages/Mypage/ConstructionStatus";                            //공사현황조회
+import ConstructionStatus from "../pages/Mypage/ConstructionStatus";        //공사현황총목록
+import ConstructionStatusDetailList from "../pages/Mypage/ConstructionStatus_DetailList";        //공사현황발주서별 목록
+import ConstructionStatusDetail from "../pages/Mypage/ConstructionStatus_Detail";        //공사현황발주서별 목록
 import Setting from '../pages/Setting';                                      //설정
 import MemOut from '../pages/Mypage/MemOut';                                 //회원탈퇴
 import MemInfo from '../pages/Mypage/MemInfo';                               //회원정보 변경
@@ -144,6 +146,8 @@ const StackNavigator = () => {
                 <Stack.Screen name="환불내역" component={MyRefund}/>
                 <Stack.Screen name="설정" component={Setting}/>
                 <Stack.Screen name="공사현황목록" component={ConstructionStatus}/>
+                <Stack.Screen name="공사현황발주서목록" component={ConstructionStatusDetailList}/>
+                <Stack.Screen name="공사현황발주서상세" component={ConstructionStatusDetail}/>
                 <Stack.Screen name="배송정보등록" component={OrderForm}/>
                 <Stack.Screen name="장바구니" component={Cart}/>
                 <Stack.Screen name="즐겨찾기" component={Wishlist}/>

@@ -89,69 +89,26 @@ export default function ConstructionStatus({navigation,route}) {
             <ScrollView style={[bg_white]}>
                 <View style={[styles.ConstructionStatus]}>
                     <View style={[styles.ConstructionStatus_list,mt2]}>
-                        {/*<View style={[flex,styles.border_bottom,pb1]}>*/}
-                        {/*    <View style={[wt5]}>*/}
-                        {/*        <Text style={[text_center,h16]}>공사명</Text>*/}
-                        {/*    </View>*/}
-                        {/*    <View style={[wt2]}>*/}
-                        {/*        <Text style={[text_center,h16]}>총 발주서</Text>*/}
-                        {/*    </View>*/}
-                        {/*    <View style={[wt3]}>*/}
-                        {/*        <Text style={[text_center,h16]}>등록일</Text>*/}
-                        {/*    </View>*/}
-                        {/*</View>*/}
-                        {/*{order_List.map((val,ide)=>*/}
-                        {/*    <>*/}
-                        {/*        <View style={[flex,styles.border_bottom2,pt2,pb2]}>*/}
-                        {/*            <View style={[wt5]}>*/}
-                        {/*                <Text style={[ps1,h14,text_primary]} numberOfLines={1}>{val.Construction_name}</Text>*/}
-                        {/*            </View>*/}
-                        {/*            <View style={[wt2]}>*/}
-                        {/*                <Text style={[text_center,h14]}>{val.Construction_count}</Text>*/}
-                        {/*            </View>*/}
-                        {/*            <View style={[wt3]}>*/}
-                        {/*                <Text style={[text_center,h14]}>{val.Date}</Text>*/}
-                        {/*            </View>*/}
-                        {/*        </View>*/}
-
-
-                        {/*    </>*/}
-                        {/*)}*/}
-                    {/*    */}
-                    {/*    <View style={[mt2]}/>*/}
-                    {/*    {order_List.map((val,ide)=>*/}
-                    {/*        <View style={[flex,styles.border_bottom2,pt1,pb1]}>*/}
-                    {/*        <View style={[wt8]}>*/}
-
-                    {/*        <Text style={[ps1,h14,text_primary]} numberOfLines={1}>{val.Construction_name}</Text>*/}
-                    {/*        <Text style={[ps1,h14]} numberOfLines={1}>등록일 : {val.Date}</Text>*/}
-                    {/*        </View>*/}
-                    {/*        <View style={[wt2]}>*/}
-                    {/*        <Text style={[text_center,h14]}>총 발주서</Text>*/}
-                    {/*        <Text style={[text_center,h14]}>{val.Construction_count}</Text>*/}
-                    {/*        </View>*/}
-                    {/*        </View>*/}
-                    {/*        )}*/}
-                    {/*    */}
                         {/*    */}
                         <View style={[mt2]}/>
                         {order_List.map((val,ide)=>
-                            <View style={[styles.bg,ms1,me1,mb1,styles.border_raound]}>
-                                <View style={[]}>
-                                    <Text style={[h14,text_black,text_right,pb1]} >{val.Date}</Text>
-                                    <View style={[flex_top]}>
-                                        <View style={[wt7]}>
-                                            <Text style={[h14,text_black]}>공사명</Text>
-                                            <Text style={[h15,text_black,fw500]} >{val.Construction_name}</Text>
-                                        </View>
-                                        <View style={[wt3]}>
-
-                                            <Text style={[text_right,h14,text_black]}>총 발주서</Text>
-                                            <Text style={[text_right,h17,text_black,fw500]}>{val.Construction_count}</Text>
+                            <TouchableOpacity onPress={() => {navigation.navigate('공사현황발주서목록')}}>
+                                <View style={[styles.bg,ms1,me1,mb1,styles.border_raound]}>
+                                    <View style={[]}>
+                                        <Text style={[h14,,text_right,pb1]} >첫 등록일시 : {val.Date}</Text>
+                                        <View style={[flex_top]}>
+                                            <View style={[wt7]}>
+                                                <Text style={[h14,]}>공사명</Text>
+                                                <Text style={[h15,,fw500]} >{val.Construction_name}</Text>
+                                            </View>
+                                            <View style={[wt3]}>
+                                                <Text style={[text_right,h14,]}>총 발주서</Text>
+                                                <Text style={[text_right,h17,,fw500]}>{val.Construction_count}</Text>
+                                            </View>
                                         </View>
                                     </View>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         )}
                         {/*    */}
 
