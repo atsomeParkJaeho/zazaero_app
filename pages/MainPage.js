@@ -1,38 +1,27 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Alert, Button, Platform} from 'react-native';
-import {useIsFocused, useNavigationState} from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/AntDesign';
+import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Alert, Platform} from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
 import {List} from 'react-native-paper';
-import {AccordionList} from "accordion-collapse-react-native";
 //이미지 슬라이드
 import {ImageSlider} from "react-native-image-slider-banner";
 // 공통 CSS 추가
 import {
     container,
-    bg_white,
-    content_wrap,
-    min_height,
-    padding_bottom,
-    ms1,
     flex,
-    flex_between, d_flex, justify_content_center
+    flex_between,
+    d_flex, pt2
 } from '../common/style/AtStyle';
 
-// 이미지 추가
-
 import Footer from "./Footer";
-
-import Search from '../icons/search.svg';
-
-import Main_logo from '../icons/main_logo.svg';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import {ABanner, get_cate_list} from "./UTIL_main";
 import {getAppInfo} from "./order/UTIL_order";
-
-import {app_download_info, chk_test, get_Member, mem_push_token} from "./UTIL_mem";
+import {chk_test, get_Member} from "./UTIL_mem";
 import PushSetting from "../UTIL_push";
 import * as Device from "expo-device";
+
+// 아이콘 추가
+import Search from '../icons/search.svg';
+import Main_logo from '../icons/main_logo.svg';
 
 
 // 2차 카테고리 설정
@@ -56,25 +45,24 @@ function Cate2nd({uid,navigation,name}) {
 
 
     }, []);
-    console.log(Cate2nd,' / 2차 카테고리2');
+    // console.log(Cate2nd,' / 2차 카테고리2');
     if(Cate2nd !== null) {
         return (
             <>
                 {Cate2nd.map((val, idx) => {
                     let img_src = 'http://zazaero.com'+val.cate_img;
-                    console.log(img_src,'/ 이미지 456경로');
+                    // console.log(img_src,'/ 이미지 456경로');
                     return(
                         <>
-                            <View style={{width: "33%", paddingTop: 20,}} key={idx}>
+
+                            <View style={[{width: "33%",},pt2]} key={idx}>
                                 <TouchableOpacity onPress={() => {
                                     navigation.navigate('상품목록', {Cate1stUid: uid, Cate2ndUid: val.ind_cfg_uid, name: name})
                                 }}>
                                     {(img_src) &&
                                         <Image style={styles.ct_img} source={{uri:img_src}}/>
                                     }
-                                    {/*<Image style={styles.ct_img} source={req}/>*/}
-                                    <Text style={styles.Accordion_items_link_txt}>{val.cfg_val1}</Text>
-                                    {/*<Text style={styles.Accordion_items_link_txt}>{val.ind_cfg_uid}</Text>*/}
+                                    <Text style={[styles.Accordion_items_link_txt]}>{val.cfg_val1}</Text>
                                 </TouchableOpacity>
                             </View>
                         </>
@@ -219,7 +207,7 @@ export default function MainPage({route,navigation}) {
                 </View>
             </View>
             {/**----------------------------------------바디----------------------------------------**/}
-            <ScrollView style={styles.main_wrap}>
+            <ScrollView style={[]}>
                 <ImageSlider
                     data={
                         A_banner.map(val=>{
@@ -321,7 +309,6 @@ export default function MainPage({route,navigation}) {
                 </View>
             </ScrollView>
             {/**----------------------------------------푸터----------------------------------------**/}
-
             <Footer navigation={navigation}/>
         </>
     );
@@ -329,20 +316,10 @@ export default function MainPage({route,navigation}) {
 
 
 const styles = StyleSheet.create({
-    main_wrap:{
-        backgroundColor:"#fff",
-    },
-
     top_inner: {
         paddingVertical: 20,
         paddingHorizontal: 16,
         backgroundColor: "#fff",
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: '700',
-        marginTop: 50,
-        marginLeft: 20
     },
     main_footer: {
         backgroundColor: "#F9F9FB",
