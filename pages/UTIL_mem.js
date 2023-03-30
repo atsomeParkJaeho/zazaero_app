@@ -4,6 +4,7 @@ import * as Device from "expo-device";
 // import {getDeviceId} from "react-native-device-info";
 import {getDevicePushTokenAsync} from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useEffect, useState} from "react";
 
 
 
@@ -289,5 +290,13 @@ export const find_chk_mem = async (FindId) => {
         }
     });
     return res;
+}
+
+// 나의 정보 가져오기 페이지
+export async function memChkSet() {
+    const [mem_info, set_mem_info]      = useState([]);  // 회원 정보
+    const [order_list, set_order_list]  = useState([]);  // 주문 정보
+    const [cart_list, set_cart_list]    = useState([]);  // 장바구니 정보
+
 }
 

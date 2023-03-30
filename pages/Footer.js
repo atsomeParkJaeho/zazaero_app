@@ -24,26 +24,31 @@ import {reloadAsync} from "expo-updates";
 
 
 function Footer({navigation,pages}) {
-
-
-
     const [Member,          setMember]               = useState();
     const [order_list, set_order_list]               = useState([]);  // 발주수량 설정
     const [cart_list,   set_cart_list]               = useState([]);  // 장바구니 수량 설정
-    const [get_mem_info, set_get_mem_info]           = useState([]);  // 회원정보 추출
-    
-    
+    const [get_mem_info, set_get_mem_info]           = useState(``);  // 회원정보 추출
 
     useEffect(()=>{
-        get_Member().then((res)=>{
-            if(res) {setMember(res);} else {
-                Alert.alert(``,`실패`);
-            }
-        });
+        get_Member().then((res)=>{if(res) {setMember(res);} else {Alert.alert(``,`실패`);}});
+        mem_info(Member);
         get_cart_list(Member);   /**--장바구니 수량 가져오기--**/
         get_orderlist(Member);   /**--장바구니 수량 가져오기--**/
-        mem_info(Member);
+
     },[Member]);
+
+
+    if(get_mem_info === 'N') {
+        Alert.alert(``,`미승인 회원입니다. 승인 후 사용가능합니다.`,[
+            {text:"OK", onPress:()=>{
+                    AsyncStorage.clear();
+                    return reloadAsync();
+                }
+            }
+        ]);
+        return false;
+    }
+
 
     /**-------------------------장바구니 수량 가져오기--------------------------**/
     const get_cart_list = async (Member) => {
@@ -67,19 +72,16 @@ function Footer({navigation,pages}) {
             // Alert.alert(``,`${result}`);
         }
     }
-    /**-------------------------회원정보 가져오기------------------------------**/
+
     const mem_info = async (Member) => {
         let {data:{result, mem_info}} = await my_page(Member);
         if(result === 'OK') {
-            if(mem_info.mem_use_flag === 'N') {
-                await AsyncStorage.clear();
-                await reloadAsync();
-                navigation.replace('로그인');
-                return Alert.alert(``,`미승인 회원입니다. 휴면계정 해제 신청 후 사용 가능합니다.`);
-            }
+            return set_get_mem_info(mem_info.mem_ok_status);
         }
-        console.log(data,'/회원정보');
+        console.log(result,'/회원정보');
     }
+
+
 
     const routes = useNavigationState(state => state.routes)
     const currentRoute = routes[routes.length -1].name
@@ -87,6 +89,7 @@ function Footer({navigation,pages}) {
     console.log(currentRoute);
     console.log(order_list,' / 발주수량 설정');
     console.log(cart_list,' / 장바구니 수량');
+
 
 
 

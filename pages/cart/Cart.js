@@ -71,6 +71,7 @@ export default function Cart({route, navigation}) {
     const [CartUid, setCartUid]            = useState(``);
     const [Cart1stUid, setCart1stUid]      = useState(``);
     const [CartList, setCartList]          = useState([]);           // 장바구니 1차 카테고리 출력
+    const [all_status, set_all_status] = useState(false);
     const Update = useIsFocused();
 
 
@@ -294,21 +295,7 @@ export default function Cart({route, navigation}) {
             goForm(cnt, price, order_uid, goods_uid);
         }
     }
-    const allMod = (type, cate_uid, cate_name) => {
-        setCart1stUid(cate_uid);
-        if(type === 'All') {
-            setCartUid(cate_uid);
-            setCartList(CartList.map((item)=>{
-                if(item.cate_1st_uid === cate_uid) {
-                    return {...item, A_goods_list:item.A_goods_list.map((val)=>{
-                            return {...val, goods_chk:!val.goods_chk}
-                        })}
-                } else {
-                    return item;
-                }
-            }));
-        }
-    }
+
     const ChkDel = (cate_1st_uid) => {
 
         let A_goods_cate_list = CartList.filter(val=>val.cate_1st_uid === cate_1st_uid);
@@ -365,20 +352,24 @@ export default function Cart({route, navigation}) {
         let total   = temp.reduce((val,idx)=>{return val.concat(idx);});
         let result  = total.map(val=>val.cate_1st_uid);
         let chk     = total.map(val=>String(val.A_sel_option.map(item=>item.option_cnt)));
-        let find    = result.indexOf(CartUid);
+        let find    = result.indexOf(Cart1stUid);
 
         if(chk.includes('0')) {
             console.log(chk.includes('0'));
             return Alert.alert('',`수량을 입력해주세요.`);
         }
 
-        console.log(temp,' / [체크상품확인]');
-        console.log(total,' / [상품 재배열]');
-        console.log(result,' / [1차 카테고리 확인]');
-        console.log(chk,' / [수량]');
-        console.log(find,' / [1차 카테고리 중복 찾기]');
 
-        if(find !== 0) {
+        console.log(Cart1stUid,'/ [지정 카테고리]');
+        console.log(result,'/ [필터링한 카테고리]');
+        console.log(find,'/ [수량]');
+        // console.log(,'/ [지정 카테고리]');
+        // console.log(,'/ [지정 카테고리]');
+
+
+        if(1 > find) {
+            return navigation.navigate('배송정보등록',{order_uid:total,goods_cate1_uid:Cart1stUid});;
+        } else {
             Alert.alert('','동일 공정의 자재만 발주 가능합니다');
             setCart1stUid(``);
             setCartList(CartList.map((cate) => {
@@ -387,8 +378,6 @@ export default function Cart({route, navigation}) {
                     })}
             }));
             return false;
-        } else {
-            return navigation.navigate('배송정보등록',{order_uid:total,goods_cate1_uid:Cart1stUid});;
         }
 
     }
@@ -425,6 +414,21 @@ export default function Cart({route, navigation}) {
             }
         });
     }
+
+    let allMod = (cate_1st_uid, cate_1st_name) => {
+        set_all_status(!all_status);
+        setCart1stUid(cate_1st_uid);
+        setCartList(CartList.map((item)=>{
+            if(item.cate_1st_uid === cate_1st_uid) {
+                return {...item, A_goods_list:item.A_goods_list.map((val)=>{
+                        return {...val, goods_chk:!all_status}
+                    })}
+            } else {
+                return item;
+            }
+        }));
+    }
+
     /**-----------------------------------------------------------------------------------------------------------------**/
     let result = CartList.map(cate=> {
         return {...cate, A_goods_list:cate.A_goods_list.filter((val)=>val.goods_del === false)}
@@ -435,6 +439,7 @@ export default function Cart({route, navigation}) {
     let list_goods_cnt    = 0;
     for (let i = 0; i < cart_chk.length; i++) {list_goods_cnt   += cart_chk[i];}
     console.log(CartList,' / [장바구니 상품 목록리스트]');
+    console.log(Cart1stUid,' / [카테고리 제한]');
     return (
         <>
             <KeyboardAvoidingView style={{height:"100%"}} behavior={Platform.select({ios: 'padding'})}>
@@ -446,6 +451,9 @@ export default function Cart({route, navigation}) {
                                 {(result.length !== 0) ? (
                                     <>
                                         {result.map((cate,idx)=> {
+
+
+
 
                                             /*1. 삭제 안한 상품만 필터링한다*/
                                             let A_goods_list = cate.A_goods_list.filter(val=>val.goods_del === false);
@@ -465,8 +473,8 @@ export default function Cart({route, navigation}) {
                                                             <View style={[flex, {justifyContent: "space-between",}]}>
                                                                 {/*===============전체선택=============*/}
                                                                 <View style={[d_flex]}>
-                                                                    <Checkbox style={styles.all_check} color={"#4630eb"} onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`,)} value={all_chk_flag}/>
-                                                                    <Checkbox style={styles.chk_view} color={"#4630eb"} onValueChange={()=>allMod(`All`,cate.cate_1st_uid, `${cate.cate_1st_name}`,)}/>
+                                                                    <Checkbox style={styles.all_check} color={"#4630eb"} onValueChange={()=>allMod(cate.cate_1st_uid, `${cate.cate_1st_name}`,)} value={all_chk_flag}/>
+                                                                    <Checkbox style={styles.chk_view} color={"#4630eb"} onValueChange={()=>allMod(cate.cate_1st_uid, `${cate.cate_1st_name}`,)}/>
                                                                     <Text style={[ms1]}>전체선택</Text>
                                                                 </View>
                                                                 {/*===============선택삭제=============*/}

@@ -57,7 +57,9 @@ import Postcode from "@actbase/react-daum-postcode/lib/app.native";
 import DaumPostCode from "../util/DaumPostCode";
 import Payment from "../util/ImportPay";
 import Push from "../Push";
-import {Animated, LogBox, YellowBox} from "react-native";
+import {Alert, Animated, LogBox, YellowBox} from "react-native";
+import {my_page} from "../pages/UTIL_mem";
+import {reloadAsync} from "expo-updates";
 
 
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
@@ -83,21 +85,21 @@ const StackNavigator = () => {
     // 회원접속상태 확인
     console.log('네비게이션');
     const [Member, setMember] = useState();
+
+
+
+
     useEffect(() => {
         AsyncStorage.getItem('member').then((value) => {
             if (value) {
                 setMember(value);
             }
         });
-    }, []);
+
+
+    }, [Member]);
 
     console.log('회원코드 / ', Member);
-
-    const forFade = ({ current }) => ({
-        cardStyle: {
-            opacity: current.progress,
-        },
-    });
 
     return (
         <>

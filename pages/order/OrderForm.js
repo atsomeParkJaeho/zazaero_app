@@ -736,6 +736,7 @@ export default function OrderForm({route,navigation}) {
 
             if(modAddr === 'add') {
                 if(gmd_title.includes(order_data.order_title)) {
+                    InputFocus.current[0].focus();
                     return Alert.alert(``,`동일한 공사명이 존재합니다.`);
                 }
             }
