@@ -107,7 +107,9 @@ const StackNavigator = () => {
                         backgroundColor: '#fff',
                         borderBottomColor: "#fff",
                         shadowColor: "#fff",
-                        fontSize:10,
+                    },
+                    headerTitleStyle: {
+                        fontSize: 10,
                     },
                     //헤더의 텍스트를 왼쪾에 둘지 가운데에 둘지를 결정
                     headerTitleAlign: 'center',
