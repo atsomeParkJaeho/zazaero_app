@@ -49,7 +49,7 @@ import {
     align_items_start,
     h14,
     text_left,
-    justify_content_start, bg_light, justify_content_end, text_right, text_primary, pb1
+    justify_content_start, bg_light, justify_content_end, text_right, text_primary, pb1, pt1
 } from '../../common/style/AtStyle';
 
 //이미지 추가
@@ -523,7 +523,7 @@ export default function Cart({route, navigation}) {
                                                                                         </View>
                                                                                     )}
                                                                                     {/*자재가격*/}
-                                                                                    <View style="">
+                                                                                    <View style={[pt1]}>
                                                                                         <Text style={[styles.goods_price,text_right]}>
                                                                                             {Price(item.option_price * item.option_cnt)}원
                                                                                         </Text>
