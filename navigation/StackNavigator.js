@@ -63,6 +63,8 @@ import {Alert, Animated, LogBox, YellowBox} from "react-native";
 import {my_page} from "../pages/UTIL_mem";
 import {reloadAsync} from "expo-updates";
 
+import ModOrder from "../pages/order/OrderMod";
+
 
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
 //그래서 이렇게 항상 상단에 선언하고 시작하는게 규칙입니다!
@@ -161,6 +163,7 @@ const StackNavigator = () => {
                 <Stack.Screen name="상품목록" component={GoodsCateList} />
                 <Stack.Screen name="상품상세" component={GoodsDetail}/>
                 <Stack.Screen name="발주상세" component={OrderDetail}/>
+                <Stack.Screen name="수정하기" component={ModOrder}/>
                 {/*================발주내역 상태 변경===================*/}
                 <Stack.Screen name="결제상태" options={{title:'발주내역'}} component={PayStatus}/>
                 <Stack.Screen name="발주상태" options={{title:'발주내역'}} component={OrderStatus}/>

@@ -359,13 +359,9 @@ export default function Cart({route, navigation}) {
             return Alert.alert('',`수량을 입력해주세요.`);
         }
 
-
         console.log(Cart1stUid,'/ [지정 카테고리]');
         console.log(result,'/ [필터링한 카테고리]');
         console.log(find,'/ [수량]');
-        // console.log(,'/ [지정 카테고리]');
-        // console.log(,'/ [지정 카테고리]');
-
 
         if(1 > find) {
             return navigation.navigate('배송정보등록',{order_uid:total,goods_cate1_uid:Cart1stUid});;
