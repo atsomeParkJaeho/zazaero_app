@@ -32,7 +32,20 @@ import {
     ps1,
     pe1,
     btn_outline_primary,
-    btn_primary, p1, text_light, h16, fw600, h14, text_gray, d_flex
+    btn_primary,
+    p1,
+    text_light,
+    h16,
+    fw600,
+    h14,
+    text_gray,
+    d_flex,
+    text_center,
+    mb1,
+    wt3,
+    wt5,
+    wt6,
+    justify_content_center
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
@@ -181,15 +194,19 @@ function PayStatus({route, navigation}) {
                                     <Text style={[text_light]}>상세내역 / 정보변경</Text>
                                 </TouchableOpacity>
                             </View>
-                            <View>
-                                <Text style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>
-                                    {ordStatus(`${item.ord_status}`)}
-                                </Text>
+                            <View style={[]}>
+                                <View style={[]}>
+                                    <Text style={[ text_primary,btn_outline_primary,text_center,mb1, h14]}>
+                                        {ordStatus(`${item.ord_status}`)}
+                                    </Text>
+                                </View>
+
                                 <View style={[d_flex]}>
                                     <Text>결제금액 :</Text>
                                     <Text>{Price(item.settleprice)}원</Text>
                                 </View>
                             </View>
+
                         </View>
                     </View>
                     <View style={gray_bar}/>
