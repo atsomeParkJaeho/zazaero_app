@@ -228,11 +228,12 @@ export const OrderMod = async (get_gd_order, A_order_list, add_goods_list, Membe
         A_order_uid          :A_order_uid,
         A_order_item_uid     :A_order_item_uid,
         A_order_item_cnt     :A_order_item_cnt,
-        // A_req_memo           :A_req_memo,
+        A_req_memo           :A_req_memo,
 
         A_add_goods_uid      :A_add_goods_uid,
         A_add_goods_cnt      :A_add_goods_cnt,
-        A_add_goods_req_memo :A_add_goods_req_memo
+        A_add_goods_req_memo :A_add_goods_req_memo,
+
     }
     console.log(data,'/[데이터 확인]');
     console.log(add_goods_list,'/[추가 자재 데이터]');
