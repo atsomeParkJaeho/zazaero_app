@@ -196,10 +196,10 @@ function OrderStatus({route, navigation}) {
             <View style={[styles.Order,bg_white]}>
                 <View style={[flex]}>
                     <TouchableOpacity style={[styles.wt_3, active_link]} onPress={()=>navigation.navigate('발주상태')}>
-                        <Text style={[styles.tab_txt,active_txt]}>발주상태</Text>
+                        <Text style={[styles.tab_txt,active_txt]}>발주검수</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.wt_3, ]} onPress={()=>navigation.navigate('결제상태')}>
-                        <Text style={[styles.tab_txt,]}>결제상태</Text>
+                        <Text style={[styles.tab_txt,]}>결제대기</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('배송상태')}>
                         <Text style={[styles.tab_txt]}>배송상태</Text>
