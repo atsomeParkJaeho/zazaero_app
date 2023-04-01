@@ -134,7 +134,7 @@ export default function OrderForm({route,navigation}) {
     const getDeliList = () => {
         get_deli_addr_list(Member).then((res)=>{
             if (res) {
-                console.log(res.data,'/[][][][][1231231231231231321]');
+                console.log(res.data,'/[최근 공사명 리스트 출력]');
                 const {result, A_deli_info} = res.data;
                 if (result === 'OK') {
                     let temp = A_deli_info.sort((a,b)=>{
@@ -251,7 +251,7 @@ export default function OrderForm({route,navigation}) {
     console.log(DateChg2(today));
     console.log(route.params,' / 라우터 파라미터');
     console.log(OrderData,' / 발주 데이터');
-    console.log(DeliList,' / 공사명일시');
+    console.log(DeliList,' / [공사명일시]');
 
     return (
         <>
@@ -513,9 +513,9 @@ export default function OrderForm({route,navigation}) {
         const [Search, setSearch]     = useState(``);
         const [Show, setShow]         = useState(false);    // 검색창 노출 여부
 
-        let find = DeliList.filter(text=>(text.gmd_title.includes(Search) && text));
+        let find = DeliList.filter(text=>(text.work_name.includes(Search) && text));
 
-        const goSearch = (gmd_zonecode, gmd_address, gmd_address_sub, gmd_title, work_uid) => {
+        const goSearch = (gmd_zonecode, gmd_address, gmd_address_sub, work_name, work_uid) => {
 
             route.params.zonecode = gmd_zonecode;
             route.params.addr1 = gmd_address;
@@ -524,7 +524,7 @@ export default function OrderForm({route,navigation}) {
                 ...Selected,
                 zonecode        :gmd_zonecode,
                 addr1           :gmd_address,
-                order_title     :gmd_title,
+                order_title     :work_name,
                 work_uid        :work_uid,
             });
 
@@ -533,7 +533,7 @@ export default function OrderForm({route,navigation}) {
                 zonecode        :gmd_zonecode,
                 addr1           :gmd_address,
                 addr2           :gmd_address_sub,
-                order_title     :gmd_title,
+                order_title     :work_name,
                 work_uid        :work_uid,
             });
 
@@ -562,35 +562,32 @@ export default function OrderForm({route,navigation}) {
                     {/**---------------------------클릭시 노출--------------------------------**/}
                     {(Show) && (
                         <View style={[styles.ord_tit_list_box]}>
-
                             <TextInput style={[input,{flex:1,marginRight:16},mb1]} placeholder="공사명 입력"
                                        onChangeText={(word)=>setSearch(word)}
                                        editable={(modAddr === 'mod')}
                                        value={Search}
                             />
-
                             <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
                                 <View style={[styles.ord_tit_list]}>
                                     {/**---------------------------반복문 구간--------------------------------**/}
-                                    {find.map(val=> {
+                                    {find.map((val,idx)=> {
                                         return (
                                             <>
-                                                <View style={[styles.Recent_search_list_item]}>
+                                                <View style={[styles.Recent_search_list_item]} key={idx}>
                                                     <View style={flex_between}>
                                                         <View>
-                                                            <TouchableOpacity onPress={() => goSearch(val.gmd_zonecode, val.gmd_address, val.gmd_address_sub, val.gmd_title, val.work_uid)}>
+                                                            <TouchableOpacity onPress={() => goSearch(val.gmd_zonecode, val.gmd_address, val.gmd_address_sub, val.work_name, val.work_uid)}>
                                                                 <Text style={[h14, styles.txt_color2]}>
-                                                                    {val.gmd_title}
+                                                                    {val.work_name}
                                                                 </Text>
                                                             </TouchableOpacity>
                                                         </View>
                                                         <View>
                                                             <View style={[flex, justify_content_end]}>
                                                                 <Text style={[h14, text_gray]}>
-                                                                    {val.gmd_regdate}
+                                                                    {val.gmd_moddate}
                                                                 </Text>
-                                                                <TouchableOpacity style={ms2}
-                                                                                  onPress={() => delDeli(val.gmd_sno)}>
+                                                                <TouchableOpacity style={ms2} onPress={() => delDeli(val.gmd_sno)}>
                                                                     <Text style={[h14, styles.txt_color]}>X</Text>
                                                                 </TouchableOpacity>
                                                             </View>
@@ -719,8 +716,8 @@ export default function OrderForm({route,navigation}) {
 
         // 공사명 체크 루틴
 
-        let gmd_title = DeliList.map(val=>val.gmd_title);
-        console.log(gmd_title);
+        let work_name = DeliList.map(val=>val.work_name);
+        console.log(work_name);
 
         /**---------------------------------발주하기---------------------------------------------------**/
         const goForm = () => {
@@ -735,7 +732,7 @@ export default function OrderForm({route,navigation}) {
             }
 
             if(modAddr === 'add') {
-                if(gmd_title.includes(order_data.order_title)) {
+                if(work_name.includes(order_data.order_title)) {
                     InputFocus.current[0].focus();
                     return Alert.alert(``,`동일한 공사명이 존재합니다.`);
                 }
@@ -804,9 +801,10 @@ export default function OrderForm({route,navigation}) {
 
 
             /**-------------------------------배송지 저장-----------------------------------------**/
-            SaveDeliAddr(Member, order_data).then((res)=>{
+            SaveDeliAddr(Member, order_data, modAddr).then((res)=>{
                 if(res) {
-                    const {result, work_uid} = res.data;
+                    console.log(res.data,'/[리턴값]');
+                    const {result, work_uid, err_msg} = res.data;
                     if(result === 'OK') {
                         InsOrder(order_data, Member, work_uid, goods_cate1_uid).then((res)=>{
                             if(res) {
@@ -822,7 +820,11 @@ export default function OrderForm({route,navigation}) {
                                 }
                             }
                         });
+                    } if(result === 'NG_dup_work_name') {
+                        // 중복공사명 에러
+                        return Alert.alert(``,`${err_msg}`);
                     } else {
+                        // 기본 발주
                         InsOrder(order_data, Member, work_uid, goods_cate1_uid).then((res)=>{
                             if(res) {
                                 const {result, order_no} = res.data;
