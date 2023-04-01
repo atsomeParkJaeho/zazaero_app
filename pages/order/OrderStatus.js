@@ -165,13 +165,8 @@ function OrderStatus({route, navigation}) {
                     <View style={[container]}>
                         <View style={[flex_between]}>
                             <View style="">
-                                <TouchableOpacity style={[btn_primary, p1,]}
-                                                  onPress={()=>navigation.navigate('발주상세',{
-                                                      gd_order_uid   :item.gd_order_uid,
-                                                      hope_deli_date :item.hope_deli_date,
-                                                  })}
-                                >
-                                    <Text style={[text_light]}>상세내역</Text>
+                                <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('발주상세',{gd_order_uid   :item.gd_order_uid, hope_deli_date :item.hope_deli_date,})}>
+                                    <Text style={[text_light]}>상세내역 / 정보변경</Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={[flex]}>
