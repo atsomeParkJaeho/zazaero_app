@@ -99,6 +99,8 @@ export const SaveDeliAddr = async (Member, order_data, modAddr) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
         act_type        :"save_deli_addr",
         mem_uid         :Member,
+        work_uid        :(new_work_flag === 'N') ? work_uid : '',
+        new_work_flag   :new_work_flag, // 신규공사일시 Y, 기존공사일시 N
         recv_phone      :order_data.recv_phone,
         order_title     :order_data.order_title,
         zonecode        :order_data.zonecode,
