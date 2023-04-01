@@ -317,7 +317,7 @@ export default function ModOrder({route,navigation}) {
                 // 1.장바구니 수정정보 보내기
                 OrderMod(get_gd_order, A_order_list, add_goods_list, Member).then((res)=>{
                     if(res) {
-                        const {result} = res.data;
+                        const {result, err_msg} = res.data;
                         if(result === 'OK') {
                             Alert.alert(``,`수정이 완료되었습니다.`,);
                             return navigation.replace('발주상세',{gd_order_uid:route.params.get_gd_order.gd_order_uid});
