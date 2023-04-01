@@ -803,24 +803,17 @@ export default function OrderForm({route,navigation}) {
                                 const {result, order_no} = res.data;
                                 if(result === 'OK') {
                                     msg += '\n발주번호 : '+order_no;
-
                                     Alert.alert('',msg,[{
                                         text:'확인',
-                                        onPress:()=>{
-                                            return navigation.replace('발주상태');
-                                        }
+                                        onPress:()=>{return navigation.replace('발주상태');}
                                     }]);
-
-                                } else {
-
-                                    return Alert.alert('','에러');
-
-                                }
+                                } else {return Alert.alert('','에러[1]');}
                             }
                         });
-                    } if(result === 'NG_dup_work_name') {
+                    } else if(result === 'NG_dup_work_name') {
                         // 중복공사명 에러
                         return Alert.alert(``,`${err_msg}`);
+
                     } else {
                         // 기본 발주
                         InsOrder(order_data, Member, work_uid, goods_cate1_uid).then((res)=>{
@@ -830,10 +823,10 @@ export default function OrderForm({route,navigation}) {
                                     msg += '\n발주번호 : '+order_no;
                                     Alert.alert('',msg,[{
                                         text:'확인',
-                                        onPress:()=>{navigation.replace('발주상태')}
+                                        onPress:()=>{return navigation.replace('발주상태');}
                                     }]);
                                 } else {
-                                    Alert.alert('','에러');
+                                    return Alert.alert('','에러[2]');
                                 }
                             }
                         });
