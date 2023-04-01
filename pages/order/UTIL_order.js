@@ -207,9 +207,9 @@ export const OrderMod = async (get_gd_order, A_order_list, add_goods_list, Membe
     let A_order_item_cnt     = temp2.map(val=>String(val.option_cnt));
     // let A_req_memo           = temp2.map(val=>String(val.req_memo));
 
-    let A_add_goods_uid      = add_goods_list.map(val=>String(val.order_uid));
-    let A_add_goods_cnt      = add_goods_list.map(val=>String(val.order_uid));
-    let A_add_goods_req_memo = add_goods_list.map(val=>String(val.order_uid));
+    let A_add_goods_uid      = add_goods_list.map(val=>String(val.goods_uid));
+    let A_add_goods_cnt      = add_goods_list.map(val=>String(val.goods_cnt));
+    let A_add_goods_req_memo = add_goods_list.map(val=>String(val.req_memo));
 
 
     let data = {
@@ -235,9 +235,14 @@ export const OrderMod = async (get_gd_order, A_order_list, add_goods_list, Membe
         A_add_goods_req_memo :A_add_goods_req_memo
     }
     console.log(data,'/[데이터 확인]');
-    console.log(A_order_uid,'/[데이터 확인]');
-    console.log(A_order_item_uid,'/[데이터 확인]');
-    console.log(A_order_item_cnt,'/[데이터 확인]');
+    console.log(add_goods_list,'/[추가 자재 데이터]');
+    console.log(A_order_uid,'/[자재 uid]');
+    console.log(A_order_item_uid,'/[자재 옵션 uid]');
+    console.log(A_order_item_cnt,'/[자재 수량]');
+    console.log(A_add_goods_uid,'/[추가 자재 uid]');
+    console.log(A_add_goods_cnt,'/[추가 자재 수량]');
+    console.log(A_add_goods_req_memo,'/[추가 자재 옵션 요청사항]');
+    
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',data,{
         headers: {
             'Content-type': 'multipart/form-data'
