@@ -52,6 +52,7 @@ export default function FindId({route, navigation}) {
 
     // 3. 본인 인증창 실행
     const goFind = () => {
+
         if(FindId.mem_name === '') {
             Alert.alert('','이름을 입력해주세요.');
             return ChkInput.current[0].focus();
@@ -64,12 +65,13 @@ export default function FindId({route, navigation}) {
 
         search_id(FindId).then((res) => {
             if (res) {
-                console.log(res.data);
+                console.log(res.data,'/ [리턴값]')
                 const {result, alert_msg} = res.data;
                 if (result === 'OK') {
-                    navigation.replace('아이디 찾기결과',{FindId:FindId});
+                    navigation.replace('아이디 찾기결과',{FindId:FindId, mem_info:res.data});
                     return Alert.alert('','회원님의 연락처로 인증번호가\n전송되었습니다.');
                 }
+
                 if(alert_msg) {
                     Alert.alert('',`${alert_msg}`);
                 }

@@ -26,7 +26,7 @@ import {find_chk_mem} from "../UTIL_mem";
 
 
 export default function FindId({route ,navigation}) {
-    let {FindId} = route.params;
+    let {FindId, mem_info} = route.params;
     const [chk_num, set_chk_num] = useState({
         chk_num:'',
     });
@@ -46,31 +46,31 @@ export default function FindId({route ,navigation}) {
     
     const goFindMem = () => {
         console.log(FindId.type,'/ 찾기 옵션');
-        console.log(FindId.mem_id,'/ 아이디');
-        console.log(FindId.mem_name,'/ 담당자명');
-        console.log(FindId.mem_mobile,'/ 담당자 연락처');
+        console.log(mem_info.certi_no,'/ 서버 인증번호');
+        console.log(chk_num.chk_num,'/ 입력인증번호');
         // 인증번호 체크
-
-        return  navigation.replace('비밀번호 찾기결과');
-        // find_chk_mem(FindId).then((res)=>{
-        //     if(res) {
-        //       const {result} = res.data;
-        //       if(result === 'OK') {
-        //           if(FindId.type === 'id') {
-        //             return Alert.alert('',``);
-        //           } else {
-        //               return  navigation.replace('비밀번호 찾기결과');
-        //           }
-        //       } else {
-        //           return  Alert.alert('',`${res.data}`);
-        //       }
-        //     }
-        // });
-        
+        if(mem_info.certi_no === chk_num.chk_num) {
+            find_chk_mem(FindId, mem_info).then((res)=>{
+                console.log(res.data,'/[인증번호 체크 리턴값]');
+                if(res) {
+                    const {result} = res.data;
+                    if(result === 'OK') {
+                        Alert.alert(``,`등록하신 휴대폰 번호로 아이디가 전송되었습니다.`);
+                        return navigation.replace(`로그인`);
+                    } else {
+                        return Alert.alert(``,`${result}`);
+                    }
+                }
+            });
+        } else {
+            return Alert.alert(``,`인증번호가 맞지 않습니다.`);
+        }
     }
 
 
-    console.log(route.params, '/ 인증번호 확인');
+    console.log(FindId,'/ 사용자 정보');
+    console.log(mem_info.certi_no,'/ 서버 인증번호');
+    console.log(chk_num,'/ 입력인증번호');
 
     return   (
         <>
@@ -84,7 +84,7 @@ export default function FindId({route ,navigation}) {
                             </Text>
                             <TextInput
                                 style={[styles.input,{marginBottom: 15}]}
-                                onChangeText={(chk_num)=>goInput('chk_num',chk_num)}
+                                onChangeText={(chk_num)=>goInput('chk_num',Number(chk_num))}
                                 value={`${chk_num.chk_num}`}
                                 // ref={val=>ChkInput.current = val}
                                 placeholder="인증번호를 입력해주세요."

@@ -177,16 +177,27 @@ export const search_pw_mobile = async (FindId) => {
     return res;
 }
 
+
+
 export const search_id = async (FindId) => {
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_search.php', {
-        act_type        :'search_id',
+
+    let data = {
+        act_type        :'find_id_req_certi',
+        mem_name        :FindId.mem_name,
+        mem_mobile      :FindId.mem_mobile,
+    }
+
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php', {
+        act_type        :'find_id_req_certi',
         mem_name        :FindId.mem_name,
         mem_mobile      :FindId.mem_mobile,
     }, {
         headers: {
             'Content-type': 'multipart/form-data'
         }
-    })
+    });
+
+    console.log(data,'/보내는 값');
     return res;
 }
 
@@ -278,12 +289,22 @@ export const mem_push_token = async (Member, token) =>{
 }
 
 /**-------------------------------------인증번호 전송-------------------------------------------**/
-export const find_chk_mem = async (FindId) => {
-    let res = await  axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
-        act_type            :'find_chk_mem',
-        mem_id              :FindId.mem_id,
+export const find_chk_mem = async (FindId, mem_info) => {
+    
+    let data = {
+        act_type            :'send_sms_find_mem_info',
+        find_type           :FindId.type,
+        find_info           :mem_info.mem_id,
         mem_name            :FindId.mem_name,
-        mem_mobile          :FindId.mem_mobile,
+        mem_mobile          :FindId.mem_mobile
+    }
+    console.log(data,'/ [보내는 값]');
+    let res = await  axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
+        act_type            :'send_sms_find_mem_info',
+        find_type           :FindId.type,
+        find_info           :mem_info.mem_id,
+        mem_name            :FindId.mem_name,
+        mem_mobile          :FindId.mem_mobile
     },{
         headers: {
             'Content-type': 'multipart/form-data'

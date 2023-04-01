@@ -195,7 +195,8 @@ export default function Wishlist({route,navigation}) {
             Alert.alert('','선택하신 자재를 추가하시겠습니까?',[
                 {text:"취소",onPress:()=>{}},
                 {text:"추가",onPress:()=>{
-                        return navigation.navigate('발주상세',{gd_order_uid:gd_order_uid, A_goods_list:A_filter})
+                        // return navigation.navigate('발주상세',{gd_order_uid:gd_order_uid, A_goods_list:A_filter})
+                        return navigation.navigate('수정하기',{gd_order_uid:gd_order_uid, A_goods_list:A_filter})
                     }
                 }
             ]);
