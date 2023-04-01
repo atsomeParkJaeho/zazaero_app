@@ -506,10 +506,10 @@ export default function OrderForm({route,navigation}) {
     }
     /**--------------------------------기존 배송지 선택----------------------------------**/
     function OrderSearch() {
-
         const [Search, setSearch]     = useState(``);
         const [Show, setShow]         = useState(false);    // 검색창 노출 여부
-        let find = DeliList.filter(text=>(text.work_name.includes(Search) && text));
+
+        let find = DeliList.filter(text=>(text.gmd_title.includes(Search) && text));
         const goSearch = (gmd_zonecode, gmd_address, gmd_address_sub, work_name, work_uid) => {
             route.params.zonecode = gmd_zonecode;
             route.params.addr1 = gmd_address;
