@@ -50,7 +50,7 @@ export const InsOrder = async (order_data,Member,work_uid,goods_cate1_uid) => {
         goods_cate1_uid     :order_data.goods_cate1_uid,
     }
 
-    console.log(data,'/발주 데이터');
+    console.log(data,'/[발주 데이터]');
 
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
         act_type            :'ins_order',

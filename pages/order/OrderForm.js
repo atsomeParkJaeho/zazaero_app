@@ -803,12 +803,12 @@ export default function OrderForm({route,navigation}) {
                                 const {result, order_no} = res.data;
                                 if(result === 'OK') {
                                     msg += '\n발주번호 : '+order_no;
-                                    Alert.alert('',msg,[{
+                                    return Alert.alert('',msg,[{
                                         text:'확인',
                                         onPress:()=>{navigation.replace('발주상태')}
                                     }]);
                                 } else {
-                                    Alert.alert('','에러');
+                                    return Alert.alert('','에러');
                                 }
                             }
                         });

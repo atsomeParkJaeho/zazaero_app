@@ -69,7 +69,6 @@ function OrderStatus({route, navigation}) {
     const getOrderStatus = async (Member) => {
         let {data:{result, A_gd_order, query}} = await get_order_list(Member);
         if(result === 'OK') {
-
             let temp = A_gd_order.filter(
                 val=>
                     val.ord_status === 'ord_ready'  ||
@@ -82,10 +81,9 @@ function OrderStatus({route, navigation}) {
             return setOrderList(desc);
         }
         // return Alert.alert(``,`에러`);
-
     }
 
-    console.log(OrderList,' / 리스트22');
+    console.log(OrderList,' / [발주 리스트 출력]');
 
 
     function OrdStatusList({item}) {
