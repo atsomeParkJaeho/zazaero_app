@@ -205,7 +205,7 @@ export const OrderMod = async (get_gd_order, A_order_list, add_goods_list, Membe
     let A_order_uid          = A_order_list.map(val=>String(val.order_uid));
     let A_order_item_uid     = temp2.map(val=>String(val.order_item_uid));
     let A_order_item_cnt     = temp2.map(val=>String(val.option_cnt));
-    // let A_req_memo           = temp2.map(val=>String(val.req_memo));
+    let A_req_memo           = temp2.map(val=>String(val.req_memo));
 
     let A_add_goods_uid      = add_goods_list.map(val=>String(val.goods_uid));
     let A_add_goods_cnt      = add_goods_list.map(val=>String(val.goods_cnt));
@@ -228,7 +228,7 @@ export const OrderMod = async (get_gd_order, A_order_list, add_goods_list, Membe
         A_order_uid          :A_order_uid,
         A_order_item_uid     :A_order_item_uid,
         A_order_item_cnt     :A_order_item_cnt,
-        // A_req_memo           :A_req_memo
+        A_req_memo           :A_req_memo,
 
         A_add_goods_uid      :A_add_goods_uid,
         A_add_goods_cnt      :A_add_goods_cnt,
