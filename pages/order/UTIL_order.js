@@ -239,6 +239,7 @@ export const OrderMod = async (get_gd_order, A_order_list, add_goods_list, Membe
     console.log(A_order_uid,'/[자재 uid]');
     console.log(A_order_item_uid,'/[자재 옵션 uid]');
     console.log(A_order_item_cnt,'/[자재 수량]');
+    console.log(A_req_memo,'/[기존 옵션 요청사항 메모]');
     console.log(A_add_goods_uid,'/[추가 자재 uid]');
     console.log(A_add_goods_cnt,'/[추가 자재 수량]');
     console.log(A_add_goods_req_memo,'/[추가 자재 옵션 요청사항]');
