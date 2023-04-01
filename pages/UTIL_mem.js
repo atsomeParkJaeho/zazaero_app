@@ -180,7 +180,6 @@ export const search_pw_mobile = async (FindId) => {
 
 
 export const search_id = async (FindId) => {
-
     let data = {
         act_type        :'find_id_req_certi',
         mem_name        :FindId.mem_name,
@@ -200,6 +199,25 @@ export const search_id = async (FindId) => {
     console.log(data,'/보내는 값');
     return res;
 }
+
+export const reset_pw = async (FindPw) => {
+    let data = {
+        act_type        :'reset_pw',
+        mem_id          :FindPw.mem_id,
+        mem_pw          :FindPw.mem_pw,
+    }
+
+    console.log(data,'/[파라이터값 확인]');;
+
+    let res = await axios.post(`http://49.50.162.86:80/ajax/UTIL_app.php`,data,{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
+}
+
 
 /**---------------------------------회원정보 수정-------------------------------------------**/
 export const mod_mem_info = async (Member, MemInfo) => {

@@ -25,7 +25,7 @@ import {
 } from '../../common/style/AtStyle';
 import axios from "axios";
 import {Phone} from "../../util/util";
-import {search_pw_mobile} from "../UTIL_mem";
+import {search_id, search_pw_mobile} from "../UTIL_mem";
 
 
 
@@ -70,24 +70,15 @@ export default function FindPw({navigation,route}) {
             return ChkInput.current[2].focus();
         }
 
-        search_pw_mobile(FindId).then((res) => {
+        search_id(FindId).then((res) => {
             if (res) {
                 console.log(res.data);
                 const {result} = res.data;
                 if (result === 'OK') {
-                    Alert.alert('본인인증','회원님의 연락처로 인증번호가\n전송되었습니다.');
-                    return navigation.replace('아이디 찾기결과',{FindId:FindId});
-                }
-                if(result === 'NG') {
-                    Alert.alert('','계정정보가 없습니다.');
-                    return ChkInput.current[0].focus();
-                }
-
-                if (result === 'NG_info') {
-                    Alert.alert('해당계정이 없습니다.');
-                }
-                if (result === 'NG_sns') {
-                    Alert.alert('SNS로 회원가입하신 회원입니다.');
+                    navigation.replace('아이디 찾기결과',{FindId:FindId, mem_info:res.data});
+                    return Alert.alert('','회원님의 연락처로 인증번호가\n전송되었습니다.');
+                } else {
+                    return Alert.alert(``,`에러`);
                 }
             }
         }).catch((err) => console.log(err));

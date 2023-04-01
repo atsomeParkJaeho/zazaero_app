@@ -70,6 +70,8 @@ export default function FindId({route, navigation}) {
                 if (result === 'OK') {
                     navigation.replace('아이디 찾기결과',{FindId:FindId, mem_info:res.data});
                     return Alert.alert('','회원님의 연락처로 인증번호가\n전송되었습니다.');
+                } else {
+                    return Alert.alert(``,`에러`);
                 }
 
                 if(alert_msg) {

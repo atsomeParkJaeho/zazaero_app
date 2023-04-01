@@ -7,7 +7,7 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    TouchableWithoutFeedback, Keyboard, Alert
+    TouchableWithoutFeedback, Keyboard, Alert, KeyboardAvoidingView
 } from 'react-native';
 
 // 공통 CSS 추가
@@ -50,18 +50,22 @@ export default function FindId({route ,navigation}) {
         console.log(chk_num.chk_num,'/ 입력인증번호');
         // 인증번호 체크
         if(mem_info.certi_no === chk_num.chk_num) {
-            find_chk_mem(FindId, mem_info).then((res)=>{
-                console.log(res.data,'/[인증번호 체크 리턴값]');
-                if(res) {
-                    const {result} = res.data;
-                    if(result === 'OK') {
-                        Alert.alert(``,`등록하신 휴대폰 번호로 아이디가 전송되었습니다.`);
-                        return navigation.replace(`로그인`);
-                    } else {
-                        return Alert.alert(``,`${result}`);
+            if(FindId.type === 'id') {
+                find_chk_mem(FindId, mem_info).then((res)=>{
+                    console.log(res.data,'/[인증번호 체크 리턴값]');
+                    if(res) {
+                        const {result} = res.data;
+                        if(result === 'OK') {
+                            Alert.alert(``,`등록하신 휴대폰 번호로 아이디가 전송되었습니다.`);
+                            return navigation.replace(`로그인`);
+                        } else {
+                            return Alert.alert(``,`${result}`);
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                return navigation.replace(`비밀번호 찾기결과`,{mem_info:mem_info});
+            }
         } else {
             return Alert.alert(``,`인증번호가 맞지 않습니다.`);
         }
@@ -74,30 +78,32 @@ export default function FindId({route ,navigation}) {
 
     return   (
         <>
-            <View style={[styles.FindId]}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={[styles.container,{paddingTop:0}]}>
-                        <View style={styles.center_middle}>
-                            <Text style={styles.FindId_txt}>
-                                인증번호를 입력해주세요.
-                                {/*{mem_info.mem_id} 입니다.*/}
-                            </Text>
-                            <TextInput
-                                style={[styles.input,{marginBottom: 15}]}
-                                onChangeText={(chk_num)=>goInput('chk_num',Number(chk_num))}
-                                value={`${chk_num.chk_num}`}
-                                // ref={val=>ChkInput.current = val}
-                                placeholder="인증번호를 입력해주세요."
-                                keyboardType="number-pad"
-                                autoCapitalize="none"
-                            />
-                            <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={()=>{goFindMem()}}>
-                                <Text style={[text_primary,text_center,pt1,pb1,h20]}>확인</Text>
-                            </TouchableOpacity>
+            <KeyboardAvoidingView style={[styles.avoidingView]} behavior={Platform.select({ios: 'padding'})}>
+                <View style={[styles.FindId]}>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View style={[styles.container,{paddingTop:0}]}>
+                            <View style={styles.center_middle}>
+                                <Text style={styles.FindId_txt}>
+                                    인증번호를 입력해주세요.
+                                    {/*{mem_info.mem_id} 입니다.*/}
+                                </Text>
+                                <TextInput
+                                    style={[styles.input,{marginBottom: 15}]}
+                                    onChangeText={(chk_num)=>goInput('chk_num',Number(chk_num))}
+                                    value={`${chk_num.chk_num}`}
+                                    // ref={val=>ChkInput.current = val}
+                                    placeholder="인증번호를 입력해주세요."
+                                    keyboardType="number-pad"
+                                    autoCapitalize="none"
+                                />
+                                <TouchableOpacity style={[btn_outline_primary,mt3,styles.border_radius]} onPress={()=>{goFindMem()}}>
+                                    <Text style={[text_primary,text_center,pt1,pb1,h20]}>확인</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
-                </TouchableWithoutFeedback>
-            </View>
+                    </TouchableWithoutFeedback>
+                </View>
+            </KeyboardAvoidingView>
         </>
     );
 }
