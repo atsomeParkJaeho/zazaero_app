@@ -45,7 +45,7 @@ import {
     wt3,
     wt5,
     wt6,
-    justify_content_center
+    justify_content_center, justify_content_end
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
@@ -195,12 +195,11 @@ function PayStatus({route, navigation}) {
                                 </TouchableOpacity>
                             </View>
                             <View style={[]}>
-                                <View style={[]}>
-                                    <Text style={[ text_primary,btn_outline_primary,text_center,mb1, h14]}>
+                                <View style={[flex,justify_content_end]}>
+                                    <Text style={[ text_primary,btn_outline_primary,text_center,ps1,pe1,mb1, h14]}>
                                         {ordStatus(`${item.ord_status}`)}
                                     </Text>
                                 </View>
-
                                 <View style={[d_flex]}>
                                     <Text>결제금액 :</Text>
                                     <Text>{Price(item.settleprice)}원</Text>
