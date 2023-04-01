@@ -32,7 +32,7 @@ import {
     ps1,
     pe1,
     btn_outline_danger,
-    btn_outline_gray, btn_primary, p1, text_light, h16, fw600, h14, d_flex, justify_content_end, text_center, mb1
+    btn_outline_gray, btn_primary, p1, text_light, h16, fw600, h14, d_flex
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
@@ -178,12 +178,10 @@ function DeliStatus({route, navigation}) {
                                     <Text style={[text_light]}>상세내역 / 정보변경</Text>
                                 </TouchableOpacity>
                             </View>
-                            <View style={[]}>
-                                <View style={[flex,justify_content_end]}>
-                                    <Text style={[ text_primary,btn_outline_primary,text_center,ps1,pe1,mb1, h14]}>
-                                        {ordStatus(`${item.ord_status}`)}
-                                    </Text>
-                                </View>
+                            <View>
+                                <Text style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>
+                                    {ordStatus(`${item.ord_status}`)}
+                                </Text>
                                 <View style={[d_flex]}>
                                     <Text>결제금액 :</Text>
                                     <Text>{Price(item.settleprice)}원</Text>

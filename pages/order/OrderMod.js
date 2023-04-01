@@ -321,15 +321,12 @@ export default function ModOrder({route,navigation}) {
                         if(result === 'OK') {
                             Alert.alert(``,`수정이 완료되었습니다.`,);
                             return navigation.replace('발주상세',{gd_order_uid:route.params.get_gd_order.gd_order_uid});
-
                         } else if(result === 'OK_ord_chg') {
-
                             let msg = '발주내용중\n\n자재정보의 변경이 발생하여\n\n발주검수부터 다시 진행하게 됩니다.';
                             console.log(err_msg);
                             Alert.alert('',msg,[
                                 {text:"OK", onPress:()=>{navigation.pop()}}
                             ]);
-
                         } else {
                             return  Alert.alert(``,`실패`);
                         }
