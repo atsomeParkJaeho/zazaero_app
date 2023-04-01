@@ -472,7 +472,7 @@ export default function GoodsCateList({route, navigation}) {
                                         {/*-----------------------------가이드 안내-----------------------------*/}
                                         <View style={[]}>
                                             {/**자재안내**/}
-                                            <Text style={styles.cate_list_disc} numberOfLines={1}>
+                                            <Text style={[styles.cate_list_disc,text_primary]} numberOfLines={1}>
                                                 {(item.goods_guide_name) ? item.goods_guide_name : ''}
                                             </Text>
                                             {/**반품가능여부**/}
