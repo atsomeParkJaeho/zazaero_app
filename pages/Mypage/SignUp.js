@@ -278,7 +278,7 @@ export default function SignUp({route, navigation}) {
                 const {result, err_msg} = res.data;
                 console.log(result);
                 if(result === 'OK') {
-                    Alert.alert('','축하합니다.\n회원가입이 완료되었습니다. 로그인 해주세요.');
+                    Alert.alert('','축하합니다.\n회원가입이 완료되었습니다.\n 로그인 해주세요.');
                     return navigation.navigate('로그인');
                 } else if(result === 'NG_dup_mobile') {
                     return Alert.alert('',`${err_msg}`);
@@ -436,7 +436,7 @@ export default function SignUp({route, navigation}) {
                                                value={bizNum(SignUp.com_biz_no)}
                                                ref={val=>(Chkinput.current[4] = val)}
                                                maxLength={12}
-                                               placeholder="12345-51-67890"
+                                               placeholder="123-45-67890"
                                                keyboardType="numeric"
                                     />
                                 </View>
