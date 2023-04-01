@@ -196,54 +196,55 @@ export const OrderMod = async (OrderData, OrderGoodsList, Member, A_goods, A_ord
     return res;
 }
 */
-//
-// export const OrderMod = async (get_gd_order, A_order_list, add_A_order_list, Member) => {
-//
-//     let temp = A_order_list.map(val=>val.A_sel_option.map(val2=>val2));
-//     let temp2 = temp.reduce((val,idx)=>{return val.concat(idx);});
-//
-//     let A_order_uid          = A_order_list.map(val=>String(val.order_uid));
-//     let A_order_item_uid     = temp2.map(val=>String(val.order_item_uid));
-//     let A_order_item_cnt     = temp2.map(val=>String(val.option_cnt));
-//     // let A_req_memo           = temp2.map(val=>String(val.req_memo));
-//
-//     let A_add_goods_uid      = A_order_list.map(val=>String(val.order_uid));
-//     let A_add_goods_cnt      = A_order_list.map(val=>String(val.order_uid));
-//     let A_add_goods_req_memo = A_order_list.map(val=>String(val.order_uid));
-//
-//
-//     let data = {
-//         act_type             :"mod_recv_info",
-//         gd_order_uid         :get_gd_order.gd_order_uid,
-//         mem_uid              :Member,
-//         addr1                :get_gd_order.addr1,
-//         addr2                :get_gd_order.addr2,
-//         order_memo           :get_gd_order.order_memo,
-//         hope_deli_date       :get_gd_order.hope_deli_date,
-//         hope_deli_time       :get_gd_order.hope_deli_time,
-//         zonecode             :get_gd_order.zonecode,
-//         recv_name            :get_gd_order.recv_name,
-//         recv_mobile          :get_gd_order.recv_mobile,
-//         A_order_uid          :A_order_uid,
-//         A_order_item_uid     :A_order_item_uid,
-//         A_order_item_cnt     :A_order_item_cnt,
-//         // A_req_memo           :A_req_memo
-//
-//         A_add_goods_uid      :A_add_goods_uid,
-//         A_add_goods_cnt      :A_add_goods_cnt,
-//         A_add_goods_req_memo :A_add_goods_req_memo
-//     }
-//     console.log(data,'/[데이터 확인]');
-//     console.log(A_order_uid,'/[데이터 확인]');
-//     console.log(A_order_item_uid,'/[데이터 확인]');
-//     console.log(A_order_item_cnt,'/[데이터 확인]');
-//     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',data,{
-//         headers: {
-//             'Content-type': 'multipart/form-data'
-//         }
-//     });
-//     return res;
-// }
+
+export const OrderMod = async (get_gd_order, A_order_list, add_goods_list, Member) => {
+
+    let temp = A_order_list.map(val=>val.A_sel_option.map(val2=>val2));
+    let temp2 = temp.reduce((val,idx)=>{return val.concat(idx);});
+
+    let A_order_uid          = A_order_list.map(val=>String(val.order_uid));
+    let A_order_item_uid     = temp2.map(val=>String(val.order_item_uid));
+    let A_order_item_cnt     = temp2.map(val=>String(val.option_cnt));
+    // let A_req_memo           = temp2.map(val=>String(val.req_memo));
+
+    let A_add_goods_uid      = add_goods_list.map(val=>String(val.order_uid));
+    let A_add_goods_cnt      = add_goods_list.map(val=>String(val.order_uid));
+    let A_add_goods_req_memo = add_goods_list.map(val=>String(val.order_uid));
+
+
+    let data = {
+        act_type             :"mod_recv_info",
+        gd_order_uid         :get_gd_order.gd_order_uid,
+        mem_uid              :Member,
+        addr1                :get_gd_order.addr1,
+        addr2                :get_gd_order.addr2,
+        order_memo           :get_gd_order.order_memo,
+        hope_deli_date       :get_gd_order.hope_deli_date,
+        hope_deli_time       :get_gd_order.hope_deli_time,
+        zonecode             :get_gd_order.zonecode,
+        recv_name            :get_gd_order.recv_name,
+        recv_mobile          :get_gd_order.recv_mobile,
+
+        A_order_uid          :A_order_uid,
+        A_order_item_uid     :A_order_item_uid,
+        A_order_item_cnt     :A_order_item_cnt,
+        // A_req_memo           :A_req_memo
+
+        A_add_goods_uid      :A_add_goods_uid,
+        A_add_goods_cnt      :A_add_goods_cnt,
+        A_add_goods_req_memo :A_add_goods_req_memo
+    }
+    console.log(data,'/[데이터 확인]');
+    console.log(A_order_uid,'/[데이터 확인]');
+    console.log(A_order_item_uid,'/[데이터 확인]');
+    console.log(A_order_item_cnt,'/[데이터 확인]');
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',data,{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}
 
 
 /**---------------------------------발주상태 리스트 설정---------------------------------------**/

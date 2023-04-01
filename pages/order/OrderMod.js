@@ -132,9 +132,11 @@ export default function ModOrder({route,navigation}) {
     const [get_gd_order,    set_get_gd_order]               = useState([]);
     const [cancel_doing,    set_cancel_doing]               = useState(0);
     // 추가발주 창 오픈 상태정의
-    const [add_goods_list,  set_add_goods_list]             = useState(false);
-    const [A_goods,         set_A_goods]                    = useState([]);
+    const [add_goods_list,  set_add_goods_list]             = useState([]);
+    // const [A_goods,         set_A_goods]                    = useState([]);
     const InputFocus = useRef([]);
+    const Update    = useIsFocused();
+
 
     useEffect(()=>{
         /**------------------------------회원 값 가져오기-----------------------**/
@@ -142,7 +144,15 @@ export default function ModOrder({route,navigation}) {
         /**------------------------------발주정보 가져오기----------------------------**/
         get_ready(Member, route.params.get_gd_order.gd_order_uid);
 
-    },[Member]);
+        // 자재추가시 넣어준다.
+        if(route.params.add_goods_list) {
+            let res = route.params.add_goods_list.filter((val,idx)=> route.params.add_goods_list.indexOf(val.goods_uid) !== idx);
+            let temp = res.map(val=>{return {...val, req_memo    :'', goods_cnt   :1,}})
+            set_add_goods_list(temp);
+        }
+
+
+    },[Member,Update]);
 
     const get_ready = async (Member, gd_order_uid) => {
         /**은행코드 추출**/
@@ -162,7 +172,6 @@ export default function ModOrder({route,navigation}) {
         console.log(value,'[value] 타입');
         console.log(goods_uid,'[자재uid] 타입');
         console.log(order_uid,'[발주uid] 타입');
-
         set_get_gd_order({
             ...get_gd_order,
             [name]:value,
@@ -185,6 +194,73 @@ export default function ModOrder({route,navigation}) {
             set_A_order_list(temp);
         }
     }
+    const A_goInput = (name, value, goods_uid, type) => {
+        if(type === 'minus') {
+            let temp = add_goods_list.map(val=>{
+                if(val.goods_uid === goods_uid) {
+                    return {
+                        ...val,
+                        [name]:(val.goods_cnt < 2) ? 1 : Number(val.goods_cnt - 1 ),
+                    }
+                } else {
+                    return val;
+                }
+            });
+            set_add_goods_list(temp);
+        } else if (type === 'plus') {
+            let temp = add_goods_list.map(val=>{
+                if(val.goods_uid === goods_uid) {
+                    return {
+                        ...val,
+                        [name]:Number(val.goods_cnt + 1 ),
+                    }
+                } else {
+                    return val;
+                }
+            });
+            set_add_goods_list(temp);
+        } else if(name === 'req_memo') {
+            let temp = add_goods_list.map(val=>{
+                if(val.goods_uid === goods_uid) {
+                    return {
+                        ...val,
+                        [name]:value,
+                    }
+                } else {
+                    return val;
+                }
+            });
+            set_add_goods_list(temp);
+        } else {
+            let temp = add_goods_list.map(val=>{
+                if(val.goods_uid === goods_uid) {
+                    return {
+                        ...val,
+                        [name]:Number(value),
+                    }
+                } else {
+                    return val;
+                }
+            });
+            set_add_goods_list(temp);
+        }
+    }
+
+    const A_goods_del = (goods_uid) => {
+        Alert.alert('','선택하신 자재를 삭제하시겠습니까?',[
+            {text:"취소",
+                onPress:()=>{},
+            },
+            {text:"확인",
+                onPress:()=>{
+                    let res = add_goods_list.filter(val=>val.goods_uid !== goods_uid);
+                    set_add_goods_list(res);
+                    Alert.alert('','선택한 자재가 삭제되었습니다.');
+                }
+            }
+        ]);
+    }
+
     const Chk = (goods_uid) => {
         let temp = A_order_list.map(val=>{
             if(val.goods_uid === goods_uid) {
@@ -239,12 +315,21 @@ export default function ModOrder({route,navigation}) {
             {text:"네",
             onPress:()=>{
                 // 1.장바구니 수정정보 보내기
-                OrderMod(get_gd_order, A_order_list, add_A_order_list, Member).then((res)=>{
+                OrderMod(get_gd_order, A_order_list, add_goods_list, Member).then((res)=>{
                     if(res) {
                         const {result} = res.data;
                         if(result === 'OK') {
                             Alert.alert(``,`수정이 완료되었습니다.`,);
-                            return navigation.replace('발주상세',{gd_order_uid:route.params.get_gd_order.gd_order_uid})
+                            return navigation.replace('발주상세',{gd_order_uid:route.params.get_gd_order.gd_order_uid});
+
+                        } else if(result === 'OK_ord_chg') {
+
+                            let msg = '발주내용중\n\n자재정보의 변경이 발생하여\n\n발주검수부터 다시 진행하게 됩니다.';
+                            console.log(err_msg);
+                            Alert.alert('',msg,[
+                                {text:"OK", onPress:()=>{navigation.pop()}}
+                            ]);
+
                         } else {
                             return  Alert.alert(``,`실패`);
                         }
@@ -262,7 +347,11 @@ export default function ModOrder({route,navigation}) {
             {text:'아니오', onPress:()=>{}},
             {text:'예',
             onPress:()=>{
-                navigation.navigate('즐겨찾기',{gd_order_uid:get_gd_order.gd_order_uid, ord_status:get_gd_order.ord_status, A_goods_list_o:A_goods});
+                let data = {
+                    get_gd_order        :get_gd_order,
+                    add_goods_list      :add_goods_list,
+                }
+                return navigation.navigate('즐겨찾기',data);
             },
             }
         ]);
@@ -290,9 +379,9 @@ export default function ModOrder({route,navigation}) {
     const ChkdelOrder = () => {
         let result = A_order_list.filter(val=>val.goods_chk);
         let order_uid = result.map(val=>val.order_uid);
-        if(A_order_list.length === 1) { return Alert.alert('','전체취소를 버튼을 클릭해주세요.') }
-        if(A_order_list.length === result.length) { return Alert.alert('','전체취소를 버튼을 클릭해주세요.') }
-        if(result.length === 0) { return Alert.alert('','자재를 선택해주세요.') }
+        if(A_order_list.length === 1)               { return Alert.alert('','전체취소를 버튼을 클릭해주세요.') }
+        if(A_order_list.length === result.length)   { return Alert.alert('','전체취소를 버튼을 클릭해주세요.') }
+        if(result.length === 0)                     { return Alert.alert('','자재를 선택해주세요.') }
 
         Alert.alert('','선택하신 자재를 취소하시겠습니까?',[
             {text:"취소", onPress:()=>{}},
@@ -317,7 +406,14 @@ export default function ModOrder({route,navigation}) {
             });
         }
     }
+
+    /**--------1. 자재추가시 수량 조절----------**/
+
+    /**--------2. 자재추가한 자재 삭제하기--------**/
+
     console.log(get_gd_order,'/[발주정보 확인]');
+    console.log(add_goods_list,'/[추가된 자재2]');
+
     let today = new Date();
     return (
         <>
@@ -564,7 +660,7 @@ export default function ModOrder({route,navigation}) {
                     <PayReadyCancelTab/>
                 )}
                 {/**-----------------------------------------------------------결제전 자재추가 2023-04-01----------------------------------------------------------------**/}
-                {(A_goods) && (
+                {(add_goods_list) && (
                     <>
                         <View style={[container, {borderBottomWidth: 1,borderColor:"#e6e6e6",}]}>
                             <View style={[flex_between]}>
@@ -574,9 +670,86 @@ export default function ModOrder({route,navigation}) {
                             </View>
                         </View>
                         {/**-----------------------------------------------------------반복문 구간----------------------------------------------------------------**/}
-                        {A_goods.map((val,idx)=>(
+                        {add_goods_list.map((val,idx)=>(
                             <View tyle={[styles.CancelDetail_list_items]} key={idx}>
+                                <View style={[container]}>
+                                    {/**--------------------------------옵션--------------------------------**/}
+                                    <View style={[d_flex, align_items_center, mb1,flex_between]}>
+                                        {/*체크박스*/}
+                                        <View style={{flex:1}}>
+                                            {/*상품명*/}
+                                            <Text style={[h14]}>{val.goods_name}</Text>
+                                        </View>
+                                        <View style={{flex:0.1,paddingLeft:5}}>
+                                            <TouchableOpacity style={[flex,justify_content_end]} onPress={()=>{A_goods_del(val.goods_uid)}}>
+                                                <Close width={15} height={15}/>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                    <View style={[flex_between_bottom]}>
+                                        <View style={[flex_end]}>
+                                            <View>
+                                                <Image style={[styles.goods_thum]} source={{uri:`http://www.zazaero.com${val.list_img}`}} />
+                                            </View>
+                                            {/**-------------------수량조절---------------**/}
+                                            <View style={ms2}>
+                                                <View style={[d_flex]}>
+                                                    <Text style={[h14,fw500,{paddingBottom:5,}]}>
+                                                        수량
+                                                    </Text>
+                                                </View>
+                                                <View style={[flex]}>
+                                                    {/*=============마이너스 버튼==========*/}
+                                                    <TouchableWithoutFeedback onPress={()=>A_goInput('goods_cnt',val.goods_cnt,val.goods_uid,'minus')}>
+                                                        <View style={[count_btn]}>
+                                                            <View style={[pos_center]}>
+                                                                <Text style={[count_btn_txt]}>－</Text>
+                                                            </View>
+                                                        </View>
+                                                    </TouchableWithoutFeedback>
+                                                    {/*============수량=================*/}
+                                                    {/**-----상품 uid, 발주 uid 추가----**/}
+                                                    <View style={[countinput]}>
+                                                        <TextInput
+                                                            onChangeText={(goods_cnt)=>A_goInput('goods_cnt',goods_cnt,val.goods_uid)}
+                                                            value={`${val.goods_cnt}`}
+                                                            style={[text_center]}
+                                                            maxLength={3}
+                                                            keyboardType="numeric"
+                                                        />
+                                                    </View>
+                                                    {/*=============플러스 버튼============*/}
+                                                    <TouchableWithoutFeedback onPress={()=>A_goInput('goods_cnt',val.goods_cnt,val.goods_uid,'plus')}>
+                                                        <View style={[count_btn]}>
+                                                            <View style={[pos_center]}>
+                                                                <Text style={[count_btn_txt]}>＋</Text>
+                                                            </View>
+                                                        </View>
+                                                    </TouchableWithoutFeedback>
+                                                </View>
+                                            </View>
+                                        </View>
+                                        <View style={justify_content_end}>
+                                            <Text style={[h13]}>(단가 : {Price(val.price)}원)</Text>
+                                            {/*단가*/}
+                                            <Text style={[h16,text_right]}>{Price(val.price * val.goods_cnt)}원</Text>
+                                            {/*총금액*/}
+                                        </View>
+                                    </View>
+                                    <View style={[mt1]}>
+                                        {/*옵션요청가격*/}
+                                        <View style={[]}>
+                                            <Text style={[h13]}>{(val.req_opt_guide_name) ? (val.req_opt_guide_name) : '자재 요청사항을 입력해주세요.'}</Text>
+                                            <TextInput style={[textarea, h13]}
+                                                       onChangeText={(req_memo)=>A_goInput('req_memo',req_memo,val.goods_uid)}
+                                                       value={val.req_memo}
+                                                       autoCapitalize="none"
+                                            />
+                                        </View>
+                                        {/*옵션요청글*/}
+                                    </View>
 
+                                </View>
                             </View>
                         ))}
                     </>

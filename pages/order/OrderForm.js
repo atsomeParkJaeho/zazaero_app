@@ -807,13 +807,12 @@ export default function OrderForm({route,navigation}) {
                                         text:'확인',
                                         onPress:()=>{return navigation.replace('발주상태');}
                                     }]);
-                                } else {return Alert.alert('','에러[1]');}
+                                } else {return Alert.alert('',`에러[1]${result}`);}
                             }
                         });
                     } else if(result === 'NG_dup_work_name') {
                         // 중복공사명 에러
                         return Alert.alert(``,`${err_msg}`);
-
                     } else {
                         // 기본 발주
                         InsOrder(order_data, Member, work_uid, goods_cate1_uid).then((res)=>{
@@ -826,7 +825,7 @@ export default function OrderForm({route,navigation}) {
                                         onPress:()=>{return navigation.replace('발주상태');}
                                     }]);
                                 } else {
-                                    return Alert.alert('','에러[2]');
+                                    return Alert.alert('',`에러[2]${result}`);
                                 }
                             }
                         });
