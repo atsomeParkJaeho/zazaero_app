@@ -47,8 +47,8 @@ export default function FindPw({route,navigation}) {
             [keyValue]:text,
         })
     }
-
     const goFindPw = async () => {
+
         let regPw = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
         if (!FindPw.mem_pw) {
             return Alert.alert(``,'비밀번호를 입력하세요.',);

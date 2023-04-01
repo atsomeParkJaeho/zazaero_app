@@ -12,10 +12,10 @@ export default function NoticeView({route, navigation}){
     const [NoticeView, setNoticeView] = useState([]);
     useEffect(()=>{
         let data = {
-            act_type    :'get_info',
+            act_type    :'get_bd_detail',
             bd_uid      :bd_uid,
         }
-        axios.post('http://49.50.162.86:80/ajax/UTIL_bd.php',data,{
+        axios.post('http://49.50.162.86:80/ajax/UTIL_app_bd.php',data,{
             headers: {
                 'Content-type': 'multipart/form-data',
             }

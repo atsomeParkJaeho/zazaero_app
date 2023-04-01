@@ -85,7 +85,7 @@ export const SaveDeliAddr = async (Member, order_data, modAddr) => {
     let data = {
         act_type        :"save_deli_addr",
         mem_uid         :Member,
-        work_uid        :(new_work_flag === 'N') ? work_uid : '',
+        work_uid        :(new_work_flag === 'N') ?  '':work_uid,
         new_work_flag   :new_work_flag, // 신규공사일시 Y, 기존공사일시 N
         recv_phone      :order_data.recv_phone,
         order_title     :order_data.order_title,
@@ -93,25 +93,13 @@ export const SaveDeliAddr = async (Member, order_data, modAddr) => {
         addr1           :order_data.addr1,
         addr2           :order_data.addr2,
     }
-
-    console.log(data,'/ [공사명, 배송지 저장 파라미터]')
-
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
-        act_type        :"save_deli_addr",
-        mem_uid         :Member,
-        work_uid        :(new_work_flag === 'N') ? work_uid : '',
-        new_work_flag   :new_work_flag, // 신규공사일시 Y, 기존공사일시 N
-        recv_phone      :order_data.recv_phone,
-        order_title     :order_data.order_title,
-        zonecode        :order_data.zonecode,
-        addr1           :order_data.addr1,
-        addr2           :order_data.addr2,
-
-    },{
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', data,{
         headers: {
             'Content-type': 'multipart/form-data'
         }
     });
+    console.log(data,'/ [공사명, 배송지 저장 파라미터]')
+
     return res;
 }
 /**-------------------------------------결제전 발주취소()-----------------------------------------------------------------------**/

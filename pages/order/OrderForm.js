@@ -469,9 +469,6 @@ export default function OrderForm({route,navigation}) {
             </KeyboardAvoidingView>
         </>
     );
-
-
-
     /**------------------------------신규배송지, 기존배송지 선택-------------------------------**/
     function OrderAddress() {
         return (
@@ -514,10 +511,8 @@ export default function OrderForm({route,navigation}) {
         const [Show, setShow]         = useState(false);    // 검색창 노출 여부
         let find = DeliList.filter(text=>(text.work_name.includes(Search) && text));
         const goSearch = (gmd_zonecode, gmd_address, gmd_address_sub, work_name, work_uid) => {
-
             route.params.zonecode = gmd_zonecode;
             route.params.addr1 = gmd_address;
-
             setSelected({
                 ...Selected,
                 zonecode        :gmd_zonecode,
@@ -539,7 +534,6 @@ export default function OrderForm({route,navigation}) {
 
         console.log(Selected);
         console.log(find);
-
         return(
             <>
                 <Text style={[mb1]}>기존 공사명 검색</Text>
@@ -672,11 +666,11 @@ export default function OrderForm({route,navigation}) {
     }
     /**-----------------------------------------------총금액------------------------------------------------------**/
     function OrderTotalPrice() {
-
         let total_cnt_arr   = order_uid.map(cate=>cate.A_sel_option.map(val=>Number(val.option_cnt)));
         let total_cnt       = total_cnt_arr.reduce((val,idx)=>{
             return val.concat(idx);
         });
+
         let goods_total_cnt = 0;
         for (let i = 0; i < total_cnt_arr.length; i++) {
             goods_total_cnt   += total_cnt[i];

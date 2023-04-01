@@ -12,8 +12,9 @@ export default function NoticeList({navigation}) {
     useEffect(() => {
         bd_list().then((res) => {
             if (res) {
-                const {bd_list} = res.data;
-                let temp = bd_list.sort((a,b)=>{
+                console.log(res.data,'/[게시판 리턴값]');
+                const {A_board} = res.data;
+                let temp = A_board.sort((a,b)=>{
                     return b.bd_uid - a.bd_uid
                 });
                 setNoticeList(temp);
