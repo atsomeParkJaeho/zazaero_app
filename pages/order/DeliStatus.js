@@ -32,12 +32,12 @@ import {
     ps1,
     pe1,
     btn_outline_danger,
-    btn_outline_gray, btn_primary, p1, text_light, h16, fw600, h14
+    btn_outline_gray, btn_primary, p1, text_light, h16, fw600, h14, d_flex
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
 // 샘플데이터
-import {DateChg, deliStatus, order_List, ordStatus} from "../../util/util";
+import {DateChg, deliStatus, order_List, ordStatus, Price} from "../../util/util";
 import axios from "axios";
 import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -175,13 +175,17 @@ function DeliStatus({route, navigation}) {
                                                       hope_deli_date :item.hope_deli_date,
                                                   })}
                                 >
-                                    <Text style={[text_light]}>상세내역</Text>
+                                    <Text style={[text_light]}>상세내역 / 정보변경</Text>
                                 </TouchableOpacity>
                             </View>
-                            <View style={[flex]}>
+                            <View>
                                 <Text style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>
-                                    {deliStatus(`${item.deli_status}`)}
+                                    {ordStatus(`${item.ord_status}`)}
                                 </Text>
+                                <View style={[d_flex]}>
+                                    <Text>결제금액 :</Text>
+                                    <Text>{Price(item.settleprice)}원</Text>
+                                </View>
                             </View>
                         </View>
                     </View>
