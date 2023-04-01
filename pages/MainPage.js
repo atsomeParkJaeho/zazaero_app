@@ -187,6 +187,9 @@ export default function MainPage({route,navigation}) {
 
     console.log(A_banner,' / 배너2');
     console.log(com_info.com_name,' / 회사정보');
+    let com_phone_val = com_info.com_phone;
+    let com_phone_ch = com_phone_val.slice(4);
+
     return (
         /*
           return 구문 안에서는 {슬래시 + * 방식으로 주석
@@ -293,7 +296,7 @@ export default function MainPage({route,navigation}) {
                                 사업자 번호 : {com_info.biz_no}
                             </Text>
                             <Text style={styles.main_footer_disc_txt}>
-                                고객센터 : {com_info.com_phone}
+                                고객센터 : {com_phone_ch}
                             </Text>
                             <Text style={styles.main_footer_disc_txt}>
                                 이메일 : {com_info.com_email}
