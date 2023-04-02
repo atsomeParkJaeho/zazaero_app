@@ -862,6 +862,7 @@ export default function ModOrder({route,navigation}) {
                 <OrderTotalPrice/>
             </ScrollView>
             {/**----------------------------------------------결제전 수정하기--------------------------------------------------**/}
+            <KeyboardAvoidingView behavior={Platform.select({ios:"padding"})}>
             {(
                 get_gd_order.ord_status === 'ord_ready' ||
                 get_gd_order.ord_status === 'pay_ready' ||
@@ -879,6 +880,7 @@ export default function ModOrder({route,navigation}) {
                     </TouchableOpacity>
                 </View>
             )}
+            </KeyboardAvoidingView>
         </>
     );
 
