@@ -133,6 +133,8 @@ export default function ModOrder({route,navigation}) {
     const [cancel_doing,    set_cancel_doing]               = useState(0);
     // 추가발주 창 오픈 상태정의
     const [add_goods_list,  set_add_goods_list]             = useState([]);
+    const [Show_1, setShow_1]                               = useState(false);
+    const [Show_2, setShow_2]                               = useState(false);    // 셀렉트창 노출 여부
     // const [A_goods,         set_A_goods]                    = useState([]);
     const InputFocus = useRef([]);
     const Update    = useIsFocused();
@@ -309,6 +311,16 @@ export default function ModOrder({route,navigation}) {
             set_A_order_list(temp);
         }
     }
+    const goSearch = (type, value) => {
+        if(type === 'hope_deli_time') {
+            setShow_1(!Show_1);
+            set_get_gd_order({
+                ...get_gd_order,
+                hope_deli_time:value,
+            });
+        }
+    }
+
     const mod_recv_info = () => {
         Alert.alert(``,`발주를 수정하시겠습니까?`,[
             {text:"아니요"},
@@ -501,6 +513,37 @@ export default function ModOrder({route,navigation}) {
                         <Text style={[FormStyle.FormDateLabel]}>
                             {get_gd_order.hope_deli_time}
                         </Text>
+                    </View>
+                    {/*==============시간입력==============*/}
+                    <View style={[FormStyle.FormGroup]}>
+                        <View style={[select_box]}>
+                            <TouchableOpacity onPress={()=>{setShow_1(!Show_1)}}>
+                                <Text style={[select_txt]}>
+                                    {(get_gd_order.hope_deli_time) ? get_gd_order.hope_deli_time:'시간을 선택해주세요'}
+                                </Text>
+                                <View style={[select_icon_box]}>
+                                    <Text style={[styles.select_icon]}>▼</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                        {/**/}
+                        {/**---------------------------클릭시 노출--------------------------------**/}
+                        {(Show_1) && (
+                            <View style={[styles.select_opt_list_box]}>
+                                <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
+                                    {Time2.map((val,ide)=>
+                                        <View style={[styles.select_opt_list_itmes]}>
+                                            <TouchableOpacity onPress={() => goSearch(`hope_deli_time`,val.value)}>
+                                                <Text style={[text_center,h17]}>
+                                                    {val.label}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    )}
+                                </ScrollView>
+                            </View>
+                        )}
+                        {/**/}
                     </View>
                 </View>
                 {/**----------------------------------------------현장인도자 정보--------------------------------------------------**/}

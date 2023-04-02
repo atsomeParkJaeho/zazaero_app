@@ -155,6 +155,10 @@ export default function OrderDtail({route,navigation}) {
         console.log(value,'[value] 타입');
         console.log(goods_uid,'[자재uid] 타입');
         console.log(order_uid,'[발주uid] 타입');
+        set_get_gd_order({
+            ...get_gd_order,
+            [name]:value,
+        });
     }
 
     /**-------------------------추출항목-----------------------**/
@@ -180,15 +184,33 @@ export default function OrderDtail({route,navigation}) {
         }
         return navigation.replace('수정하기',data);
     }
-    /**-------------------------발주정보수정하기 페이지 이동---------------------------**/
-    const add_order_goods = () => {
-        console.log('수정하기 페이지 이동');
-        let data = {
-            get_gd_order:get_gd_order,
-            A_order_list:A_order_list,
+    const goPay = () => {
+        if(PayMement === 'bank') {
+            if(get_gd_order.bankAccount === "0")     { return Alert.alert('','입금계좌를 선택해주세요.')}
+            if(!get_gd_order.bankSender)             { return Alert.alert('','예금주명을 입력해주세요.')}
         }
-        return navigation.replace('수정하기',data);
+        let bank_msg = '무통장입금을 진행하시겠습니까?';
+        let card_msg = '결제를 진행하시겠습니까?';
+
+        Alert.alert('',`${(PayMement === 'bank') ? bank_msg : card_msg}`,
+            [
+                {text:'취소', onPress:()=>{},},
+                {
+                    text:'확인', onPress:()=>{donePay(get_gd_order, PayMement, navigation)}
+                },
+            ]
+        );
     }
+    const goSearch = (name, value) => {
+        if(name === 'settlekind') {
+            setShow_2(!Show_2);
+            set_get_gd_order({
+                ...get_gd_order,
+                bankAccount:value,
+            });
+        }
+    }
+
 
     useEffect(()=>{
         /**------------------------------회원 값 가져오기-----------------------**/
@@ -199,10 +221,12 @@ export default function OrderDtail({route,navigation}) {
     },[Member]);
 
 
+    console.log(get_gd_order,'/[데이터 확인1]');
 
     return (
         <>
-            <ScrollView style={[bg_white]}>
+            <KeyboardAvoidingView style={{marginBottom:86}} behavior={Platform.select({ios:"padding"})}>
+                <ScrollView style={[bg_white]}>
                 {/**----------------------------------------------배송지 입력--------------------------------------------------**/}
                 <View style={[FormStyle.FormGroup]}>
                     {/**----------------------------------------------공사명--------------------------------------------------**/}
@@ -352,25 +376,135 @@ export default function OrderDtail({route,navigation}) {
                 </View>
                 {/**-----------------------------------------------------------결제금액----------------------------------------------------------------**/}
                 <OrderTotalPrice/>
+                {/**-----------------------------------------------------------결제유형 선택----------------------------------------------------------------**/}
+                {(get_gd_order.ord_status === 'pay_ready' || get_gd_order.ord_status === 'pay_try' || get_gd_order.ord_status === 'pay_err') && (
+                    <>
+                        {(get_gd_order.settlekind === 'bank') ? (
+                            <></>
+                        ) : (
+                            <>
+                                <View style={[styles.payView]}>
+                                    {/*무통장, 카드결제 선택*/}
+                                    <View style={[flex_around, mb2]}>
+                                        <View style={[flex]}>
+                                            {/**----------------------------------------------카드결제--------------------------------------------------**/}
+                                            <TouchableOpacity onPress={()=>setPayMement(`card`)}>
+                                                <View style={[flex]}>
+                                                    <View style={[styles.border_Circle]}>
+                                                        {(PayMement === 'card') &&
+                                                            <View style={[pos_center]}>
+                                                                <View style={[styles.border_Circle_active]}/>
+                                                            </View>
+                                                        }
+                                                    </View>
+                                                    <Text style={[styles.Chk, {paddingLeft: 5}]}>카드결제</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                            {/**----------------------------------------------무통장입금--------------------------------------------------**/}
+                                            <TouchableOpacity onPress={()=>setPayMement(`bank`)}>
+                                                <View style={[flex,ms2]}>
+                                                    <View style={[styles.border_Circle]}>
+                                                        {(PayMement === 'bank') &&
+                                                            <View style={[pos_center]}>
+                                                                <View style={[styles.border_Circle_active]}/>
+                                                            </View>
+                                                        }
+                                                    </View>
+                                                    <Text style={[styles.Chk, {paddingLeft: 5}]}>무통장입금</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                    {/**--------------------------무통장 입금시 출력------------------------------------------------**/}
+                                    {(PayMement === 'bank') && (
+                                        <>
+                                            <View style={[mb2]}>
+                                                {/*은행선택*/}
+                                                <View style={[styles.select_box]}>
+                                                    <TouchableOpacity onPress={()=>{setShow_2(!Show_2)}}>
+                                                        <View style={[styles.border]}>
+                                                            {/**---------------------------선택주소 노출--------------------------------**/}
+                                                            <Text style={[styles.select_txt, h12, (get_gd_order.bankAccount !== '0') ? text_black:text_gray]}>
+                                                                {BankCode.map(label=>label.value === get_gd_order.bankAccount ? label.label : '계좌번호를 선택해주세요')}
+                                                            </Text>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                    <View style={[styles.select_icon_box]}>
+                                                        <Text style={[styles.select_icon]}>▼</Text>
+                                                    </View>
+                                                </View>
+                                                {/**/}
+                                                {/**---------------------------클릭시 노출--------------------------------**/}
+                                                {(Show_2) && (
+                                                    <View style={[styles.select_opt_list_box]}>
+                                                        <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
+                                                            {BankCode.map((val,idx)=>(
+                                                                <>
+                                                                    <View style={[styles.select_opt_list_itmes]}>
+                                                                        <TouchableOpacity onPress={() => goSearch(`settlekind`,val.value)}>
+                                                                            <Text style={[text_center,h14]}>
+                                                                                {val.label}
+                                                                            </Text>
+                                                                        </TouchableOpacity>
+                                                                    </View>
+                                                                </>
+                                                            ))}
+
+                                                        </ScrollView>
+                                                    </View>
+                                                )}
+                                                {/**/}
+                                                {/*예금주 입력*/}
+                                                <View style={[{flex:1},mt1]}>
+                                                    <TextInput style={[input,{width:"100%"}]} placeholder="예금주명" value={get_gd_order.bankSender}
+                                                               onChangeText={(bankSender)=>goInput('bankSender',bankSender)}
+                                                    />
+                                                </View>
+                                            </View>
+                                            <View style={[flex_around]}>
+                                                <TouchableOpacity style={styles.payMement} onPress={goPay}>
+                                                    <Text style={[styles.btn, text_center, btn_outline_primary]}>결제하기</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </>
+                                    )}
+                                    {/**--------------------------카드결제시 출력------------------------------------------------**/}
+                                    {(PayMement === 'card') && (
+                                        <>
+                                            <View style={[flex_around]}>
+                                                <TouchableOpacity style={styles.payMement} onPress={goPay}>
+                                                    <Text style={[styles.btn, text_center, btn_outline_primary]}>결제하기</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </>
+                                    )}
+                                </View>
+                            </>
+                        )}
+                    </>
+                )}
             </ScrollView>
-            {/**----------------------------------------------결제전 수정하기--------------------------------------------------**/}
-            {(
-                get_gd_order.ord_status === 'ord_ready' ||
-                get_gd_order.ord_status === 'pay_ready' ||
-                get_gd_order.ord_status === 'pay_err' ||
-                get_gd_order.ord_status === 'pay_try'
-            ) && (
-                <View style={[bg_gray,styles.btn_default]}>
-                    <TouchableOpacity onPress={mod_recv_info}>
-                        <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
-                            <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
-                        </View>
-                        <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
-                            수정하기
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            )}
+                {/**----------------------------------------------결제전 수정하기--------------------------------------------------**/}
+                {(
+                    get_gd_order.ord_status === 'ord_ready' ||
+                    get_gd_order.ord_status === 'pay_ready' ||
+                    get_gd_order.ord_status === 'pay_err' ||
+                    get_gd_order.ord_status === 'pay_try'
+                ) && (
+                    <View style={[bg_gray,styles.btn_default]}>
+                        <TouchableOpacity onPress={mod_recv_info}>
+                            <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
+                                <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
+                            </View>
+                            <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
+                                수정하기
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+            </KeyboardAvoidingView>
+
+
         </>
     );
 
