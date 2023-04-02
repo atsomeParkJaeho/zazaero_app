@@ -132,7 +132,16 @@ export default function Cancel({navigation, route}) {
                                 </View>
                                 <View style="">
                                     <View style={[flex, styles.justify_content_end]}>
-                                        <Text>{cancelType(item.cancel_type)}</Text>
+                                        {(item.refund_status === 'done') ? (
+                                            <>
+                                                <Text>처리완료</Text>
+                                            </>
+                                        ):(
+                                            <>
+                                                <Text>{cancelType(item.cancel_type)}</Text>
+                                            </>
+                                        )}
+                                        
                                     </View>
                                     <View style="">
                                         <View style={flex}>
