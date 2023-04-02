@@ -343,7 +343,7 @@ export default function ModOrder({route,navigation}) {
                             let msg = '발주 정보가 변경 되어\n관리자의 재 확인 후 결제가 가능합니다';
                             console.log(err_msg);
                             Alert.alert('',msg,[
-                                {text:"OK", onPress:()=>{navigation.pop()}}
+                                {text:"OK", onPress:()=>{navigation.replace(`발주상태`)}}
                             ]);
                         } else {
                             return  Alert.alert(``,`실패`);
