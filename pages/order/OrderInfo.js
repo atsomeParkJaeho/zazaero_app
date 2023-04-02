@@ -24,9 +24,9 @@ export const donePay = async (OrderData, PayMement, navigation) => {
             const {result} = res.data;
             if(result === 'OK') {
                 if(PayMement === 'bank') {
-                    Alert.alert('',msg,[N_btn]);
+                    return Alert.alert('',msg,[N_btn]);
                 } else {
-                    navigation.navigate('카드결제',{OrderData:OrderData});
+                    return navigation.navigate('카드결제',{OrderData:OrderData});
                 }
 
             }

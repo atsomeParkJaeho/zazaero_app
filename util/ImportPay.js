@@ -99,14 +99,15 @@ function Payment({ route,navigation }) {
                 if(result === 'OK') {
                     console.log(gd_order,'/ [결제 정보 데이터]');
                     console.log('결제완료');
-                    Alert.alert('','결제가 완료되었습니다.');
+                    navigation.replace('배송상태');
+                    return Alert.alert('','결제가 완료되었습니다.');
                 } else {
-                    Alert.alert('',`에러 / ${res.data}`);
+                    return Alert.alert('',`에러 / ${res.data}`);
                 }
             }
         });
 
-        navigation.replace('배송상태');
+
 
 
     }
