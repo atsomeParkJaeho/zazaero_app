@@ -338,8 +338,9 @@ export default function ModOrder({route,navigation}) {
                         if(result === 'OK') {
                             Alert.alert(``,`수정이 완료되었습니다.`,);
                             return navigation.replace('발주상세',{gd_order_uid:route.params.get_gd_order.gd_order_uid});
-                        } else if(result === 'OK_ord_chg') {
-                            let msg = '발주내용중\n\n자재정보의 변경이 발생하여\n\n발주검수부터 다시 진행하게 됩니다.';
+                        }
+                        if(result === 'OK_ord_chg') {
+                            let msg = '발주 정보가 변경 되어\n관리자의 재 확인 후 결제가 가능합니다';
                             console.log(err_msg);
                             Alert.alert('',msg,[
                                 {text:"OK", onPress:()=>{navigation.pop()}}
@@ -802,7 +803,47 @@ export default function ModOrder({route,navigation}) {
                         ))}
                     </>
                 )}
+
+
                 {/**-----------------------------------------------------------결제금액----------------------------------------------------------------**/}
+                <View style={container}>
+                    <Text style={[h18]}>배송정보</Text>
+                </View>
+                {/**------------------------배송기사 연락처------------------------**/}
+                <View style={[flex]}>
+                    <View style={[styles.wt30]}>
+                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송기사 연락처</Text>
+                    </View>
+                    <View style={[styles.wt70]}>
+                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                            {(get_gd_order.deli_mem_mobile) ? get_gd_order.deli_mem_mobile : `미정`}
+                        </Text>
+                    </View>
+                </View>
+                {/**------------------------배송차량------------------------**/}
+                <View style={[flex]}>
+                    <View style={[styles.wt30,{borderBottomWidth: 1,}]}>
+                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송차량</Text>
+                    </View>
+                    <View style={[styles.wt70,{borderBottomWidth: 1,}]}>
+                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                            {get_gd_order.deli_car_type_name}
+                        </Text>
+                    </View>
+                </View>
+                {/**------------------------배송완료일시------------------------**/}
+                {(get_gd_order.deli_status === 'done') && (
+                    <View style={[flex]}>
+                        <View style={[styles.wt30,{borderBottomWidth: 1,}]}>
+                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송완료일시</Text>
+                        </View>
+                        <View style={[styles.wt70,{borderBottomWidth: 1,}]}>
+                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                {DateChg(get_gd_order.deli_done_date)} {get_gd_order.deli_done_time}
+                            </Text>
+                        </View>
+                    </View>
+                )}
                 <OrderTotalPrice/>
             </ScrollView>
             {/**----------------------------------------------결제전 수정하기--------------------------------------------------**/}
@@ -863,49 +904,6 @@ export default function ModOrder({route,navigation}) {
         return(
             <>
                 <View>
-                    {/**---------------배송정보---------------**/}
-                    {(get_gd_order.deli_mem_mobile) && (
-                        <>
-                            <View style={container}>
-                                <Text style={[h18]}>배송정보</Text>
-                            </View>
-                            {/**------------------------배송기사 연락처------------------------**/}
-                            <View style={[flex]}>
-                                <View style={[styles.wt30]}>
-                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송기사 연락처</Text>
-                                </View>
-                                <View style={[styles.wt70]}>
-                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                        {(get_gd_order.deli_mem_mobile) ? get_gd_order.deli_mem_mobile : `미정`}
-                                    </Text>
-                                </View>
-                            </View>
-                            {/**------------------------배송차량------------------------**/}
-                            <View style={[flex]}>
-                                <View style={[styles.wt30,{borderBottomWidth: 1,}]}>
-                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송차량</Text>
-                                </View>
-                                <View style={[styles.wt70,{borderBottomWidth: 1,}]}>
-                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                        {get_gd_order.deli_car_type_name}
-                                    </Text>
-                                </View>
-                            </View>
-                            {/**------------------------배송완료일시------------------------**/}
-                            {(get_gd_order.deli_status === 'done') && (
-                                <View style={[flex]}>
-                                    <View style={[styles.wt30,{borderBottomWidth: 1,}]}>
-                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송완료일시</Text>
-                                    </View>
-                                    <View style={[styles.wt70,{borderBottomWidth: 1,}]}>
-                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                            {DateChg(get_gd_order.deli_done_date)} {get_gd_order.deli_done_time}
-                                        </Text>
-                                    </View>
-                                </View>
-                            )}
-                        </>
-                    )}
 
                     {/**--------------결제정보---------------**/}
                     <View style={container}>

@@ -179,7 +179,7 @@ export default function OrderDtail({route,navigation}) {
     const mod_recv_info = () => {
         console.log('수정하기 페이지 이동');
         if(get_gd_order.ord_status === 'pay_ready') {
-            Alert.alert(``,`발주 정보 변경시 관리자의 재 확인 후 결제가 가능합니다.`,[
+            Alert.alert(``,`발주 정보 변경시\n관리자의 재 확인 후 결제가 가능합니다.`,[
                 {text:'확인',
                 onPress:()=>{
                     let data = {
@@ -197,9 +197,6 @@ export default function OrderDtail({route,navigation}) {
             }
             return navigation.replace('수정하기',data);
         }
-
-
-
 
     }
     const goPay = () => {
