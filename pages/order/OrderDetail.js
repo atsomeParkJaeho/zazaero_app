@@ -210,6 +210,19 @@ export default function OrderDtail({route,navigation}) {
             });
         }
     }
+    const go_add_order = () => {
+        Alert.alert(``,`자재추가시 \n추가발주가 생성됩니다.`,[
+            {text:'취소'},
+            {text:'확인',
+            onPress:()=>{
+                let data = {
+                    get_gd_order:get_gd_order,
+                }
+                return navigation.replace(`추가발주`,data);
+            }
+            }
+        ]);
+    }
 
 
     useEffect(()=>{
@@ -307,7 +320,7 @@ export default function OrderDtail({route,navigation}) {
                         {(get_gd_order.ord_status === 'pay_done' || get_gd_order.ord_status === 'deli_ready') && (
                             <>
                                 <View style={[flex]}>
-                                    <TouchableOpacity style={[btn_primary,{paddingVertical:7,paddingHorizontal:7,}]}>
+                                    <TouchableOpacity onPress={()=>{go_add_order()}} style={[btn_primary,{paddingVertical:7,paddingHorizontal:7,}]}>
                                         <Text style={[text_white,text_center,h13]}>추가발주</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={[ms2,btn_warning,{paddingVertical:7,paddingHorizontal:7,}]}>
@@ -374,6 +387,45 @@ export default function OrderDtail({route,navigation}) {
                         </View>
                     ))}
                 </View>
+                {/**-----------------------------------------------------------차량정보----------------------------------------------------------------**/}
+                    <View style={container}>
+                        <Text style={[h18]}>배송정보</Text>
+                    </View>
+                    {/**------------------------배송기사 연락처------------------------**/}
+                    <View style={[flex]}>
+                        <View style={[styles.wt30]}>
+                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송기사 연락처</Text>
+                        </View>
+                        <View style={[styles.wt70]}>
+                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                {(get_gd_order.deli_mem_mobile) ? get_gd_order.deli_mem_mobile : `미정`}
+                            </Text>
+                        </View>
+                    </View>
+                    {/**------------------------배송차량------------------------**/}
+                    <View style={[flex]}>
+                        <View style={[styles.wt30,{borderBottomWidth: 1,}]}>
+                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송차량</Text>
+                        </View>
+                        <View style={[styles.wt70,{borderBottomWidth: 1,}]}>
+                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                {get_gd_order.deli_car_type_name}
+                            </Text>
+                        </View>
+                    </View>
+                    {/**------------------------배송완료일시------------------------**/}
+                    {(get_gd_order.deli_status === 'done') && (
+                        <View style={[flex]}>
+                            <View style={[styles.wt30,{borderBottomWidth: 1,}]}>
+                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송완료일시</Text>
+                            </View>
+                            <View style={[styles.wt70,{borderBottomWidth: 1,}]}>
+                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                    {DateChg(get_gd_order.deli_done_date)} {get_gd_order.deli_done_time}
+                                </Text>
+                            </View>
+                        </View>
+                    )}
                 {/**-----------------------------------------------------------결제금액----------------------------------------------------------------**/}
                 <OrderTotalPrice/>
                 {/**-----------------------------------------------------------결제유형 선택----------------------------------------------------------------**/}
@@ -515,49 +567,7 @@ export default function OrderDtail({route,navigation}) {
         return(
             <>
                 <View>
-                    {/**---------------배송정보---------------**/}
-                    {(get_gd_order.deli_mem_mobile) && (
-                        <>
-                            <View style={container}>
-                                <Text style={[h18]}>배송정보</Text>
-                            </View>
-                            {/**------------------------배송기사 연락처------------------------**/}
-                            <View style={[flex]}>
-                                <View style={[styles.wt30]}>
-                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송기사 연락처</Text>
-                                </View>
-                                <View style={[styles.wt70]}>
-                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                        {(get_gd_order.deli_mem_mobile) ? get_gd_order.deli_mem_mobile : `미정`}
-                                    </Text>
-                                </View>
-                            </View>
-                            {/**------------------------배송차량------------------------**/}
-                            <View style={[flex]}>
-                                <View style={[styles.wt30,{borderBottomWidth: 1,}]}>
-                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송차량</Text>
-                                </View>
-                                <View style={[styles.wt70,{borderBottomWidth: 1,}]}>
-                                    <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                        {get_gd_order.deli_car_type_name}
-                                    </Text>
-                                </View>
-                            </View>
-                            {/**------------------------배송완료일시------------------------**/}
-                            {(get_gd_order.deli_status === 'done') && (
-                                <View style={[flex]}>
-                                    <View style={[styles.wt30,{borderBottomWidth: 1,}]}>
-                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송완료일시</Text>
-                                    </View>
-                                    <View style={[styles.wt70,{borderBottomWidth: 1,}]}>
-                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                            {DateChg(get_gd_order.deli_done_date)} {get_gd_order.deli_done_time}
-                                        </Text>
-                                    </View>
-                                </View>
-                            )}
-                        </>
-                    )}
+
 
                     {/**--------------결제정보---------------**/}
                     <View style={container}>
