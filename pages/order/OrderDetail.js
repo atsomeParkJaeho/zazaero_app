@@ -178,11 +178,29 @@ export default function OrderDtail({route,navigation}) {
     /**-------------------------발주정보수정하기 페이지 이동---------------------------**/
     const mod_recv_info = () => {
         console.log('수정하기 페이지 이동');
-        let data = {
-            get_gd_order:get_gd_order,
-            A_order_list:A_order_list,
+        if(get_gd_order.ord_status === 'pay_ready') {
+            Alert.alert(``,`발주 정보 변경시 관리자의 재 확인 후 결제가 가능합니다.`,[
+                {text:'확인',
+                onPress:()=>{
+                    let data = {
+                        get_gd_order:get_gd_order,
+                        A_order_list:A_order_list,
+                    }
+                    return navigation.replace('수정하기',data);
+                }
+                }
+            ]);
+        } else {
+            let data = {
+                get_gd_order:get_gd_order,
+                A_order_list:A_order_list,
+            }
+            return navigation.replace('수정하기',data);
         }
-        return navigation.replace('수정하기',data);
+
+
+
+
     }
     const goPay = () => {
         if(PayMement === 'bank') {
