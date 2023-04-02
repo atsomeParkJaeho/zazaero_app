@@ -85,10 +85,10 @@ function Footer({navigation,pages}) {
 
     const routes = useNavigationState(state => state.routes)
     const currentRoute = routes[routes.length -1].name
-    console.log('[푸터페이지]');
-    console.log(currentRoute);
-    console.log(order_list,' / 발주수량 설정');
-    console.log(cart_list,' / 장바구니 수량');
+    // console.log('[푸터페이지]');
+    // console.log(currentRoute);
+    // console.log(order_list,' / 발주수량 설정');
+    // console.log(cart_list,' / 장바구니 수량');
 
 
 
@@ -98,7 +98,7 @@ function Footer({navigation,pages}) {
             <View style={styles.FooterWrap}>
                 {/**---------------------메인페이지--------------------**/}
                 <View style={[styles.Tabs, styles.TextCenter]}>
-                    <TouchableOpacity onPress={()=>{navigation.replace('메인페이지')}}>
+                    <TouchableOpacity onPress={()=>{navigation.navigate('메인페이지')}}>
                         <View style={styles.SvgIcons}>
                             {(currentRoute === '메인페이지') ? (
                                 <>
@@ -118,7 +118,7 @@ function Footer({navigation,pages}) {
                 </View>
                 {/**---------------------즐겨찾기--------------------**/}
                 <View style={[styles.Tabs,]}>
-                    <TouchableOpacity onPress={()=>{navigation.replace('즐겨찾기')}}>
+                    <TouchableOpacity onPress={()=>{navigation.navigate('즐겨찾기')}}>
                         <View style={styles.SvgIcons}>
                             {(currentRoute === '즐겨찾기') ? (
                                 <>
@@ -137,7 +137,7 @@ function Footer({navigation,pages}) {
                 </View>
                 {/**---------------------장바구니--------------------**/}
                 <View style={[styles.Tabs,]}>
-                    <TouchableOpacity onPress={()=>{navigation.replace('장바구니')}}>
+                    <TouchableOpacity onPress={()=>{navigation.navigate('장바구니')}}>
                         <View style={styles.SvgIcons}>
                             {(currentRoute === '장바구니') ? (
                                 <>
@@ -157,7 +157,7 @@ function Footer({navigation,pages}) {
                 </View>
                 {/**---------------------발주상태--------------------**/}
                 <View style={[styles.Tabs,]}>
-                    <TouchableOpacity onPress={()=>{navigation.replace('발주상태')}}>
+                    <TouchableOpacity onPress={()=>{navigation.navigate('발주상태')}}>
                         <View style={styles.SvgIcons}>
                             {(currentRoute === '발주상태' || currentRoute === '결제상태' || currentRoute === '배송상태') ? (
                                 <>
@@ -177,7 +177,7 @@ function Footer({navigation,pages}) {
                 </View>
                 {/**---------------------마이페이지--------------------**/}
                 <View style={[styles.Tabs,]}>
-                    <TouchableOpacity onPress={()=>{navigation.replace('마이페이지')}}>
+                    <TouchableOpacity onPress={()=>{navigation.navigate('마이페이지')}}>
                         <View style={styles.SvgIcons}>
                             {(currentRoute === '마이페이지') ? (
                                 <>

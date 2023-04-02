@@ -105,7 +105,7 @@ export default function GoodsCateList({route, navigation}) {
 
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
-                Alert.alert(``,`실패`);
+                return Alert.alert(``,`실패`);
             }
         });
 
@@ -164,26 +164,26 @@ export default function GoodsCateList({route, navigation}) {
         setCate3rdActive(``);
         console.log('2차 카테고리 uid', Cate2ndUid);
         // ==============2차 카테고리 상품 불러오기==============//
-        get_goods_cate2nd_list(Cate1stUid, Cate2ndUid).then((res) => {
+        get_goods_cate2nd_list(Cate1stUid, Cate2ndUid, Member).then((res) => {
             if (res) {
                 const {result, A_goods} = res.data;
                 if (result === 'OK') {
                     console.log('확인');
-                    setGoodsList(A_goods);
+                    return setGoodsList(A_goods);
                 } else {
-                    Alert.alert('','실패');
+                    return Alert.alert('','실패');
                 }
             }
         });
         // ===================3차 카테고리 리스트를 출력=====================//
         // 3차 카테고리 버튼 설정
-        get_goods_cate3rd_list(Cate1stUid, Cate2ndUid).then((res) => {
+        get_goods_cate3rd_list(Cate1stUid, Cate2ndUid, Member).then((res) => {
             if (res) {
                 const {result, A_cate} = res.data;
                 if (result === 'OK') {
-                    setCate3rd(A_cate);
+                    return setCate3rd(A_cate);
                 } else {
-                    Alert.alert('','실패');
+                    return Alert.alert('','실패');
                 }
             }
         });
@@ -199,9 +199,9 @@ export default function GoodsCateList({route, navigation}) {
                 const {result, A_goods} = res.data;
                 if (result === 'OK') {
                     console.log('확인');
-                    setGoodsList(A_goods);
+                    return setGoodsList(A_goods);
                 } else {
-                    Alert.alert('','실패');
+                    return Alert.alert('','실패');
                 }
             }
         });
@@ -308,11 +308,8 @@ export default function GoodsCateList({route, navigation}) {
 
     let goCartDetail = (type,uid) => {
         if(type === 'cart') {
-            
             if(cart_list.includes(uid)) {return Alert.alert(``,`이미 장바구니에 추가된 자재입니다.`)}
-            
             if(GoodsCnt === 0) {return Alert.alert('','수량을 입력해주세요');}
-
             Alert.alert('', '장바구니에 담으시겠습니까?', [
                     {text: '취소', onPress: () => {}, style: 'destructive'},
                     {text: '확인 ',
@@ -323,11 +320,9 @@ export default function GoodsCateList({route, navigation}) {
                                     if(result === 'OK') {
                                         setGoodsCnt(1);
                                         return Alert.alert('','장바구니에 추가하였습니다.');
-
-
                                     } else {
-                                        console.log('실패');
-                                        return;
+
+                                        return console.log('실패');
                                     }
                                 }
                             })
@@ -358,7 +353,7 @@ export default function GoodsCateList({route, navigation}) {
             if(res) {
                 const {result, goods_info} = res.data;
                 if(result === 'OK'){
-                    set_goods_detail(goods_info);
+                    return set_goods_detail(goods_info);
                 } else {
                     return Alert.alert('','불러오기 실패');
                 }
@@ -373,7 +368,7 @@ export default function GoodsCateList({route, navigation}) {
         html: goods_detail.summary_contents
     };
 
-    console.log(GoodsList);
+    console.log(GoodsList,'/[상품리스트]');
 
     /**--------자재목록-------------**/
     function goodsList ({item}) {
