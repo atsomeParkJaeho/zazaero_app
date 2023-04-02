@@ -155,6 +155,7 @@ export default function ModOrder({route,navigation}) {
             let temp = res.map(val=>{return {...val, req_memo    :'', goods_cnt   :1,}})
             set_add_goods_list(temp);
         }
+
     },[Member,Update]);
     const get_ready = async (Member, gd_order_uid) => {
         /**은행코드 추출**/
