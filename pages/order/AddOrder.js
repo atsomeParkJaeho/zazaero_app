@@ -159,6 +159,14 @@ export default function AddOrder({route,navigation}) {
         /**발주정보 추출**/
         let {gd_order, cancel_doing_cnt} = await get_order(Member, gd_order_uid);
         set_get_gd_order(gd_order);
+        set_cancel_doing(cancel_doing_cnt);
+        if(addr1 || zonecode) {
+            set_get_gd_order({
+                ...get_gd_order,
+                zonecode    :zonecode,
+                addr1       :addr1,
+            });
+        }
     }
     const goInput = (name, value, goods_uid, order_uid, type) => {
         console.log(name,'[입력값] 타입');
