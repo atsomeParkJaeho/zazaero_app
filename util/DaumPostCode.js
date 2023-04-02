@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function DaumPostCode({route, navigation}) {
 
-    const {order_uid, page, gd_order_uid, goods_cate1_uid} = route.params;
+    const {order_uid, page, gd_order_uid, goods_cate1_uid, get_gd_order} = route.params;
 
 
     const getAddressData = data => {
@@ -16,12 +16,13 @@ function DaumPostCode({route, navigation}) {
         } else {
             defaultAddress = data.buildingName;
         }
-        navigation.navigate(`${page}`,{
+        return navigation.navigate(`${page}`,{
             order_uid       :order_uid,
             gd_order_uid    :gd_order_uid,
             zonecode        :data.zonecode,
             addr1           :data.address,
             goods_cate1_uid :goods_cate1_uid,
+            get_gd_order    :get_gd_order,
         });
 
 

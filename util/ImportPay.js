@@ -69,7 +69,7 @@ function Payment({ route,navigation }) {
         pay_method              :'card',
         name                    :OrderData.work_name,
         merchant_uid            :OrderData.order_no,
-        amount                  :tot_price,
+        amount                  :Number(OrderData.settleprice),
         buyer_name              :OrderData.recv_name,
         buyer_tel               :OrderData.recv_mobile,
         buyer_addr              :OrderData.addr1+' '+OrderData.addr2,

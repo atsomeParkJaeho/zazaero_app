@@ -129,7 +129,10 @@ export default function ModOrder({route,navigation}) {
 
     const [A_order_list,    set_A_order_list]               = useState([]);             // 발주상품상태정의
     const [BankCode,        setBankCode]                    = useState([]);             // 관리자 무통장입금계좌 출력
-    const [get_gd_order,    set_get_gd_order]               = useState([]);
+    const [get_gd_order,    set_get_gd_order]               = useState({
+        zonecode:'',
+        addr1:''
+    });
     const [cancel_doing,    set_cancel_doing]               = useState(0);
     // 추가발주 창 오픈 상태정의
     const [add_goods_list,  set_add_goods_list]             = useState([]);
@@ -139,7 +142,7 @@ export default function ModOrder({route,navigation}) {
     const InputFocus = useRef([]);
     const Update    = useIsFocused();
 
-
+    const {zonecode, addr1} = route.params;
     useEffect(()=>{
         /**------------------------------회원 값 가져오기-----------------------**/
         get_Member().then((res)=>{if(res) {setMember(res);} else {Alert.alert(``,`실패`);}});
@@ -152,10 +155,7 @@ export default function ModOrder({route,navigation}) {
             let temp = res.map(val=>{return {...val, req_memo    :'', goods_cnt   :1,}})
             set_add_goods_list(temp);
         }
-
-
     },[Member,Update]);
-
     const get_ready = async (Member, gd_order_uid) => {
         /**은행코드 추출**/
         let {A_pay_bank} = await app_info();
@@ -168,6 +168,14 @@ export default function ModOrder({route,navigation}) {
         set_get_gd_order(gd_order);
         set_A_order_list(temp2);
         set_cancel_doing(cancel_doing_cnt);
+        if(addr1 || zonecode) {
+            set_get_gd_order({
+                ...get_gd_order,
+                zonecode    :zonecode,
+                addr1       :addr1,
+            });
+        }
+
     }
     const goInput = (name, value, goods_uid, order_uid, type) => {
         console.log(name,'[입력값] 타입');
@@ -247,7 +255,6 @@ export default function ModOrder({route,navigation}) {
             set_add_goods_list(temp);
         }
     }
-
     const A_goods_del = (goods_uid) => {
         Alert.alert('','선택하신 자재를 삭제하시겠습니까?',[
             {text:"취소",
@@ -262,7 +269,6 @@ export default function ModOrder({route,navigation}) {
             }
         ]);
     }
-
     const Chk = (goods_uid) => {
         let temp = A_order_list.map(val=>{
             if(val.goods_uid === goods_uid) {
@@ -320,7 +326,6 @@ export default function ModOrder({route,navigation}) {
             });
         }
     }
-
     const mod_recv_info = () => {
         Alert.alert(``,`발주를 수정하시겠습니까?`,[
             {text:"아니요"},
@@ -422,6 +427,7 @@ export default function ModOrder({route,navigation}) {
 
     console.log(get_gd_order,'/[발주정보 확인]');
     console.log(add_goods_list,'/[추가된 자재2]');
+    console.log(route.params,'/라우터 확인');
 
     let today = new Date();
     return (
@@ -433,7 +439,7 @@ export default function ModOrder({route,navigation}) {
                     <View style={[FormStyle.FormGroupItems]}>
                         <Text style={[FormStyle.FormLabel]}>공사명</Text>
                         <TextInput
-                            style={[input,{flex:1}]}
+                            style={[input,{flex:1},bg_light]}
                             placeholder="공사명"
                             editable={false}
                             onChangeText={(work_name)=>goInput(`work_name`,work_name)}
@@ -446,9 +452,10 @@ export default function ModOrder({route,navigation}) {
                         <View style={[d_flex,align_items_center]}>
                             {/**-------------------------우편번호---------------------**/}
                             <TextInput style={[input,{flex:1},bg_light]} editable={false} placeholder="우편번호"
-                             value={(route.params.zonecode) ? (route.params.zonecode) : (get_gd_order.zonecode)}
+                            value={(zonecode) ? (zonecode) : (get_gd_order.zonecode)}
+                            onChangeText={(zonecode)=>goInput(`zonecode`,zonecode)}
                             />
-                            <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"수정하기", gd_order_uid:get_gd_order.gd_order_uid})}>
+                            <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"수정하기", get_gd_order:get_gd_order})}>
                                 <View style={[bg_primary,{padding:8,borderRadius:5, marginLeft:16,}]}>
                                     <Text style={[text_light]}>주소찾기</Text>
                                 </View>
@@ -458,7 +465,8 @@ export default function ModOrder({route,navigation}) {
                     {/**----------------------------------------------주소입력--------------------------------------------------**/}
                     <View style={{paddingBottom:15,}}>
                         <TextInput style={[input,{flex:1},bg_light]} editable={false} placeholder="주소"
-                         value={(route.params.addr1) ? (route.params.addr1) : (get_gd_order.addr1)}
+                         value={(addr1) ? (addr1) : (get_gd_order.addr1)}
+                         onChangeText={(addr1)=>goInput(`addr1`,addr1)}
                         />
                     </View>
                     {/**----------------------------------------------상세주소--------------------------------------------------**/}
@@ -564,11 +572,11 @@ export default function ModOrder({route,navigation}) {
                             <View>
                                 <Text style={[FormStyle.FormLabel]}>현장인도자 연락처</Text>
                                 <TextInput style={[input]}
-                                           onChangeText={(recv_phone)=>goInput("recv_phone",Phone(recv_phone))}
+                                           onChangeText={(recv_mobile)=>goInput("recv_mobile",Phone(recv_mobile))}
                                            placeholder="010-xxxx-xxxx"
                                            keyboardType="number-pad"
                                            maxLength={13}
-                                           value={`${get_gd_order.recv_phone}`}
+                                           value={`${get_gd_order.recv_mobile}`}
                                 />
                             </View>
                         </View>
