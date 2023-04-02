@@ -806,43 +806,40 @@ export default function ModOrder({route,navigation}) {
 
 
                 {/**-----------------------------------------------------------결제금액----------------------------------------------------------------**/}
-                <View style={container}>
-                    <Text style={[h18]}>배송정보</Text>
-                </View>
-                {/**------------------------배송기사 연락처------------------------**/}
-                <View style={[flex]}>
-                    <View style={[styles.wt30]}>
-                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송기사 연락처</Text>
-                    </View>
-                    <View style={[styles.wt70]}>
-                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                            {(get_gd_order.deli_mem_mobile) ? get_gd_order.deli_mem_mobile : `미정`}
-                        </Text>
-                    </View>
-                </View>
-                {/**------------------------배송차량------------------------**/}
-                <View style={[flex]}>
-                    <View style={[styles.wt30,{borderBottomWidth: 1,}]}>
-                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송차량</Text>
-                    </View>
-                    <View style={[styles.wt70,{borderBottomWidth: 1,}]}>
-                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                            {get_gd_order.deli_car_type_name}
-                        </Text>
-                    </View>
-                </View>
-                {/**------------------------배송완료일시------------------------**/}
-                {(get_gd_order.deli_status === 'done') && (
-                    <View style={[flex]}>
-                        <View style={[styles.wt30,{borderBottomWidth: 1,}]}>
-                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송완료일시</Text>
+                {(
+                    get_gd_order.ord_status === 'pay_ready'  ||
+                    get_gd_order.ord_status === 'pay_done'   ||
+                    get_gd_order.ord_status === 'deli_ready' ||
+                    get_gd_order.ord_status === 'deli_doing' ||
+                    get_gd_order.ord_status === 'deli_done'
+                ) && (
+                    <>
+                        <View style={container}>
+                            <Text style={[h18]}>배송정보</Text>
                         </View>
-                        <View style={[styles.wt70,{borderBottomWidth: 1,}]}>
-                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                {DateChg(get_gd_order.deli_done_date)} {get_gd_order.deli_done_time}
-                            </Text>
+                        {/**------------------------배송기사 연락처------------------------**/}
+                        <View style={[flex]}>
+                            <View style={[styles.wt30]}>
+                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송기사 연락처</Text>
+                            </View>
+                            <View style={[styles.wt70]}>
+                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                    {(get_gd_order.deli_mem_mobile) ? get_gd_order.deli_mem_mobile : `미정`}
+                                </Text>
+                            </View>
                         </View>
-                    </View>
+                        {/**------------------------배송차량------------------------**/}
+                        <View style={[flex]}>
+                            <View style={[styles.wt30,{borderBottomWidth: 1,}]}>
+                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송차량</Text>
+                            </View>
+                            <View style={[styles.wt70,{borderBottomWidth: 1,}]}>
+                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                    {get_gd_order.deli_car_type_name}
+                                </Text>
+                            </View>
+                        </View>
+                    </>
                 )}
                 <OrderTotalPrice/>
             </ScrollView>
