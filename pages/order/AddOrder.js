@@ -138,7 +138,7 @@ export default function AddOrder({route,navigation}) {
     const [add_goods_list,  set_add_goods_list]             = useState([]);
     const [Show_1, setShow_1]                               = useState(false);
     const [Show_2, setShow_2]                               = useState(false);    // 셀렉트창 노출 여부
-    // const [A_goods,         set_A_goods]                    = useState([]);
+    // const [add_goods_list,         set_add_goods_list]                    = useState([]);
     const InputFocus = useRef([]);
     const Update    = useIsFocused();
 
@@ -156,21 +156,9 @@ export default function AddOrder({route,navigation}) {
         }
     },[Member,Update]);
     const get_ready = async (Member, gd_order_uid) => {
-        /**은행코드 추출**/
-        let temp = A_pay_bank.map(val=>{return {label:val.name, value:val.key,}});
         /**발주정보 추출**/
         let {gd_order, cancel_doing_cnt} = await get_order(Member, gd_order_uid);
-        let temp2 = gd_order.A_order.map(val =>{return {...val, goods_chk: false, goods_del: false,}});
-        navigation.setOptions({title:'추가발주 상태입니다.',});
         set_get_gd_order(gd_order);
-        set_cancel_doing(cancel_doing_cnt);
-        if(addr1 || zonecode) {
-            set_get_gd_order({
-                ...get_gd_order,
-                zonecode    :zonecode,
-                addr1       :addr1,
-            });
-        }
     }
     const goInput = (name, value, goods_uid, order_uid, type) => {
         console.log(name,'[입력값] 타입');
@@ -250,7 +238,7 @@ export default function AddOrder({route,navigation}) {
             set_add_goods_list(temp);
         }
     }
-    const A_goods_del = (goods_uid) => {
+    const add_goods_list_del = (goods_uid) => {
         Alert.alert('','선택하신 자재를 삭제하시겠습니까?',[
             {text:"취소",
                 onPress:()=>{},
@@ -375,7 +363,32 @@ export default function AddOrder({route,navigation}) {
         }
     }
     /**--------1. 자재추가시 수량 조절----------**/
+    const goAddForm = () => {
+        let chk = add_goods_list.map(val=>val.cate_1st_uid);
+        let chk_result = [...new Set(chk)];
+        if(add_goods_list.length === 0) {return Alert.alert('','자재를 추가해주세요.');}
+        if(chk_result.length > 1) {return Alert.alert('','같은 공정 자재만 발주 가능합니다.');}
 
+        Alert.alert('','추가발주를 요청 하시겠습니까?',[
+            {text:"취소", onPress:()=>{}},
+            {text:"확인",
+                onPress:()=>{
+                    add_order(get_gd_order, Member, add_goods_list, chk_result).then((res)=>{
+                        if(res) {
+                            console.log(res.data,'/[리턴값]');
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                Alert.alert('','추가발주 요청이\n완료되었습니다.',);
+                                return navigation.replace('발주상태');
+                            } else {
+                                Alert.alert('','에러');
+                            }
+                        }
+                    });
+                }
+            }
+        ]);
+    }
     /**--------2. 자재추가한 자재 삭제하기--------**/
 
     console.log(get_gd_order,'/[발주정보 확인]');
@@ -385,199 +398,297 @@ export default function AddOrder({route,navigation}) {
     let today = new Date();
     return (
         <>
-            <ScrollView style={[bg_white]}>
-                {/**----------------------------------------------배송지 입력--------------------------------------------------**/}
-                <View style={[FormStyle.FormGroup]}>
-                    {/**----------------------------------------------공사명--------------------------------------------------**/}
-                    <View style={[FormStyle.FormGroupItems]}>
-                        <Text style={[FormStyle.FormLabel]}>공사명</Text>
-                        <TextInput
-                            style={[input,{flex:1},bg_light]}
-                            placeholder="공사명"
-                            editable={false}
-                            onChangeText={(work_name)=>goInput(`work_name`,work_name)}
-                            defaultValue={`${get_gd_order.work_name}`}
-                        />
-                    </View>
-                    {/**----------------------------------------------배송지주소 입력--------------------------------------------------**/}
-                    <View style={[FormStyle.FormGroupItems]}>
-                        <Text style={[FormStyle.FormLabel]}>배송지</Text>
-                        <View style={[d_flex,align_items_center]}>
-                            {/**-------------------------우편번호---------------------**/}
-                            <TextInput style={[input,{flex:1},bg_light]} editable={false} placeholder="우편번호"
-                                       value={(zonecode) ? (zonecode) : (get_gd_order.zonecode)}
-                                       onChangeText={(zonecode)=>goInput(`zonecode`,zonecode)}
-                            />
-                            <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"수정하기", get_gd_order:get_gd_order})}>
-                                <View style={[bg_primary,{padding:8,borderRadius:5, marginLeft:16,}]}>
-                                    <Text style={[text_light]}>주소찾기</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    {/**----------------------------------------------주소입력--------------------------------------------------**/}
-                    <View style={{paddingBottom:15,}}>
-                        <TextInput style={[input,{flex:1},bg_light]} editable={false} placeholder="주소"
-                                   value={(addr1) ? (addr1) : (get_gd_order.addr1)}
-                                   onChangeText={(addr1)=>goInput(`addr1`,addr1)}
-                        />
-                    </View>
-                    {/**----------------------------------------------상세주소--------------------------------------------------**/}
-                    <View>
-                        <TextInput style={[input,{flex:1}]} placeholder="주소"
-                                   value={get_gd_order.addr2}
-                                   onChangeText={(addr2)=>goInput("addr2",addr2)}
-                        />
-                    </View>
-                    {/*다음 api 주소 팝업*/}
+            <KeyboardAvoidingView style={{marginBottom:86}} behavior={Platform.select({ios:"padding"})}>
+                <ScrollView style={[bg_white]}>
                     {/**----------------------------------------------배송지 입력--------------------------------------------------**/}
-                </View>
-                <View>
-                    {/**----------------------------------------------희망배송일 선택--------------------------------------------------**/}
-                    <View style={[d_flex, align_items_center, FormStyle.FormDate, {justifyContent: "space-between"}]}>
-                        {/*체크박스*/}
-                        <Text style={[FormStyle.FormDateLabel]}>희망배송일</Text>
-                        <Text style={[FormStyle.FormDateLabel]}>
-                            {DateChg(get_gd_order.hope_deli_date)}
-                        </Text>
-                    </View>
-                    <View style={[FormStyle.FormGroup, {paddingTop: 5, paddingBottom: 5,}]}>
-                        <CalendarStrip
-                            scrollable
-                            onDateSelected={(Date) => {
-                                set_get_gd_order({
-                                    ...get_gd_order,
-                                    hope_deli_date: String(Date.format('YYYY-MM-DD')),
-                                });
-                            }
-                            }
-                            startingDate={`${Date(get_gd_order.hope_deli_date)}`}
-                            minDate={`${today}`}
-                            maxDate={`${maxDate(today)}`}
-                            style={{height: 150, paddingTop: 20, paddingBottom: 10}}
-                            daySelectionAnimation={{type: "background", highlightColor: "#3D40E0",}}
-                            selectedDate={`${get_gd_order.hope_deli_date}`}
-                            highlightDateNameStyle={{color: "#fff", fontSize: 12, paddingBottom: 5,}}
-                            highlightDateNumberStyle={{color: "#fff", fontSize: 16,}}
-                            weekendDateNameStyle={{color: "#452"}}
-                            dateNameStyle={{fontSize: 12, color: "#666", paddingBottom: 5,}}
-                            dateNumberStyle={{fontSize: 16}}
-                        />
-                    </View>
-                    {/**----------------------------------------------캘린더--------------------------------------------------**/}
-                </View>
-                {/**----------------------------------------------희망배송시간 선택--------------------------------------------------**/}
-                <View>
-                    <View style={[d_flex, align_items_center, FormStyle.FormDate, {justifyContent:"space-between"}]}>
-                        {/*체크박스*/}
-                        <Text style={[FormStyle.FormDateLabel]}>희망배송시간</Text>
-                        <Text style={[FormStyle.FormDateLabel]}>
-                            {get_gd_order.hope_deli_time}
-                        </Text>
-                    </View>
-                    {/*==============시간입력==============*/}
                     <View style={[FormStyle.FormGroup]}>
-                        <View style={[select_box]}>
-                            <TouchableOpacity onPress={()=>{setShow_1(!Show_1)}}>
-                                <Text style={[select_txt]}>
-                                    {(get_gd_order.hope_deli_time) ? get_gd_order.hope_deli_time:'시간을 선택해주세요'}
-                                </Text>
-                                <View style={[select_icon_box]}>
-                                    <Text style={[styles.select_icon]}>▼</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                        {/**/}
-                        {/**---------------------------클릭시 노출--------------------------------**/}
-                        {(Show_1) && (
-                            <View style={[styles.select_opt_list_box]}>
-                                <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
-                                    {Time2.map((val,ide)=>
-                                        <View style={[styles.select_opt_list_itmes]}>
-                                            <TouchableOpacity onPress={() => goSearch(`hope_deli_time`,val.value)}>
-                                                <Text style={[text_center,h17]}>
-                                                    {val.label}
-                                                </Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    )}
-                                </ScrollView>
-                            </View>
-                        )}
-                        {/**/}
-                    </View>
-                </View>
-                {/**----------------------------------------------현장인도자 정보--------------------------------------------------**/}
-                <View style={[FormStyle.FormGroup]}>
-                    {/*==============현장인도자 성명==============*/}
-                    <View style={[FormStyle.FormGroupItems]}>
+                        {/**----------------------------------------------공사명--------------------------------------------------**/}
                         <View style={[FormStyle.FormGroupItems]}>
-                            <Text style={[FormStyle.FormLabel]}>현장인도자 성명</Text>
-                            {/*<Text style={[input,{paddingTop:12},bg_light]}>{get_gd_order.recv_name}</Text>*/}
-                            <TextInput style={[input]}
-                                       onChangeText={(recv_name)=>goInput("recv_name",recv_name)}
-                                       placeholder="예 ) 홍길동"
-                                       value={get_gd_order.recv_name}
+                            <Text style={[FormStyle.FormLabel]}>공사명</Text>
+                            <TextInput
+                                style={[input,{flex:1},bg_light]}
+                                placeholder="공사명"
+                                editable={false}
+                                onChangeText={(work_name)=>goInput(`work_name`,work_name)}
+                                defaultValue={`${get_gd_order.work_name}`}
                             />
                         </View>
-                        {/*==============현장인도자 연락처==============*/}
+                        {/**----------------------------------------------배송지주소 입력--------------------------------------------------**/}
                         <View style={[FormStyle.FormGroupItems]}>
-                            <View>
-                                <Text style={[FormStyle.FormLabel]}>현장인도자 연락처</Text>
+                            <Text style={[FormStyle.FormLabel]}>배송지</Text>
+                            <View style={[d_flex,align_items_center]}>
+                                {/**-------------------------우편번호---------------------**/}
+                                <TextInput style={[input,{flex:1},bg_light]} editable={false} placeholder="우편번호"
+                                           value={(zonecode) ? (zonecode) : (get_gd_order.zonecode)}
+                                           onChangeText={(zonecode)=>goInput(`zonecode`,zonecode)}
+                                />
+                                <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"추가발주", get_gd_order:get_gd_order})}>
+                                    <View style={[bg_primary,{padding:8,borderRadius:5, marginLeft:16,}]}>
+                                        <Text style={[text_light]}>주소찾기</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        {/**----------------------------------------------주소입력--------------------------------------------------**/}
+                        <View style={{paddingBottom:15,}}>
+                            <TextInput style={[input,{flex:1},bg_light]} editable={false} placeholder="주소"
+                                       value={(addr1) ? (addr1) : (get_gd_order.addr1)}
+                                       onChangeText={(addr1)=>goInput(`addr1`,addr1)}
+                            />
+                        </View>
+                        {/**----------------------------------------------상세주소--------------------------------------------------**/}
+                        <View>
+                            <TextInput style={[input,{flex:1}]} placeholder="주소"
+                                       value={get_gd_order.addr2}
+                                       onChangeText={(addr2)=>goInput("addr2",addr2)}
+                            />
+                        </View>
+                        {/*다음 api 주소 팝업*/}
+                        {/**----------------------------------------------배송지 입력--------------------------------------------------**/}
+                    </View>
+                    <View>
+                        {/**----------------------------------------------희망배송일 선택--------------------------------------------------**/}
+                        <View style={[d_flex, align_items_center, FormStyle.FormDate, {justifyContent: "space-between"}]}>
+                            {/*체크박스*/}
+                            <Text style={[FormStyle.FormDateLabel]}>희망배송일</Text>
+                            <Text style={[FormStyle.FormDateLabel]}>
+                                {DateChg(get_gd_order.hope_deli_date)}
+                            </Text>
+                        </View>
+                        <View style={[FormStyle.FormGroup, {paddingTop: 5, paddingBottom: 5,}]}>
+                            <CalendarStrip
+                                scrollable
+                                onDateSelected={(Date) => {
+                                    set_get_gd_order({
+                                        ...get_gd_order,
+                                        hope_deli_date: String(Date.format('YYYY-MM-DD')),
+                                    });
+                                }
+                                }
+                                startingDate={`${Date(get_gd_order.hope_deli_date)}`}
+                                minDate={`${today}`}
+                                maxDate={`${maxDate(today)}`}
+                                style={{height: 150, paddingTop: 20, paddingBottom: 10}}
+                                daySelectionAnimation={{type: "background", highlightColor: "#3D40E0",}}
+                                selectedDate={`${get_gd_order.hope_deli_date}`}
+                                highlightDateNameStyle={{color: "#fff", fontSize: 12, paddingBottom: 5,}}
+                                highlightDateNumberStyle={{color: "#fff", fontSize: 16,}}
+                                weekendDateNameStyle={{color: "#452"}}
+                                dateNameStyle={{fontSize: 12, color: "#666", paddingBottom: 5,}}
+                                dateNumberStyle={{fontSize: 16}}
+                            />
+                        </View>
+                        {/**----------------------------------------------캘린더--------------------------------------------------**/}
+                    </View>
+                    {/**----------------------------------------------희망배송시간 선택--------------------------------------------------**/}
+                    <View>
+                        <View style={[d_flex, align_items_center, FormStyle.FormDate, {justifyContent:"space-between"}]}>
+                            {/*체크박스*/}
+                            <Text style={[FormStyle.FormDateLabel]}>희망배송시간</Text>
+                            <Text style={[FormStyle.FormDateLabel]}>
+                                {get_gd_order.hope_deli_time}
+                            </Text>
+                        </View>
+                        {/*==============시간입력==============*/}
+                        <View style={[FormStyle.FormGroup]}>
+                            <View style={[select_box]}>
+                                <TouchableOpacity onPress={()=>{setShow_1(!Show_1)}}>
+                                    <Text style={[select_txt]}>
+                                        {(get_gd_order.hope_deli_time) ? get_gd_order.hope_deli_time:'시간을 선택해주세요'}
+                                    </Text>
+                                    <View style={[select_icon_box]}>
+                                        <Text style={[styles.select_icon]}>▼</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                            {/**/}
+                            {/**---------------------------클릭시 노출--------------------------------**/}
+                            {(Show_1) && (
+                                <View style={[styles.select_opt_list_box]}>
+                                    <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
+                                        {Time2.map((val,ide)=>
+                                            <View style={[styles.select_opt_list_itmes]}>
+                                                <TouchableOpacity onPress={() => goSearch(`hope_deli_time`,val.value)}>
+                                                    <Text style={[text_center,h17]}>
+                                                        {val.label}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        )}
+                                    </ScrollView>
+                                </View>
+                            )}
+                            {/**/}
+                        </View>
+                    </View>
+                    {/**----------------------------------------------현장인도자 정보--------------------------------------------------**/}
+                    <View style={[FormStyle.FormGroup]}>
+                        {/*==============현장인도자 성명==============*/}
+                        <View style={[FormStyle.FormGroupItems]}>
+                            <View style={[FormStyle.FormGroupItems]}>
+                                <Text style={[FormStyle.FormLabel]}>현장인도자 성명</Text>
+                                {/*<Text style={[input,{paddingTop:12},bg_light]}>{get_gd_order.recv_name}</Text>*/}
                                 <TextInput style={[input]}
-                                           onChangeText={(recv_mobile)=>goInput("recv_mobile",Phone(recv_mobile))}
-                                           placeholder="010-xxxx-xxxx"
-                                           keyboardType="number-pad"
-                                           maxLength={13}
-                                           value={`${get_gd_order.recv_mobile}`}
+                                           onChangeText={(recv_name)=>goInput("recv_name",recv_name)}
+                                           placeholder="예 ) 홍길동"
+                                           value={get_gd_order.recv_name}
                                 />
                             </View>
-                        </View>
-                        {/*==============배송 요청 사항==============*/}
-                        <View style={[FormStyle.FormGroupItems]}>
-                            <View>
-                                <Text style={[FormStyle.FormLabel]}>배송 요청 사항</Text>
-                                <TouchableWithoutFeedback>
-                                    <TextInput style={[input,{height:100,textAlignVertical: "top"}]} multiline={true}
-                                               onChangeText={(order_memo)=>goInput('order_memo',order_memo)}
-                                               numberOfLines={4}
-                                               value={get_gd_order.order_memo}
-                                               placeholder="배송요청사항"
+                            {/*==============현장인도자 연락처==============*/}
+                            <View style={[FormStyle.FormGroupItems]}>
+                                <View>
+                                    <Text style={[FormStyle.FormLabel]}>현장인도자 연락처</Text>
+                                    <TextInput style={[input]}
+                                               onChangeText={(recv_mobile)=>goInput("recv_mobile",Phone(recv_mobile))}
+                                               placeholder="010-xxxx-xxxx"
+                                               keyboardType="number-pad"
+                                               maxLength={13}
+                                               value={`${get_gd_order.recv_mobile}`}
                                     />
-                                </TouchableWithoutFeedback>
+                                </View>
+                            </View>
+                            {/*==============배송 요청 사항==============*/}
+                            <View style={[FormStyle.FormGroupItems]}>
+                                <View>
+                                    <Text style={[FormStyle.FormLabel]}>배송 요청 사항</Text>
+                                    <TouchableWithoutFeedback>
+                                        <TextInput style={[input,{height:100,textAlignVertical: "top"}]} multiline={true}
+                                                   onChangeText={(order_memo)=>goInput('order_memo',order_memo)}
+                                                   numberOfLines={4}
+                                                   value={get_gd_order.order_memo}
+                                                   placeholder="배송요청사항"
+                                        />
+                                    </TouchableWithoutFeedback>
+                                </View>
                             </View>
                         </View>
                     </View>
-                </View>
-                {/**-----------------------------------------------------------발주자재목록 2023-03-28----------------------------------------------------------------**/}
-                <View style={[container, {borderBottomWidth: 1,borderColor:"#e6e6e6",}]}>
-                    <View style={[flex_between]}>
-                        <View style={[]}>
-                            <Text style={[h18]}>자재목록</Text>
+                    {/**-----------------------------------------------------------발주자재목록 2023-03-28----------------------------------------------------------------**/}
+                    <View style={[container, {borderBottomWidth: 1,borderColor:"#e6e6e6",}]}>
+                        <View style={[flex_between]}>
+                            <View style={[]}>
+                                <Text style={[h18]}>자재목록</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
-                <View>
+                    {/**----------------------------------------------------------반복문 구간----------------------------------------------------------------**/}
+                    {/**-----------------------------------------------------------결제전 자재추가 2023-04-01----------------------------------------------------------------**/}
+                    {(add_goods_list) && (
+                        <>
+                            {/**-----------------------------------------------------------반복문 구간----------------------------------------------------------------**/}
+                            {add_goods_list.map((val,idx)=>(
+                                <View tyle={[styles.CancelDetail_list_items]} key={idx}>
+                                    <View style={[container]}>
+                                        {/**--------------------------------옵션--------------------------------**/}
+                                        <View style={[d_flex, align_items_center, mb1,flex_between]}>
+                                            {/*체크박스*/}
+                                            <View style={{flex:1}}>
+                                                {/*상품명*/}
+                                                <Text style={[h14]}>{val.goods_name}</Text>
+                                            </View>
+                                            <View style={{flex:0.1,paddingLeft:5}}>
+                                                <TouchableOpacity style={[flex,justify_content_end]} onPress={()=>{add_goods_list_del(val.goods_uid)}}>
+                                                    <Close width={15} height={15}/>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+                                        <View style={[flex_between_bottom]}>
+                                            <View style={[flex_end]}>
+                                                <View>
+                                                    <Image style={[styles.goods_thum]} source={{uri:`http://www.zazaero.com${val.list_img}`}} />
+                                                </View>
+                                                {/**-------------------수량조절---------------**/}
+                                                <View style={ms2}>
+                                                    <View style={[d_flex]}>
+                                                        <Text style={[h14,fw500,{paddingBottom:5,}]}>
+                                                            수량
+                                                        </Text>
+                                                    </View>
+                                                    <View style={[flex]}>
+                                                        {/*=============마이너스 버튼==========*/}
+                                                        <TouchableWithoutFeedback onPress={()=>A_goInput('goods_cnt',val.goods_cnt,val.goods_uid,'minus')}>
+                                                            <View style={[count_btn]}>
+                                                                <View style={[pos_center]}>
+                                                                    <Text style={[count_btn_txt]}>－</Text>
+                                                                </View>
+                                                            </View>
+                                                        </TouchableWithoutFeedback>
+                                                        {/*============수량=================*/}
+                                                        {/**-----상품 uid, 발주 uid 추가----**/}
+                                                        <View style={[countinput]}>
+                                                            <TextInput
+                                                                onChangeText={(goods_cnt)=>A_goInput('goods_cnt',goods_cnt,val.goods_uid)}
+                                                                value={`${val.goods_cnt}`}
+                                                                style={[text_center]}
+                                                                maxLength={3}
+                                                                keyboardType="numeric"
+                                                            />
+                                                        </View>
+                                                        {/*=============플러스 버튼============*/}
+                                                        <TouchableWithoutFeedback onPress={()=>A_goInput('goods_cnt',val.goods_cnt,val.goods_uid,'plus')}>
+                                                            <View style={[count_btn]}>
+                                                                <View style={[pos_center]}>
+                                                                    <Text style={[count_btn_txt]}>＋</Text>
+                                                                </View>
+                                                            </View>
+                                                        </TouchableWithoutFeedback>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                            <View style={justify_content_end}>
+                                                <Text style={[h13]}>(단가 : {Price(val.price)}원)</Text>
+                                                {/*단가*/}
+                                                <Text style={[h16,text_right]}>{Price(val.price * val.goods_cnt)}원</Text>
+                                                {/*총금액*/}
+                                            </View>
+                                        </View>
+                                        <View style={[mt1]}>
+                                            {/*옵션요청가격*/}
+                                            <View style={[]}>
+                                                <Text style={[h13]}>{(val.req_opt_guide_name) ? (val.req_opt_guide_name) : '자재 요청사항을 입력해주세요.'}</Text>
+                                                <TextInput style={[textarea, h13]}
+                                                           onChangeText={(req_memo)=>A_goInput('req_memo',req_memo,val.goods_uid)}
+                                                           value={val.req_memo}
+                                                           autoCapitalize="none"
+                                                />
+                                            </View>
+                                            {/*옵션요청글*/}
+                                        </View>
 
-                </View>
-                <OrderTotalPrice/>
-            </ScrollView>
-            {/**----------------------------------------------결제전 수정하기--------------------------------------------------**/}
-            <View style={[bg_gray,styles.btn_default]}>
-                <TouchableOpacity>
-                    <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
-                        <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
+                                    </View>
+                                </View>
+                            ))}
+                        </>
+                    )}
+
+                    <View style={[container]}>
+                        <View style={[d_flex, justify_content_between]}>
+                            <TouchableOpacity
+                                onPress={add_goods_listOrder}
+                                style={[styles.CancelBtnWrap, btn_outline_primary, {width:"100%"}]}>
+                                <Text style={[text_center,styles.CancelBtn, text_primary]}>자재추가</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
-                        추가발주
-                    </Text>
-                </TouchableOpacity>
-            </View>
+                    <OrderTotalPrice/>
+                </ScrollView>
+                {/**----------------------------------------------결제전 수정하기--------------------------------------------------**/}
+                <View style={[bg_gray,styles.btn_default]}>
+                    <TouchableOpacity onPress={()=>goAddForm()}>
+                        <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
+                            <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
+                        </View>
+                        <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
+                            추가발주
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </KeyboardAvoidingView>
+
         </>
     );
 
     function PayReadyCancelTab() {
-
         return(
             <>
                 <View style={[container]}>
@@ -608,8 +719,17 @@ export default function AddOrder({route,navigation}) {
 
     function OrderTotalPrice() {
         /**----------------총 결제금액은 자재가격 + 요청옵션비 + 배송비 + 포인트----------------**/
-            // 총 결제금액
-        let Settlekindprice = Number(get_gd_order.goodsprice)+Number(get_gd_order.deli_price)+Number(get_gd_order.tot_opt_price);
+        // 총 결제금액
+        // 1. 각 자재 가격 * 수량 값
+        let goods_price = add_goods_list.map((val)=>Number(val.price * val.goods_cnt));
+        let tot_goods_price = 0;
+        for (let i = 0; i<goods_price.length; i++) {
+            tot_goods_price += goods_price[i];
+        }
+
+        console.log(goods_price,' / [각 자재 가격]');
+        console.log(tot_goods_price,' / [합계 가격]');
+
         return(
             <>
                 <View>
@@ -626,7 +746,7 @@ export default function AddOrder({route,navigation}) {
                         </View>
                         <View style={[styles.wt75]}>
                             <Text style={[styles.GoodsDetail_info_txt_val,h16,text_primary]}>
-                                {Price(Settlekindprice)}원
+                                {Price(tot_goods_price)}원
                             </Text>
                         </View>
                     </View>
