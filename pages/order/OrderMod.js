@@ -402,12 +402,15 @@ export default function ModOrder({route,navigation}) {
 
         Alert.alert('','선택하신 자재를 취소하시겠습니까?',[
             {text:"취소", onPress:()=>{}},
-            {text:"확인", onPress:()=>{temp();}}
+            {text:"확인", onPress:()=>{
+                return temp();
+            }}
         ]);
 
         let temp = () => {
             ATorderDel(get_gd_order, Member, order_uid).then((res)=>{
-                const {result} = res.data;
+                console.log(res.data,' / [리턴값]');
+                const {result, err_msg} = res.data;
                 if(result === 'OK') {
                     Alert.alert('','자재를 삭제하였습니다.');
                     let temp = A_order_list.map(val=>{
@@ -419,6 +422,18 @@ export default function ModOrder({route,navigation}) {
                     });
                     let temp2 = temp.filter(val=>val.goods_del === false);
                     set_A_order_list(temp2);
+                } else if(result === 'OK_ord_chg') {
+                    let msg = '발주 정보가 변경 되어\n관리자의 재 확인 후 결제가 가능합니다';
+                    Alert.alert(``,msg,[
+                        {text:'확인',
+                            onPress:()=>{
+                                return navigation.replace(`발주상태`);
+                            }
+                        }
+                    ]);
+                }
+                else {
+                    return Alert.alert(``,result);
                 }
             });
         }
