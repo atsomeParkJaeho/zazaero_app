@@ -377,6 +377,11 @@ export const bizNum = (num) => {
 // FCM 서버키
 export const FCM = 'AAAAX-gPrHo:APA91bFU53F2rZl1ERLue0Iv59XTl84m5yUr5Idddb77YwiUAVtvDhyyWgH9zVqT2r35WiA-7TGVqAJENrGE3j2DbGCdPODOcWZBDFdM0OjtcHbdj5cbm6fvsb5dlVF8hng9dwYUXy97';
 
+export const ComPhone = (num) => {
+    if(num) {
+        return num.substring(4);
+    }
+}
 
 // =================숫자만 입력 가능=================//
 export const OnlyNum = (text) => {

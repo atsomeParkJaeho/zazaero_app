@@ -22,6 +22,7 @@ import * as Device from "expo-device";
 // 아이콘 추가
 import Search from '../icons/search.svg';
 import Main_logo from '../icons/main_logo.svg';
+import {ComPhone} from "../util/util";
 
 
 // 2차 카테고리 설정
@@ -296,7 +297,7 @@ export default function MainPage({route,navigation}) {
                                 사업자 번호 : {com_info.biz_no}
                             </Text>
                             <Text style={styles.main_footer_disc_txt}>
-                                {/*고객센터 : {com_phone_ch}*/}
+                                고객센터 : {ComPhone(com_info.com_phone)}
                             </Text>
                             <Text style={styles.main_footer_disc_txt}>
                                 이메일 : {com_info.com_email}

@@ -44,7 +44,7 @@ import Chk from "../../icons/chk.svg";
 import CartBag from "../../icons/cart_bag.svg";
 import {Price} from "../../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {get_goods_search, save_cart, save_wish} from "./UTIL_goods";
+import {get_goods_search, go_goods_cate3rd_list, ins_cart, save_cart, save_wish} from "./UTIL_goods";
 import {get_Member} from "../UTIL_mem";
 import {getCartList} from "../cart/UTIL_cart";
 
@@ -158,27 +158,36 @@ export default function GoodsSearchList({route,navigation}) {
     // 6. 장바구니 추가 이벤트
     const goCart = () => {
         let goForm = GoodsList.filter((val) => val.goods_cart_chk);
-        // 반복문
-        goForm.map(items=>(
-            save_cart(Member, items.goods_uid).then((res)=>{
-                if(res) {
-                    const {result, order_uid} = res.data;
-                    console.log(result);
-                    if(result === 'OK') {
-                        console.log(order_uid);
-                    } else {
-                        console.log('실패');
-                        return;
-                    }
+        let goods_uid_list = "";
+        goForm.map(items => {
+            if (goods_uid_list != "") {
+                goods_uid_list += ",";
+            }
+            goods_uid_list += items.goods_uid;
+        });
+        ins_cart(Member, goods_uid_list).then((res) => {
+            if (res) {
+                const {result, order_uid} = res.data;
+                console.log(result);
+                if (result === 'OK') {
+                    get_goods_search(search).then((res) => {
+                        if (res) {
+                            const {result, A_goods} = res.data;
+                            if (result === 'OK') {
+                                Alert.alert(``,`장바구니에 추가되었습니다.`);
+                                setGoodsList(A_goods);
+                                get_cart_list(Member);
+                            } else {
+                                return Alert.alert(``,`에러`);
+                            }
+                        }
+                    });
                 } else {
+                    console.log('실패');
 
                 }
-            })
-        ));
-
-        alert('장바구니에 추가하였습니다. ');
-        navigation.navigate('장바구니');
-
+            }
+        });
     }
 
     // 2. 검색상품 불러오기

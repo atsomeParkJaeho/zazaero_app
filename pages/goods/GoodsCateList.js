@@ -60,8 +60,7 @@ import {getCartList} from "../cart/UTIL_cart";
 export default function GoodsCateList({route, navigation}) {
     const [Member, setMember] = useState();
     let {Cate1stUid, Cate2ndUid, name} = route.params; // 카테고리 uid
-    console.log(Cate1stUid);
-    console.log(Cate2ndUid);
+
     console.log('회원 uid / ', Member);
     console.log('아이디값');
 
@@ -278,13 +277,24 @@ export default function GoodsCateList({route, navigation}) {
                 console.log(result);
                 if (result === 'OK') {
                     console.log(order_uid);
+                    go_goods_cate3rd_list(Cate1stUid, Cate2ndActive, Cate3rdActive).then((res)=>{
+                        if(res) {
+                          let {result, A_goods} = res.data;
+                          if(result === 'OK') {
+                              Alert.alert(``,`장바구니에 추가되었습니다.`);
+                              get_cart_list(Member);
+                              setGoodsList(A_goods);
+                          } else {
+                              return Alert.alert(``,`에러`);
+                          }
+                        }
+                    });
                 } else {
                     console.log('실패');
 
                 }
             }
         });
-        navigation.navigate('장바구니');
     }
     // 체크한 상품 버튼 생성
     let goForm = GoodsList.filter((val) => val.goods_cart_chk);
@@ -343,9 +353,6 @@ export default function GoodsCateList({route, navigation}) {
 
     // 상세페이지 노출
     const go_goods_detail = (goods_uid) => {
-
-
-
         console.log('이벤트');
         setModalVisible(!modalVisible); // 모달 노출
         // 1. 상세페이지 호출
@@ -359,16 +366,13 @@ export default function GoodsCateList({route, navigation}) {
                 }
             }
         });
-
         console.log(goods_detail,' / 상품상세');
-
     }
 
     const source = {
         html: goods_detail.summary_contents
     };
 
-    console.log(GoodsList,'/[상품리스트]');
 
     /**--------자재목록-------------**/
     function goodsList ({item}) {
@@ -491,12 +495,9 @@ export default function GoodsCateList({route, navigation}) {
         );
     };
 
-    // console.log(GoodsList);
-    console.log(Cate2ndActive,'/ 2차 카테고리 상태');
-    console.log(Cate3rdActive,'/ 3차 카테고리 상태');
-    console.log(goods_detail,'/ 상품상세');
-    console.log(goods_detail,'/ 상품상세');
-    console.log(GoodsCnt,'/ 수량');
+
+    console.log(Cate2ndActive,'/ 현재 2차카테고리 uid');
+    console.log(Cate3rdActive,'/ 현재 3차카테고리 uid');
 
     return (
         /*
@@ -710,20 +711,8 @@ export default function GoodsCateList({route, navigation}) {
                 <>
                     <View style={[styles.go_cart, bg_primary,]}>
                         <TouchableOpacity onPress={goCart}>
-                            <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10, }]}>
-                                <View style={{
-                                    width: 20,
-                                    height: 20,
-                                    borderRadius: 50,
-                                    marginRight: 10,
-                                    backgroundColor: "#fff"
-                                }}>
-                                    <Text style={{textAlign: "center", color: "#333",}}>{goForm.length}</Text>
-                                </View>
-                                <Text style={text_light}>장바구니 가기</Text>
-                            </View>
                             <Text style={[{textAlign: "center", color: "#FFF", fontSize: 18,}, text_light]}>
-                                수량 및 추가정보 입력
+                                장바구니 추가
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -806,7 +795,7 @@ const styles = StyleSheet.create({
     },
     go_cart: {
         paddingBottom: (Platform.OS === 'ios') ? 42 : 38,
-        paddingTop: 7,
+        paddingTop: 36,
         position: "absolute",
         left: 0,
         bottom: 0,
