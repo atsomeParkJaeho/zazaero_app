@@ -305,7 +305,7 @@ export default function MainPage({route,navigation}) {
                                 사업장 주소 : {com_info.addr1} {com_info.addr2}
                             </Text>
                             <Text style={styles.main_footer_disc_txt}>
-                                앱 버전 : 9.1.0
+                                앱 버전 : 9.1.1
                             </Text>
                         </View>
                     </View>
