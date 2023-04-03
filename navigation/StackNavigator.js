@@ -187,8 +187,12 @@ const StackNavigator = () => {
                 <Stack.Screen name="약관/개인정보처리방침" component={Provision} options={{
                     cardStyleInterpolator: forFade
                 }}/>
-                <Stack.Screen name="상품목록" component={GoodsCateList} />
-                <Stack.Screen name="상품상세" component={GoodsDetail}/>
+                <Stack.Screen name="상품목록" component={GoodsCateList} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="상품상세" component={GoodsDetail} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
                 <Stack.Screen name="발주상세" component={OrderDetail} options={{
                     cardStyleInterpolator: forFade
                 }}/>
