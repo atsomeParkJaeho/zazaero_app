@@ -78,7 +78,7 @@ export default function FindPw({navigation,route}) {
                     navigation.replace('아이디 찾기결과',{FindId:FindId, mem_info:res.data});
                     return Alert.alert('','회원님의 연락처로 인증번호가\n전송되었습니다.');
                 } else {
-                    return Alert.alert(``,`에러`);
+                    return Alert.alert(``,`아이디/이름 또는 전화번호가 맞지않습니다,\n다시확인해주세요.`);
                 }
             }
         }).catch((err) => console.log(err));
@@ -124,6 +124,7 @@ export default function FindPw({navigation,route}) {
                                     style={styles.input}
                                     value={Phone(FindId.mem_mobile)}
                                     ref={val=>ChkInput.current[2] = val}
+                                    maxLength={13}
                                     autoCapitalize="none"
                                     placeholder="전화번호"
                                     keyboardType="number-pad"
