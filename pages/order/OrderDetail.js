@@ -199,13 +199,13 @@ export default function OrderDtail({route,navigation}) {
         if(get_gd_order.ord_status === 'pay_ready') {
             Alert.alert(``,`발주 정보 변경시\n관리자의 재 확인 후 결제가 가능합니다.`,[
                 {text:'확인',
-                onPress:()=>{
-                    let data = {
-                        get_gd_order:get_gd_order,
-                        A_order_list:A_order_list,
+                    onPress:()=>{
+                        let data = {
+                            get_gd_order:get_gd_order,
+                            A_order_list:A_order_list,
+                        }
+                        return navigation.replace('수정하기',data);
                     }
-                    return navigation.replace('수정하기',data);
-                }
                 }
             ]);
         } else {
@@ -247,12 +247,12 @@ export default function OrderDtail({route,navigation}) {
         Alert.alert(``,`자재추가시 \n추가발주가 생성됩니다.`,[
             {text:'취소'},
             {text:'확인',
-            onPress:()=>{
-                let data = {
-                    get_gd_order:get_gd_order,
+                onPress:()=>{
+                    let data = {
+                        get_gd_order:get_gd_order,
+                    }
+                    return navigation.replace(`추가발주`,data);
                 }
-                return navigation.replace(`추가발주`,data);
-            }
             }
         ]);
     }
@@ -300,7 +300,7 @@ export default function OrderDtail({route,navigation}) {
                 }
             ]);
         } else {
-            Alert.alert('','선택하신 자재를 취소하시겠습니까?',[
+            Alert.alert('','입력하신 수량으로 취소하시겠습니까?',[
                 {text:'취소', onPress:()=>{}},
                 {text:'확인',
                     onPress:()=>{
