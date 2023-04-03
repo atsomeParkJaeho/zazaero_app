@@ -341,6 +341,8 @@ export default function GoodsSearchList({route,navigation}) {
                 ))}
             </ScrollView>
             <Toast ref={toastRef}
+                   position='top'
+                   positionValue={250}
                    fadeInDuration={200}
                    fadeOutDuration={1000}
                    style={[styles.toast]}
@@ -371,8 +373,7 @@ export default function GoodsSearchList({route,navigation}) {
 const styles = StyleSheet.create({
     toast:{
         backgroundColor:'rgba(33, 87, 243, 0.5)',
-        position:"absolute",
-        bottom:70,
+
     },
     go_cart: {
         paddingBottom: 36,

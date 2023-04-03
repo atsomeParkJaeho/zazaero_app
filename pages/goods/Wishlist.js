@@ -509,6 +509,8 @@ export default function Wishlist({route,navigation}) {
             </ScrollView>
             <Footer navigation={navigation}/>
             <Toast ref={toastRef}
+                   position='top'
+                   positionValue={250}
                    fadeInDuration={200}
                    fadeOutDuration={1000}
                    style={[styles.toast]}
@@ -571,8 +573,6 @@ export default function Wishlist({route,navigation}) {
 const styles = StyleSheet.create({
     toast:{
         backgroundColor:'rgba(33, 87, 243, 0.5)',
-        position:"absolute",
-        bottom:70,
     },
     Section:{
       marginBottom: Platform.OS === 'ios' ? 110 : 90,
