@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {
     StyleSheet,
     Text,
@@ -49,7 +49,7 @@ import {ins_cart} from "./UTIL_goods";
 import Wish from "../../icons/ico_heart_nc.svg";
 import {get_my_zzim_list_new, getCartList, set_my_zzim} from "../cart/UTIL_cart";
 import {get_Member} from "../UTIL_mem";
-
+import Toast from "react-native-easy-toast";
 
 export default function Wishlist({route,navigation}) {
 
@@ -59,7 +59,7 @@ export default function Wishlist({route,navigation}) {
     const [WishList, setWishList]       = useState([]);     // 즐겨찾기 상태정의
     const [cart_list, set_cart_list]            = useState([]);   // 장바구니 가져오기
     const [Cate1stUid, setCate1stuid]          = useState(``);   // 동일카테고리 락
-    
+    const toastRef = useRef();
     // A_goods_list_o 에서 goods_uid만 뽑아서 배열을 만든다.
     //A_goods_list_o
 
@@ -138,9 +138,6 @@ export default function Wishlist({route,navigation}) {
     
     /**---------------------체크시 상태 변경----------------------------**/
     const goChk = (uid, cate_1st_uid) => {
-
-
-
         // A_goods_list_o의 goods_uid중에 중복되는 경우 alert를 띄우고 체크를 못하도록 한다.
         if(route.params) {
             const {get_gd_order, add_goods_list} = route.params;
@@ -222,42 +219,6 @@ export default function Wishlist({route,navigation}) {
                 }
             ]);
         }
-        //
-        // if(get_gd_order.ord_status === 'ord_ready' || get_gd_order.ord_status === 'pay_ready') {
-        //     /**------------------------------1. 체크한상품 필터링------------------------**/
-        //     console.log(add_goods_list,' / 결제전 자재추가');
-        //     let add_goods_list_o = (add_goods_list) ? add_goods_list : '';
-        //     let temp            = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
-        //     let A_goods_list    = temp.reduce((val,idx)=>{return val.concat(idx)});
-        //     let A_filter        = [...new Set([...A_goods_list, ...add_goods_list_o])];
-        //     console.log(A_filter,'/[추가한 자재 리스트]');
-        //     Alert.alert('','선택하신 자재를 추가하시겠습니까?',[
-        //         {text:"취소",onPress:()=>{}},
-        //         {text:"추가",onPress:()=>{
-        //                 // return navigation.navigate('발주상세',{gd_order_uid:gd_order_uid, A_goods_list:A_filter})
-        //                 let data = {
-        //                     get_gd_order    :get_gd_order,
-        //                     add_goods_list  :A_filter,
-        //                 }
-        //                 return navigation.navigate('수정하기',data);
-        //             }
-        //         }
-        //     ]);
-        //
-        // } else {
-        //     console.log(A_goods_list_o,' / 결제후 자재추가');
-        //     let temp            = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
-        //     let A_goods_list    = temp.reduce((val,idx)=>{return val.concat(idx)});
-        //     let A_filter        = [...new Set([...A_goods_list, ...A_goods_list_o])];
-        //     Alert.alert('','선택하신 자재를 추가하시겠습니까?',[
-        //         {text:"취소",onPress:()=>{}},
-        //         {text:"추가",onPress:()=>{
-        //             return navigation.navigate('발주상세',{gd_order_uid:gd_order_uid, A_goods_list:A_filter})
-        //             }
-        //         }
-        //     ]);
-        // }
-
     }
 
 
@@ -279,8 +240,29 @@ export default function Wishlist({route,navigation}) {
                 const {result, order_uid} = res.data;
                 console.log(result);
                 if (result === 'OK') {
-                    console.log(order_uid);
-                    navigation.replace('장바구니');
+                    get_my_zzim_list_new(Member).then((res)=>{
+                        if(res) {
+                            console.log(res.data,'/콘솔 확인');
+                            const {result, A_zzim} = res.data;
+                            if(result === 'OK') {
+                                /**1. 장바구니 체크 배열 넣기**/
+                                /* 즐겨찾기 체크        : goods_chk */
+                                /* 즐겨찾기 리스트 삭제  : goods_wish */
+                                let temp = A_zzim.map((cate)=>{
+                                    return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
+                                            return {...val, goods_chk:false, goods_wish:true}
+                                        })}
+                                })
+                                showCopyToast();
+                                setWishList(temp);
+                                get_cart_list(Member);
+                                // return Alert.alert(``,`장바구니에 추가하였습니다.`);
+                            } else {
+                                console.log('실패');
+                            }
+                        }
+                    });
+
                 } else {
                     console.log('실패');
 
@@ -289,7 +271,10 @@ export default function Wishlist({route,navigation}) {
         });
 
     }
-
+// Toast 메세지 출력
+    const showCopyToast = useCallback(() => {
+        toastRef.current.show('장바구니에 추가되었습니다.');
+    }, []);
     let list      = WishList.map(cate=>cate.A_goods_list.filter(val=>val.goods_chk === true));
     let arr       = list.map(val=>val.length);
     let cont      = 0;
@@ -301,16 +286,8 @@ export default function Wishlist({route,navigation}) {
     let result = WishList.map(cate=> {
         return {...cate, A_goods_list:cate.A_goods_list.filter((val)=>val.goods_wish === true)}
     });
-    // console.log(result,'/ 필터링 리스트');
-    //
-    // console.log(route.params,'/[자재추가 있을시 파라미터 호출]');
-    // console.log(WishList.length,'/체크값');
-
-    /**------------------------------장바구니 선택 항목 필터링------------------------------**/
-
     
-
-
+    /**------------------------------장바구니 선택 항목 필터링------------------------------**/
 
     return (
         <>
@@ -531,7 +508,11 @@ export default function Wishlist({route,navigation}) {
                 </View>
             </ScrollView>
             <Footer navigation={navigation}/>
-
+            <Toast ref={toastRef}
+                   fadeInDuration={200}
+                   fadeOutDuration={1000}
+                   style={[styles.toast]}
+            />
             {/*========상품체크시 노출=========*/}
 
             {(route.params) ? (
@@ -561,23 +542,16 @@ export default function Wishlist({route,navigation}) {
                 <>
                     {(cont > 0) ? (
                         <>
-                            <View style={[styles.go_cart, bg_primary, {paddingBottom: 36, paddingTop: 7,}]}>
+                            <View style={[styles.go_cart, bg_primary, {paddingBottom: 36, paddingTop: 36,}]}>
                                 <TouchableOpacity onPress={goCart}>
-                                    <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
-                                        <View style={{
-                                            width: 20,
-                                            height: 20,
-                                            borderRadius: 50,
-                                            marginRight: 10,
-                                            backgroundColor: "#fff"
-                                        }}>
+                                    <View style={[d_flex, justify_content_center, align_items_center]}>
+                                        <View style={{width: 20, height: 20, borderRadius: 50, marginRight: 10, backgroundColor: "#fff"}}>
                                             <Text style={{textAlign: "center", color: "#333",}}>{cont}</Text>
                                         </View>
-                                        <Text style={text_light}>장바구니 가기</Text>
+                                        <Text style={[{textAlign: "center", color: "#FFF", fontSize: 18,}, text_light]}>
+                                            장바구니 추가
+                                        </Text>
                                     </View>
-                                    <Text style={[{textAlign: "center", color: "#FFF", fontSize: 18,}, text_light]}>
-                                        수량 및 추가정보 입력
-                                    </Text>
                                 </TouchableOpacity>
                             </View>
                         </>
@@ -595,12 +569,17 @@ export default function Wishlist({route,navigation}) {
 
 
 const styles = StyleSheet.create({
+    toast:{
+        backgroundColor:'rgba(33, 87, 243, 0.5)',
+        position:"absolute",
+        bottom:70,
+    },
     Section:{
       marginBottom: Platform.OS === 'ios' ? 110 : 90,
     },
     go_cart: {
         paddingBottom: 36,
-        paddingTop: 7,
+        paddingTop: 6,
         position: "absolute",
         left: 0,
         bottom: 0,

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
     StyleSheet,
     Dimensions,
@@ -51,9 +51,7 @@ import {
 import RenderHtml from "react-native-render-html";
 import {get_Member} from "../UTIL_mem";
 import {getCartList} from "../cart/UTIL_cart";
-
-
-
+import Toast from 'react-native-easy-toast';
 
 
 
@@ -73,7 +71,7 @@ export default function GoodsCateList({route, navigation}) {
     const [goods_detail, set_goods_detail]      = useState([]);     // 상세페이지 설정
     const [GoodsCnt, setGoodsCnt]               = useState(1);     // 상세페이지 설정
     const [cart_list, set_cart_list]            = useState([]);   // 장바구니 가져오기
-
+    const toastRef = useRef();
     
 
     const update = useIsFocused();
@@ -281,7 +279,7 @@ export default function GoodsCateList({route, navigation}) {
                         if(res) {
                           let {result, A_goods} = res.data;
                           if(result === 'OK') {
-                              Alert.alert(``,`장바구니에 추가되었습니다.`);
+                              showCopyToast();
                               get_cart_list(Member);
                               setGoodsList(A_goods);
                           } else {
@@ -329,7 +327,7 @@ export default function GoodsCateList({route, navigation}) {
                                     const {result} = res.data;
                                     if(result === 'OK') {
                                         setGoodsCnt(1);
-                                        return Alert.alert('','장바구니에 추가하였습니다.');
+                                        return Alert.alert(``,`장바구니에 추가되었습니다.`);
                                     } else {
 
                                         return console.log('실패');
@@ -372,7 +370,10 @@ export default function GoodsCateList({route, navigation}) {
     const source = {
         html: goods_detail.summary_contents
     };
-
+// Toast 메세지 출력
+    const showCopyToast = useCallback(() => {
+        toastRef.current.show('장바구니에 추가되었습니다.');
+    }, []);
 
     /**--------자재목록-------------**/
     function goodsList ({item}) {
@@ -554,7 +555,11 @@ export default function GoodsCateList({route, navigation}) {
                 renderItem={goodsList}
                 windowSize={3}
             />
-
+            <Toast ref={toastRef}
+                   fadeInDuration={200}
+                   fadeOutDuration={1000}
+                   style={[styles.toast]}
+            />
             {/**-----------------------------------------------------모달-------------------------------------------------**/}
             <Modal visible={modalVisible} animationType="slide">
 
@@ -709,11 +714,16 @@ export default function GoodsCateList({route, navigation}) {
             {/*========상품체크시 노출=========*/}
             {(goForm.length > 0) ? (
                 <>
-                    <View style={[styles.go_cart, bg_primary,]}>
+                    <View style={[styles.go_cart, bg_primary, {paddingBottom: 36, paddingTop: 36,}]}>
                         <TouchableOpacity onPress={goCart}>
-                            <Text style={[{textAlign: "center", color: "#FFF", fontSize: 18,}, text_light]}>
-                                장바구니 추가
-                            </Text>
+                            <View style={[d_flex, justify_content_center, align_items_center]}>
+                                <View style={{width: 20, height: 20, borderRadius: 50, marginRight: 10, backgroundColor: "#fff"}}>
+                                    <Text style={{textAlign: "center", color: "#333",}}>{goForm.length}</Text>
+                                </View>
+                                <Text style={[{textAlign: "center", color: "#FFF", fontSize: 18,}, text_light]}>
+                                    장바구니 추가
+                                </Text>
+                            </View>
                         </TouchableOpacity>
                     </View>
                 </>
@@ -732,7 +742,11 @@ export default function GoodsCateList({route, navigation}) {
 
 
 const styles = StyleSheet.create({
-
+    toast:{
+        backgroundColor:'rgba(33, 87, 243, 0.5)',
+        position:"absolute",
+        bottom:70,
+    },
     cart_btn:{
         paddingBottom:38,
         paddingTop:33,

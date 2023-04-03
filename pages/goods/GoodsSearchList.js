@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
     StyleSheet,
     Text,
@@ -47,7 +47,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {get_goods_search, go_goods_cate3rd_list, ins_cart, save_cart, save_wish} from "./UTIL_goods";
 import {get_Member} from "../UTIL_mem";
 import {getCartList} from "../cart/UTIL_cart";
-
+import Toast from "react-native-easy-toast";
 
 
 export default function GoodsSearchList({route,navigation}) {
@@ -58,6 +58,7 @@ export default function GoodsSearchList({route,navigation}) {
     // 1. 상태정의
     const [GoodsList, setGoodsList] = useState([]);
     const [cart_list, set_cart_list]            = useState([]);   // 장바구니 가져오기
+    const toastRef = useRef();
     // 2. 검색상품 출력
     useEffect(()=>{
         get_Member().then((res)=>{
@@ -174,7 +175,7 @@ export default function GoodsSearchList({route,navigation}) {
                         if (res) {
                             const {result, A_goods} = res.data;
                             if (result === 'OK') {
-                                Alert.alert(``,`장바구니에 추가되었습니다.`);
+                                showCopyToast();
                                 setGoodsList(A_goods);
                                 get_cart_list(Member);
                             } else {
@@ -212,7 +213,10 @@ export default function GoodsSearchList({route,navigation}) {
 
     // 체크한 상품 버튼 생성
     let goForm = GoodsList.filter((val) => val.goods_cart_chk);
-
+// Toast 메세지 출력
+    const showCopyToast = useCallback(() => {
+        toastRef.current.show('장바구니에 추가되었습니다.');
+    }, []);
     console.log(GoodsList);
 
     return (
@@ -336,27 +340,24 @@ export default function GoodsSearchList({route,navigation}) {
                     </View>
                 ))}
             </ScrollView>
-
+            <Toast ref={toastRef}
+                   fadeInDuration={200}
+                   fadeOutDuration={1000}
+                   style={[styles.toast]}
+            />
             {/*========상품체크시 노출=========*/}
             {(goForm.length > 0) ? (
                 <>
-                    <View style={[styles.go_cart, bg_primary, {paddingBottom: 36, paddingTop: 7,}]}>
-                        <TouchableOpacity onPress={goCart} >
-                            <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
-                                <View style={{
-                                    width: 20,
-                                    height: 20,
-                                    borderRadius: 50,
-                                    marginRight: 10,
-                                    backgroundColor: "#fff"
-                                }}>
+                    <View style={[styles.go_cart, bg_primary, {paddingBottom: 36, paddingTop: 36,}]}>
+                        <TouchableOpacity onPress={goCart}>
+                            <View style={[d_flex, justify_content_center, align_items_center]}>
+                                <View style={{width: 20, height: 20, borderRadius: 50, marginRight: 10, backgroundColor: "#fff"}}>
                                     <Text style={{textAlign: "center", color: "#333",}}>{goForm.length}</Text>
                                 </View>
-                                <Text style={text_light}>장바구니 가기</Text>
+                                <Text style={[{textAlign: "center", color: "#FFF", fontSize: 18,}, text_light]}>
+                                    장바구니 추가
+                                </Text>
                             </View>
-                            <Text style={[{textAlign: "center", color: "#FFF", fontSize: 18,}, text_light]}>
-                                수량 및 추가정보 입력
-                            </Text>
                         </TouchableOpacity>
                     </View>
                 </>
@@ -368,6 +369,11 @@ export default function GoodsSearchList({route,navigation}) {
 }
 
 const styles = StyleSheet.create({
+    toast:{
+        backgroundColor:'rgba(33, 87, 243, 0.5)',
+        position:"absolute",
+        bottom:70,
+    },
     go_cart: {
         paddingBottom: 36,
         paddingTop: 7,

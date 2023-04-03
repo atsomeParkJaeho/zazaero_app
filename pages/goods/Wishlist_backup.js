@@ -462,7 +462,7 @@ export default function Wishlist({route,navigation}) {
                                         <Text style={text_light}>장바구니 가기</Text>
                                     </View>
                                     <Text style={[{textAlign: "center", color: "#FFF", fontSize: 18,}, text_light]}>
-                                        수량 및 추가정보 입력
+                                        장바구니 추가
                                     </Text>
                                 </TouchableOpacity>
                             </View>
