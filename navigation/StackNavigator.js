@@ -92,7 +92,11 @@ const StackNavigator = () => {
     const [Member, setMember] = useState();
 
 
-
+    const forFade = ({ current }) => ({
+        cardStyle: {
+            opacity: current.progress,
+        },
+    });
 
     useEffect(() => {
         AsyncStorage.getItem('member').then((value) => {
@@ -128,13 +132,15 @@ const StackNavigator = () => {
             >
                 {/*==============비회원===============*/}
                 <Stack.Screen name="로그인" component={Login} options={{headerTitle:'',headerStatusBarHeight:0,}}/>
-                <Stack.Screen name="회원가입" component={SignUp}/>
+                <Stack.Screen name="회원가입" component={SignUp} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
                 {/*==============메인페이지===============*/}
                 <Stack.Screen name="메인페이지" component={MainPage} options={
                     {
                         headerTitle:'',
                         headerStatusBarHeight:0,
-                        // cardStyleInterpolator: forFade,
+                        cardStyleInterpolator: forFade,
                         // headerLeftContainerStyle:
                     }
                 }/>
@@ -142,55 +148,99 @@ const StackNavigator = () => {
                 {/*<Stack.Screen name="검색" component={GoodsSearch}/>*/}
                 {/*<Stack.Screen name="검색상품" component={GoodsSearchList}/>*/}
                 {/*==============마이페이지===============*/}
-                <Stack.Screen name="회원탈퇴" component={MemOut}/>
-                <Stack.Screen name="마이페이지" component={MyPage} options={{
-                    // cardStyleInterpolator: forFade
+                <Stack.Screen name="회원탈퇴" component={MemOut} options={{
+                    cardStyleInterpolator: forFade
                 }}/>
-                <Stack.Screen name="회원정보수정" component={MemInfo}/>
+                <Stack.Screen name="마이페이지" component={MyPage} options={{
+                     cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="회원정보수정" component={MemInfo} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
                 <Stack.Screen name="포인트내역" component={MyPoint}/>
                 <Stack.Screen name="환불내역" component={MyRefund}/>
                 <Stack.Screen name="설정" component={Setting}/>
-                <Stack.Screen name="공사현황목록" component={ConstructionStatus}/>
+                <Stack.Screen name="공사현황목록" component={ConstructionStatus} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
                 <Stack.Screen name="공사현황발주서목록" component={ConstructionStatusDetailList}/>
                 <Stack.Screen name="공사현황발주서상세" component={ConstructionStatusDetail}/>
-                <Stack.Screen name="배송정보등록" component={OrderForm}/>
-                <Stack.Screen name="장바구니" component={Cart}/>
-                <Stack.Screen name="즐겨찾기" component={Wishlist}/>
-                <Stack.Screen name="아이디 찾기" component={FindId}/>
-                <Stack.Screen name="아이디 찾기결과" component={FindIdResult}/>
-                <Stack.Screen name="비밀번호 찾기" component={FindPw}/>
-                <Stack.Screen name="비밀번호 찾기결과" options={{title:'비밀번호 찾기'}} component={FindPwResult}/>
-                <Stack.Screen name="약관/개인정보처리방침" component={Provision}/>
+                <Stack.Screen name="배송정보등록" component={OrderForm} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="장바구니" component={Cart} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="즐겨찾기" component={Wishlist} options={{
+                    cardStyleInterpolator: forFade
+                }} />
+                <Stack.Screen name="아이디 찾기" component={FindId} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="아이디 찾기결과" component={FindIdResult} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="비밀번호 찾기" component={FindPw} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="비밀번호 찾기결과" options={{title:'비밀번호 찾기',cardStyleInterpolator: forFade}} component={FindPwResult}/>
+                <Stack.Screen name="약관/개인정보처리방침" component={Provision} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
                 <Stack.Screen name="상품목록" component={GoodsCateList} />
                 <Stack.Screen name="상품상세" component={GoodsDetail}/>
-                <Stack.Screen name="발주상세" component={OrderDetail}/>
+                <Stack.Screen name="발주상세" component={OrderDetail} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
                 <Stack.Screen name="추가발주" component={AddOrder}/>
                 <Stack.Screen name="수정하기" component={ModOrder}/>
                 {/*================발주내역 상태 변경===================*/}
-                <Stack.Screen name="결제상태" options={{title:'발주내역'}} component={PayStatus}/>
-                <Stack.Screen name="발주상태" options={{title:'발주내역'}} component={OrderStatus}/>
-                <Stack.Screen name="배송상태" options={{title:'발주내역'}} component={DeliStatus}/>
+                <Stack.Screen name="결제상태" options={{title:'발주내역',cardStyleInterpolator: forFade,}} component={PayStatus} />
+                <Stack.Screen name="발주상태" options={{title:'발주내역',cardStyleInterpolator: forFade,}} component={OrderStatus}/>
+                <Stack.Screen name="배송상태" options={{title:'발주내역',cardStyleInterpolator: forFade,}} component={DeliStatus}/>
                 {/*================취소/반품===================*/}
-                <Stack.Screen name="취소내역" options={{title:'취소,반품내역'}} component={Cancel}/>
-                <Stack.Screen name="취소내역상세" options={{title:'취소내역'}} component={CancelDetail}/>
-                <Stack.Screen name="반품내역" options={{title:'취소,반품내역'}} component={Return}/>
-                <Stack.Screen name="반품내역상세" options={{title:'반품내역'}} component={ReturnDetail}/>
-                <Stack.Screen name="반품요청" options={{title:'반품요청'}} component={RequestReturn}/>
+                <Stack.Screen name="취소내역" options={{title:'취소,반품내역',cardStyleInterpolator: forFade}} component={Cancel}/>
+                <Stack.Screen name="취소내역상세" options={{title:'취소내역',cardStyleInterpolator: forFade}} component={CancelDetail}/>
+                <Stack.Screen name="반품내역" options={{title:'취소,반품내역',cardStyleInterpolator: forFade}} component={Return}/>
+                <Stack.Screen name="반품내역상세" options={{title:'반품내역',cardStyleInterpolator: forFade}} component={ReturnDetail}/>
+                <Stack.Screen name="반품요청" options={{title:'반품요청',cardStyleInterpolator: forFade}} component={RequestReturn}/>
                 {/*=================게시판===============*/}
-                <Stack.Screen name="고객센터" component={Cscenter}/>
-                <Stack.Screen name="자주묻는질문" component={FaqList}/>
-                <Stack.Screen name="알림" component={NotificationList}/>
-                <Stack.Screen name="검색" component={GoodsSearch}/>
-                <Stack.Screen name="검색결과" component={GoodsSearchList}/>
-                <Stack.Screen name="1:1문의작성" component={inquiryWrite}/>
-                <Stack.Screen name="1:1문의목록" component={inquiryList}/>
-                <Stack.Screen name="공지사항" component={NoticeList}/>
-                <Stack.Screen name="공지사항상세" component={NoticeView}/>
+                <Stack.Screen name="고객센터" component={Cscenter} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="자주묻는질문" component={FaqList} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="알림" component={NotificationList} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="검색" component={GoodsSearch} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="검색결과" component={GoodsSearchList} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="1:1문의작성" component={inquiryWrite} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="1:1문의목록" component={inquiryList} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="공지사항" component={NoticeList} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="공지사항상세" component={NoticeView} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
                 <Stack.Screen name="하단" component={Footer}/>
                 {/*다음 주소 api 추가*/}
-                <Stack.Screen name="주소검색" component={DaumPostCode}/>
+                <Stack.Screen name="주소검색" component={DaumPostCode} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
                 {/**--------------------아임포트 결제 모듈 추가-------------------------**/}
-                <Stack.Screen name="카드결제" component={Payment}/>
+                <Stack.Screen name="카드결제" component={Payment} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
                 <Stack.Screen name="푸시알림" component={Push}/>
             </Stack.Navigator>
         </>
