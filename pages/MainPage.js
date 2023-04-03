@@ -9,7 +9,7 @@ import {
     container,
     flex,
     flex_between,
-    d_flex, pt2
+    d_flex, pt2, ms1
 } from '../common/style/AtStyle';
 
 import Footer from "./Footer";
@@ -23,6 +23,7 @@ import * as Device from "expo-device";
 import Search from '../icons/search.svg';
 import Main_logo from '../icons/main_logo.svg';
 import {ComPhone} from "../util/util";
+import NotificationIcon from "../icons/Notification_icon.svg";
 
 
 // 2차 카테고리 설정
@@ -203,10 +204,12 @@ export default function MainPage({route,navigation}) {
                         <Main_logo width={65} height={20}/>
                     </View>
                     <View style={flex}>
+                        <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('알림')}}>
+                            <NotificationIcon width={30} height={21} style={[styles.icon, ms1]}/>
+                        </TouchableOpacity>
                         <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
                             <Search width={30} height={21} style={[styles.icon]}/>
                         </TouchableOpacity>
-                        {/*<Button title="푸시알림" onPress={()=>push_test()} />*/}
                     </View>
                 </View>
             </View>
