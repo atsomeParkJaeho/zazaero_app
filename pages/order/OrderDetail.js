@@ -234,12 +234,13 @@ export default function OrderDtail({route,navigation}) {
             ]
         );
     }
-    const goSearch = (name, value) => {
+    const goSearch = (name, value, label) => {
         if(name === 'settlekind') {
             setShow_2(!Show_2);
             set_get_gd_order({
                 ...get_gd_order,
                 bankAccount:value,
+                bankLabel:label,
             });
         }
     }
@@ -348,6 +349,7 @@ export default function OrderDtail({route,navigation}) {
         marginBottom:86
     }
 
+    console.log(BankCode,'/[은행코드 확인]');
 
     return (
         <>
@@ -602,7 +604,8 @@ export default function OrderDtail({route,navigation}) {
                                                         <View style={[styles.border]}>
                                                             {/**---------------------------선택주소 노출--------------------------------**/}
                                                             <Text style={[styles.select_txt, h12, (get_gd_order.bankAccount !== '0') ? text_black:text_gray]}>
-                                                                {BankCode.map(label=>label.value === get_gd_order.bankAccount ? label.label : '계좌번호를 선택해주세요')}
+                                                                {(get_gd_order.bankLabel) ? get_gd_order.bankLabel : '계좌번호를 선택해주세요.'}
+                                                                {/*{BankCode.map(label=>label.value === get_gd_order.bankAccount ? label.label : '계좌번호를 선택해주세요')}*/}
                                                             </Text>
                                                         </View>
                                                     </TouchableOpacity>
@@ -618,7 +621,7 @@ export default function OrderDtail({route,navigation}) {
                                                             {BankCode.map((val,idx)=>(
                                                                 <>
                                                                     <View style={[styles.select_opt_list_itmes]}>
-                                                                        <TouchableOpacity onPress={() => goSearch(`settlekind`,val.value)}>
+                                                                        <TouchableOpacity onPress={() => goSearch(`settlekind`,val.value, val.label)}>
                                                                             <Text style={[text_center,h14]}>
                                                                                 {val.label}
                                                                             </Text>

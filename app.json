@@ -7,9 +7,6 @@
     "orientation": "portrait",
     "icon": "./assets/zazero_icon.png",
     "userInterfaceStyle": "light",
-    "notification": {
-      "icon": "./assets/img/zazaero_push_ios.png"
-    },
     "splash": {
       "image": "./assets/zazero_icon.png",
       "resizeMode": "contain",
@@ -29,6 +26,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.www.zazaero",
+      "googleServicesFile": "GoogleService-Info.plist",
       "buildNumber": "9"
     },
     "android": {
@@ -37,6 +35,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.www.zazaero",
+      "googleServicesFile": "./google-services.json",
       "versionCode": 9
     },
     "web": {
