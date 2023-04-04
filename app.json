@@ -36,6 +36,7 @@
       },
       "package": "com.www.zazaero",
       "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi": true,
       "versionCode": 9
     },
     "web": {
