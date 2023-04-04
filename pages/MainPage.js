@@ -24,6 +24,7 @@ import Search from '../icons/search.svg';
 import Main_logo from '../icons/main_logo.svg';
 import {ComPhone} from "../util/util";
 import NotificationIcon from "../icons/Notification_icon.svg";
+import {order_form_push} from "../push/UTIL_push";
 
 
 // 2차 카테고리 설정
@@ -102,6 +103,13 @@ export default function MainPage({route,navigation}) {
     // console.log(app_test);
 
     useEffect(() => {
+
+        order_form_push().then((res)=>{
+            if(res) {
+                console.log(res,'/연결확인');
+            }
+        });
+
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
                 Alert.alert(``,`실패`);
@@ -309,7 +317,7 @@ export default function MainPage({route,navigation}) {
                                 사업장 주소 : {com_info.addr1} {com_info.addr2}
                             </Text>
                             <Text style={styles.main_footer_disc_txt}>
-                                앱 버전 : 9.1.1
+                                앱 버전 : 9.1.2
                             </Text>
                         </View>
                     </View>
