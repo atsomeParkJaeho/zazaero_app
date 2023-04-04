@@ -52,6 +52,9 @@
     },
     "runtimeVersion": {
       "policy": "sdkVersion"
-    }
+    },
+    "plugins": [
+      "@notifee/react-native"
+    ]
   }
 }

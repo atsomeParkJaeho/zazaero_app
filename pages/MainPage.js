@@ -15,7 +15,7 @@ import {
 import Footer from "./Footer";
 import {ABanner, get_cate_list} from "./UTIL_main";
 import {getAppInfo} from "./order/UTIL_order";
-import {chk_test, get_Member} from "./UTIL_mem";
+import {chk_test, get_Member, my_page} from "./UTIL_mem";
 import PushSetting from "../UTIL_push";
 import * as Device from "expo-device";
 
@@ -24,7 +24,7 @@ import Search from '../icons/search.svg';
 import Main_logo from '../icons/main_logo.svg';
 import {ComPhone} from "../util/util";
 import NotificationIcon from "../icons/Notification_icon.svg";
-import {order_form_push} from "../push/UTIL_push";
+import {creact_push_id, PushMess} from "../push/UTIL_push";
 
 
 // 2차 카테고리 설정
@@ -92,21 +92,19 @@ export default function MainPage({route,navigation}) {
     // 2. 배너 담기
     const [A_banner, set_A_banner] = useState([]);
 
-    let os_type = Platform;
-
-    console.log(Device.deviceName,'/디바이스 정보');
-    console.log(Device.modelName,'/디바이스 정보');
-    console.log(Device.osBuildId,'/디바이스 정보');
-    console.log(Device.osInternalBuildId,'/디바이스 정보');
-    // console.log(Device.deviceName,'/디바이스 정보');
-
-    // console.log(app_test);
-
     useEffect(() => {
 
-        order_form_push().then((res)=>{
+        // 1. 사용자 정보 가져오기
+        my_page(Member).then((res)=>{
             if(res) {
-                console.log(res,'/연결확인');
+                const {result, mem_info} = res.data;
+                if(result === 'OK') {
+                    console.log(res.data,'/ [사용자 정보1]');
+                    // 2. 사용자 푸시 id가 없을 경우
+                    if(!mem_info.push_id) {
+
+                    }
+                }
             }
         });
 
@@ -212,6 +210,9 @@ export default function MainPage({route,navigation}) {
                         <Main_logo width={65} height={20}/>
                     </View>
                     <View style={flex}>
+                        <TouchableOpacity style={styles.link_signUp} onPress={() => {PushMess()}}>
+                            <Text>푸시알림 테스트</Text>
+                        </TouchableOpacity>
                         <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('알림')}}>
                             <NotificationIcon width={30} height={21} style={[styles.icon, ms1]}/>
                         </TouchableOpacity>
