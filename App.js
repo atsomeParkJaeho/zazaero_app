@@ -11,8 +11,6 @@ import StackNavigator from './navigation/StackNavigator'
 import 'react-native-gesture-handler';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
-import {onDisplayNotification, registerForPushNotificationsAsync, requestUserPermission} from "./push/UTIL_push";
-import messaging from "@react-native-firebase/messaging";
 import {Alert} from "react-native";
 import {get_Member} from "./pages/UTIL_mem";
 
@@ -36,6 +34,8 @@ export default function App() {
                 Alert.alert(``,`실패`);
             }
         });
+
+
         console.log('[실행]');
     },[Member]);
 
