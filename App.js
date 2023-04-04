@@ -13,6 +13,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import {onDisplayNotification, registerForPushNotificationsAsync, requestUserPermission} from "./push/UTIL_push";
 import messaging from "@react-native-firebase/messaging";
+import {Alert} from "react-native";
+import {get_Member} from "./pages/UTIL_mem";
 
 
 // 1. 푸시알림 설정
@@ -26,40 +28,16 @@ Notifications.setNotificationHandler({
 
 export default function App() {
 
-    // 회원정보 가져오기
-    // const [expoPushToken, setExpoPushToken] = useState('');
-    // const [notification, setNotification] = useState(false);
-    // const notificationListener = useRef();
-    // const responseListener = useRef();
-    // useEffect(()=>{
-    //     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-    //
-    //     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-    //         setNotification(notification,'/연결확인1');
-    //     });
-    //
-    //     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-    //         console.log(response,'/연결확인2');
-    //     });
-    //
-    //     return () => {
-    //         Notifications.removeNotificationSubscription(notificationListener.current);
-    //         Notifications.removeNotificationSubscription(responseListener.current);
-    //     };
-    // },[]);
-    //
-    // console.log(expoPushToken,' / [엑스포 토큰]')
-    // console.log(notification,' / [푸시설정]')
+    const [Member, setMember] = useState();
 
-    //push notification permission 요청
     useEffect(()=>{
-        requestUserPermission();
-        return messaging().onMessage(async remoteMessage => {
-            const title = remoteMessage?.notification?.title;
-            const body = remoteMessage?.notification?.body;
-            await onDisplayNotification({title, body});
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
+            }
         });
-    },[]);
+        console.log('[실행]');
+    },[Member]);
 
     return (
         <>

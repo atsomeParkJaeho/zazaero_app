@@ -188,6 +188,7 @@ export default function MainPage({route,navigation}) {
             return navigation.navigate('공지사항상세',{bd_uid:cfg_val1});
         }
     }
+    /*
     const hintChangeBillingEmailPushNotification = async (inboundEmail) => {
         try {
             const pushToken = (await Notifications.getDevicePushTokenAsync()).data;
@@ -216,6 +217,8 @@ export default function MainPage({route,navigation}) {
             console.error(error);
         }
     };
+
+    */
     console.log(A_banner,' / 배너2');
     console.log(com_info.com_name,' / 회사정보');
     // let com_phone_val = com_info.com_phone;
@@ -341,7 +344,7 @@ export default function MainPage({route,navigation}) {
                                 사업장 주소 : {com_info.addr1} {com_info.addr2}
                             </Text>
                             <Text style={styles.main_footer_disc_txt}>
-                                앱 버전 : 9.1.2
+                                앱 버전 : 9.1.6
                             </Text>
                         </View>
                     </View>

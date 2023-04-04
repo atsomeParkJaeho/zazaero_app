@@ -2,7 +2,7 @@
   "expo": {
     "name": "자재로",
     "slug": "zazaero",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "sdkVersion": "46.0.0",
     "orientation": "portrait",
     "icon": "./assets/zazero_icon.png",
@@ -27,7 +27,7 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.www.zazaero",
       "googleServicesFile": "GoogleService-Info.plist",
-      "buildNumber": "9"
+      "buildNumber": "10"
     },
     "android": {
       "adaptiveIcon": {
@@ -37,7 +37,7 @@
       "package": "com.www.zazaero",
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
-      "versionCode": 9
+      "versionCode": 10
     },
     "web": {
       "favicon": "./assets/favicon.png"
