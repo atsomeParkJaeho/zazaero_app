@@ -81,7 +81,7 @@ import {
     h30,
     ps2,
     pe2,
-    btn_warning, wt3, wt5, wt4, wt7, ms1, align_items_start, align_items_end, wt6,
+    btn_warning, wt3, wt5, wt4, wt7, ms1, align_items_start, align_items_end, wt6, wt10, mt2, mb3,
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 import {FormStyle} from "./FormStyle";
@@ -789,6 +789,14 @@ export default function OrderDtail({route,navigation}) {
 
                     {/**--------------결제정보---------------**/}
                     <View style={container}>
+                        <View style={[]}>
+                            <TouchableOpacity style={[mb3]}>
+                                <View style={[btn_danger,wt10,{borderRadius:10,}]}>
+                                    <Text style={[h16,text_white,text_center,pt1,pb1]}>주문취소 상세보기</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                        {/*주문취소시 상세내역으로 가는 버튼*/}
                         <Text style={[h18]}>결제금액</Text>
                         {(get_gd_order.settlekind === 'bank') && (
                             <>
