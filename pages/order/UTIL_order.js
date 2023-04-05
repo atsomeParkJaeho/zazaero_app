@@ -496,7 +496,7 @@ export const add_order = async (OrderData, Member, A_goods_list ,chk_result) => 
     return res;
 }
 /**-----------------------------------------결제후 선택 발주 취소 이벤트---------------------------------------------------**/
-export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Member) => {
+export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Member, ret_order) => {
     // 1. 체크박스를 클릭한다
     // refund_type = all, part
     let A_goods_uid = OrderGoodsList.map(val=>val.goods_uid);
@@ -511,19 +511,6 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
     console.log(cancel_type,' / 취소 타입');
 
     let data = {
-        act_type                    :"order_cancel",
-        mem_uid                     :Member,
-        gd_order_uid                :OrderData.gd_order_uid,
-        A_goods_uid                 :(cancel_type === 'part') ? A_goods_uid : '',               // 배열 부분취소일때만 전송
-        A_order_uid	                :(cancel_type === 'part') ? A_order_uid : '',               // 배열 부분취소일때만 전송
-        A_order_item_uid            :(cancel_type === 'part') ? A_order_item_uid : '',          // 배열 부분취소일때만 전송
-        A_order_item_cancel_cnt     :(cancel_type === 'part') ? A_order_item_cancel_cnt : '',   // 배열 부분취소일때만 전송
-        cancel_type                 :cancel_type,
-    }
-
-    console.log(data,'/ 발주취소 데이터 확인');
-
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type                    :"pay_done_gd_cancel",
         mem_uid                     :Member,
         gd_order_uid                :OrderData.gd_order_uid,
@@ -531,8 +518,18 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
         A_order_uid	                :(cancel_type === 'part') ? A_order_uid : '',               // 배열 부분취소일때만 전송
         A_order_item_uid            :(cancel_type === 'part') ? A_order_item_uid : '',          // 배열 부분취소일때만 전송
         A_order_item_cancel_cnt     :(cancel_type === 'part') ? A_order_item_cancel_cnt : '',   // 배열 부분취소일때만 전송
+        zonecode                    :(ret_order.zonecode) ? ret_order.zonecode : '',
+        addr1                       :(ret_order.addr1) ? ret_order.addr1 : '',
+        addr2                       :(ret_order.addr2) ? ret_order.addr2 : '',
+        return_mem_name             :(ret_order.return_mem_name) ? ret_order.return_mem_name : '',
+        return_mem_mobile           :(ret_order.return_mem_mobile) ? ret_order.return_mem_mobile : '',
+        return_req_memo             :(ret_order.return_req_memo) ? ret_order.return_req_memo : '',
         cancel_type                 :cancel_type,
-    },{
+    }
+
+    console.log(data,'/ 발주취소 데이터 확인');
+
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',data,{
         headers: {
             'Content-type': 'multipart/form-data'
         }

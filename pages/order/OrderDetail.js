@@ -137,10 +137,10 @@ export default function OrderDtail({route,navigation}) {
     /**-----------------------------------------수정 상태 설정-------------------------------------------------------**/
     const [Mod, setMod] = useState(false);          // 발주상태시 수정 변경가능
     /**--------------------------------------상태값 셋팅--------------------------------------------------**/
-    const [A_order_list,  set_A_order_list]              = useState([]);             // 발주상품상태정의
+    const [A_order_list,  set_A_order_list]                 = useState([]);             // 발주상품상태정의
     const [BankCode,        setBankCode]                    = useState([]);             // 관리자 무통장입금계좌 출력
     const [PayMement,       setPayMement]                   = useState('bank');         // 결제창 노출 여부
-    const [get_gd_order,    set_get_gd_order]                   = useState([]);
+    const [get_gd_order,    set_get_gd_order]               = useState([]);
     const [cancel_doing,    set_cancel_doing]               = useState(0);
     const [Show_1,          setShow_1]                      = useState(false);
     const [Show_2,          setShow_2]                      = useState(false);           // 셀렉트창 노출 여부
@@ -148,8 +148,11 @@ export default function OrderDtail({route,navigation}) {
     const [isModalVisible, setIsModalVisible]               = useState(false);
     const [isModalVisible2, setIsModalVisible2]             = useState(false);
     const [isModalVisible3, setIsModalVisible3]             = useState(false);
-    const [ret_order, set_ret_order]                        = useState({});
-
+    const [ret_order, set_ret_order]                        = useState({
+        zonecode    :'',
+        addr1       :'',
+        addr2       :'',
+    });
     // 추가발주 창 오픈 상태정의
     const [add_goods_list, set_add_goods_list]              = useState(false);
     const [A_goods, set_A_goods]                            = useState([]);
@@ -458,13 +461,11 @@ export default function OrderDtail({route,navigation}) {
         marginBottom:86
     }
 
-    //console.log(BankCode,'/[은행코드 확인]');
-    //console.log(ret_order,'/[반품 입력 정보]');
+    console.log(BankCode,'/[은행코드 확인]');
+    console.log(ret_order,'/[반품 입력 정보]');
 
     return (
         <>
-
-
             <ScrollView style={[bg_white]}>
                 {/**----------------------------------------------배송지 입력--------------------------------------------------**/}
                 <View style={[FormStyle.FormGroup]}>
@@ -560,7 +561,7 @@ export default function OrderDtail({route,navigation}) {
                         {(get_gd_order.ord_status === 'deli_done') && (
                             <>
                                 <View style={[flex]}>
-                                    <TouchableOpacity onPress={()=>{toggleModal3()}} style={[ms2,btn_warning,{paddingVertical:7,paddingHorizontal:7,}]}>
+                                    <TouchableOpacity onPress={()=>{navigation.navigate(`반품요청`,{get_gd_order:get_gd_order})}} style={[ms2,btn_warning,{paddingVertical:7,paddingHorizontal:7,}]}>
                                         <Text style={[text_white,text_center,h13]}>반품신청</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -896,7 +897,6 @@ export default function OrderDtail({route,navigation}) {
             {/**--------------------------------모달(반품신청)------------------------**/}
             <Modal visible={isModalVisible3} animationType="slide">
                 <View style={[{ paddingTop:Platform.OS === 'ios' ? 70 : 30,}]}>
-
                     <View style={[flex_between,ps1,pe1]} >
                         <View style={[]}>
                         </View>
@@ -909,7 +909,6 @@ export default function OrderDtail({route,navigation}) {
                             </TouchableOpacity>
                         </View>
                     </View>
-
                     <ScrollView style={[{height:"85%",borderColor:"#EDEDF1", borderTopWidth:1}]} nestedScrollEnabled={true}>
                         <View style={[styles.RequestReturn]}>
                             <View style={[FormStyle.FormGroup]}>
@@ -923,25 +922,19 @@ export default function OrderDtail({route,navigation}) {
                                         </View>
                                         <View  style={[d_flex,mt1]} >
                                             <View  style={{flex:0.7,marginRight:10}} >
-                                                <TextInput onChangeText={(refound_zonecode)=>re_goInput(`refound_zonecode`,refound_zonecode)}
-                                                           placeholder="우편번호"
-                                                           style={[input,bg_light]}/>
+                                                <TextInput onChangeText={(zonecode)=>re_goInput(`zonecode`,zonecode)} placeholder="우편번호" style={[input,bg_light]}/>
                                             </View>
-                                            <TouchableOpacity style={{flex:0.3}} onPress={()=>{}}>
-                                                <View style={[bg_primary, {padding:8,borderRadius:5,}]}>
+                                            <TouchableOpacity style={{flex:0.3}} onPress={()=>{navigation.navigate(`주소검색`,{page:'발주상세',get_gd_order:get_gd_order})}}>
+                                                <View style={[bg_primary, {padding:8,borderRadius:5}]}>
                                                     <Text style={[text_light,text_center,]}>주소찾기</Text>
                                                 </View>
                                             </TouchableOpacity>
                                         </View>
                                         <View  style={[mt1]} >
-                                            <TextInput onChangeText={(refound_addr2)=>re_goInput(`refound_addr1`,refound_addr1)}
-                                                       placeholder="주소"
-                                                       style={[input,bg_light]}/>
+                                            <TextInput onChangeText={(addr1)=>re_goInput(`addr1`,addr1)} placeholder="주소" style={[input,bg_light]}/>
                                         </View>
                                         <View  style={[mt1]} >
-                                            <TextInput onChangeText={(refound_addr2)=>re_goInput(`refound_addr2`,refound_addr2)}
-                                                       placeholder="상세주소"
-                                                       style={[input]}/>
+                                            <TextInput onChangeText={(addr2)=>re_goInput(`addr2`,addr2)} placeholder="상세주소" style={[input]}/>
                                         </View>
                                     </View>
                                     {/*============================*/}
@@ -950,7 +943,7 @@ export default function OrderDtail({route,navigation}) {
                                             <Text style={[]}>반품 담당자 성명</Text>
                                         </View>
                                         <View  style={[mt1]} >
-                                            <TextInput onChangeText={(refound_addr2)=>re_goInput(`refound_addr1`,refound_addr1)}
+                                            <TextInput onChangeText={(return_mem_name)=>re_goInput(`return_mem_name`,return_mem_name)}
                                                        placeholder="이름을 입력해주세요."
                                                        style={[input,]}/>
                                         </View>
@@ -958,7 +951,7 @@ export default function OrderDtail({route,navigation}) {
                                             <Text style={[]}>반품 담당자 연락처</Text>
                                         </View>
                                         <View  style={[mt1]} >
-                                            <TextInput onChangeText={(refound_addr2)=>re_goInput(`refound_addr1`,refound_addr1)}
+                                            <TextInput onChangeText={(return_mem_mobile)=>re_goInput(`return_mem_mobile`,return_mem_mobile)}
                                                        placeholder="연락처를 입력해주세요."
                                                        style={[input,]}/>
                                         </View>
@@ -966,7 +959,7 @@ export default function OrderDtail({route,navigation}) {
                                             <Text style={[mb1]}>반품 사유 및 수거 요청 사항</Text>
                                         </View>
                                         <View  style={[]} >
-                                            <TextInput onChangeText={(refound_memo)=>re_goInput(`refound_memo`,refound_memo)} style={[textarea]}/>
+                                            <TextInput onChangeText={(return_req_memo)=>re_goInput(`return_req_memo`,return_req_memo)} style={[textarea]}/>
                                         </View>
                                     </View>
                                     <View  style={[flex,mt2]} >
@@ -1069,7 +1062,7 @@ export default function OrderDtail({route,navigation}) {
                     <View style={[flex_between]}>
                         <View style={[wt5,ps1,pe1]}>
                             <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]}
-                                              onPress={()=>order_Cancel(`part`)}
+                                              onPress={()=>{order_Cancel(`part`)}}
                             >
                                 <Text style={[text_center,h18]}>반품신청</Text>
                             </TouchableOpacity>
