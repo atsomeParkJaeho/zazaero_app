@@ -538,7 +538,6 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
         }
     });
     return res;
-
 }
 
 export const pay_result = async (OrderData, Member) => {

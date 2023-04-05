@@ -24,7 +24,13 @@ import Search from '../icons/search.svg';
 import Main_logo from '../icons/main_logo.svg';
 import {ComPhone, FCM} from "../util/util";
 import NotificationIcon from "../icons/Notification_icon.svg";
-import {creact_push_id, requestUserPermission} from "../push/UTIL_push";
+import {
+    buildApp,
+    creact_push_id, order_push,
+    registerForPushNotificationsAsync,
+    requestUserPermission, sendPushApp,
+    sendPushNotification
+} from "../push/UTIL_push";
 import * as Notifications from "expo-notifications";
 import axios from "axios";
 
@@ -88,6 +94,8 @@ export default function MainPage({route,navigation}) {
     const Update = useIsFocused();
     // 1. 1차 카테고리 추출
     const [Cate1st, setCate1st] = useState([]);   // 1차 카테고리 설정
+    const [PushToken, set_PushToken] = useState(``);
+    const [App_PushToken, set_App_PushToken] = useState(``);
     // 아코디언 설정
     const [expend, setExpend] = useState(`1`);
     const [com_info, set_com_info] = useState([]);
@@ -95,7 +103,18 @@ export default function MainPage({route,navigation}) {
     const [A_banner, set_A_banner] = useState([]);
 
     useEffect(() => {
-
+        registerForPushNotificationsAsync().then((res)=>{
+            if(res) {
+                console.log(res,'/엑스포');
+                set_PushToken(res);
+            }
+        });
+        buildApp().then((res)=>{
+            if (res) {
+                console.log(res,'/일반전용');
+                set_App_PushToken(res);
+            }
+        });
 
         // 1. 사용자 정보 가져오기
         my_page(Member).then((res)=>{
@@ -188,37 +207,7 @@ export default function MainPage({route,navigation}) {
             return navigation.navigate('공지사항상세',{bd_uid:cfg_val1});
         }
     }
-    /*
-    const hintChangeBillingEmailPushNotification = async (inboundEmail) => {
-        try {
-            const pushToken = (await Notifications.getDevicePushTokenAsync()).data;
-            const { data } = await axios.post('https://fcm.googleapis.com/fcm/send',{
-                to: pushToken,
-                priority: 'normal',
-                data: {
-                    experienceId: '@expoAccountName/appSlugName',
-                    scopeKey: '@expoAccountName/appSlugName',
-                    title: `청구서 이메일을 ${inboundEmail}로 변경해주세요!`,
-                    message: '가입하신 통신사의 고객센터 또는 통신사 앱에서 변경 가능합니다...',
-                    icon: '',
-                },
-            },{
-                headers:{
-                    'Content-Type': 'application/json',
-                    Authorization: `key=${FCM}`,
-                }
 
-            });
-            console.log(data,'/ 보낸 리스트 확인');
-            console.log(pushToken,'/ 푸시토큰');
-            return Alert.alert(``,`${data} ${pushToken}`);
-
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    */
     console.log(A_banner,' / 배너2');
     console.log(com_info.com_name,' / 회사정보');
     // let com_phone_val = com_info.com_phone;
@@ -236,9 +225,16 @@ export default function MainPage({route,navigation}) {
                         <Main_logo width={65} height={20}/>
                     </View>
                     <View style={flex}>
-                        <TouchableOpacity style={styles.link_signUp} onPress={() => hintChangeBillingEmailPushNotification('test')}>
-                            <Text>푸시알림 테스트</Text>
-                        </TouchableOpacity>
+                        {(Member === '105' || Member === '79') && (
+                            <>
+                                <TouchableOpacity style={[styles.link_signUp, {marginRight:10,}]} onPress={() => sendPushNotification(PushToken)}>
+                                    <Text>엑스포</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.link_signUp} onPress={() => sendPushApp(App_PushToken)}>
+                                    <Text>apk</Text>
+                                </TouchableOpacity>
+                            </>
+                        )}
                         <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('알림')}}>
                             <NotificationIcon width={30} height={21} style={[styles.icon, ms1]}/>
                         </TouchableOpacity>

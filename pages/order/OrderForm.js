@@ -70,6 +70,7 @@ import {del_deli_addr, get_deli_addr_list, get_order_ready, InsOrder, SaveDeliAd
 import HomeLogoAt from "../../icons/home_logo_at.svg";
 import HomeLogo from "../../icons/home_logo.svg";
 import {get_Member} from "../UTIL_mem";
+import {order_push} from "../../push/UTIL_push";
 
 
 
@@ -805,7 +806,10 @@ export default function OrderForm({route,navigation}) {
                                     msg += '\n발주번호 : '+order_no;
                                     Alert.alert('',msg,[{
                                         text:'확인',
-                                        onPress:()=>{return navigation.replace('발주상태');}
+                                        onPress:()=>{
+                                            order_push(order_no);       // 로컬 푸시알림 전송
+                                            return navigation.replace('발주상태');
+                                        }
                                     }]);
                                 } else {return Alert.alert('',`에러[1]${result}`);}
                             }

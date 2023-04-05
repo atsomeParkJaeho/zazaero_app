@@ -13,20 +13,25 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import {Alert} from "react-native";
 import {get_Member} from "./pages/UTIL_mem";
+import {registerForPushNotificationsAsync} from "./push/UTIL_push";
 
 
 // 1. 푸시알림 설정
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
-        shouldPlaySound: false,
-        shouldSetBadge: false,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
     }),
 });
 
 export default function App() {
 
     const [Member, setMember] = useState();
+    const [expoPushToken, setExpoPushToken] = useState('');
+    const [notification, setNotification] = useState(false);
+    const notificationListener = useRef();
+    const responseListener = useRef();
 
     useEffect(()=>{
         get_Member().then((res)=>{
@@ -34,9 +39,22 @@ export default function App() {
                 Alert.alert(``,`실패`);
             }
         });
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+        });
+
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
+
+        return () => {
+            Notifications.removeNotificationSubscription(notificationListener.current);
+            Notifications.removeNotificationSubscription(responseListener.current);
+        };
 
 
-        console.log('[실행]');
     },[Member]);
 
     return (

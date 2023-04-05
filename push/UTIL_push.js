@@ -5,9 +5,9 @@ import * as Device from 'expo-device';
 import axios from "axios";
 import {useEffect} from "react";
 import * as Notifications from "expo-notifications";
-import messaging from '@react-native-firebase/messaging';
-import {getDevicePushTokenAsync, getExpoPushTokenAsync} from "expo-notifications";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
+import {FCM} from "../util/util";
+import {getExpoPushTokenAsync} from "expo-notifications";
 
 
 // 디바이스 id 만드는 변수
@@ -15,7 +15,6 @@ import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncSto
 export async function requestUserPermission() {
     const authStatus = await messaging().requestPermission();
     const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED || authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-    //android의 경우 기본값이 authorizaed
 
     if (enabled) {
         await messaging()
@@ -36,7 +35,6 @@ export const creact_push_id = async (Member) => {
     // 2. 앱에 디바이스 id를 저장한다
     await asyncStorage.setItem('app_device_id',uuid);
     // 2. 디바이스 토큰 id를 가져온다
-
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
         act_type        :"save_app_device_id",
         mem_uid         :Member,
@@ -51,4 +49,90 @@ export const creact_push_id = async (Member) => {
     // 3. 디바이스 id가 없을경우 db에 저장한다
 }
 // 푸시토큰 설정
+export async function sendPushNotification(expoPushToken) {
+    console.log(expoPushToken,'\n[엑스포 푸시알림]');
+    const message = {
+        to: expoPushToken,
+        sound: 'default',
+        title: '제목',
+        body: '내용',
+        data: { someData: 'goes here' },
+    };
 
+    Alert.alert(`엑스포 토큰`,`${expoPushToken}`);
+    
+    await axios.post('https://exp.host/--/api/v2/push/send', message,{
+            headers: {
+                Accept: 'application/json',
+                'Accept-encoding': 'gzip, deflate',
+                'Content-Type': 'application/json',
+            },
+        }
+    );
+}
+// 수동 푸시설정하기(발주신청시)
+export const order_push = async (order_noe) => {
+    await Notifications.scheduleNotificationAsync({
+        content: {
+            title   : `발주신청이 완료되었습니다.`,
+            body    : `요청하신 발주를 관리자가 확인하고 있습니다.`,
+        },
+        trigger:null,
+    });
+}
+
+
+export async function sendPushApp(App_PushToken) {
+    console.log(App_PushToken,'\n[디바이스 토큰]');
+    const data = {
+        to: App_PushToken,
+        priority: 'normal',
+        data: {
+            title: "제목",
+            message: '내용',
+        },
+    }
+    await axios.post('https://fcm.googleapis.com/fcm/send', data,{
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `key=${FCM}`,
+        },
+    }).then((res)=>{
+        const {results} = res.data;
+        let error = results.map(val=>val.error);
+        console.log(error,'/[에러확인]');
+        Alert.alert(``,`${App_PushToken}`);
+        Alert.alert(`[에러 데이터 확인]`,`${error}`);
+    });
+}
+
+
+// 엑스포 전용 토큰 가져오기
+export async function registerForPushNotificationsAsync() {
+    let token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log(token,'/엑스포 전용');
+    if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+        });
+    }
+
+    return token;
+}
+// 배포용 토큰 가져오기
+export async function buildApp() {
+    let token = (await Notifications.getDevicePushTokenAsync()).data;
+    console.log(token,'/[디바이스 전용]');
+    if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+        });
+    }
+    return token;
+}

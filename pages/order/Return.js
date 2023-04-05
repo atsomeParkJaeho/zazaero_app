@@ -49,10 +49,7 @@ export default function Return({navigation,route}) {
                     {/*상단탭*/}
                     <ScrollView style="">
                         <View style={[styles.cancel_list]}>
-
-
                             {CancelList.map((val,i)=>(
-
                                 <>
                                     <View style={[styles.order_list_items]} key={i}>
                                         <View style={[container]}>
