@@ -164,11 +164,11 @@ export default function RequestReturn({route, navigation}) {
                 {text:'확인',
                     onPress:()=>{
                         // ================1. 결제반품 이벤트 실행====================
-                        order_cancel(get_gd_order, cancel_type, A_order_list, Member).then((res)=>{
+                        order_cancel(get_gd_order, cancel_type, A_order_list, Member, ret_order).then((res)=>{
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
-                                    Alert.alert('','자재가 전부 반품 완료되었습니다.\n(환불은 2~3일 정도 소요됩니다.)',[
+                                    Alert.alert('','반품접수가 완료 되었습니다.\n(환불은 관리자 확인 후 2~3일 소요됩니다.)',[
                                         {text:'확인',
                                             onPress:()=>{
                                                 // ================2. 결제반품 이벤트 결과값 db에 전송====================
@@ -177,7 +177,7 @@ export default function RequestReturn({route, navigation}) {
                                         }
                                     ]);
                                 } else {
-                                    return Alert.alert('','에러');
+                                    return Alert.alert('',`${result}`);
                                 }
                             }
                         })
@@ -198,7 +198,7 @@ export default function RequestReturn({route, navigation}) {
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
-                                    Alert.alert('','선택하신 자재 반품 완료되었습니다.\n(환불은 2~3일 정도 소요됩니다.)',[
+                                    Alert.alert('','반품접수가 완료 되었습니다.\n(환불은 관리자 확인 후 2~3일 소요됩니다.)',[
                                         {text:'확인',
                                             onPress:()=>{
                                                 // ================2. 결제반품 이벤트 결과값 db에 전송====================
@@ -208,7 +208,7 @@ export default function RequestReturn({route, navigation}) {
                                         }
                                     ]);
                                 } else {
-                                    return Alert.alert('','에러');
+                                    return Alert.alert('',`${result}`);
                                 }
                             }
                         })
@@ -568,7 +568,7 @@ export default function RequestReturn({route, navigation}) {
                         <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]}
                                           onPress={()=>order_Cancel(`part`)}
                         >
-                            <Text style={[text_center,h18]}>발주반품</Text>
+                            <Text style={[text_center,h18]}>반품신청</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={[wt5,ps1,pe1]}>
