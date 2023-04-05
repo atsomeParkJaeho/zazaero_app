@@ -782,6 +782,15 @@ export default function OrderDtail({route,navigation}) {
         /**----------------총 결제금액은 자재가격 + 요청옵션비 + 배송비 + 포인트----------------**/
             // 총 결제금액
         let Settlekindprice = Number(get_gd_order.goodsprice)+Number(get_gd_order.deli_price)+Number(get_gd_order.tot_opt_price);
+        let cancel_detail = () => {
+            console.log('[주문취소 상세페이지로 이동]');
+            let data = {
+                gd_order_uid    :get_gd_order.gd_order_uid,
+                gd_cancel_uid   :get_gd_order.gd_cancel_uid
+            }
+            return navigation.navigate(`취소내역상세`,data);
+        }
+
         return(
             <>
                 <View>
@@ -789,13 +798,26 @@ export default function OrderDtail({route,navigation}) {
 
                     {/**--------------결제정보---------------**/}
                     <View style={container}>
-                        <View style={[]}>
-                            <TouchableOpacity style={[mb3]}>
-                                <View style={[btn_danger,wt10,{borderRadius:10,}]}>
-                                    <Text style={[h16,text_white,text_center,pt1,pb1]}>주문취소 상세보기</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+                        {(
+                            get_gd_order.ord_status === 'pay_done'   ||
+                            get_gd_order.ord_status === 'deli_ready' ||
+                            get_gd_order.ord_status === 'deli_doing' ||
+                            get_gd_order.ord_status === 'deli_done'
+                        ) && (
+                            <>
+                                {(cancel_doing > 0) && (
+                                    <>
+                                        <View style={[]}>
+                                            <TouchableOpacity onPress={cancel_detail} style={[mb3]}>
+                                                <View style={[btn_danger,wt10,{borderRadius:10,}]}>
+                                                    <Text style={[h16,text_white,text_center,pt1,pb1]}>주문취소 상세보기</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </>
+                                )}
+                            </>
+                        )}
                         {/*주문취소시 상세내역으로 가는 버튼*/}
                         <Text style={[h18]}>결제금액</Text>
                         {(get_gd_order.settlekind === 'bank') && (
