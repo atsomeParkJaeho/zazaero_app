@@ -14,7 +14,7 @@ import {pay_cancel} from "../pages/order/UTIL_order";
 
 function Payment({ route,navigation }) {
 
-    const {OrderData} = route.params;
+    const {OrderData, point_use} = route.params;
     console.log(OrderData,'/결제창 데이터 확인');
 
     let tot_price = Number(OrderData.settleprice) + Number(OrderData.tot_opt_price) + Number(OrderData.deli_price);
@@ -69,7 +69,7 @@ function Payment({ route,navigation }) {
         pay_method              :'card',
         name                    :OrderData.work_name,
         merchant_uid            :OrderData.order_no,
-        amount                  :Number(OrderData.settleprice),
+        amount                  :Number(OrderData.settleprice - point_use),
         buyer_name              :OrderData.recv_name,
         buyer_tel               :OrderData.recv_mobile,
         buyer_addr              :OrderData.addr1+' '+OrderData.addr2,

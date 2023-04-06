@@ -40,7 +40,7 @@ export const donePay = async (OrderData, PayMement, navigation, point_use) => {
                 } else if(PayMement === 'bank') {
                     return Alert.alert('',msg,[N_btn]);
                 } else {
-                    return navigation.navigate('카드결제',{OrderData:OrderData});
+                    return navigation.navigate('카드결제',{OrderData:OrderData,point_use:point_use});
                 }
 
             }
