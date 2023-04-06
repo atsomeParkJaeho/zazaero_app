@@ -214,7 +214,6 @@ export default function OrderDtail({route,navigation}) {
     console.log(get_gd_order.settleprice,'/결제금액');
 
     const goPay = () => {
-
         if(PayMement === 'bank') {
             if(get_gd_order.bankAccount === "0")     { return Alert.alert('','입금계좌를 선택해주세요.')}
             if(!get_gd_order.bankSender)             { return Alert.alert('','예금주명을 입력해주세요.')}
@@ -222,12 +221,8 @@ export default function OrderDtail({route,navigation}) {
         if(Number(point_use) > Number(get_gd_order.settleprice)) {
             return Alert.alert(``,`결제금액 이상으로 포인트를 사용하실수 없습니다.`);
         }
-
         let bank_msg = '무통장입금을 진행하시겠습니까?';
         let card_msg = '결제를 진행하시겠습니까?';
-
-
-
 
         Alert.alert('',`${(PayMement === 'bank') ? bank_msg : card_msg}`,
             [
@@ -252,8 +247,6 @@ export default function OrderDtail({route,navigation}) {
                                 }
                             }
                         });
-
-
                     }
                 },
             ]
@@ -415,12 +408,6 @@ export default function OrderDtail({route,navigation}) {
             </>
         );
     }
-    const re_goInput = (name, value) => {
-        set_ret_order({
-            ...ret_order,
-            [name]:value,
-        });
-    }
     useEffect(()=>{
         /**------------------------------회원 값 가져오기-----------------------**/
         get_Member().then((res)=>{if(res) {setMember(res);} else {Alert.alert(``,`실패`);}});
@@ -437,8 +424,6 @@ export default function OrderDtail({route,navigation}) {
 
     return (
         <>
-
-
             <ScrollView style={[bg_white]}>
                 {/**----------------------------------------------배송지 입력--------------------------------------------------**/}
                 <View style={[FormStyle.FormGroup]}>
@@ -654,33 +639,41 @@ export default function OrderDtail({route,navigation}) {
                     get_gd_order.ord_status === 'pay_ready'
                 ) && (
                     <>
-                        {/**----------------------------------------------포인트 사용--------------------------------------------------**/}
-                        <View style={[FormStyle.FormGroup, {paddingBottom: 0}]}>
-                            {/*==============현장인도자 성명==============*/}
-                            <View style={[FormStyle.FormGroupItems]}>
-                                <View style={[FormStyle.FormGroupItems]}>
-                                    <View style={[d_flex, align_items_center, justify_content_between]}>
-                                        <View style={[FormStyle.FormLabel]}>
-                                            <Text style={[mb1]}>포인트</Text>
-                                            <Text style={[h12, text_gray]}>보유 포인트 : {Price(get_mem_info.mem_point)}P</Text>
-                                        </View>
-                                        <View style={[d_flex, justify_content_between, align_items_center]}>
-                                            <Text style={{marginRight:10}}>포인트 전액 사용</Text>
-                                            <Checkbox style={styles.all_check} color={"#4630eb"}
-                                            onValueChange={all_point}
-                                            value={(get_mem_info.mem_point === point_use)}
+                        {(get_gd_order.settlekind === 'bank' || get_gd_order.settlekind === 'card') ? (
+                            <>
+                            </>
+                        ):(
+                            <>
+                                {/**----------------------------------------------포인트 사용--------------------------------------------------**/}
+                                <View style={[FormStyle.FormGroup, {paddingBottom: 0}]}>
+                                    {/*==============현장인도자 성명==============*/}
+                                    <View style={[FormStyle.FormGroupItems]}>
+                                        <View style={[FormStyle.FormGroupItems]}>
+                                            <View style={[d_flex, align_items_center, justify_content_between]}>
+                                                <View style={[FormStyle.FormLabel]}>
+                                                    <Text style={[mb1]}>포인트</Text>
+                                                    <Text style={[h12, text_gray]}>보유 포인트 : {Price(get_mem_info.mem_point)}P</Text>
+                                                </View>
+                                                <View style={[d_flex, justify_content_between, align_items_center]}>
+                                                    <Text style={{marginRight:10}}>포인트 전액 사용</Text>
+                                                    <Checkbox style={styles.all_check} color={"#4630eb"}
+                                                              onValueChange={all_point}
+                                                              value={(get_mem_info.mem_point === point_use)}
+                                                    />
+                                                </View>
+                                            </View>
+                                            <TextInput style={[input,{flex:1}]}
+                                                       onChangeText={( point_use )=>point_use_input(" point_use ",point_use)}
+                                                       placeholder="사용하실 포인트를 입력해주세요."
+                                                       keyboardType="number-pad"
+                                                       value={`${point_use}`}
                                             />
                                         </View>
                                     </View>
-                                    <TextInput style={[input,{flex:1}]}
-                                               onChangeText={( point_use )=>point_use_input(" point_use ",point_use)}
-                                               placeholder="사용하실 포인트를 입력해주세요."
-                                               keyboardType="number-pad"
-                                               value={`${point_use}`}
-                                    />
                                 </View>
-                            </View>
-                        </View>
+                            </>
+                        )}
+
                     </>
                 )}
                 <OrderTotalPrice/>
@@ -921,10 +914,6 @@ export default function OrderDtail({route,navigation}) {
         return(
             <>
                 <View>
-
-
-
-
                     {/**--------------결제정보---------------**/}
                     <View style={container}>
                         {(
