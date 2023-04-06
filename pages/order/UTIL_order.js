@@ -555,6 +555,14 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
 
 
 export const chk_point_use = async (Member, get_gd_order, point_use) => {
+    
+    let data = {
+        act_type                    :"chk_point_use",
+        mem_uid                     :Member,
+        gd_order_uid                :get_gd_order.gd_order_uid,
+        point_use                   :point_use,
+    }
+    
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type                    :"chk_point_use",
         mem_uid                     :Member,
@@ -565,6 +573,8 @@ export const chk_point_use = async (Member, get_gd_order, point_use) => {
             'Content-type': 'multipart/form-data'
         }
     });
+    console.log(data,'/넘기는 값확인');
+    
     return res;
 }
 
