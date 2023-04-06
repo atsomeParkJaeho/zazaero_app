@@ -555,7 +555,7 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
 
 export const chk_pay_point = async (Member, get_gd_order, point_use) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-        act_type                    :"chk_pay_point",
+        act_type                    :"chk_point_use",
         Member                      :Member,
         gd_order_uid                :get_gd_order.gd_order_uid,
         point_use                   :point_use,

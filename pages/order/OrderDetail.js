@@ -246,6 +246,7 @@ export default function OrderDtail({route,navigation}) {
                                             }}
                                     ]);
                                 } else {
+                                    console.log(res.data);
                                     return Alert.alert(``,`${err_msg}`);
                                 }
                             }
