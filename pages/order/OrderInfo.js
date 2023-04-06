@@ -38,8 +38,15 @@ export const donePay = async (OrderData, PayMement, navigation, point_use) => {
                         }
                     });
                 } else if(PayMement === 'bank') {
-                    pay_result().then((res)=>{
-
+                    pay_result(``,OrderData).then((res)=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                Alert.alert(``,msg, N_btn);
+                            } else {
+                                return Alert.alert(``,`${res.data}`);
+                            }
+                        }
                     });
                 } else {
                     return navigation.navigate('카드결제',{OrderData:OrderData,point_use:point_use});
