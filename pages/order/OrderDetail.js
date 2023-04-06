@@ -101,6 +101,7 @@ import Close from '../../icons/close_black.svg';
 import {get_Member, my_page} from "../UTIL_mem";
 import {app_info, donePay, get_order} from "./OrderInfo";
 import Checkbox from "expo-checkbox";
+import {part_cancel_push} from "../../push/UTIL_push";
 
 
 
@@ -340,6 +341,7 @@ export default function OrderDtail({route,navigation}) {
                                         {text:'확인',
                                             onPress:()=>{
                                                 // ================2. 결제취소 이벤트 결과값 db에 전송====================
+                                                all_cancel_push(Member, get_gd_order);
                                                 return navigation.replace('배송상태');
                                             }
                                         }
@@ -371,6 +373,7 @@ export default function OrderDtail({route,navigation}) {
                                             onPress:()=>{
                                                 // ================2. 결제취소 이벤트 결과값 db에 전송====================
                                                 console.log(res.data,'/발주완료시 파라미터');
+                                                part_cancel_push(Member, get_gd_order);
                                                 return navigation.replace('발주상세',{gd_order_uid:get_gd_order.gd_order_uid});
                                             }
                                         }

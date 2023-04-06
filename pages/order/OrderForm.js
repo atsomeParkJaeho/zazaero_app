@@ -810,7 +810,7 @@ export default function OrderForm({route,navigation}) {
                                     Alert.alert('',msg,[{
                                         text:'확인',
                                         onPress:()=>{
-                                            order_push(order_no);       // 로컬 푸시알림 전송
+                                            order_push(Member, order_no);       // 로컬 푸시알림 전송
                                             return navigation.replace('발주상태');
                                         }
                                     }]);

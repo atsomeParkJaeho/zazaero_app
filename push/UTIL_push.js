@@ -70,8 +70,21 @@ export async function sendPushNotification(expoPushToken) {
         }
     );
 }
-// 수동 푸시설정하기(발주신청시)
-export const order_push = async (order_noe) => {
+// (발주신청시)
+export const settlekind_push = async (mem_uid, order_no) => {
+    /**----------------------로컬 푸시----------------**/
+    await Notifications.scheduleNotificationAsync({
+        content: {
+            title   : `결제가 완료되었습니다.`,
+            body    : `결제가 완료되었습니다. 배송을 준비합니다.`,
+        },
+        trigger:null,
+    });
+    /**----------------------서버 푸시----------------**/
+}
+// (카드결제시)
+export const order_push = async (mem_uid, OrderDate) => {
+    /**----------------------로컬 푸시----------------**/
     await Notifications.scheduleNotificationAsync({
         content: {
             title   : `발주신청이 완료되었습니다.`,
@@ -79,7 +92,33 @@ export const order_push = async (order_noe) => {
         },
         trigger:null,
     });
+    /**----------------------서버 푸시----------------**/
 }
+// (결제후 발주 부분취소시)
+export const part_cancel_push = async (mem_uid, OrderDate) => {
+    /**----------------------로컬 푸시----------------**/
+    await Notifications.scheduleNotificationAsync({
+        content: {
+            title   : `발주 변경이 접수되었습니다.`,
+            body    : ``,
+        },
+        trigger:null,
+    });
+    /**----------------------서버 푸시----------------**/
+}
+// (결제후 발주 전체취소시)
+export const all_cancel_push = async (mem_uid, OrderDate) => {
+    /**----------------------로컬 푸시----------------**/
+    await Notifications.scheduleNotificationAsync({
+        content: {
+            title   : `발주 변경이 접수되었습니다.`,
+            body    : ``,
+        },
+        trigger:null,
+    });
+    /**----------------------서버 푸시----------------**/
+}
+
 
 
 export async function sendPushApp(App_PushToken) {

@@ -7,6 +7,7 @@ import {useEffect} from "react";
 import LeftArrow from "../icons/left_arrow.svg";
 
 import {pay_cancel} from "../pages/order/UTIL_order";
+import {settlekind_push} from "../push/UTIL_push";
 
 
 
@@ -100,7 +101,12 @@ function Payment({ route,navigation }) {
                     console.log(gd_order,'/ [결제 정보 데이터]');
                     console.log('결제완료');
                     navigation.replace('배송상태');
-                    return Alert.alert('','결제가 완료되었습니다.');
+                    Alert.alert('','결제가 완료되었습니다.',[{
+                        text:'OK',
+                        onPress:()=>{
+                            return settlekind_push(OrderData.mem_uid, OrderData);
+                        }
+                    }]);
                 } else {
                     return Alert.alert('',`에러 / ${res.data}`);
                 }
