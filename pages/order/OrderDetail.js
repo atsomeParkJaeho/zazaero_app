@@ -214,8 +214,6 @@ export default function OrderDtail({route,navigation}) {
     console.log(get_gd_order.settleprice,'/결제금액');
 
     const goPay = () => {
-
-
         if(point_use === get_gd_order.settleprice) {
             Alert.alert(``,`전액 포인트 결제를 하시겠습니까?`,[
                 {text:'아니오',onPress:()=>{}},
