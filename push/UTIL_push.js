@@ -122,27 +122,7 @@ export const all_cancel_push = async (mem_uid, OrderDate) => {
 
 
 export async function sendPushApp(App_PushToken) {
-    console.log(App_PushToken,'\n[디바이스 토큰]');
-    const data = {
-        to: App_PushToken,
-        priority: 'normal',
-        data: {
-            title: "제목",
-            message: '내용',
-        },
-    }
-    await axios.post('https://fcm.googleapis.com/fcm/send', data,{
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `key=${FCM}`,
-        },
-    }).then((res)=>{
-        const {results} = res.data;
-        let error = results.map(val=>val.error);
-        console.log(error,'/[에러확인]');
-        Alert.alert(``,`${App_PushToken}`);
-        Alert.alert(`[에러 데이터 확인]`,`${error}`);
-    });
+    
 }
 
 
