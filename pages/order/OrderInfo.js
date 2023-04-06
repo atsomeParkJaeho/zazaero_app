@@ -26,7 +26,7 @@ export const donePay = async (OrderData, PayMement, navigation, point_use) => {
             if(result === 'OK') {
                 if(OrderData.settleprice === point_use) {
                     // 전액 포인트 사용시
-                    pay_zero_done(OrderData.mem_uid, OrderData.gd_order_uid).then((res)=>{
+                    pay_zero_done(OrderData.gd_order_uid).then((res)=>{
                         if(res) {
                             const {result} = res.data;
                             if(result === 'OK') {
