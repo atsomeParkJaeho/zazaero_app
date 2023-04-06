@@ -118,7 +118,7 @@ export default function Wishlist({route,navigation}) {
                     console.log('연결');
                 }
                 if(my_zzim_flag === 'N') {
-                    Alert.alert('즐겨찾기에서 삭제하였습니다.');
+                    Alert.alert('',`즐겨찾기에서 삭제하였습니다.`);
                 } else {
                     console.log('실패');
                 }

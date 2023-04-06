@@ -275,7 +275,7 @@ export default function GoodsCateList({route, navigation}) {
                 console.log(result);
                 if (result === 'OK') {
                     console.log(order_uid);
-                    go_goods_cate3rd_list(Cate1stUid, Cate2ndActive, Cate3rdActive).then((res)=>{
+                    go_goods_cate3rd_list(Cate1stUid, Cate2ndActive, Cate3rdActive, Member).then((res)=>{
                         if(res) {
                           let {result, A_goods} = res.data;
                           if(result === 'OK') {
