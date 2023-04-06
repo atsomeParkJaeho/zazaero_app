@@ -219,7 +219,7 @@ export default function OrderDtail({route,navigation}) {
             if(get_gd_order.bankAccount === "0")     { return Alert.alert('','입금계좌를 선택해주세요.')}
             if(!get_gd_order.bankSender)             { return Alert.alert('','예금주명을 입력해주세요.')}
         }
-        if(point_use > get_mem_info.mem_point) {
+        if(get_mem_info.mem_point < point_use) {
             return Alert.alert(``,`포인트를 다시 입력해주세요.`);
         }
 
