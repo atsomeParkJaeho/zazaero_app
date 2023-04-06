@@ -710,7 +710,7 @@ export default function OrderDtail({route,navigation}) {
                             <>
                                 <View style={[styles.payView]}>
                                     {/*무통장, 카드결제 선택*/}
-                                    {(get_gd_order.settleprice === point_use) ? (
+                                    {(Number(point_use) >= Number(get_gd_order.settleprice)) ? (
                                         <></>
                                     ):(
                                         <>
@@ -747,7 +747,7 @@ export default function OrderDtail({route,navigation}) {
                                         </>
                                     )}
                                     {/**--------------------------무통장 입금시 출력------------------------------------------------**/}
-                                    {(get_gd_order.settleprice === point_use) ? (
+                                    {(Number(point_use) >= Number(get_gd_order.settleprice)) ? (
                                         <></>
                                     ):(
                                         <>
