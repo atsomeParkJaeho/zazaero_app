@@ -108,15 +108,14 @@ export default function Cart({route, navigation}) {
 
     // 전체삭제 기능
     const allDel = (A_order) => {
-
-
         let temp = A_order.map(val=>val.A_goods_list.map(item=>String(item.order_uid)));
+        if(temp.length === 0) {
+            return Alert.alert(``,`장바구니에 자재가 없습니다.`);
+        }
         let order_uid = temp.reduce((val,idx)=>{
             return val.concat(idx);
         });
         console.log(order_uid);
-
-
         Alert.alert('','장바구니에 있는 자재를\n전체 삭제하시겠습니까?',[
             {text:'취소'},
             {text:'확인',
@@ -447,20 +446,14 @@ export default function Cart({route, navigation}) {
                                 {(result.length !== 0) ? (
                                     <>
                                         {result.map((cate,idx)=> {
-
-
-
-
                                             /*1. 삭제 안한 상품만 필터링한다*/
                                             let A_goods_list = cate.A_goods_list.filter(val=>val.goods_del === false);
                                             // 배열값 갯수 체크
                                             let goods_cnt     = cate.A_goods_list.filter(val=>val.goods_del === false).length;
                                             let goods_chk_cnt = cate.A_goods_list.filter(val=>val.goods_chk === true && val.goods_del === false).length;
                                             let all_chk_flag  = (goods_chk_cnt === goods_cnt && goods_cnt > 0);
-
                                             console.log('전체 있는 수량 / ',goods_cnt);
                                             console.log('체크한 수량 / ',goods_chk_cnt);
-
                                             return(
                                                 <>
                                                     <List.Accordion style={[container, styles.Accordion_tit]} title={cate.cate_1st_name} key={idx}>

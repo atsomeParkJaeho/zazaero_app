@@ -191,7 +191,7 @@ export default function GoodsCateList({route, navigation}) {
     const goCate3rd = (Cate3rdUid) => {
         setCate3rdActive(Cate3rdUid);
         console.log('3차 카테고리 uid', Cate3rdUid);
-        go_goods_cate3rd_list(Cate1stUid, Cate2ndUid, Cate3rdUid).then((res) => {
+        go_goods_cate3rd_list(Cate1stUid, Cate2ndUid, Cate3rdUid, Member).then((res) => {
             if (res) {
                 const {result, A_goods} = res.data;
                 if (result === 'OK') {
