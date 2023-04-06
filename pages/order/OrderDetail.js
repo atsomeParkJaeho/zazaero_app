@@ -747,68 +747,65 @@ export default function OrderDtail({route,navigation}) {
                                         </>
                                     )}
                                     {/**--------------------------무통장 입금시 출력------------------------------------------------**/}
-                                    {(PayMement === 'bank') && (
+                                    {(get_gd_order.settleprice === point_use) ? (
+                                        <></>
+                                    ):(
                                         <>
-                                            <View style={[mb2]}>
-                                                {/*은행선택*/}
-                                                <View style={[styles.select_box]}>
-                                                    <TouchableOpacity onPress={()=>{setShow_2(!Show_2)}}>
-                                                        <View style={[styles.border]}>
-                                                            {/**---------------------------선택주소 노출--------------------------------**/}
-                                                            <Text style={[styles.select_txt, h12, (get_gd_order.bankAccount !== '0') ? text_black:text_gray]}>
-                                                                {(get_gd_order.bankLabel) ? get_gd_order.bankLabel : '계좌번호를 선택해주세요.'}
-                                                                {/*{BankCode.map(label=>label.value === get_gd_order.bankAccount ? label.label : '계좌번호를 선택해주세요')}*/}
-                                                            </Text>
+                                            {(PayMement === 'bank') && (
+                                                <>
+                                                    <View style={[mb2]}>
+                                                        {/*은행선택*/}
+                                                        <View style={[styles.select_box]}>
+                                                            <TouchableOpacity onPress={()=>{setShow_2(!Show_2)}}>
+                                                                <View style={[styles.border]}>
+                                                                    {/**---------------------------선택주소 노출--------------------------------**/}
+                                                                    <Text style={[styles.select_txt, h12, (get_gd_order.bankAccount !== '0') ? text_black:text_gray]}>
+                                                                        {(get_gd_order.bankLabel) ? get_gd_order.bankLabel : '계좌번호를 선택해주세요.'}
+                                                                        {/*{BankCode.map(label=>label.value === get_gd_order.bankAccount ? label.label : '계좌번호를 선택해주세요')}*/}
+                                                                    </Text>
+                                                                </View>
+                                                            </TouchableOpacity>
+                                                            <View style={[styles.select_icon_box]}>
+                                                                <Text style={[styles.select_icon]}>▼</Text>
+                                                            </View>
                                                         </View>
-                                                    </TouchableOpacity>
-                                                    <View style={[styles.select_icon_box]}>
-                                                        <Text style={[styles.select_icon]}>▼</Text>
+                                                        {/**/}
+                                                        {/**---------------------------클릭시 노출--------------------------------**/}
+                                                        {(Show_2) && (
+                                                            <View style={[styles.select_opt_list_box]}>
+                                                                <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
+                                                                    {BankCode.map((val,idx)=>(
+                                                                        <>
+                                                                            <View style={[styles.select_opt_list_itmes]}>
+                                                                                <TouchableOpacity onPress={() => goSearch(`settlekind`,val.value, val.label)}>
+                                                                                    <Text style={[text_center,h14]}>
+                                                                                        {val.label}
+                                                                                    </Text>
+                                                                                </TouchableOpacity>
+                                                                            </View>
+                                                                        </>
+                                                                    ))}
+                                                                </ScrollView>
+                                                            </View>
+                                                        )}
+                                                        {/**/}
+                                                        {/*예금주 입력*/}
+                                                        <View style={[{flex:1},mt1]}>
+                                                            <TextInput style={[input,{width:"100%"}]} placeholder="예금주명" value={get_gd_order.bankSender}
+                                                                       onChangeText={(bankSender)=>goInput('bankSender',bankSender)}
+                                                            />
+                                                        </View>
                                                     </View>
-                                                </View>
-                                                {/**/}
-                                                {/**---------------------------클릭시 노출--------------------------------**/}
-                                                {(Show_2) && (
-                                                    <View style={[styles.select_opt_list_box]}>
-                                                        <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
-                                                            {BankCode.map((val,idx)=>(
-                                                                <>
-                                                                    <View style={[styles.select_opt_list_itmes]}>
-                                                                        <TouchableOpacity onPress={() => goSearch(`settlekind`,val.value, val.label)}>
-                                                                            <Text style={[text_center,h14]}>
-                                                                                {val.label}
-                                                                            </Text>
-                                                                        </TouchableOpacity>
-                                                                    </View>
-                                                                </>
-                                                            ))}
-                                                        </ScrollView>
-                                                    </View>
-                                                )}
-                                                {/**/}
-                                                {/*예금주 입력*/}
-                                                <View style={[{flex:1},mt1]}>
-                                                    <TextInput style={[input,{width:"100%"}]} placeholder="예금주명" value={get_gd_order.bankSender}
-                                                               onChangeText={(bankSender)=>goInput('bankSender',bankSender)}
-                                                    />
-                                                </View>
-                                            </View>
-                                            <View style={[flex_around]}>
-                                                <TouchableOpacity style={styles.payMement} onPress={goPay}>
-                                                    <Text style={[styles.btn, text_center, btn_outline_primary]}>결제하기</Text>
-                                                </TouchableOpacity>
-                                            </View>
+                                                </>
+                                            )}
                                         </>
                                     )}
                                     {/**--------------------------카드결제시 출력------------------------------------------------**/}
-                                    {(PayMement === 'card') && (
-                                        <>
-                                            <View style={[flex_around]}>
-                                                <TouchableOpacity style={styles.payMement} onPress={goPay}>
-                                                    <Text style={[styles.btn, text_center, btn_outline_primary]}>결제하기</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </>
-                                    )}
+                                    <View style={[flex_around]}>
+                                        <TouchableOpacity style={styles.payMement} onPress={goPay}>
+                                            <Text style={[styles.btn, text_center, btn_outline_primary]}>결제하기</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </>
                         )}
@@ -1079,6 +1076,16 @@ export default function OrderDtail({route,navigation}) {
                                 </>
                             ):(
                                 <>
+                                    <View style={[flex]}>
+                                        <View style={[styles.wt25]}>
+                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>사용 포인트</Text>
+                                        </View>
+                                        <View style={[styles.wt75]}>
+                                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                {Price(get_gd_order.point_use)}P
+                                            </Text>
+                                        </View>
+                                    </View>
                                 </>
                             ) }
                         </>
@@ -1128,7 +1135,7 @@ export default function OrderDtail({route,navigation}) {
                         </View>
                         <View style={[styles.wt75]}>
                             <Text style={[styles.GoodsDetail_info_txt_val,h16,text_primary]}>
-                                {Price(Settlekindprice)}원
+                                {Price(get_gd_order.settleprice)}원
                             </Text>
                         </View>
                     </View>
