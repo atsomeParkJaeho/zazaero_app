@@ -1049,6 +1049,19 @@ export default function OrderDtail({route,navigation}) {
                             </View>
                         </View>
                     )}
+                    {/**----------------------사용 포인트--------------------------**/}
+                    
+                    <View style={[flex]}>
+                        <View style={[styles.wt25]}>
+                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>사용 포인트</Text>
+                        </View>
+                        <View style={[styles.wt75]}>
+                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                {(point_use) ? Price(point_use) : '0'}P
+                            </Text>
+                        </View>
+                    </View>
+                    
                     {/**----------------------요청옵션비--------------------------**/}
                     {(get_gd_order.tot_opt_price) && (
                         <>
@@ -1094,7 +1107,7 @@ export default function OrderDtail({route,navigation}) {
                         </View>
                         <View style={[styles.wt75]}>
                             <Text style={[styles.GoodsDetail_info_txt_val,h16,text_primary]}>
-                                {Price(Settlekindprice)}원
+                                {Price(Settlekindprice - point_use)}원
                             </Text>
                         </View>
                     </View>
