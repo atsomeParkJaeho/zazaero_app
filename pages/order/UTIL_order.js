@@ -1,5 +1,6 @@
 import axios from "axios";
 import {Platform} from "react-native";
+import {Price} from "../../util/util";
 
 
 export const getOrderInfo = async (gd_order_uid, Member) =>{
@@ -553,10 +554,10 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
 }
 
 
-export const chk_pay_point = async (Member, get_gd_order, point_use) => {
+export const chk_point_use = async (Member, get_gd_order, point_use) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type                    :"chk_point_use",
-        Member                      :Member,
+        mem_uid                     :Member,
         gd_order_uid                :get_gd_order.gd_order_uid,
         point_use                   :point_use,
     },{

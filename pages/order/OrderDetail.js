@@ -96,7 +96,7 @@ import {
     Time1,
     Time2
 } from "../../util/util";
-import {chk_pay_point, chk_point_use, order_cancel,} from "./UTIL_order";
+import {chk_point_use, order_cancel,} from "./UTIL_order";
 import Close from '../../icons/close_black.svg';
 import {get_Member, my_page} from "../UTIL_mem";
 import {app_info, donePay, get_order} from "./OrderInfo";
@@ -235,14 +235,15 @@ export default function OrderDtail({route,navigation}) {
                 {
                     text:'확인', onPress:()=>{
                         // 포인트 체크기
-                        chk_pay_point(Member, get_gd_order, point_use).then((res)=>{
+                        chk_point_use(Member, get_gd_order, point_use).then((res)=>{
                             if(res) {
+                                console.log(res.data,'/포인트 체크 데이터');
                                 const {result, err_msg} = res.data;
                                 if(result === 'OK') {
-                                    return Alert.alert(``,`포인트를 사용하시겠습니까?`,[
+                                    Alert.alert(``,`포인트를 사용하시겠습니까?`,[
                                         {text:'아니오',onPress:()=>{}},
                                         {text:'네',onPress:()=>{
-                                                donePay(get_gd_order, PayMement, navigation, point_use);
+                                                return donePay(get_gd_order, PayMement, navigation, point_use);
                                             }}
                                     ]);
                                 } else {
