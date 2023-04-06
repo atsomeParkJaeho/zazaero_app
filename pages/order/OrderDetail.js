@@ -444,6 +444,7 @@ export default function OrderDtail({route,navigation}) {
 
     console.log(get_mem_info.mem_point,'/나의 포인트 정보');
     console.log(point_use,'/point_use 사용 포인트');
+    console.log(get_gd_order,'/[발주정보]');
 
     return (
         <>

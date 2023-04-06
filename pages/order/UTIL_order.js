@@ -309,6 +309,19 @@ export const payDoneCancel = async (Member, type, OrderData, chk_cancel_goods) =
 }
 /**-------------------------------------결제시도-----------------------------------------------------------------------**/
 export const PayTry = async (OrderData, type) => {
+
+    let data = {
+        act_type             :"pay_try",
+        gd_order_uid         :OrderData.gd_order_uid,
+        settlekind           :type,
+        bankAccount          :OrderData.bankAccount,
+        bankSender           :OrderData.bankSender,
+        order_no             :OrderData.order_no,
+        mem_uid              :OrderData.mem_uid,
+    }
+
+    console.log(data,'/결제시도');
+
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"pay_try",
         gd_order_uid         :OrderData.gd_order_uid,
@@ -596,6 +609,13 @@ export const pay_result = async (OrderData, Member) => {
 }
 
 export const pay_zero_done = async (OrderData) => {
+
+    let data = {
+        act_type                    :"pay_done_zone",
+        gd_order_uid                :OrderData.gd_order_uid,
+    }
+    console.log(data,'/포인트 전액결제');
+
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type                    :"pay_done_zone",
         gd_order_uid                :OrderData.gd_order_uid,
