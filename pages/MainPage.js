@@ -9,7 +9,7 @@ import {
     container,
     flex,
     flex_between,
-    d_flex, pt2, ms1
+    d_flex, pt2, ms1, justify_content_center
 } from '../common/style/AtStyle';
 
 import Footer from "./Footer";
@@ -319,29 +319,42 @@ export default function MainPage({route,navigation}) {
                             </View>
                         </View>
                         {/*  메인풋터 상단  */}
-                        <View style={styles.main_footer_disc}>
-                            <Text style={styles.main_footer_disc_txt}>
-                                {/*상호명 : {com_info.com_name}*/}
-                                상호명 : ㈜스타키움 자재로
-                            </Text>
-                            <Text style={styles.main_footer_disc_txt}>
-                                대표자명 : {com_info.ceo_name}
-                            </Text>
-                            <Text style={styles.main_footer_disc_txt}>
-                                사업자 번호 : {com_info.biz_no}
-                            </Text>
-                            <Text style={styles.main_footer_disc_txt}>
-                                고객센터 : {ComPhone(com_info.com_phone)}
-                            </Text>
-                            <Text style={styles.main_footer_disc_txt}>
-                                이메일 : {com_info.com_email}
-                            </Text>
-                            <Text style={styles.main_footer_disc_txt}>
-                                사업장 주소 : {com_info.addr1} {com_info.addr2}
-                            </Text>
-                            <Text style={styles.main_footer_disc_txt}>
-                                앱 버전 : 9.1.6
-                            </Text>
+                        <View style={[]}>
+                            <View style={[flex,justify_content_center]}>
+                                <Text style={styles.main_footer_disc_txt}>
+                                    {/*상호명 : {com_info.com_name}*/}
+                                    상호명 : ㈜스타키움 자재로
+                                </Text>
+                                <Text style={styles.main_footer_disc_txt}>
+                                    대표자명 : {com_info.ceo_name}
+                                </Text>
+                            </View>
+                            <View style={[flex,justify_content_center]}>
+                                <Text style={styles.main_footer_disc_txt}>
+                                    사업자 번호 : {com_info.biz_no}
+                                </Text>
+                                <Text style={styles.main_footer_disc_txt}>
+                                    통신판매 신고번호 : {com_info.sale_refer_no}
+                                </Text>
+                            </View>
+                            <View style={[flex,justify_content_center]}>
+                                <Text style={styles.main_footer_disc_txt}>
+                                    고객센터 : {ComPhone(com_info.com_phone)}
+                                </Text>
+                                <Text style={styles.main_footer_disc_txt}>
+                                    이메일 : {com_info.com_email}
+                                </Text>
+                            </View>
+                            <View style={[flex,justify_content_center]}>
+                                <Text style={styles.main_footer_disc_txt}>
+                                    사업장 주소 : {com_info.addr1} {com_info.addr2}
+                                </Text>
+                            </View>
+                            <View style={[flex,justify_content_center]}>
+                                <Text style={styles.main_footer_disc_txt}>
+                                    앱 버전 : 9.1.6
+                                </Text>
+                            </View>
                         </View>
                     </View>
                 </View>
@@ -374,12 +387,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: "#B1B2C3",
     },
-    main_footer_disc: {
-        flexDirection: "row",
-        justifyContent: "center",
-        flexWrap: "wrap",
-        alignItems: "center",
-    },
+
     main_footer_disc_txt: {
         fontSize: 12,
         lineHeight: 22,
