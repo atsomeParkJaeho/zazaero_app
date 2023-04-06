@@ -1,5 +1,6 @@
 import {getAppInfo, getOrderInfo, pay_zero_done, PayTry} from "./UTIL_order";
 import {Alert} from "react-native";
+import {pay_result} from "../../util/UTIL_pay";
 
 export const app_info = async () => {
     let {data:{result,app_info}} = await getAppInfo();
@@ -25,7 +26,7 @@ export const donePay = async (OrderData, PayMement, navigation, point_use) => {
             if(result === 'OK') {
                 if(OrderData.settleprice === point_use) {
                     // 전액 포인트 사용시
-                    pay_zero_done().then((res)=>{
+                    pay_zero_done(OrderData.gd_order_uid).then((res)=>{
                         if(res) {
                             const {result} = res.data;
                             if(result === 'OK') {
@@ -38,7 +39,9 @@ export const donePay = async (OrderData, PayMement, navigation, point_use) => {
                     });
 
                 } else if(PayMement === 'bank') {
-                    return Alert.alert('',msg,[N_btn]);
+                    pay_result().then((res)=>{
+
+                    });
                 } else {
                     return navigation.navigate('카드결제',{OrderData:OrderData,point_use:point_use});
                 }
