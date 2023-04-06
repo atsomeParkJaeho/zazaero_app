@@ -214,43 +214,68 @@ export default function OrderDtail({route,navigation}) {
     console.log(get_gd_order.settleprice,'/결제금액');
 
     const goPay = () => {
-        if(PayMement === 'bank') {
-            if(get_gd_order.bankAccount === "0")     { return Alert.alert('','입금계좌를 선택해주세요.')}
-            if(!get_gd_order.bankSender)             { return Alert.alert('','예금주명을 입력해주세요.')}
-        }
-        if(Number(point_use) > Number(get_gd_order.settleprice)) {
-            return Alert.alert(``,`결제금액 이상으로 포인트를 사용하실수 없습니다.`);
-        }
-        let bank_msg = '무통장입금을 진행하시겠습니까?';
-        let card_msg = '결제를 진행하시겠습니까?';
 
-        Alert.alert('',`${(PayMement === 'bank') ? bank_msg : card_msg}`,
-            [
-                {text:'취소', onPress:()=>{},},
-                {
-                    text:'확인', onPress:()=>{
-                        // 포인트 체크기
+
+        if(point_use === get_gd_order.settleprice) {
+            Alert.alert(``,`전액 포인트 결제를 하시겠습니까?`,[
+                {text:'아니오',onPress:()=>{}},
+                {text:'네', onPress:()=>{
                         chk_point_use(Member, get_gd_order, point_use).then((res)=>{
                             if(res) {
                                 console.log(res.data,'/포인트 체크 데이터');
                                 const {result, err_msg} = res.data;
                                 if(result === 'OK') {
-                                    Alert.alert(``,`포인트를 사용하시겠습니까?`,[
-                                        {text:'아니오',onPress:()=>{}},
-                                        {text:'네',onPress:()=>{
-                                                return donePay(get_gd_order, PayMement, navigation, point_use);
-                                            }}
-                                    ]);
+                                    return donePay(get_gd_order, PayMement, navigation, point_use);
                                 } else {
                                     console.log(res.data);
                                     return Alert.alert(``,`${err_msg}`);
                                 }
                             }
                         });
-                    }
-                },
-            ]
-        );
+                    }}
+            ]);
+        } else {
+            if(PayMement === 'bank') {
+                if(get_gd_order.bankAccount === "0")     { return Alert.alert('','입금계좌를 선택해주세요.')}
+                if(!get_gd_order.bankSender)             { return Alert.alert('','예금주명을 입력해주세요.')}
+            }
+            if(Number(point_use) > Number(get_gd_order.settleprice)) {
+                return Alert.alert(``,`결제금액 이상으로 포인트를 사용하실수 없습니다.`);
+            }
+            let bank_msg = '무통장입금을 진행하시겠습니까?';
+            let card_msg = '결제를 진행하시겠습니까?';
+
+            Alert.alert('',`${(PayMement === 'bank') ? bank_msg : card_msg}`,
+                [
+                    {text:'취소', onPress:()=>{},},
+                    {
+                        text:'확인', onPress:()=>{
+                            // 포인트 체크기
+                            chk_point_use(Member, get_gd_order, point_use).then((res)=>{
+                                if(res) {
+                                    console.log(res.data,'/포인트 체크 데이터');
+                                    const {result, err_msg} = res.data;
+                                    if(result === 'OK') {
+                                        Alert.alert(``,`포인트를 사용하시겠습니까?`,[
+                                            {text:'아니오',onPress:()=>{}},
+                                            {text:'네',onPress:()=>{
+                                                    return donePay(get_gd_order, PayMement, navigation, point_use);
+                                                }}
+                                        ]);
+                                    } else {
+                                        console.log(res.data);
+                                        return Alert.alert(``,`${err_msg}`);
+                                    }
+                                }
+                            });
+                        }
+                    },
+                ]
+            );
+        }
+
+
+
     }
     const goSearch = (name, value, label) => {
         if(name === 'settlekind') {
@@ -686,38 +711,42 @@ export default function OrderDtail({route,navigation}) {
                             <>
                                 <View style={[styles.payView]}>
                                     {/*무통장, 카드결제 선택*/}
-                                    <View style={[flex_around, mb2]}>
-                                        <View style={[flex]}>
-                                            {/**----------------------------------------------카드결제--------------------------------------------------**/}
-                                            <TouchableOpacity onPress={()=>setPayMement(`card`)}>
+                                    {(get_gd_order.settleprice === point_use) ? (
+                                        <></>
+                                    ):(
+                                        <>
+                                            <View style={[flex_around, mb2]}>
                                                 <View style={[flex]}>
-                                                    <View style={[styles.border_Circle]}>
-                                                        {(PayMement === 'card') &&
-                                                            <View style={[pos_center]}>
-                                                                <View style={[styles.border_Circle_active]}/>
+                                                    {/**----------------------------------------------카드결제--------------------------------------------------**/}
+                                                    <TouchableOpacity onPress={()=>setPayMement(`card`)}>
+                                                        <View style={[flex]}>
+                                                            <View style={[styles.border_Circle]}>
+                                                                {(PayMement === 'card') &&
+                                                                    <View style={[pos_center]}>
+                                                                        <View style={[styles.border_Circle_active]}/>
+                                                                    </View>
+                                                                }
                                                             </View>
-                                                        }
-                                                    </View>
-                                                    <Text style={[styles.Chk, {paddingLeft: 5}]}>카드결제</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                            {/**----------------------------------------------무통장입금--------------------------------------------------**/}
-                                            <TouchableOpacity onPress={()=>setPayMement(`bank`)}>
-                                                <View style={[flex,ms2]}>
-                                                    <View style={[styles.border_Circle]}>
-                                                        {(PayMement === 'bank') &&
-                                                            <View style={[pos_center]}>
-                                                                <View style={[styles.border_Circle_active]}/>
+                                                            <Text style={[styles.Chk, {paddingLeft: 5}]}>카드결제</Text>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                    {/**----------------------------------------------무통장입금--------------------------------------------------**/}
+                                                    <TouchableOpacity onPress={()=>setPayMement(`bank`)}>
+                                                        <View style={[flex,ms2]}>
+                                                            <View style={[styles.border_Circle]}>
+                                                                {(PayMement === 'bank') &&
+                                                                    <View style={[pos_center]}>
+                                                                        <View style={[styles.border_Circle_active]}/>
+                                                                    </View>
+                                                                }
                                                             </View>
-                                                        }
-                                                    </View>
-                                                    <Text style={[styles.Chk, {paddingLeft: 5}]}>무통장입금</Text>
+                                                            <Text style={[styles.Chk, {paddingLeft: 5}]}>무통장입금</Text>
+                                                        </View>
+                                                    </TouchableOpacity>
                                                 </View>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-
-
+                                            </View>
+                                        </>
+                                    )}
                                     {/**--------------------------무통장 입금시 출력------------------------------------------------**/}
                                     {(PayMement === 'bank') && (
                                         <>
@@ -900,8 +929,9 @@ export default function OrderDtail({route,navigation}) {
 
     function OrderTotalPrice() {
         /**----------------총 결제금액은 자재가격 + 요청옵션비 + 배송비 + 포인트----------------**/
-            // 총 결제금액
-        let Settlekindprice = Number(get_gd_order.goodsprice)+Number(get_gd_order.deli_price)+Number(get_gd_order.tot_opt_price);
+        // 총 결제금액
+        let point_use_chk = (point_use > get_gd_order.settleprice) ?  get_gd_order.settleprice : point_use;
+        let Settlekindprice = Number(get_gd_order.goodsprice)+Number(get_gd_order.deli_price)+Number(get_gd_order.tot_opt_price) - Number(point_use_chk);
         let cancel_detail = () => {
             console.log('[주문취소 상세페이지로 이동]');
             let data = {
@@ -1033,18 +1063,27 @@ export default function OrderDtail({route,navigation}) {
                         </View>
                     )}
                     {/**----------------------사용 포인트--------------------------**/}
-                    
-                    <View style={[flex]}>
-                        <View style={[styles.wt25]}>
-                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>사용 포인트</Text>
-                        </View>
-                        <View style={[styles.wt75]}>
-                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                {(point_use) ? Price(point_use) : '0'}P
-                            </Text>
-                        </View>
-                    </View>
-                    
+                    {(get_gd_order.ord_status === 'pay_ready') && (
+                        <>
+                            {(get_gd_order.settlekind !== '') ? (
+                                <>
+                                    <View style={[flex]}>
+                                        <View style={[styles.wt25]}>
+                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>사용 포인트</Text>
+                                        </View>
+                                        <View style={[styles.wt75]}>
+                                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                {(point_use) ? Price(point_use) : '0'}P
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </>
+                            ):(
+                                <>
+                                </>
+                            ) }
+                        </>
+                    )}
                     {/**----------------------요청옵션비--------------------------**/}
                     {(get_gd_order.tot_opt_price) && (
                         <>
@@ -1090,7 +1129,7 @@ export default function OrderDtail({route,navigation}) {
                         </View>
                         <View style={[styles.wt75]}>
                             <Text style={[styles.GoodsDetail_info_txt_val,h16,text_primary]}>
-                                {Price(Settlekindprice - point_use)}원
+                                {Price(Settlekindprice)}원
                             </Text>
                         </View>
                     </View>
