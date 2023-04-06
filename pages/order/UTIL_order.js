@@ -552,9 +552,41 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
     return res;
 }
 
+
+export const chk_pay_point = async (Member, get_gd_order, point_use) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type                    :"chk_pay_point",
+        Member                      :Member,
+        gd_order_uid                :get_gd_order.gd_order_uid,
+        point_use                   :point_use,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}
+
+
 export const pay_result = async (OrderData, Member) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type                    :"pay_result",
+        Member                      :Member,
+        imp_uid                     :OrderData.imp_uid,
+        gd_order_uid                :OrderData.gd_order_uid,
+        order_no                    :OrderData.order_no,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
+}
+
+export const pay_zero_done = async (Member, OrderData) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type                    :"pay_done_zone",
         Member                      :Member,
         imp_uid                     :OrderData.imp_uid,
         gd_order_uid                :OrderData.gd_order_uid,

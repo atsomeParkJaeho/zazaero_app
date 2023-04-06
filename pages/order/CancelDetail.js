@@ -40,7 +40,7 @@ import {
     pe3,
     pe5,
     me2,
-    text_danger, pe1, textarea, input, align_items_center, mt2, mt1, padding_bottom2,
+    text_danger, pe1, textarea, input, align_items_center, mt2, mt1, padding_bottom2, h21,
 } from '../../common/style/AtStyle';
 import {borderBottom1, gray_bar, gray_bar2, sub_page} from '../../common/style/SubStyle';
 
@@ -105,7 +105,13 @@ export default function CancelDetail({navigation,route}) {
         <>
             <ScrollView style={[bg_white]}>
                 <View style={[styles.Detail_page_top,d_flex,justify_content_center]}>
-                    <Text style={[text_danger,h16]}>{cancelStatus(gd_order.cancel_status)}</Text>
+
+                        {(gd_cancel.refund_status === 'done') ? (
+                            <Text style={[text_danger,h21]}>처리완료 되었습니다.</Text>
+                        ):(
+                            <Text style={[text_primary,h21]}>처리중입니다.</Text>
+                        )}
+
                 </View>
                 {/**/}
                 <View style={[FormStyle.FormGroup]}>

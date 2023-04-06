@@ -8,7 +8,7 @@ import {reloadAsync} from "expo-updates";
 import {get_Member, my_page} from "./UTIL_mem";
 
 // 공통 CSS 추가
-import {container, bg_white, h20, h16} from '../common/style/AtStyle';
+import {container, bg_white, h20, h16, flex_around, wt1, wt5} from '../common/style/AtStyle';
 
 export default function MyPage({navigation, route}) {
     const [Member, setMember]                  = useState();
@@ -59,16 +59,16 @@ export default function MyPage({navigation, route}) {
                             <Text style={[styles.user_name,h16]}>
                                 {mem_info.mem_name} ({mem_info.mem_mobile})
                             </Text>
-                            {/*<Text style={styles.user_point}>보유포인트:<Text style={styles.user_point_score}>5000P</Text></Text>*/}
-                            {/*<View style={[flex_around]}>*/}
-                            {/*    <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {navigation.navigate('포인트내역')}}>*/}
-                            {/*        <Text style={[styles.user_point_link_txt]}>나의 포인트 내역</Text>*/}
-                            {/*    </TouchableOpacity>*/}
-                            {/*    <View style={[wt1]}/>*/}
-                            {/*    <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {navigation.navigate('환불내역')}}>*/}
-                            {/*        <Text style={[styles.user_point_link_txt]}>나의 환불내역</Text>*/}
-                            {/*    </TouchableOpacity>*/}
-                            {/*</View>*/}
+                            <Text style={styles.user_point}>보유포인트:<Text style={styles.user_point_score}>{mem_info.mem_point}P</Text></Text>
+                            <View style={[flex_around]}>
+                                <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {Alert.alert(``,`준비중입니다.`)}}>
+                                    <Text style={[styles.user_point_link_txt]}>나의 포인트 내역</Text>
+                                </TouchableOpacity>
+                                <View style={[wt1]}/>
+                                <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {Alert.alert(``,`준비중입니다.`)}}>
+                                    <Text style={[styles.user_point_link_txt]}>나의 환불내역</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                     <View style={[styles.mypageList]}>
@@ -102,7 +102,8 @@ export default function MyPage({navigation, route}) {
                         </View>
                         <View style={styles.mypageListItem}>
                             <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
-                                navigation.navigate('공사현황목록')
+                                // navigation.navigate('공사현황목록')
+                                Alert.alert(``,`준비중입니다.`);
                             }}>
                                 <View style={styles.flex}>
                                     <View style={styles.mypageListItemTitle}>

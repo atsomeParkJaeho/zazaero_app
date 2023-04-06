@@ -169,6 +169,11 @@ export default function OrderForm({route,navigation}) {
             }
         });
     }
+
+    const get_mem_info = () => {
+
+    }
+
     /**---------------------------------페이지 진입시 노출---------------------------------------------------**/
     useEffect(() => {
         get_Member().then((res)=>{
@@ -179,6 +184,7 @@ export default function OrderForm({route,navigation}) {
         // daumApi();  // 다음 api
         getCartList();  // 장바구니
         getDeliList();  // 최근배송지
+        get_mem_info();
     },[Update,Member]);
 
     /**---------------------------------입력폼 입력---------------------------------------------------**/
@@ -242,7 +248,6 @@ export default function OrderForm({route,navigation}) {
             ...OrderData,
             hope_deli_time:time,
         });
-
     }
     //
 
@@ -770,8 +775,6 @@ export default function OrderForm({route,navigation}) {
                 Alert.alert('','현장인도자 연락처를 입력해주세요.');
                 return InputFocus.current[5].focus();;
             }
-
-
             /**-------------------------2. 최종입력창--------------------------------**/
             Alert.alert('','발주요청 하시겠습니까?',[
                 // left

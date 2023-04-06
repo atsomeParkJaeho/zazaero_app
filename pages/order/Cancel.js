@@ -173,8 +173,8 @@ export default function Cancel({navigation, route}) {
                 </View>
                 <View style={[styles.InquiryTab_item]}>
                     <TouchableOpacity style={[styles.InquiryTab_link]} onPress={() => {
-                        // navigation.navigate('반품내역')
-                        Alert.alert('준비중입니다.');
+                        navigation.navigate('반품내역')
+                        // Alert.alert('준비중입니다.');
                     }}>
                         <Text style={[styles.InquiryTab_txt]}>반품내역</Text>
                     </TouchableOpacity>
@@ -183,7 +183,7 @@ export default function Cancel({navigation, route}) {
             {/**==============================--리스트--================================================**/}
             <FlatList
                 style={[bg_white]}
-                keyExtractor={(val) => String(val.gd_order_uid)}
+                keyExtractor={(val) => String(val.gd_cancel_uid)}
                 data={cancel_list}
                 renderItem={CancelList}
                 windowSize={3}

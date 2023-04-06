@@ -1,4 +1,4 @@
-import {getAppInfo, getOrderInfo, PayTry} from "./UTIL_order";
+import {getAppInfo, getOrderInfo, pay_zero_done, PayTry} from "./UTIL_order";
 import {Alert} from "react-native";
 
 export const app_info = async () => {
@@ -16,14 +16,28 @@ export const get_order = async (Member, gd_order_uid) => {
     }
 }
 
-export const donePay = async (OrderData, PayMement, navigation) => {
+export const donePay = async (OrderData, PayMement, navigation, point_use) => {
     let msg = '입금확인 후 배송이 진행됩니다.';
     let N_btn = {text:"확인", onPress:()=>{navigation.replace('결제상태')}};
     PayTry(OrderData, PayMement).then((res)=>{
         if(res) {
             const {result} = res.data;
             if(result === 'OK') {
-                if(PayMement === 'bank') {
+                if(OrderData.settleprice === point_use) {
+                    // 전액 포인트 사용시
+                    pay_zero_done().then((res)=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                navigation.replace('배송상태');
+                                return Alert.alert(``,`결제가 완료되었습니다.`);
+                            } else {
+                                return Alert.alert(``,`${res.data}`);
+                            }
+                        }
+                    });
+
+                } else if(PayMement === 'bank') {
                     return Alert.alert('',msg,[N_btn]);
                 } else {
                     return navigation.navigate('카드결제',{OrderData:OrderData});
@@ -33,4 +47,7 @@ export const donePay = async (OrderData, PayMement, navigation) => {
         }
     });
 }
+
+
+
 
