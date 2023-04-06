@@ -18,7 +18,7 @@ export const get_order = async (Member, gd_order_uid) => {
 }
 
 export const donePay = async (OrderData, PayMement, navigation, point_use) => {
-    if(OrderData.settleprice === point_use) {
+    if(Number(point_use) >= Number(OrderData.settleprice)) {
         // 전액 포인트 사용시
         pay_zero_done(OrderData).then((res)=>{
             if(res) {
