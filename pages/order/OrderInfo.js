@@ -19,7 +19,7 @@ export const get_order = async (Member, gd_order_uid) => {
 
 export const donePay = async (OrderData, PayMement, navigation, point_use) => {
     let msg = '입금확인 후 배송이 진행됩니다.';
-    let N_btn = {text:"확인", onPress:()=>{navigation.replace('결제상태')}};
+    let N_btn = {text:"확인", onPress:()=>{return navigation.replace('결제상태')}};
     PayTry(OrderData, PayMement).then((res)=>{
         if(res) {
             const {result} = res.data;
@@ -38,16 +38,7 @@ export const donePay = async (OrderData, PayMement, navigation, point_use) => {
                         }
                     });
                 } else if(PayMement === 'bank') {
-                    pay_result(``,OrderData).then((res)=>{
-                        if(res) {
-                            const {result} = res.data;
-                            if(result === 'OK') {
-                                Alert.alert(``,msg, N_btn);
-                            } else {
-                                return Alert.alert(``,`${res.data}`);
-                            }
-                        }
-                    });
+                    Alert.alert(``,msg, N_btn);
                 } else {
                     return navigation.navigate('카드결제',{OrderData:OrderData,point_use:point_use});
                 }

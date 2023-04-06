@@ -595,13 +595,10 @@ export const pay_result = async (OrderData, Member) => {
     return res;
 }
 
-export const pay_zero_done = async (Member, OrderData) => {
+export const pay_zero_done = async (OrderData) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type                    :"pay_done_zone",
-        mem_uid                     :Member,
-        imp_uid                     :OrderData.imp_uid,
         gd_order_uid                :OrderData.gd_order_uid,
-        order_no                    :OrderData.order_no,
     },{
         headers: {
             'Content-type': 'multipart/form-data'
