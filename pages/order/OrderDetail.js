@@ -919,7 +919,6 @@ export default function OrderDtail({route,navigation}) {
                     </View>
                 </View>
             </Modal>
-
         </>
     );
 
@@ -1061,7 +1060,7 @@ export default function OrderDtail({route,navigation}) {
                     {/**----------------------사용 포인트--------------------------**/}
                     {(get_gd_order.ord_status === 'pay_ready') && (
                         <>
-                            {(get_gd_order.settlekind !== '') ? (
+                            {(get_gd_order.settlekind === '') ? (
                                 <>
                                     <View style={[flex]}>
                                         <View style={[styles.wt25]}>
@@ -1069,7 +1068,7 @@ export default function OrderDtail({route,navigation}) {
                                         </View>
                                         <View style={[styles.wt75]}>
                                             <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                                {(point_use) ? Price(point_use) : '0'}P
+                                                {(point_use !== '') ? Price(point_use) : '0'}P
                                             </Text>
                                         </View>
                                     </View>
@@ -1129,16 +1128,67 @@ export default function OrderDtail({route,navigation}) {
                         </>
                     )}
                     {/**----------------------총결제 금액--------------------------**/}
-                    <View style={[flex]}>
-                        <View style={[styles.wt25]}>
-                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>총 결제금액</Text>
-                        </View>
-                        <View style={[styles.wt75]}>
-                            <Text style={[styles.GoodsDetail_info_txt_val,h16,text_primary]}>
-                                {Price(get_gd_order.settleprice)}원
-                            </Text>
-                        </View>
-                    </View>
+                    {(get_gd_order.ord_status === 'pay_ready') ? (
+                        <>
+                            {(get_gd_order.settlekind === '') ? (
+                                <>
+                                    <View style={[flex]}>
+                                        <View style={[styles.wt25]}>
+                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>총 결제금액</Text>
+                                        </View>
+                                        <View style={[styles.wt75]}>
+                                            <Text style={[styles.GoodsDetail_info_txt_val,h16,text_primary]}>
+                                                {Price(get_gd_order.settleprice - point_use)}원
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </>
+                            ):(
+                                <>
+                                    <View style={[flex]}>
+                                        <View style={[styles.wt25]}>
+                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>총 결제금액</Text>
+                                        </View>
+                                        <View style={[styles.wt75]}>
+                                            <Text style={[styles.GoodsDetail_info_txt_val,h16,text_primary]}>
+                                                {(0 >= Number(get_gd_order.settleprice)) ? (
+                                                    <>
+                                                        전액포인트 사용
+                                                    </>
+                                                ):(
+                                                    <>
+                                                        {Price(get_gd_order.settleprice)}원
+                                                    </>
+                                                )}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </>
+                            ) }
+                        </>
+                    ) : (
+                        <>
+                            <View style={[flex]}>
+                                <View style={[styles.wt25]}>
+                                    <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>총 결제금액</Text>
+                                </View>
+                                <View style={[styles.wt75]}>
+                                    <Text style={[styles.GoodsDetail_info_txt_val,h16,text_primary]}>
+                                        {(0 >= Number(get_gd_order.settleprice)) ? (
+                                            <>
+                                                전액포인트 사용
+                                            </>
+                                        ):(
+                                            <>
+                                                {Price(get_gd_order.settleprice)}원
+                                            </>
+                                        )}
+                                        
+                                    </Text>
+                                </View>
+                            </View>
+                        </>
+                    )}
                 </View>
             </>
         );
