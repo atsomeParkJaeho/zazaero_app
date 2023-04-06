@@ -5,7 +5,7 @@ export const pay_result = async (imp_uid, OrderData) => {
         act_type        :"pay_result",
         gd_order_uid    :OrderData.gd_order_uid,
         order_no        :OrderData.order_no,
-        imp_uid         :(imp_uid) ? imp_uid:'',
+        imp_uid         :(imp_uid) ? imp_uid:OrderData.order_no,
         mem_uid         :OrderData.mem_uid,
     },{
         headers: {
