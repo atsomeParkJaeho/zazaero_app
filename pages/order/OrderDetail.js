@@ -160,11 +160,7 @@ export default function OrderDtail({route,navigation}) {
         }
     }
     const point_use_input = (name, value) => {
-        if(point_use > get_mem_info.mem_point) {
-            return set_point_use(get_mem_info.mem_point);
-        } else {
-            return set_point_use(value);
-        }
+        set_point_use(value);
     }
     const all_point = () => {
         if(get_mem_info.mem_point === point_use) {
@@ -218,11 +214,7 @@ export default function OrderDtail({route,navigation}) {
     console.log(get_gd_order.settleprice,'/결제금액');
 
     const goPay = () => {
-        if(use_point === get_gd_order.settleprice) {
 
-        } else {
-
-        }
         if(PayMement === 'bank') {
             if(get_gd_order.bankAccount === "0")     { return Alert.alert('','입금계좌를 선택해주세요.')}
             if(!get_gd_order.bankSender)             { return Alert.alert('','예금주명을 입력해주세요.')}
@@ -540,7 +532,7 @@ export default function OrderDtail({route,navigation}) {
                         {(get_gd_order.ord_status === 'deli_done') && (
                             <>
                                 <View style={[flex]}>
-                                    <TouchableOpacity onPress={()=>{toggleModal3()}} style={[ms2,btn_warning,{paddingVertical:7,paddingHorizontal:7,}]}>
+                                    <TouchableOpacity onPress={()=>{navigation.navigate(`반품요청`,{get_gd_order:get_gd_order})}} style={[ms2,btn_warning,{paddingVertical:7,paddingHorizontal:7,}]}>
                                         <Text style={[text_white,text_center,h13]}>반품신청</Text>
                                     </TouchableOpacity>
                                 </View>
