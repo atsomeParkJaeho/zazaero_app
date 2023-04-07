@@ -59,7 +59,16 @@ export default function App() {
     const app_info = async () => {
         let app_device_id = await AsyncStorage.getItem(`app_device_id`);
         if(app_device_id) {
-            console.log(app_device_id,'/디바이스 app id');
+            console.log(app_device_id,'/디바이스 app id2');
+            reg_app_info(app_device_id).then((res)=>{
+                if(res) {
+                    console.log(res.data,'/[실패]');
+                    const {result} = res.data;
+                    if(result === 'OK') {
+                        console.log(res.data,'/[성공]');
+                    }
+                }
+            });
         } else {
             console.log('디바이스 아이디 없음');
             let uuid = uuidv4();

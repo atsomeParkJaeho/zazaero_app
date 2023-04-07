@@ -84,9 +84,18 @@ export async function sendPushNotification(expoPushToken) {
 }
 
 
-export async function sendPushApp(App_PushToken) {
+export async function sendPushApp(App_PushToken, Member) {
     Alert.alert(`apk 푸시토큰`,`${App_PushToken}`);
-
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_send_push_20230322.php',{
+        act_type        :"save_push_id",
+        mem_uid         :Member,
+        push_id         :App_PushToken,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
 }
 
 // (발주신청시)

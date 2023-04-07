@@ -206,6 +206,18 @@ export default function MainPage({route,navigation}) {
             return navigation.navigate('공지사항상세',{bd_uid:cfg_val1});
         }
     }
+    let get_push = () => {
+        sendPushApp(App_PushToken).then((res) =>{
+            if(res) {
+                const {result} = res.data;
+                if(result === 'OK') {
+                    return Alert.alert(``,`토큰이 저장되었습니다.`);
+                } else {
+                    return Alert.alert(``,`${result}`);
+                }
+            }
+        })
+    }
 
     console.log(A_banner,' / 배너2');
     console.log(com_info.com_name,' / 회사정보');
@@ -229,7 +241,7 @@ export default function MainPage({route,navigation}) {
                                 <TouchableOpacity style={[styles.link_signUp, {marginRight:10,}]} onPress={() => sendPushNotification(PushToken)}>
                                     <Text>엑스포</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.link_signUp} onPress={() => sendPushApp(App_PushToken)}>
+                                <TouchableOpacity style={styles.link_signUp} onPress={get_push}>
                                     <Text>apk</Text>
                                 </TouchableOpacity>
                             </>
