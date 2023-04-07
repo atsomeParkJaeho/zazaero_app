@@ -84,19 +84,8 @@ import {
     btn_warning, wt3, wt5, wt4, wt7, ms1, align_items_start, align_items_end, wt6, wt10, mt2, mb3, pb2, h25,
 } from '../../common/style/AtStyle';
 import {FormStyle} from "./FormStyle";
-import {
-    AddrMatch,
-    bacnkAccount,
-    DateChg, maxDate, minDate,
-    ordStatus,
-    payStatus,
-    Phone,
-    Price,
-    settleKind,
-    Time1,
-    Time2
-} from "../../util/util";
-import {chk_point_use, order_cancel,} from "./UTIL_order";
+import {DateChg, Price, settleKind,} from "../../util/util";
+import {chk_point_use, get_order_cancel_list, order_cancel,} from "./UTIL_order";
 import Close from '../../icons/close_black.svg';
 import {get_Member, my_page} from "../UTIL_mem";
 import {app_info, donePay, get_order} from "./OrderInfo";
@@ -123,6 +112,7 @@ export default function OrderDtail({route,navigation}) {
     const [cancel_doing,    set_cancel_doing]               = useState(0);
     const [Show_1,          setShow_1]                      = useState(false);
     const [Show_2,          setShow_2]                      = useState(false);           // 셀렉트창 노출 여부
+    const [get_gd_cancel, set_gd_cancel]                        = useState([]);             // 취소 리스트
     //모달창 오픈
     const [isModalVisible, setIsModalVisible]               = useState(false);
     const [isModalVisible2, setIsModalVisible2]             = useState(false);
@@ -163,6 +153,7 @@ export default function OrderDtail({route,navigation}) {
     const point_use_input = (name, value) => {
         set_point_use(value);
     }
+
     const all_point = () => {
         if(get_mem_info.mem_point === point_use) {
             set_point_use(``);
@@ -180,13 +171,17 @@ export default function OrderDtail({route,navigation}) {
         let {gd_order, cancel_doing_cnt} = await get_order(Member, gd_order_uid);
         let temp2 = gd_order.A_order.map(val =>{return {...val, goods_chk: false, goods_del: false,}});
         let mem_info = (await my_page(Member)).data;
+        
+        let test = (await get_order_cancel_list(Member)).data;
+        console.log(test,'/취소 불러오기');
         set_mem_info(mem_info.mem_info);
-        console.log(mem_info,'/확인');
         navigation.setOptions({title:gd_order.ord_status_name+' 상태 입니다.',});
-        setBankCode(temp);
-        set_get_gd_order(gd_order);
-        set_A_order_list(temp2);
-        set_cancel_doing(cancel_doing_cnt);
+        setBankCode(temp);                      // 은행코드 추가
+        set_get_gd_order(gd_order);             // 발주내용 추가
+        set_A_order_list(temp2);                // 발주자재목록 내용 추가
+        set_cancel_doing(cancel_doing_cnt);     // 발주취소상태 내용 추가
+        set_gd_cancel(gd_cancel);               // 발주취소 목록 내용 추가
+
     }
     /**-------------------------발주정보수정하기 페이지 이동---------------------------**/
     const mod_recv_info = () => {
@@ -212,6 +207,7 @@ export default function OrderDtail({route,navigation}) {
         }
 
     }
+    console.log(get_gd_order.settleprice,'/결제금액');
     console.log(get_gd_order.settleprice,'/결제금액');
 
     const goPay = () => {
@@ -299,9 +295,10 @@ export default function OrderDtail({route,navigation}) {
             }
         ]);
     }
-
     const toggleModal2 = () => {
+        let chk = A_order_list.filter(val=>val.disable_cancel === 'N');
         if(cancel_doing > 0) { return Alert.alert('','기존 취소가 처리된 이후에\n발주취소 하실수 있습니다.') }
+        if(chk.length === 0) { return Alert.alert(``,`취소/반품 불가능한 자재입니다.`); }
         setIsModalVisible2(!isModalVisible2);
         let temp = A_order_list.map(val=>{
             return {
@@ -311,23 +308,18 @@ export default function OrderDtail({route,navigation}) {
         });
         set_A_order_list(temp);
     };
-
-    const toggleModal3 = () => {
-        if(cancel_doing > 0) { return Alert.alert('','기존 취소가 처리된 이후에\n발주취소 하실수 있습니다.') }
-        setIsModalVisible3(!isModalVisible3);
-        let temp = A_order_list.map(val=>{
-            return {
-                ...val,
-                cancel_cnt:0,
-            }
-        });
-        set_A_order_list(temp);
-    };
-
-
     // 결제후 취소
     const order_Cancel = (cancel_type) => {
+
+
+
         if(cancel_type === 'all') {
+
+            let disable_cancel = A_order_list.map(val=>val.disable_cancel);
+            if(disable_cancel.includes('Y')) {
+                return Alert.alert(``,`취소/반품 불가 자재가 있습니다. 발주취소를 클릭해주세요.`);
+            }
+
             Alert.alert('','자재목록을 전부 취소 하시겠습니까?',[
                 {text:'취소', onPress:()=>{}},
                 {text:'확인',
@@ -388,7 +380,6 @@ export default function OrderDtail({route,navigation}) {
             ])
         }
     }
-
     const [modAddr, setmodAddr]           = useState(`add`); // 신규수거지, 기존 배송지 선택 상태 정의
     /**--------------------------------------신규공사, 기존공사 선택 이벤트--------------------------------------------**/
     const select_addr = (type) => {
@@ -438,16 +429,20 @@ export default function OrderDtail({route,navigation}) {
         /**------------------------------회원 값 가져오기-----------------------**/
         get_Member().then((res)=>{if(res) {setMember(res);} else {Alert.alert(``,`실패`);}});
         /**------------------------------발주정보 가져오기----------------------------**/
-
         get_ready(Member, gd_order_uid);
-
-
     },[Member]);
     let btn = {marginBottom:86}
 
     console.log(get_mem_info.mem_point,'/나의 포인트 정보');
     console.log(point_use,'/point_use 사용 포인트');
     console.log(get_gd_order,'/[발주정보]');
+    console.log(A_order_list,'/[자재목록]');
+    console.log(get_gd_cancel,'/[취소리스트]');
+
+    let disable_cancel = A_order_list.map(val=>val.disable_cancel);
+    let disable_cancel_chk = (disable_cancel.includes('Y'));
+
+    console.log(disable_cancel_chk,'/전체취소 가능여부 확인');
 
     return (
         <>
@@ -577,7 +572,10 @@ export default function OrderDtail({route,navigation}) {
                                                 </View>
                                                 {/**==================수량===============**/}
                                                 <View style={ms2}>
-                                                    <Text style={[h14,fw500,{paddingBottom:10,}]}>수량</Text>
+                                                    <Text style={[h14,fw500,text_danger]}>
+                                                        {(val.disable_cancel === 'Y') && '결제 후 취소/반품 불가'}
+                                                    </Text>
+                                                    <Text style={[h14,fw500,{paddingBottom:0,}]}>수량</Text>
                                                     <View style={[flex]}>
                                                         <Text style={[text_center]}>
                                                             {item.option_cnt} 개
@@ -848,78 +846,95 @@ export default function OrderDtail({route,navigation}) {
 
                     <ScrollView style={[{height:"80%",borderColor:"#EDEDF1", borderTopWidth:1}]} nestedScrollEnabled={true}>
                         {/**-----------------반복문 구간---------------------------------------**/}
-                        {A_order_list.map((val, idx)=>(
-                            <>
-                                <View key={idx} style={[styles.CancelDetail_list_items,]} >
-                                    <View style={[container]}>
-                                        <View style={[d_flex, align_items_center, mb1,flex_between]}>
-                                            {/*체크박스*/}
-                                            <View style={{flex:1}}>
-                                                {/*상품명*/}
-                                                <Text style={[h14]}>{val.goods_name}</Text>
+                        {A_order_list.map((val,idx)=>{
+                            if(val.disable_cancel === 'N') {
+                                return(
+                                    <View key={idx} style={[styles.CancelDetail_list_items,]} >
+                                        <View style={[container]}>
+                                            <View style={[d_flex, align_items_center, mb1,flex_between]}>
+                                                {/*체크박스*/}
+                                                <View style={{flex:1}}>
+                                                    {/*상품명*/}
+                                                    <Text style={[h14]}>{val.goods_name}</Text>
+                                                </View>
                                             </View>
-                                        </View>
 
-                                        <View style={[d_flex, align_items_center, mb1]}>
-                                            <View style={[me2]}>
-                                                <Image style={[styles.goods_thum]} source={{uri: `http://www.zazaero.com${val.list_img_url}`}}/>
-                                            </View>
-                                            <View style={[wt7,flex_between,align_items_end]}>
-                                                {(val.A_sel_option.map((item,idx)=>(
-                                                    <>
-                                                        <View style={ms1} key={idx}>
-                                                            <View style={[d_flex]}>
-                                                                <Text style={[h14,fw500,{paddingBottom:10,}]}>
-                                                                    기존수량 : {item.option_cnt}개
-                                                                </Text>
+                                            <View style={[d_flex, align_items_center, mb1]}>
+                                                <View style={[me2]}>
+                                                    <Image style={[styles.goods_thum]} source={{uri: `http://www.zazaero.com${val.list_img_url}`}}/>
+                                                </View>
+                                                <View style={[wt7,flex_between,align_items_end]}>
+                                                    {(val.A_sel_option.map((item,idx)=>(
+                                                        <>
+                                                            <View style={ms1} key={idx}>
+                                                                <View style={[d_flex]}>
+                                                                    <Text style={[h14,fw500,{paddingBottom:10,}]}>
+                                                                        기존수량 : {item.option_cnt}개
+                                                                    </Text>
+                                                                </View>
+                                                                <View>
+                                                                    <Text style={[h14,fw500,{paddingBottom:5,}]}>
+                                                                        취소수량
+                                                                    </Text>
+                                                                    <TextInput
+                                                                        style={[input]}
+                                                                        onChangeText={(cancel_cnt)=>goInput(`cancel_cnt`,cancel_cnt,``,val.order_uid)}
+                                                                        defaultValue={`0`}
+                                                                        value={`${val.cancel_cnt}`}
+                                                                        placeholder="취소수량"
+                                                                        maxLength={3}
+                                                                        keyboardType="numeric"
+                                                                    />
+                                                                </View>
                                                             </View>
-                                                            <View>
-                                                                <Text style={[h14,fw500,{paddingBottom:5,}]}>
-                                                                    취소수량
-                                                                </Text>
-                                                                <TextInput
-                                                                    style={[input]}
-                                                                    onChangeText={(cancel_cnt)=>goInput(`cancel_cnt`,cancel_cnt,``,val.order_uid)}
-                                                                    defaultValue={`0`}
-                                                                    value={`${val.cancel_cnt}`}
-                                                                    placeholder="취소수량"
-                                                                    maxLength={3}
-                                                                    keyboardType="numeric"
-                                                                />
+                                                            <View style={[justify_content_end]}>
+                                                                <Text style={[h13]}>( 단가 : {Price(item.option_price)} 원)</Text>
+                                                                {/*단가*/}
+                                                                <Text style={[h16,text_right]}>{Price(item.option_price)} 원</Text>
+                                                                {/*총금액*/}
                                                             </View>
-                                                        </View>
-                                                        <View style={[justify_content_end]}>
-                                                            <Text style={[h13]}>( 단가 : {Price(item.option_price)} 원)</Text>
-                                                            {/*단가*/}
-                                                            <Text style={[h16,text_right]}>{Price(item.option_price)} 원</Text>
-                                                            {/*총금액*/}
-                                                        </View>
-                                                    </>
-                                                )))}
+                                                        </>
+                                                    )))}
+                                                </View>
                                             </View>
                                         </View>
                                     </View>
-                                </View>
-                            </>
-                        ))}
+                                );
+                            }
+                        })}
                     </ScrollView>
                     {/* 저장버튼 */}
-                    <View style={[flex_between]}>
-                        <View style={[wt5,ps1,pe1]}>
-                            <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]}
-                                              onPress={()=>order_Cancel(`part`)}
-                            >
-                                <Text style={[text_center,h18]}>발주취소</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={[wt5,ps1,pe1]}>
-                            <TouchableOpacity style={[btn_primary,{borderRadius:5,paddingTop:7,paddingBottom:7}]}
-                                              onPress={()=>order_Cancel(`all`)}
-                            >
-                                <Text style={[text_white,text_center,h18]}>전체취소</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+                    {(disable_cancel_chk) ? (
+                        <>
+                            <View style={[ps1,pe1]}>
+                                <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]}
+                                                  onPress={()=>order_Cancel(`part`)}
+                                >
+                                    <Text style={[text_center,h18]}>발주취소</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </>
+                    ):(
+                        <>
+                            <View style={[flex_between]}>
+                                <View style={[wt5,ps1,pe1]}>
+                                    <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]}
+                                                      onPress={()=>order_Cancel(`part`)}
+                                    >
+                                        <Text style={[text_center,h18]}>발주취소</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={[wt5,ps1,pe1]}>
+                                    <TouchableOpacity style={[btn_primary,{borderRadius:5,paddingTop:7,paddingBottom:7}]}
+                                                      onPress={()=>order_Cancel(`all`)}
+                                    >
+                                        <Text style={[text_white,text_center,h18]}>전체취소</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </>
+                    )}
+
                 </View>
             </Modal>
         </>

@@ -30,7 +30,9 @@ function Footer({navigation,pages}) {
     const [get_mem_info, set_get_mem_info]           = useState(``);  // 회원정보 추출
 
     useEffect(()=>{
-        get_Member().then((res)=>{if(res) {setMember(res);} else {Alert.alert(``,`실패`);}});
+        get_Member().then((res)=>{if(res) {setMember(res);} else {
+            console.log('실패');
+        }});
         mem_info(Member);
         get_cart_list(Member);   /**--장바구니 수량 가져오기--**/
         get_orderlist(Member);   /**--장바구니 수량 가져오기--**/

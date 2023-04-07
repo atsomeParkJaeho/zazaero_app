@@ -131,7 +131,7 @@ export default function MainPage({route,navigation}) {
 
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
-                Alert.alert(``,`실패`);
+                // Alert.alert(``,`실패`);
             }
         });
         /*--------------------------------푸시알림 셋팅 끝-------------------------------------------------*/
