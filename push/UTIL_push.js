@@ -85,7 +85,7 @@ export async function sendPushNotification(expoPushToken) {
 
 
 export async function sendPushApp(App_PushToken, Member) {
-    Alert.alert(`apk 푸시토큰`,`${App_PushToken}`);
+    // Alert.alert(`apk 푸시토큰`,`${App_PushToken}`);
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_send_push_20230322.php',{
         act_type        :"save_push_id",
         mem_uid         :Member,
@@ -97,6 +97,23 @@ export async function sendPushApp(App_PushToken, Member) {
     });
     return res;
 }
+
+export const save_push_id = async (mem_uid) => {
+
+    let App_PushToken = await buildApp();
+
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_send_push_20230322.php',{
+        act_type        :"save_push_id",
+        mem_uid         :mem_uid,
+        push_id         :App_PushToken,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}
+
 
 // (발주신청시)
 export const settlekind_push = async (mem_uid, order_no) => {

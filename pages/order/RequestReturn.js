@@ -83,6 +83,7 @@ export default function RequestReturn({route, navigation}) {
         zonecode    :'',
         addr1       :'',
         addr2       :'',
+        return_mem_mobile:''
     });            // 반품신청 내역 작성
     const [Selected, setSelected] = useState({
         zonecode        :'',
@@ -420,6 +421,7 @@ export default function RequestReturn({route, navigation}) {
                                     <TextInput
                                         value={(zonecode) ? (zonecode):(ret_order.zonecode)}
                                         defaultValue={`${get_gd_order.zonecode}`}
+                                        editable={false}
                                         onChangeText={(zonecode)=>goInput(`zonecode`,zonecode)} placeholder="우편번호" style={[input,bg_light]}/>
                                 </View>
                                 <TouchableOpacity style={{flex:0.3}} onPress={()=>{navigation.navigate(`주소검색`,{page:'반품요청',get_gd_order:get_gd_order})}}>
@@ -432,6 +434,7 @@ export default function RequestReturn({route, navigation}) {
                                 <TextInput
                                     value={(addr1) ? (addr1):(ret_order.addr1)}
                                     defaultValue={`${get_gd_order.addr1}`}
+                                    editable={false}
                                     onChangeText={(addr1)=>goInput(`addr1`,addr1)} placeholder="주소" style={[input,bg_light]}/>
                             </View>
                             <View  style={[mt1]} >

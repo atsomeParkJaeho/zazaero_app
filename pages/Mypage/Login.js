@@ -32,6 +32,7 @@ import {sub_page} from '../../common/style/SubStyle';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {login} from "../UTIL_mem";
 import inputRef from "react-native/Libraries/Components/DrawerAndroid/DrawerLayoutAndroid";
+import {save_push_id} from "../../push/UTIL_push";
 
 export default function Login({navigation, route}) {
 
@@ -80,6 +81,16 @@ export default function Login({navigation, route}) {
                 const {result, mem_uid} = res.data;
                 if (result === 'OK') {
                     AsyncStorage.setItem('member', mem_uid);
+                    save_push_id(mem_uid).then((res)=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                return console.log('성공');
+                            } else {
+                                return Alert.alert(``,`${result}`);
+                            }
+                        }
+                    });
                     navigation.replace('메인페이지');
                 } else {
                     Alert.alert('',result);
