@@ -36,7 +36,7 @@ export default function App() {
     useEffect(()=>{
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
-                Alert.alert(``,`실패`);
+                // Alert.alert(``,`실패`);
             }
         });
         registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
