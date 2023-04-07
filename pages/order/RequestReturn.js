@@ -404,12 +404,12 @@ export default function RequestReturn({route, navigation}) {
             <ScrollView style={[bg_white]}>
                 <View style={[styles.RequestReturn]}>
                     <View style={[FormStyle.FormGroup]}>
-                        <View style={[FormStyle.FormGroupItems]}>
-                            <OrderAddress/>
-                        </View>
-                        <View>
-                            <OrderSearch/>
-                        </View>
+                        {/*<View style={[FormStyle.FormGroupItems]}>*/}
+                        {/*    <OrderAddress/>*/}
+                        {/*</View>*/}
+                        {/*<View>*/}
+                        {/*    <OrderSearch/>*/}
+                        {/*</View>*/}
                         {/*==============배송지 가져오기==============*/}
                         <View  style={[styles.FormGroup]} >
                             <View  style={[flex]} >
@@ -419,6 +419,7 @@ export default function RequestReturn({route, navigation}) {
                                 <View  style={{flex:0.7,marginRight:10}} >
                                     <TextInput
                                         value={(zonecode) ? (zonecode):(ret_order.zonecode)}
+                                        defaultValue={`${get_gd_order.zonecode}`}
                                         onChangeText={(zonecode)=>goInput(`zonecode`,zonecode)} placeholder="우편번호" style={[input,bg_light]}/>
                                 </View>
                                 <TouchableOpacity style={{flex:0.3}} onPress={()=>{navigation.navigate(`주소검색`,{page:'반품요청',get_gd_order:get_gd_order})}}>
@@ -430,11 +431,13 @@ export default function RequestReturn({route, navigation}) {
                             <View  style={[mt1]} >
                                 <TextInput
                                     value={(addr1) ? (addr1):(ret_order.addr1)}
+                                    defaultValue={`${get_gd_order.addr1}`}
                                     onChangeText={(addr1)=>goInput(`addr1`,addr1)} placeholder="주소" style={[input,bg_light]}/>
                             </View>
                             <View  style={[mt1]} >
                                 <TextInput
                                     value={(addr2) ? (addr2):(ret_order.addr2)}
+                                    defaultValue={`${get_gd_order.addr2}`}
                                     onChangeText={(addr2)=>goInput(`addr2`,addr2)} placeholder="상세주소" style={[input]}/>
                             </View>
                         </View>
