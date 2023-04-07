@@ -306,7 +306,7 @@ export default function OrderForm({route,navigation}) {
                                     />
                                     {/*주소찾기*/}
                                     <TouchableOpacity onPress={()=>navigation.navigate('주소검색',{page:"배송정보등록", order_uid:order_uid, goods_cate1_uid:goods_cate1_uid})}>
-                                        <View style={[bg_primary,{padding:8,borderRadius:5,}]}>
+                                        <View style={[bg_primary,{padding:Platform.OS === 'ios' ? 12 : 8,borderRadius:5,}]}>
                                             <Text style={[text_light]}>주소찾기</Text>
                                         </View>
                                     </TouchableOpacity>
