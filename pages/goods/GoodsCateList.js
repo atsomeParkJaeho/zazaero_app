@@ -557,7 +557,7 @@ export default function GoodsCateList({route, navigation}) {
             />
             <Toast ref={toastRef}
                    position='top'
-                   positionValue={250}
+                    positionValue={400}
                    fadeInDuration={200}
                    fadeOutDuration={1000}
                    style={[styles.toast]}
