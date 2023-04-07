@@ -513,7 +513,7 @@ export default function Cart({route, navigation}) {
                                                                                     </View>
                                                                                     {/*반품가능여부*/}
                                                                                     {(val.disable_cancel === 'Y') && (
-                                                                                        <View style={wt4}>
+                                                                                        <View style={[]}>
                                                                                             <Text style={[text_danger,h14]}>
                                                                                                 결제 후 반품/취소 불가
                                                                                             </Text>
