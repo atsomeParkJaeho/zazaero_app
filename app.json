@@ -26,7 +26,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.www.zazaero",
-      "googleServicesFile": "GoogleService-Info.plist",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "buildNumber": "10"
     },
     "android": {
@@ -53,9 +53,6 @@
     },
     "runtimeVersion": {
       "policy": "sdkVersion"
-    },
-    "plugins": [
-      "@notifee/react-native"
-    ]
+    }
   }
 }

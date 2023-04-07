@@ -6,17 +6,13 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "channel": "development",
-      "android": {
-        "image": "ubuntu-18.04-jdk-11-ndk-r19c"
-      }
+      "channel": "development"
     },
     "preview": {
       "distribution": "internal",
       "channel": "preview",
       "android": {
-        "buildType": "apk",
-        "image": "ubuntu-18.04-jdk-11-ndk-r19c"
+        "buildType": "apk"
       }
     },
     "production": {
@@ -24,6 +20,10 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath":"./pc-api-5961167133705272112-485-bf73bab80594.json"
+      }
+    }
   }
 }
