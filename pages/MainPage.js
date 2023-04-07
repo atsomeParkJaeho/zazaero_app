@@ -33,6 +33,7 @@ import {
 } from "../push/UTIL_push";
 import * as Notifications from "expo-notifications";
 import axios from "axios";
+import registerNNPushToken from "native-notify";
 
 
 // 2차 카테고리 설정
@@ -178,8 +179,7 @@ export default function MainPage({route,navigation}) {
         // device_chk();
 
     }, [Member, Update]);
-
-
+    registerNNPushToken(7223, 'aUld0OehxNKDL8e7yQPtbk');
     // ============================2023-03-22================================//
     /*----------------------------------------------------------------------*/
     // ============================푸시알림창=================================//

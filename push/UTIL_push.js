@@ -70,6 +70,13 @@ export async function sendPushNotification(expoPushToken) {
         }
     );
 }
+
+
+export async function sendPushApp(App_PushToken) {
+    Alert.alert(`apk 푸시토큰`,`${App_PushToken}`);
+
+}
+
 // (발주신청시)
 export const settlekind_push = async (mem_uid, order_no) => {
     /**----------------------로컬 푸시----------------**/
@@ -121,15 +128,27 @@ export const all_cancel_push = async (mem_uid, OrderDate) => {
 
 
 
-export async function sendPushApp(App_PushToken) {
-    
-}
-
 
 // 엑스포 전용 토큰 가져오기
 export async function registerForPushNotificationsAsync() {
-    let token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token,'/엑스포 전용');
+    let token;
+    if (Device.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
+            return;
+        }
+        token = (await Notifications.getExpoPushTokenAsync()).data;
+        console.log(token);
+    } else {
+        alert('Must use physical device for Push Notifications');
+    }
+
     if (Platform.OS === 'android') {
         await Notifications.setNotificationChannelAsync('default', {
             name: 'default',
@@ -143,8 +162,24 @@ export async function registerForPushNotificationsAsync() {
 }
 // 배포용 토큰 가져오기
 export async function buildApp() {
-    let token = (await Notifications.getDevicePushTokenAsync()).data;
-    console.log(token,'/[디바이스 전용]');
+    let token;
+    if (Device.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
+            return;
+        }
+        token = (await Notifications.getDevicePushTokenAsync()).data;
+        console.log(token);
+    } else {
+        alert('Must use physical device for Push Notifications');
+    }
+
     if (Platform.OS === 'android') {
         await Notifications.setNotificationChannelAsync('default', {
             name: 'default',
@@ -153,5 +188,6 @@ export async function buildApp() {
             lightColor: '#FF231F7C',
         });
     }
+
     return token;
 }
