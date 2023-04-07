@@ -133,9 +133,7 @@ export const app_download_info = async (Member)=>{
 }
 
 /**---------------------------------로그인-------------------------------------------**/
-export const Sign_up = async (SignUp) => {
-    let app_device_id = (await getDevicePushTokenAsync()).data;
-    let test = (await Device.getDeviceTypeAsync());
+export const Sign_up = async (SignUp, app_device_id, push_id) => {
     let reg_mem_os = Platform.OS;
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php', {
         act_type         :'mem_reg',
@@ -152,7 +150,8 @@ export const Sign_up = async (SignUp) => {
         addr2            :SignUp.addr2,         // 상세주소
         reg_mem_os       :reg_mem_os,
         // 가입자 푸시토큰 저장
-        app_device_id    :app_device_id,
+        app_device_id    :app_device_id,        // app_id
+        push_id          :push_id               // push_token_id
 
     }, {
         headers: {

@@ -13,8 +13,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import {Alert} from "react-native";
 import {get_Member} from "./pages/UTIL_mem";
-import {registerForPushNotificationsAsync} from "./push/UTIL_push";
-
+import {reg_app_info, registerForPushNotificationsAsync} from "./push/UTIL_push";
+// import registerNNPushToken from "native-notify";
+import { v4 as uuidv4 } from 'uuid';
 
 // 1. 푸시알림 설정
 Notifications.setNotificationHandler({
@@ -32,30 +33,51 @@ export default function App() {
     const [notification, setNotification] = useState(false);
     const notificationListener = useRef();
     const responseListener = useRef();
-
+    // registerNNPushToken(7223, 'aUld0OehxNKDL8e7yQPtbk');
     useEffect(()=>{
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
                 // Alert.alert(``,`실패`);
             }
         });
+        app_info();
         registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
         });
-
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
             console.log(response);
         });
-
         return () => {
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
         };
 
-
     },[Member]);
+
+    /**------------------------------------------앱정보 저장---------------------------------------------**/
+    const app_info = async () => {
+        let app_device_id = await AsyncStorage.getItem(`app_device_id`);
+        if(app_device_id) {
+            console.log(app_device_id,'/디바이스 app id');
+        } else {
+            console.log('디바이스 아이디 없음');
+            let uuid = uuidv4();
+            await AsyncStorage.setItem(`app_device_id`,uuid);
+            /**---------------------------2. db에 정보를 저장한다.------------------------------------**/
+            reg_app_info(uuid).then((res)=>{
+                if(res) {
+                    console.log(res.data,'/[실패]');
+                    const {result} = res.data;
+                    if(result === 'OK') {
+                        console.log(res.data,'/[성공]');
+                    }
+                }
+            });
+        }
+    }
+
+
 
     return (
         <>

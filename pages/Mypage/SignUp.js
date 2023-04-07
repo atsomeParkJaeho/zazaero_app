@@ -41,6 +41,7 @@ import {gray_bar, sub_page} from '../../common/style/SubStyle';
 import {AddrMatch, bizNum, DateChg, Minlangth, OnlyEng, Phone, PwChk, regId, regPW} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import {chk_dup_id, Sign_up} from "../UTIL_mem";
+import {buildApp} from "../../push/UTIL_push";
 export default function SignUp({route, navigation}) {
 
 
@@ -67,7 +68,7 @@ export default function SignUp({route, navigation}) {
         mem_pw_chk      :'',            // 비밀번호 확인
         all_chk         :false,
     });
-
+    const [push_id, set_push_id]        = useState(``);
     //
     const [Show, setShow]         = useState(false);    // 셀렉트창 노출 여부
     let act_btn = !!(
@@ -90,7 +91,14 @@ export default function SignUp({route, navigation}) {
     );
 
 
+    const get_app_info = async () => {
+        let Push_key        = await buildApp();
+        set_push_id(Push_key);
+        console.log(Push_key,'/푸시키123');
+    }
+
     useEffect(()=>{
+        get_app_info();
 
         if(route.params) {
             let {zonecode, addr1} = route.params;
@@ -173,6 +181,8 @@ export default function SignUp({route, navigation}) {
 
     let chk = [SignUp.privacy_1, SignUp.privacy_2, SignUp.privacy_3, SignUp.privacy_4, SignUp.privacy_5];
     let TChk = chk.filter(val=>val===true);
+
+
     // 3. 회원가입 신청
     const goForm = ()=> {
 
@@ -270,6 +280,7 @@ export default function SignUp({route, navigation}) {
         if(SignUp.privacy_4 === false) {  // 제3자 개인정보수집동의
             return Alert.alert('',`제3자 개인정보수집동의 체크하지 않으셨습니다.`);
         }
+
 
         /**--------------------------첨부파일 요청---------------------------------------**/
         Sign_up(SignUp).then((res)=>{

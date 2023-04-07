@@ -6,28 +6,38 @@ import axios from "axios";
 import {useEffect} from "react";
 import * as Notifications from "expo-notifications";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
-import {FCM} from "../util/util";
+import {app_build, app_version, FCM} from "../util/util";
 import {getExpoPushTokenAsync} from "expo-notifications";
-
-
 // 디바이스 id 만드는 변수
 
-export async function requestUserPermission() {
-    const authStatus = await messaging().requestPermission();
-    const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED || authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-    if (enabled) {
-        await messaging()
-            .getToken()
-            .then(fcmToken => {
-                console.log(fcmToken); //fcm token을 활용해 특정 device에 push를 보낼 수 있다.
-                return Alert.alert(``,`${fcmToken} fcm 토큰`);
-            })
-            .catch(e => Alert.alert(``,`에러코드 ${e}`));
+
+export const reg_app_info = async (uuid) => {
+    let barnd           = Device.brand;         // 브랜드
+    let modelName       = Device.modelName;     // 기기 이름
+    let osName          = Device.osName;        // os
+    let osVersion       = Device.osVersion;     // os version
+    let appVersion      = app_version;
+    let appBuild        = app_build;
+    let Push_id         = await buildApp();
+    console.log(Push_id,'/푸시_id');
+    let data = {
+        act_type        :"reg_app_info",
+        app_version     :appVersion,
+        app_build       :appBuild,
+        os_version      :osVersion,
+        push_id         :Push_id,
+        device_id       :uuid,
+        os_type         :osName,
     }
-    return Alert.alert(``,`${enabled, authStatus} 메세지창 확인`);
+    console.log(data,'/[디바이스 정보 저장]');
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',data,{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
 }
-
 
 export const creact_push_id = async (Member) => {
     // 1. 디바이스 id를 가져온다.
@@ -48,6 +58,8 @@ export const creact_push_id = async (Member) => {
     return res;
     // 3. 디바이스 id가 없을경우 db에 저장한다
 }
+
+
 // 푸시토큰 설정
 export async function sendPushNotification(expoPushToken) {
     console.log(expoPushToken,'\n[엑스포 푸시알림]');
@@ -126,9 +138,6 @@ export const all_cancel_push = async (mem_uid, OrderDate) => {
     /**----------------------서버 푸시----------------**/
 }
 
-
-
-
 // 엑스포 전용 토큰 가져오기
 export async function registerForPushNotificationsAsync() {
     let token;
@@ -140,13 +149,12 @@ export async function registerForPushNotificationsAsync() {
             finalStatus = status;
         }
         if (finalStatus !== 'granted') {
-            alert('Failed to get push token for push notification!');
             return;
         }
         token = (await Notifications.getExpoPushTokenAsync()).data;
         console.log(token);
     } else {
-        alert('Must use physical device for Push Notifications');
+
     }
 
     if (Platform.OS === 'android') {
@@ -171,13 +179,13 @@ export async function buildApp() {
             finalStatus = status;
         }
         if (finalStatus !== 'granted') {
-            alert('Failed to get push token for push notification!');
+
             return;
         }
         token = (await Notifications.getDevicePushTokenAsync()).data;
         console.log(token);
     } else {
-        alert('Must use physical device for Push Notifications');
+
     }
 
     if (Platform.OS === 'android') {

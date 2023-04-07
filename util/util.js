@@ -8,7 +8,8 @@ export const regId = /^[a-z0-9_]{4,20}$/;
 export const Minlangth = 6;
 
 export const regPW = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
-
+export const app_version = '9.1.6';
+export const app_build   = '2.0.0';
 // 시간 변경 포맷
 
 export const Time = (time) => {
