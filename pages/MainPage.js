@@ -28,7 +28,7 @@ import {
     buildApp,
     creact_push_id, order_push,
     registerForPushNotificationsAsync,
-    requestUserPermission, sendPushApp,
+    requestUserPermission, save_push_id, sendPushApp,
     sendPushNotification
 } from "../push/UTIL_push";
 import * as Notifications from "expo-notifications";
@@ -109,10 +109,14 @@ export default function MainPage({route,navigation}) {
                 set_PushToken(res);
             }
         });
-        buildApp().then((res)=>{
-            if (res) {
-                console.log(res,'/일반전용');
-                set_App_PushToken(res);
+        save_push_id(Member).then((res)=>{
+            if(res) {
+                const {result} = res.data;
+                if(result === 'OK') {
+                    return console.log('성공');
+                } else {
+                    return Alert.alert(``,`${result}`);
+                }
             }
         });
 
