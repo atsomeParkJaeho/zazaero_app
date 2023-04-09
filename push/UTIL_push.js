@@ -38,6 +38,24 @@ export const reg_app_info = async (uuid) => {
     });
     return res;
 }
+/**-------------------------1. 앱에서 푸시 전송------------------------------**/
+export const send_push = async (Member) => {
+    let App_PushToken         = await buildApp();
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_send_push.php',{
+        act_type        :"send_push",
+        mem_uid         :Member,
+        search_type     :'test',
+        title           :'발주신청',
+        msg             :'발주신청 테스트',
+        push_id         :App_PushToken,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}
+
 
 export const creact_push_id = async (Member) => {
     // 1. 디바이스 id를 가져온다.
@@ -86,9 +104,11 @@ export async function sendPushNotification(expoPushToken) {
 
 export async function sendPushApp(App_PushToken, Member) {
     // Alert.alert(`apk 푸시토큰`,`${App_PushToken}`);
+    let os_type = Platform.OS;
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_send_push_20230322.php',{
         act_type        :"save_push_id",
         mem_uid         :Member,
+        app_device_os   :(os_type === 'ios') ? os_type : 'aos',
         push_id         :App_PushToken,
     },{
         headers: {
@@ -100,9 +120,11 @@ export async function sendPushApp(App_PushToken, Member) {
 
 export const save_push_id = async (mem_uid) => {
     let App_PushToken = await buildApp();
+    let os_type = Platform.OS;
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_send_push.php',{
         act_type        :"save_push_id",
         mem_uid         :mem_uid,
+        app_device_os   :(os_type === 'ios') ? os_type : 'aos',
         push_id         :App_PushToken,
     },{
         headers: {
@@ -155,19 +177,9 @@ export const order_push = async (mem_uid, OrderDate, get_gd_order) => {
     let message               = '요청하신 발주를 관리자가 확인하고있습니다.';   // 푸시 메세지 내용
     let link                  = ``;                                     // 페이지 링크 타입
     let page_type             = `ord_status`;                           // 발주상세
-    await Notifications.scheduleNotificationAsync({
-        content: {
-            title   : push_title,
-            body    : message,
-            data    :{
-                link:link,
-            }
-        },
-        trigger:null,
-    });
     /**----------------------서버 푸시----------------**/
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_send_push.php',{
-        act_type        :"save_order_push",
+        act_type        :"order_push",
         mem_uid         :mem_uid,
         push_id         :App_PushToken,
         push_title      :push_title,

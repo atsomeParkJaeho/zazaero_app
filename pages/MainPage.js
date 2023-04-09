@@ -40,6 +40,7 @@ import registerNNPushToken from "native-notify";
 function Cate2nd({uid,navigation,name}) {
     console.log('카테고리 uid ',uid);
     console.log('제목 ',name);
+
     const [Cate2nd, setCate2nd] = useState([]);
     useEffect(() => {
         /**------상품리스트 가져오기------**/
@@ -225,6 +226,7 @@ export default function MainPage({route,navigation}) {
 
     console.log(A_banner,' / 배너2');
     console.log(com_info.com_name,' / 회사정보');
+    console.log(route,' / 링크정보');
     // let com_phone_val = com_info.com_phone;
     // let com_phone_ch = com_phone_val.slice(4);
 
