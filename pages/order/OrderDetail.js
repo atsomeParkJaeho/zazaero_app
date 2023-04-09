@@ -314,6 +314,7 @@ export default function OrderDtail({route,navigation}) {
     const return_order = () => {
         let chk = A_order_list.filter(val=>val.disable_cancel === 'N');
         if(chk.length === 0) { return Alert.alert(``,`취소/반품 불가능한 자재입니다.`); }
+        if(cancel_doing > 0) { return Alert.alert('','기존 자재가 반품처리된 이후에\n반품신청 하실수 있습니다.') }
         navigation.navigate(`반품요청`,{get_gd_order:get_gd_order});
     }
 
