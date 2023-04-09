@@ -115,8 +115,6 @@ export default function MainPage({route,navigation}) {
                 const {result} = res.data;
                 if(result === 'OK') {
                     return console.log('성공');
-                } else {
-                    return Alert.alert(``,`${result}`);
                 }
             }
         });
