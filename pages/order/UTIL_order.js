@@ -473,7 +473,7 @@ export const add_order = async (OrderData, Member, A_goods_list ,chk_result) => 
         hope_deli_date          :OrderData.hope_deli_date,      // 희망배송일
         hope_deli_time          :OrderData.hope_deli_time,      // 희망배송시간
         recv_name               :OrderData.recv_name,           // 현장인도자명
-        recv_phone              :OrderData.recv_phone,          // 현장인도자 연락처
+        recv_mobile             :OrderData.recv_mobile,          // 현장인도자 연락처
         order_memo              :OrderData.order_memo,          // 배송메모
         goods_cate1_uid         :String(chk_result),                            // 공정카테고리 uid
         A_goods_uid             :A_goods_uid,                            // 추가 자재 uid(배열)
@@ -498,7 +498,7 @@ export const add_order = async (OrderData, Member, A_goods_list ,chk_result) => 
         hope_deli_date          :OrderData.hope_deli_date,      // 희망배송일
         hope_deli_time          :OrderData.hope_deli_time,      // 희망배송시간
         recv_name               :OrderData.recv_name,           // 현장인도자명
-        recv_phone              :OrderData.recv_phone,          // 현장인도자 연락처
+        recv_mobile             :OrderData.recv_mobile,          // 현장인도자 연락처
         order_memo              :OrderData.order_memo,          // 배송메모
         goods_cate1_uid         :String(chk_result),                            // 공정카테고리 uid
         A_goods_uid             :A_goods_uid,                            // 추가 자재 uid(배열)

@@ -399,7 +399,7 @@ export default function AddOrder({route,navigation}) {
     }
     /**--------2. 자재추가한 자재 삭제하기--------**/
 
-    console.log(get_gd_order,'/[발주정보 확인]');
+    console.log(get_gd_order,'/[추가발주정보 확인]');
     console.log(add_goods_list,'/[추가된 자재2]');
     console.log(route.params,'/라우터 확인');
 
