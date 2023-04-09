@@ -231,7 +231,14 @@ export default function RequestReturn({route, navigation}) {
         console.log(goods_uid,'/자재 uid');
         console.log(order_uid,'/발주자재 uid');
 
-        if(name === 'cancel_cnt') {
+        if(ret_order.zonecode === undefined) {
+            set_ret_order({
+                ...ret_order,
+                zonecode    :get_gd_order.zonecode,
+                addr1       :get_gd_order.addr1,
+                addr2       :get_gd_order.addr2,
+            });
+        } else if(name === 'cancel_cnt') {
             let temp = A_order_list.map(val=>{
                 if(val.order_uid === order_uid) {
                     let limited = Number(val.A_sel_option.map(item=>item.option_cnt));
