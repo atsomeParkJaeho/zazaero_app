@@ -90,7 +90,7 @@ import Close from '../../icons/close_black.svg';
 import {get_Member, my_page} from "../UTIL_mem";
 import {app_info, donePay, get_order} from "./OrderInfo";
 import Checkbox from "expo-checkbox";
-import {part_cancel_push} from "../../push/UTIL_push";
+import {all_cancel_push, part_cancel_push} from "../../push/UTIL_push";
 
 
 
