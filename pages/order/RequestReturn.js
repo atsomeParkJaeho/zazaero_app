@@ -56,7 +56,7 @@ import {
     align_items_end,
     h16,
     text_right,
-    pb2, ms2, mb2, text_gray, wt5, btn_outline_primary
+    pb2, ms2, mb2, text_gray, wt5, btn_outline_primary, wt10
 } from '../../common/style/AtStyle';
 
 import CameraIcon from '../../icons/camera_icon.svg';
@@ -272,6 +272,10 @@ export default function RequestReturn({route, navigation}) {
     console.log(get_gd_order,'/[발주내역]');
     console.log(ret_order,'/[반품신청]');
     console.log(A_order_list,'/[발주자재]');
+
+    let disable_cancel = A_order_list.map(val=>val.disable_cancel);
+    let disable_cancel_chk = (disable_cancel.includes('Y'));
+
 
     function OrderSearch() {
         const [Search, setSearch]     = useState(``);
@@ -509,83 +513,106 @@ export default function RequestReturn({route, navigation}) {
                     </View>
                     <View  style={[borderBottom1]} />
                     {/**-----------------반복문 구간---------------------------------------**/}
-                    {A_order_list.map((val, idx)=>(
-                        <>
-                            <View key={idx} style={[styles.CancelDetail_list_items,]} >
-                                <View style={[container]}>
-                                    <View style={[d_flex, align_items_center, mb1,flex_between]}>
-                                        {/*체크박스*/}
-                                        <View style={{flex:1}}>
-                                            {/*상품명*/}
-                                            <Text style={[h14]}>{val.goods_name}</Text>
+                    {A_order_list.map((val,idx)=>{
+                        if(val.disable_cancel === 'N') {
+                            return(
+                                <>
+                                    <View key={idx} style={[styles.CancelDetail_list_items,]} >
+                                        <View style={[container]}>
+                                            <View style={[d_flex, align_items_center, mb1,flex_between]}>
+                                                {/*체크박스*/}
+                                                <View style={{flex:1}}>
+                                                    {/*상품명*/}
+                                                    <Text style={[h14]}>{val.goods_name}</Text>
+                                                </View>
+                                            </View>
+
+                                            <View style={[d_flex, align_items_center, mb1]}>
+                                                <View style={[me2]}>
+                                                    <Image style={[styles.goods_thum]} source={{uri: `http://www.zazaero.com${val.list_img_url}`}}/>
+                                                </View>
+                                                <View style={[wt7,flex_between,align_items_end]}>
+                                                    {(val.A_sel_option.map((item,idx)=>(
+                                                        <>
+                                                            <View style={ms1} key={idx}>
+                                                                <View style={[d_flex]}>
+                                                                    <Text style={[h14,fw500,{paddingBottom:10,}]}>
+                                                                        기존수량 : {item.option_cnt}개
+                                                                    </Text>
+                                                                </View>
+                                                                <View>
+                                                                    <Text style={[h14,fw500,{paddingBottom:5,}]}>
+                                                                        반품수량
+                                                                    </Text>
+                                                                    <TextInput
+                                                                        style={[input]}
+                                                                        onChangeText={(cancel_cnt)=>goInput(`cancel_cnt`,cancel_cnt,``,val.order_uid)}
+                                                                        defaultValue={`0`}
+                                                                        value={`${val.cancel_cnt}`}
+                                                                        placeholder="반품수량"
+                                                                        maxLength={3}
+                                                                        keyboardType="numeric"
+                                                                    />
+                                                                </View>
+                                                            </View>
+                                                            <View style={[justify_content_end]}>
+                                                                <Text style={[h13]}>( 단가 : {Price(item.option_price)} 원)</Text>
+                                                                {/*단가*/}
+                                                                <Text style={[h16,text_right]}>{Price(item.option_price)} 원</Text>
+                                                                {/*총금액*/}
+                                                            </View>
+                                                        </>
+                                                    )))}
+                                                </View>
+                                            </View>
                                         </View>
                                     </View>
-
-                                    <View style={[d_flex, align_items_center, mb1]}>
-                                        <View style={[me2]}>
-                                            <Image style={[styles.goods_thum]} source={{uri: `http://www.zazaero.com${val.list_img_url}`}}/>
-                                        </View>
-                                        <View style={[wt7,flex_between,align_items_end]}>
-                                            {(val.A_sel_option.map((item,idx)=>(
-                                                <>
-                                                    <View style={ms1} key={idx}>
-                                                        <View style={[d_flex]}>
-                                                            <Text style={[h14,fw500,{paddingBottom:10,}]}>
-                                                                기존수량 : {item.option_cnt}개
-                                                            </Text>
-                                                        </View>
-                                                        <View>
-                                                            <Text style={[h14,fw500,{paddingBottom:5,}]}>
-                                                                반품수량
-                                                            </Text>
-                                                            <TextInput
-                                                                style={[input]}
-                                                                onChangeText={(cancel_cnt)=>goInput(`cancel_cnt`,cancel_cnt,``,val.order_uid)}
-                                                                defaultValue={`0`}
-                                                                value={`${val.cancel_cnt}`}
-                                                                placeholder="반품수량"
-                                                                maxLength={3}
-                                                                keyboardType="numeric"
-                                                            />
-                                                        </View>
-                                                    </View>
-                                                    <View style={[justify_content_end]}>
-                                                        <Text style={[h13]}>( 단가 : {Price(item.option_price)} 원)</Text>
-                                                        {/*단가*/}
-                                                        <Text style={[h16,text_right]}>{Price(item.option_price)} 원</Text>
-                                                        {/*총금액*/}
-                                                    </View>
-                                                </>
-                                            )))}
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                        </>
-                    ))}
-
+                                </>
+                            );
+                        }
+                    })}
                 </View>
 
             </ScrollView>
-            <KeyboardAvoidingView behavior={Platform.select({ios:"padding"})}>
-                {/* 저장버튼 */}
-                <View style={[flex_between, bg_white]}>
-                    <View style={[wt5,ps1,pe1]}>
-                        <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]}
-                                          onPress={()=>order_Cancel(`part`)}
-                        >
-                            <Text style={[text_center,h18]}>반품신청</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={[wt5,ps1,pe1]}>
-                        <TouchableOpacity style={[btn_primary,{borderRadius:5,paddingTop:7,paddingBottom:7}]}
-                                          onPress={()=>order_Cancel(`all`)}
-                        >
-                            <Text style={[text_white,text_center,h18]}>전체반품</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </KeyboardAvoidingView>
+            {(disable_cancel_chk) ? (
+                <>
+                    <KeyboardAvoidingView behavior={Platform.select({ios:"padding"})}>
+                        {/* 저장버튼 */}
+                        <View style={[flex_between, bg_white]}>
+                            <View style={[wt10,ps1,pe1]}>
+                                <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]}
+                                                  onPress={()=>order_Cancel(`part`)}
+                                >
+                                    <Text style={[text_center,h18]}>반품신청</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </KeyboardAvoidingView>
+                </>
+            ):(
+                <>
+                    <KeyboardAvoidingView behavior={Platform.select({ios:"padding"})}>
+                        {/* 저장버튼 */}
+                        <View style={[flex_between, bg_white]}>
+                            <View style={[wt5,ps1,pe1]}>
+                                <TouchableOpacity style={[btn_outline_primary,{borderRadius:5,paddingTop:7, paddingBottom:7,}]}
+                                                  onPress={()=>order_Cancel(`part`)}
+                                >
+                                    <Text style={[text_center,h18]}>반품신청</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={[wt5,ps1,pe1]}>
+                                <TouchableOpacity style={[btn_primary,{borderRadius:5,paddingTop:7,paddingBottom:7}]}
+                                                  onPress={()=>order_Cancel(`all`)}
+                                >
+                                    <Text style={[text_white,text_center,h18]}>전체반품</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </KeyboardAvoidingView>
+                </>
+            )}
+
         </>
     );
 }

@@ -99,10 +99,8 @@ export async function sendPushApp(App_PushToken, Member) {
 }
 
 export const save_push_id = async (mem_uid) => {
-
     let App_PushToken = await buildApp();
-
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_send_push_20230322.php',{
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_send_push.php',{
         act_type        :"save_push_id",
         mem_uid         :mem_uid,
         push_id         :App_PushToken,
@@ -116,40 +114,104 @@ export const save_push_id = async (mem_uid) => {
 
 
 // (발주신청시)
-export const settlekind_push = async (mem_uid, order_no) => {
+export const settlekind_push = async (mem_uid, order_no, get_gd_order) => {
     /**----------------------로컬 푸시----------------**/
+    let App_PushToken         = await buildApp();                       // 푸시알림 토큰
+    let push_title            = '결제가 완료되었습니다.';                   // 푸시 알림 제목
+    let message               = '결제가 완료되었습니다. 배송을 준비합니다.';   // 푸시 메세지 내용 
+    let link                  = ``;                                     // 페이지 링크 타입
+    let page_type             = `orderDetail`;                           // 발주상세
     await Notifications.scheduleNotificationAsync({
         content: {
-            title   : `결제가 완료되었습니다.`,
-            body    : `결제가 완료되었습니다. 배송을 준비합니다.`,
+            title   : push_title,
+            body    : message,
+            data    :{
+                link:link,
+            }
         },
         trigger:null,
     });
     /**----------------------서버 푸시----------------**/
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_send_push.php',{
+        act_type        :"save_settlekind_push",
+        mem_uid         :mem_uid,
+        push_id         :App_PushToken,
+        gd_order_uid    :get_gd_order.gd_order_uid,
+        push_title      :push_title,
+        message         :message,
+        page_type       :page_type
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
 }
 // (카드결제시)
-export const order_push = async (mem_uid, OrderDate) => {
+export const order_push = async (mem_uid, OrderDate, get_gd_order) => {
     /**----------------------로컬 푸시----------------**/
+    let App_PushToken         = await buildApp();                       // 푸시알림 토큰
+    let push_title            = '발주신청이 완료되었습니다.';                   // 푸시 알림 제목
+    let message               = '요청하신 발주를 관리자가 확인하고있습니다.';   // 푸시 메세지 내용
+    let link                  = ``;                                     // 페이지 링크 타입
+    let page_type             = `ord_status`;                           // 발주상세
     await Notifications.scheduleNotificationAsync({
         content: {
-            title   : `발주신청이 완료되었습니다.`,
-            body    : `요청하신 발주를 관리자가 확인하고 있습니다.`,
+            title   : push_title,
+            body    : message,
+            data    :{
+                link:link,
+            }
         },
         trigger:null,
     });
     /**----------------------서버 푸시----------------**/
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_send_push.php',{
+        act_type        :"save_order_push",
+        mem_uid         :mem_uid,
+        push_id         :App_PushToken,
+        push_title      :push_title,
+        message         :message,
+        page_type       :page_type
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
 }
 // (결제후 발주 부분취소시)
-export const part_cancel_push = async (mem_uid, OrderDate) => {
+export const part_cancel_push = async (mem_uid, get_gd_order) => {
     /**----------------------로컬 푸시----------------**/
+    let App_PushToken         = await buildApp();                       // 푸시알림 토큰
+    let push_title            = '발주신청이 완료되었습니다.';                   // 푸시 알림 제목
+    let message               = '요청하신 발주를 관리자가 확인하고있습니다.';   // 푸시 메세지 내용
+    let link                  = ``;                                     // 페이지 링크 타입
+    let page_type             = `ord_status`;                           // 발주상세
     await Notifications.scheduleNotificationAsync({
         content: {
-            title   : `발주 변경이 접수되었습니다.`,
-            body    : ``,
+            title   : push_title,
+            body    : message,
+            data    :{
+                link:link,
+            }
         },
         trigger:null,
     });
     /**----------------------서버 푸시----------------**/
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_send_push.php',{
+        act_type        :"part_cancel_push",
+        mem_uid         :mem_uid,
+        push_id         :App_PushToken,
+        push_title      :push_title,
+        message         :message,
+        page_type       :page_type
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
 }
 // (결제후 발주 전체취소시)
 export const all_cancel_push = async (mem_uid, OrderDate) => {
@@ -158,6 +220,9 @@ export const all_cancel_push = async (mem_uid, OrderDate) => {
         content: {
             title   : `발주 변경이 접수되었습니다.`,
             body    : ``,
+            data    :{
+                link:'',
+            }
         },
         trigger:null,
     });

@@ -61,11 +61,11 @@ export default function MyPage({navigation, route}) {
                             </Text>
                             <Text style={styles.user_point}>보유포인트:<Text style={styles.user_point_score}>{mem_info.mem_point}P</Text></Text>
                             <View style={[flex_around]}>
-                                <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {Alert.alert(``,`준비중입니다.`)}}>
+                                <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {navigation.navigate(`포인트내역`)}}>
                                     <Text style={[styles.user_point_link_txt]}>나의 포인트 내역</Text>
                                 </TouchableOpacity>
                                 <View style={[wt1]}/>
-                                <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {Alert.alert(``,`준비중입니다.`)}}>
+                                <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {navigation.navigate(`환불내역`)}}>
                                     <Text style={[styles.user_point_link_txt]}>나의 환불내역</Text>
                                 </TouchableOpacity>
                             </View>

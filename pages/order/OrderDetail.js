@@ -309,9 +309,15 @@ export default function OrderDtail({route,navigation}) {
         set_A_order_list(temp);
     };
     // 결제후 취소
+
+    /* 반품 신청 */
+    const return_order = () => {
+        let chk = A_order_list.filter(val=>val.disable_cancel === 'N');
+        if(chk.length === 0) { return Alert.alert(``,`취소/반품 불가능한 자재입니다.`); }
+        navigation.navigate(`반품요청`,{get_gd_order:get_gd_order});
+    }
+
     const order_Cancel = (cancel_type) => {
-
-
 
         if(cancel_type === 'all') {
 
@@ -541,7 +547,7 @@ export default function OrderDtail({route,navigation}) {
                         {(get_gd_order.ord_status === 'deli_done') && (
                             <>
                                 <View style={[flex]}>
-                                    <TouchableOpacity onPress={()=>{navigation.navigate(`반품요청`,{get_gd_order:get_gd_order})}} style={[ms2,btn_warning,{paddingVertical:7,paddingHorizontal:7,}]}>
+                                    <TouchableOpacity onPress={return_order} style={[ms2,btn_warning,{paddingVertical:7,paddingHorizontal:7,}]}>
                                         <Text style={[text_white,text_center,h13]}>반품신청</Text>
                                     </TouchableOpacity>
                                 </View>

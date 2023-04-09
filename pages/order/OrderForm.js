@@ -630,6 +630,13 @@ export default function OrderForm({route,navigation}) {
                                                             <View style={[flex_end]}>
                                                                 <Image style={[styles.goods_thum]} source={{uri: 'http://www.zazaero.com' + img_src}}/>
                                                                 <View style={ms2}>
+                                                                    {(val.disable_cancel === 'Y') && (
+                                                                        <>
+                                                                            <Text style={[h12, text_danger]}>
+                                                                                결제 후 취소/반품 불가
+                                                                            </Text>
+                                                                        </>
+                                                                    )}
                                                                     <Text style={[h14,fw500]}>수량</Text>
                                                                     <Text style={[h14]}>{items.option_cnt} 개</Text>
                                                                 </View>
