@@ -251,12 +251,16 @@ export default function OrderDtail({route,navigation}) {
                                     console.log(res.data,'/포인트 체크 데이터');
                                     const {result, err_msg} = res.data;
                                     if(result === 'OK') {
-                                        Alert.alert(``,`포인트를 사용하시겠습니까?`,[
-                                            {text:'아니오',onPress:()=>{}},
-                                            {text:'네',onPress:()=>{
-                                                    return donePay(get_gd_order, PayMement, navigation, point_use);
-                                                }}
-                                        ]);
+                                        if(Number(point_use) > 0) {
+                                            Alert.alert(``,`포인트를 사용하시겠습니까?`,[
+                                                {text:'아니오',onPress:()=>{}},
+                                                {text:'네',onPress:()=>{
+                                                        return donePay(get_gd_order, PayMement, navigation, point_use);
+                                                    }}
+                                            ]);
+                                        } else {
+                                            return donePay(get_gd_order, PayMement, navigation, point_use);
+                                        }
                                     } else {
                                         console.log(res.data);
                                         return Alert.alert(``,`${err_msg}`);
