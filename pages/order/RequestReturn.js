@@ -156,6 +156,13 @@ export default function RequestReturn({route, navigation}) {
                 addr1       :addr1,
                 addr2       :addr2
             });
+        } else {
+            set_ret_order({
+                ...ret_order,
+                zonecode    :get_gd_order.zonecode,
+                addr1       :get_gd_order.addr1,
+                addr2       :get_gd_order.addr2
+            });
         }
     }
     const order_Cancel = (cancel_type) => {
