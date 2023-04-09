@@ -96,9 +96,9 @@ export default function CancelDetail({navigation,route}) {
     const [CanceDlList, setOrderList] = useState(cancel_d_List);     // 발주내역 출력
 
 
-    console.log(gd_order,`\n/[주문정보]`);
-    console.log(gd_cancel,`\n/[주문취소 정보]`);
-    console.log(A_order_cancel_item,`\n/[주문취소 리스트]`);
+    console.log(gd_order,`\n/[발주정보]`);
+    console.log(gd_cancel,`\n/[발주취소 정보]`);
+    console.log(A_order_cancel_item,`\n/[발주취소 자재 리스트]`);
     
 
     return (
@@ -309,8 +309,8 @@ export default function CancelDetail({navigation,route}) {
                                     </View>
                                     <View style={[styles.wt70]}>
                                         <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                            {BankCode.filter(val=>{
-                                                if(val.value === gd_cancel.refound_back_code) {
+                                            {BankCode.map(val=>{
+                                                if(val.value === String(gd_cancel.refund_bank_code)) {
                                                     return val.label;
                                                 }
                                             })}

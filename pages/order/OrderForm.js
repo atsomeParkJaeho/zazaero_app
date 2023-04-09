@@ -70,7 +70,7 @@ import {del_deli_addr, get_deli_addr_list, get_order_ready, InsOrder, SaveDeliAd
 import HomeLogoAt from "../../icons/home_logo_at.svg";
 import HomeLogo from "../../icons/home_logo.svg";
 import {get_Member} from "../UTIL_mem";
-import {order_push} from "../../push/UTIL_push";
+import {order_push, send_pus, send_push} from "../../push/UTIL_push";
 
 
 
@@ -817,8 +817,27 @@ export default function OrderForm({route,navigation}) {
                                     Alert.alert('',msg,[{
                                         text:'확인',
                                         onPress:()=>{
-                                            order_push(Member, order_no);       // 로컬 푸시알림 전송
-                                            return navigation.replace('발주상태');
+                                            /**----------1. 발주가 정상적으로 등록시 푸시알림을 전송한다. --------------- **/
+                                            send_push(Member).then((res)=>{
+                                                if(res) {
+                                                    const {result} = res.data;
+                                                    if(result === 'OK') {
+                                                        /**----------2. 푸시전송기록을 db에 전송한다. --------------- **/
+                                                        order_push(Member,``,``).then((res)=>{
+                                                           if(res) {
+                                                               const {result} = res.data;
+                                                               if(result === 'OK') {
+                                                                   return navigation.replace('발주상태');
+                                                               } else {
+                                                                   return Alert.alert(``,`${result}`);
+                                                               }
+                                                           }
+                                                        });
+                                                    } else {
+                                                        return Alert.alert(``,`${result}`);
+                                                    }
+                                                }
+                                            });
                                         }
                                     }]);
                                 } else {return Alert.alert('',`에러[1]${result}`);}
