@@ -153,7 +153,7 @@ export default function Wishlist({route,navigation}) {
                 console.log(result2,'/2');
                 if(cate_1st_uid !== get_gd_order.goods_cate1_uid) {return Alert.alert(``,`동일공정 카테고리만 가능합니다.`);}
                 if(result) {return Alert.alert('','이미 추가하신 자재입니다.');}
-                if(result2) {return Alert.alert('','이미 추가하신 자재입니다.');}
+                // if(result2) {return Alert.alert('','이미 추가하신 자재입니다.');}
             }
             setWishList(WishList.map((cate)=>{
                 return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{

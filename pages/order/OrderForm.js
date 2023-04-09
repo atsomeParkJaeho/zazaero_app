@@ -819,26 +819,6 @@ export default function OrderForm({route,navigation}) {
                                         onPress:()=>{
                                             /**----------1. 발주가 정상적으로 등록시 푸시알림을 전송한다. --------------- **/
                                             return navigation.replace('발주상태');
-                                            // send_push(Member).then((res)=>{
-                                            //     if(res) {
-                                            //         const {result} = res.data;
-                                            //         if(result === 'OK') {
-                                            //             /**----------2. 푸시전송기록을 db에 전송한다. --------------- **/
-                                            //             order_push(Member,``,``).then((res)=>{
-                                            //                if(res) {
-                                            //                    const {result} = res.data;
-                                            //                    if(result === 'OK') {
-                                            //                        return navigation.replace('발주상태');
-                                            //                    } else {
-                                            //                        return Alert.alert(``,`${result}`);
-                                            //                    }
-                                            //                }
-                                            //             });
-                                            //         } else {
-                                            //             return Alert.alert(``,`${result}`);
-                                            //         }
-                                            //     }
-                                            // });
                                         }
                                     }]);
                                 } else {return Alert.alert('',`에러[1]${result}`);}

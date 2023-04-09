@@ -353,11 +353,10 @@ export const get_order_cancel_list = async (Member) => {
     return res;
 }
 /**-------------------------------------발주취소내역출력-----------------------------------------------------------------------**/
-export const gd_cancel_info = async (gd_cancel_uid, gd_order_uid) => {
+export const gd_cancel_info = async (gd_cancel_uid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type             :"gd_cancel_info",
-        gd_cancel_uid        :gd_cancel_uid,
-        gd_order_uid         :gd_order_uid,
+        gd_cancel_uid        :gd_cancel_uid
     },{
         headers: {
             'Content-type': 'multipart/form-data'
