@@ -99,18 +99,18 @@ export default function CancelDetail({navigation,route}) {
     console.log(gd_order,`\n/[발주정보]`);
     console.log(gd_cancel,`\n/[발주취소 정보]`);
     console.log(A_order_cancel_item,`\n/[발주취소 자재 리스트]`);
-    
+
 
     return (
         <>
             <ScrollView style={[bg_white]}>
                 <View style={[styles.Detail_page_top,d_flex,justify_content_center]}>
 
-                        {(gd_cancel.refund_status === 'done') ? (
-                            <Text style={[text_danger,h21]}>처리완료 되었습니다.</Text>
-                        ):(
-                            <Text style={[text_primary,h21]}>처리중입니다.</Text>
-                        )}
+                    {(gd_cancel.refund_status === 'done') ? (
+                        <Text style={[text_danger,h21]}>처리완료 되었습니다.</Text>
+                    ):(
+                        <Text style={[text_primary,h21]}>처리중입니다.</Text>
+                    )}
 
                 </View>
                 {/**/}
@@ -292,7 +292,7 @@ export default function CancelDetail({navigation,route}) {
                                     <Text style={[h18]}>환불계좌 정보</Text>
                                 </View>
                                 <View style={[flex,mt1]}>
-                                    {/**----------------------발주신청일--------------------------**/}
+                                    {/**----------------------송금완료일시--------------------------**/}
                                     <View style={[styles.wt30]}>
                                         <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>송금완료일시</Text>
                                     </View>
@@ -303,7 +303,7 @@ export default function CancelDetail({navigation,route}) {
                                     </View>
                                 </View>
                                 <View style={[flex]}>
-                                    {/**----------------------발주신청일--------------------------**/}
+                                    {/**----------------------은행명--------------------------**/}
                                     <View style={[styles.wt30]}>
                                         <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>은행명</Text>
                                     </View>
@@ -318,7 +318,7 @@ export default function CancelDetail({navigation,route}) {
                                     </View>
                                 </View>
                                 <View style={[flex]}>
-                                    {/**----------------------발주신청일--------------------------**/}
+                                    {/**----------------------계좌번호--------------------------**/}
                                     <View style={[styles.wt30]}>
                                         <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>계좌번호</Text>
                                     </View>
@@ -329,9 +329,20 @@ export default function CancelDetail({navigation,route}) {
                                     </View>
                                 </View>
                                 <View style={[flex]}>
-                                    {/**----------------------발주신청일--------------------------**/}
-                                    <View style={[styles.wt30,borderBottom1]}>
+                                    {/**----------------------예금주--------------------------**/}
+                                    <View style={[styles.wt30]}>
                                         <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>예금주</Text>
+                                    </View>
+                                    <View style={[styles.wt70]}>
+                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                            {gd_cancel.refund_bank_owner}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={[flex]}>
+                                    {/**----------------------송금자--------------------------**/}
+                                    <View style={[styles.wt30,borderBottom1]}>
+                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>송금자</Text>
                                     </View>
                                     <View style={[styles.wt70,borderBottom1]}>
                                         <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
