@@ -52,7 +52,8 @@ export default function Cancel({navigation, route}) {
                 console.log(res.data,'/ 데이터 확인123');
                 const {result, err_msg, gd_cancel} = res.data;
                 if(result === 'OK') {
-                    set_cancel_list(gd_cancel);
+                    let temp = gd_cancel.filter((val)=>val.deli_status !== 'done');
+                    set_cancel_list(temp);
                 } else {
                     Alert.alert('','연결실패'+err_msg);
                 }
@@ -60,7 +61,7 @@ export default function Cancel({navigation, route}) {
         });
     },[Member]);
 
-    console.log(cancel_list,'/ 결제취소 리스트');
+    console.log(cancel_list,'/ [결제취소 리스트]');
 
 
     function CancelList({item}) {
@@ -99,17 +100,7 @@ export default function Cancel({navigation, route}) {
                                         style={[styles.ft_14]}>{item.work_name}</Text>
                                 </View>
                             </View>
-                            {/**--------------------희망배송일----------------------------**/}
-                            <View style={[flex]}>
-                                <View style={[styles.wt3]}>
-                                    <Text style={[styles.ft_14, item.text_gray]}> 희망배송일:</Text>
-                                </View>
-                                <View style={[styles.wt7]}>
-                                    <Text style={[styles.ft_14, styles.text_gray]}>
-                                        {DateChg(item.hope_deli_date)} {item.hope_deli_time}
-                                    </Text>
-                                </View>
-                            </View>
+
                             {/**--------------------배송지----------------------------**/}
                             <View style={[flex]}>
                                 <View style={[styles.wt3]}>

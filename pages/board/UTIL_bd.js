@@ -11,3 +11,20 @@ export const bd_list = async () => {
     });
     return res;
 }
+
+export const image_upload = async (setlect_image) => {
+
+    let imageData = setlect_image.map(val=>{
+        return {
+
+        }
+    });
+
+
+    let formData = new FormData();
+    formData.append('image',{
+
+    });
+
+    return res;
+}

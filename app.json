@@ -51,6 +51,23 @@
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/df26d83b-0020-45b2-846c-2a545d26af57"
     },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "13.0"
+          }
+        }
+
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ],
     "runtimeVersion": {
       "policy": "sdkVersion"
     }

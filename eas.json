@@ -1,9 +1,10 @@
 {
   "cli": {
-    "version": ">= 3.7.1"
+    "version": ">= 3.8.1"
   },
   "build": {
     "development": {
+      "ios": {"image": "latest"},
       "developmentClient": true,
       "distribution": "internal",
       "channel": "development"
@@ -16,6 +17,8 @@
       }
     },
     "production": {
+      "distribution": "internal",
+      "ios": {"image": "latest"},
       "channel": "production"
     }
   },
@@ -23,6 +26,15 @@
     "production": {
       "android": {
         "serviceAccountKeyPath":"./pc-api-5961167133705272112-485-bf73bab80594.json"
+      },
+      "ios": {
+        "appleId": "cs@starchium.com",
+        "ascAppId": "6446190798",
+        "sku": "EX1678426148349",
+        "ascApiKeyId": "7D3WGJ7VHH",
+        "ascApiKeyPath": "./AuthKey_7D3WGJ7VHH.p8",
+        "ascApiKeyIssuerId": "65de0dc2-a669-4f5d-af53-5f8b10aea994",
+        "bundleIdentifier": "com.zazaero.www"
       }
     }
   }

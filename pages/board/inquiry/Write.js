@@ -19,7 +19,6 @@ import {sub_page} from '../../../common/style/SubStyle';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import CameraIcon from "../../../icons/camera_icon.svg";
-import * as ImagePicker from "expo-image-picker";
 
 
 export default function InquiryWrite({navigation,route}) {
@@ -69,7 +68,7 @@ export default function InquiryWrite({navigation,route}) {
         });
     }
     console.log(Write);
-
+    /*
     const [imageUrl, setimageUrl] = useState('');
     //권한 요청을 위한 hooks
     const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
@@ -99,7 +98,7 @@ export default function InquiryWrite({navigation,route}) {
 
     }
     console.log('이미지경로데이터값 : '+ imageUrl);
-
+    */
 
     return (
         <>

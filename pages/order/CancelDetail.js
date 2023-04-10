@@ -49,7 +49,7 @@ import col3 from "../../assets/img/co3.png";
 
 
 // 샘플데이터
-import {BankCode, cancel_d_List, cancelStatus, DateChg, Price, settleKind} from "../../util/util";
+import {BankCode, cancel_d_List, cancelStatus, DateChg, Phone, Price, settleKind} from "../../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {gd_cancel_info} from "./UTIL_order";
 import {get_Member} from "../UTIL_mem";
@@ -146,7 +146,13 @@ export default function CancelDetail({navigation,route}) {
                     <View style={[FormStyle.FormGroupItems]}>
                         <View>
                             <Text style={[FormStyle.FormLabel]}>현장인도자 연락처</Text>
-                            <Text style={[input,{paddingTop:12},bg_light]}>{gd_order.recv_mobile}</Text>
+                            <Text style={[input,{paddingTop:12},bg_light]}>
+                                {(gd_order.recv_mobile) && (
+                                    <>
+                                        {Phone(gd_order.recv_mobile)}
+                                    </>
+                                )}
+                            </Text>
                         </View>
                     </View>
                 </View>
@@ -178,10 +184,24 @@ export default function CancelDetail({navigation,route}) {
                                             <View style={justify_content_end}>
                                                 <Text style={[h13]}>( 단가 : {Price(val.price)}원)</Text>
                                                 {/*단가*/}
-                                                <Text style={[h13]}>취소금액</Text>
+                                                <Text style={[h13]}>
+                                                    취소금액
+                                                </Text>
                                                 <Text style={[h16]}>{Price(val.refund_goods_price * val.cancel_cnt)} 원</Text>
                                                 {/*총금액*/}
+
+                                                {(Number(val.refound_opt_price) > 0) && (
+                                                    <>
+                                                        <Text style={[h12]}>
+                                                            환불요청옵션비
+                                                        </Text>
+                                                        <Text style={[h12]}>
+                                                            {Price(val.refund_opt_price)}원
+                                                        </Text>
+                                                    </>
+                                                )}
                                             </View>
+
                                         </View>
 
                                     </View>
@@ -202,7 +222,15 @@ export default function CancelDetail({navigation,route}) {
                             </View>
                             <View style={[styles.wt70]}>
                                 <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                    {(settleKind(gd_order.settlekind))}
+                                    {0 >= Number(gd_order.settleprice) ? (
+                                        <>
+                                            전액포인트 사용
+                                        </>
+                                    ):(
+                                        <>
+                                            {settleKind(gd_order.settlekind)}
+                                        </>
+                                    )}
                                 </Text>
                             </View>
                         </View>
@@ -228,28 +256,47 @@ export default function CancelDetail({navigation,route}) {
                                 </Text>
                             </View>
                         </View>
-                        <View style={[flex]}>
-                            {/**----------------------발주신청일--------------------------**/}
-                            <View style={[styles.wt30]}>
-                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>환불 차감금액</Text>
-                            </View>
-                            <View style={[styles.wt70]}>
-                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                    {Price(gd_cancel.sum_refund_money)}원
-                                </Text>
-                            </View>
-                        </View>
-                        <View style={[flex]}>
-                            {/**----------------------발주신청일--------------------------**/}
-                            <View style={[styles.wt30]}>
-                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송비</Text>
-                            </View>
-                            <View style={[styles.wt70]}>
-                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                    {Price(gd_cancel.sum_de_refund_money)}원
-                                </Text>
-                            </View>
-                        </View>
+                        {(gd_cancel.deli_status === 'done') && (
+                            <>
+                                <View style={[flex]}>
+                                    {/**----------------------발주신청일--------------------------**/}
+                                    <View style={[styles.wt30]}>
+                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>환불 합계금액</Text>
+                                    </View>
+                                    <View style={[styles.wt70]}>
+                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                            {Price(gd_cancel.sum_refund_money)}원
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style={[flex]}>
+                                    {/**----------------------발주신청일--------------------------**/}
+                                    <View style={[styles.wt30]}>
+                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>환불 차감금액</Text>
+                                    </View>
+                                    <View style={[styles.wt70]}>
+                                        <Text style={[styles.GoodsDetail_info_txt_val,text_danger,styles.GoodsDetail_price_val]}>
+                                            -{Price(gd_cancel.sum_de_refund_money)}원
+                                        </Text>
+                                    </View>
+                                </View>
+                            </>
+                        )}
+                        {(gd_cancel.deli_status === 'ready') && (
+                            <>
+                                <View style={[flex]}>
+                                    {/**----------------------발주신청일--------------------------**/}
+                                    <View style={[styles.wt30]}>
+                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송비</Text>
+                                    </View>
+                                    <View style={[styles.wt70]}>
+                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                            {Price(gd_cancel.refund_deli_price)}원
+                                        </Text>
+                                    </View>
+                                </View>
+                            </>
+                        )}
                         <View style={[flex]}>
                             {/**----------------------발주신청일--------------------------**/}
                             <View style={[styles.wt30]}>
@@ -287,71 +334,76 @@ export default function CancelDetail({navigation,route}) {
                     {/*결제정보*/}
                     {(gd_order.settlekind === 'bank') && (
                         <>
-                            <View style="">
-                                <View style={container}>
-                                    <Text style={[h18]}>환불계좌 정보</Text>
-                                </View>
-                                <View style={[flex,mt1]}>
-                                    {/**----------------------송금완료일시--------------------------**/}
-                                    <View style={[styles.wt30]}>
-                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>송금완료일시</Text>
+                            {(gd_cancel.refund_status === 'done') && (
+                                <>
+                                    <View style="">
+                                        <View style={container}>
+                                            <Text style={[h18]}>환불계좌 정보</Text>
+                                        </View>
+                                        <View style={[flex,mt1]}>
+                                            {/**----------------------송금완료일시--------------------------**/}
+                                            <View style={[styles.wt30]}>
+                                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>송금완료일시</Text>
+                                            </View>
+                                            <View style={[styles.wt70]}>
+                                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                    {DateChg(gd_cancel.refund_bank_send_date)}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <View style={[flex]}>
+                                            {/**----------------------은행명--------------------------**/}
+                                            <View style={[styles.wt30]}>
+                                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>은행명</Text>
+                                            </View>
+                                            <View style={[styles.wt70]}>
+                                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                    {BankCode.map(val=>{
+                                                        if(val.value === String(gd_cancel.refund_bank_code)) {
+                                                            return val.label;
+                                                        }
+                                                    })}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <View style={[flex]}>
+                                            {/**----------------------계좌번호--------------------------**/}
+                                            <View style={[styles.wt30]}>
+                                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>계좌번호</Text>
+                                            </View>
+                                            <View style={[styles.wt70]}>
+                                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                    {gd_cancel.refund_bank_no}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <View style={[flex]}>
+                                            {/**----------------------예금주--------------------------**/}
+                                            <View style={[styles.wt30]}>
+                                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>예금주</Text>
+                                            </View>
+                                            <View style={[styles.wt70]}>
+                                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                    {gd_cancel.refund_bank_owner}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <View style={[flex]}>
+                                            {/**----------------------송금자--------------------------**/}
+                                            <View style={[styles.wt30,borderBottom1]}>
+                                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>송금자</Text>
+                                            </View>
+                                            <View style={[styles.wt70,borderBottom1]}>
+                                                <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                                    {gd_cancel.refund_bank_send_name}
+                                                </Text>
+                                            </View>
+                                        </View>
                                     </View>
-                                    <View style={[styles.wt70]}>
-                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                            {DateChg(gd_cancel.refund_bank_send_date)}
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style={[flex]}>
-                                    {/**----------------------은행명--------------------------**/}
-                                    <View style={[styles.wt30]}>
-                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>은행명</Text>
-                                    </View>
-                                    <View style={[styles.wt70]}>
-                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                            {BankCode.map(val=>{
-                                                if(val.value === String(gd_cancel.refund_bank_code)) {
-                                                    return val.label;
-                                                }
-                                            })}
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style={[flex]}>
-                                    {/**----------------------계좌번호--------------------------**/}
-                                    <View style={[styles.wt30]}>
-                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>계좌번호</Text>
-                                    </View>
-                                    <View style={[styles.wt70]}>
-                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                            {gd_cancel.refund_bank_no}
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style={[flex]}>
-                                    {/**----------------------예금주--------------------------**/}
-                                    <View style={[styles.wt30]}>
-                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>예금주</Text>
-                                    </View>
-                                    <View style={[styles.wt70]}>
-                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                            {gd_cancel.refund_bank_owner}
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style={[flex]}>
-                                    {/**----------------------송금자--------------------------**/}
-                                    <View style={[styles.wt30,borderBottom1]}>
-                                        <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>송금자</Text>
-                                    </View>
-                                    <View style={[styles.wt70,borderBottom1]}>
-                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                            {gd_cancel.refund_bank_send_name}
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
-                            {/*환불계좌정보*/}
+                                    {/*환불계좌정보*/}
+                                </>
+                            )}
+
                         </>
                     )}
                     <View style={[padding_bottom2]} />

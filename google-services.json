@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "411915234426",
+    "project_id": "pc-api-5961167133705272112-485",
+    "storage_bucket": "pc-api-5961167133705272112-485.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411915234426:android:cf35c0283e551907a61fc3",
+        "android_client_info": {
+          "package_name": "com.www.zazaero"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411915234426-27q7ur3cf5t47q67ijp0t1vfi47in1ov.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPCVNiaTykk0gik7eiOnKLtx1agqQrlOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411915234426-27q7ur3cf5t47q67ijp0t1vfi47in1ov.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1146,7 +1146,23 @@ export default function OrderDtail({route,navigation}) {
                                         </View>
                                         <View style={[styles.wt75]}>
                                             <Text style={[styles.GoodsDetail_info_txt_val,text_danger, styles.GoodsDetail_price_val]}>
-                                                -{(point_use !== '') ? Price(point_use) : '0'}P
+                                                {(0 >= Number(point_use)) ? (
+                                                    <>
+                                                        {(0 >= Number(get_gd_order.settleprice)) ? (
+                                                            <>
+                                                                {Price(get_gd_order.point_use)}P
+                                                            </>
+                                                        ):(
+                                                            <>
+                                                                0P
+                                                            </>
+                                                        )}
+                                                    </>
+                                                ):(
+                                                    <>
+                                                        -{Price(point_use)}P
+                                                    </>
+                                                )}
                                             </Text>
                                         </View>
                                     </View>
@@ -1201,7 +1217,7 @@ export default function OrderDtail({route,navigation}) {
                                             <Text style={[styles.GoodsDetail_info_txt_val,h16,text_primary]}>
                                                 {(0 >= Number(get_gd_order.settleprice)) ? (
                                                     <>
-                                                        전액포인트 사용
+                                                        전액포인트 결제
                                                     </>
                                                 ):(
                                                     <>
@@ -1224,7 +1240,7 @@ export default function OrderDtail({route,navigation}) {
                                     <Text style={[styles.GoodsDetail_info_txt_val,h16,text_primary]}>
                                         {(0 >= Number(get_gd_order.settleprice)) ? (
                                             <>
-                                                전액포인트 사용
+                                                전액포인트 결제
                                             </>
                                         ):(
                                             <>

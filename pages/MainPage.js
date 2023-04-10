@@ -31,9 +31,7 @@ import {
     requestUserPermission, save_push_id, sendPushApp,
     sendPushNotification
 } from "../push/UTIL_push";
-import * as Notifications from "expo-notifications";
-import axios from "axios";
-import registerNNPushToken from "native-notify";
+
 
 
 // 2차 카테고리 설정
@@ -115,6 +113,8 @@ export default function MainPage({route,navigation}) {
                 const {result} = res.data;
                 if(result === 'OK') {
                     return console.log('성공');
+                } else {
+                    return Alert.alert(``,`${result}`);
                 }
             }
         });

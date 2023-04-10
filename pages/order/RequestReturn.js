@@ -68,6 +68,7 @@ import {FormStyle} from "./FormStyle";
 import {borderBottom1} from "../../common/style/SubStyle";
 import {Phone, Price} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
+import {image_upload} from "../board/UTIL_bd";
 
 
 
@@ -80,10 +81,10 @@ export default function RequestReturn({route, navigation}) {
     const [modAddr, setmodAddr]           = useState(`add`); // 신규수거지, 기존 배송지 선택 상태 정의
     const [DeliList, setDeliList] = useState([]);
     const [ret_order, set_ret_order] = useState({
-        zonecode    :'',
-        addr1       :'',
-        addr2       :'',
-        return_mem_mobile:''
+        zonecode            :'',
+        addr1               :'',
+        addr2               :'',
+        return_mem_mobile   :'',
     });            // 반품신청 내역 작성
     const [Selected, setSelected] = useState({
         zonecode        :'',
@@ -172,7 +173,7 @@ export default function RequestReturn({route, navigation}) {
                 {text:'확인',
                     onPress:()=>{
                         // ================1. 결제반품 이벤트 실행====================
-                        order_cancel(get_gd_order, cancel_type, A_order_list, Member, ret_order).then((res)=>{
+                        order_cancel(get_gd_order, cancel_type, A_order_list, Member, ret_order, selectedImages).then((res)=>{
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
@@ -188,7 +189,11 @@ export default function RequestReturn({route, navigation}) {
                                     return Alert.alert('',`${result}`);
                                 }
                             }
-                        })
+                        });
+                        /**-----------취소 반품 이미지 업로드------**/
+                        image_upload().then((res)=>{
+
+                        });
                     }
                 }
             ]);
@@ -272,7 +277,7 @@ export default function RequestReturn({route, navigation}) {
             if (selectedImages.length < MAX_IMAGES) {
                 setSelectedImages([...selectedImages, result]);
             } else {
-                alert('4장이상 등록할수 없습니다!');
+                return Alert.alert(``,`최대 4장까지만 등록 가능합니다.`);
             }
         }
     };
@@ -285,150 +290,17 @@ export default function RequestReturn({route, navigation}) {
     console.log(Member,'/[회원uid]');
     console.log(get_gd_order,'/[발주내역]');
     console.log(ret_order,'/[반품신청]');
-    console.log(A_order_list,'/[발주자재]');
+    console.table(A_order_list);
+    console.log(selectedImages,'/[이미지 데이터 확인]');
 
     let disable_cancel = A_order_list.map(val=>val.disable_cancel);
     let disable_cancel_chk = (disable_cancel.includes('Y'));
-
-
-    function OrderSearch() {
-        const [Search, setSearch]     = useState(``);
-        const [Show, setShow]         = useState(false);    // 검색창 노출 여부
-
-        let find = DeliList.filter(text=>(text.gmd_title.includes(Search) && text));
-        const goSearch = (gmd_zonecode, gmd_address, gmd_address_sub, work_name, work_uid) => {
-            route.params.zonecode = gmd_zonecode;
-            route.params.addr1 = gmd_address;
-            setSelected({
-                ...Selected,
-                zonecode        :gmd_zonecode,
-                addr1           :gmd_address,
-                order_title     :work_name,
-                work_uid        :work_uid,
-            });
-
-            set_ret_order({
-                ...ret_order,
-                zonecode        :gmd_zonecode,
-                addr1           :gmd_address,
-                addr2           :gmd_address_sub,
-            });
-
-        }
-
-        console.log(Selected);
-        console.log(find);
-        return(
-            <>
-                <Text style={[mb1]}>기존 공사명 검색</Text>
-                <View style={[styles.ord_tit_list_search,mb2]}>
-                    <View style={[styles.select_box]}>
-                        <TouchableOpacity onPress={()=>{setShow(!Show)}}>
-                            <View style={[styles.border]}>
-                                {/**---------------------------선택주소 노출--------------------------------**/}
-                                <Text style={[]}>
-                                    {(Selected.order_title) ? Selected.order_title:'최근 공사명을 선택해주세요.'}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                        <View style={[styles.select_icon_box]}>
-                            <Text style={[styles.select_icon]}>▼</Text>
-                        </View>
-                    </View>
-                    {/**---------------------------클릭시 노출--------------------------------**/}
-                    {(Show) && (
-                        <View style={[styles.ord_tit_list_box]}>
-                            <TextInput style={[input,{flex:1,marginRight:16},mb1]} placeholder="공사명 입력"
-                                       onChangeText={(word)=>setSearch(word)}
-                                       editable={(modAddr === 'mod')}
-                                       value={Search}
-                            />
-                            <ScrollView style={[{height:160}]} nestedScrollEnabled={true}>
-                                <View style={[styles.ord_tit_list]}>
-                                    {/**---------------------------반복문 구간--------------------------------**/}
-                                    {find.map((val,idx)=> {
-                                        return (
-                                            <>
-                                                <View style={[styles.Recent_search_list_item]} key={idx}>
-                                                    <View style={flex_between}>
-                                                        <View>
-                                                            <TouchableOpacity onPress={() => goSearch(val.gmd_zonecode, val.gmd_address, val.gmd_address_sub, val.work_name, val.work_uid)}>
-                                                                <Text style={[h14, styles.txt_color2]}>
-                                                                    {val.work_name}
-                                                                </Text>
-                                                            </TouchableOpacity>
-                                                        </View>
-                                                        <View>
-                                                            <View style={[flex, justify_content_end]}>
-                                                                <Text style={[h14, text_gray]}>
-                                                                    {val.gmd_moddate}
-                                                                </Text>
-                                                                <TouchableOpacity style={ms2} onPress={() => delDeli(val.gmd_sno)}>
-                                                                    <Text style={[h14, styles.txt_color]}>X</Text>
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                        </View>
-                                                    </View>
-                                                </View>
-                                            </>
-                                        );
-                                    })}
-                                </View>
-                            </ScrollView>
-                        </View>
-                    )}
-                </View>
-            </>
-        );
-    }
-
-    /**------------------------------신규배송지, 기존배송지 선택-------------------------------**/
-    function OrderAddress() {
-        return (
-            <>
-                <View style={[flex,pb2]}>
-                    {/**----------------------------------------------신규공사--------------------------------------------------**/}
-                    <TouchableOpacity onPress={()=>select_addr('add')}>
-                        <View style={[flex]}>
-                            <View style={[styles.border_Circle]}>
-                                {(modAddr === 'add') &&
-                                    <View style={[pos_center]}>
-                                        <View style={[styles.border_Circle_active]}/>
-                                    </View>
-                                }
-                            </View>
-                            <Text style={[styles.Chk, {paddingLeft: 5}]}>신규수거배송지</Text>
-                        </View>
-                    </TouchableOpacity>
-                    {/**----------------------------------------------기존 공사--------------------------------------------------**/}
-                    <TouchableOpacity onPress={()=>select_addr('mod')}>
-                        <View style={[flex,ms2]}>
-                            <View style={[styles.border_Circle]}>
-                                {(modAddr === 'mod') &&
-                                    <View style={[pos_center]}>
-                                        <View style={[styles.border_Circle_active]}/>
-                                    </View>
-                                }
-                            </View>
-                            <Text style={[styles.Chk, {paddingLeft: 5}]}>기존배송지</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            </>
-        );
-    }
 
     return (
         <>
             <ScrollView style={[bg_white]}>
                 <View style={[styles.RequestReturn]}>
                     <View style={[FormStyle.FormGroup]}>
-                        {/*<View style={[FormStyle.FormGroupItems]}>*/}
-                        {/*    <OrderAddress/>*/}
-                        {/*</View>*/}
-                        {/*<View>*/}
-                        {/*    <OrderSearch/>*/}
-                        {/*</View>*/}
                         {/*==============배송지 가져오기==============*/}
                         <View  style={[styles.FormGroup]} >
                             <View  style={[flex]} >
