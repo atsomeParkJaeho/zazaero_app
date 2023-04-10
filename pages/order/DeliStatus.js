@@ -32,7 +32,7 @@ import {
     ps1,
     pe1,
     btn_outline_danger,
-    btn_outline_gray, btn_primary, p1, text_light, h16, fw600, h14, d_flex, justify_content_end, text_center, mb1
+    btn_outline_gray, btn_primary, p1, text_light, h16, fw600, h14, d_flex, justify_content_end, text_center, mb1, h12
 } from '../../common/style/AtStyle';
 import {sub_page, gray_bar} from '../../common/style/SubStyle';
 
@@ -43,6 +43,8 @@ import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {get_Member} from "../UTIL_mem";
 import {get_order_list} from "./UTIL_order";
+import HomeLogoAt from "../../icons/home_logo_at.svg";
+import HomeLogo from "../../icons/home_logo.svg";
 
 
 function DeliStatus({route, navigation}) {
@@ -186,7 +188,17 @@ function DeliStatus({route, navigation}) {
                                 </View>
                                 <View style={[d_flex]}>
                                     <Text>결제금액 :</Text>
-                                    <Text>{Price(item.settleprice)}원</Text>
+
+                                        {(item.settleprice === '0') ? (
+                                            <>
+                                            <Text style={[text_primary]}> 전액 포인트결제</Text>
+                                            </>
+                                        ):(
+                                            <>
+                                            <Text>{Price(item.settleprice)}원</Text>
+                                            </>
+                                        )}
+
                                 </View>
                             </View>
 
