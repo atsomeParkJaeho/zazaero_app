@@ -151,14 +151,18 @@ export default function OrderDtail({route,navigation}) {
         }
     }
     const point_use_input = (name, value) => {
-        set_point_use(value);
+        if(Number(value) > Number(get_gd_order.settleprice)) {
+            set_point_use(get_gd_order.settleprice);
+        } else {
+            set_point_use(value);
+        }
     }
 
     const all_point = () => {
-        if(get_mem_info.mem_point === point_use) {
+        if(get_gd_order.settleprice === point_use) {
             set_point_use(``);
         } else {
-            set_point_use(get_mem_info.mem_point);
+            set_point_use(get_gd_order.settleprice);
         }
     }
 
@@ -694,7 +698,7 @@ export default function OrderDtail({route,navigation}) {
                                                     <Text style={{marginRight:10}}>포인트 전액 사용</Text>
                                                     <Checkbox style={styles.all_check} color={"#4630eb"}
                                                               onValueChange={all_point}
-                                                              value={(get_mem_info.mem_point === point_use)}
+                                                              value={(get_gd_order.settleprice === point_use)}
                                                     />
                                                 </View>
                                             </View>
@@ -1086,38 +1090,7 @@ export default function OrderDtail({route,navigation}) {
                             </View>
                         </View>
                     )}
-                    {/**----------------------사용 포인트--------------------------**/}
-                    {(get_gd_order.ord_status === 'pay_ready') && (
-                        <>
-                            {(get_gd_order.settlekind === '') ? (
-                                <>
-                                    <View style={[flex]}>
-                                        <View style={[styles.wt25]}>
-                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>사용 포인트</Text>
-                                        </View>
-                                        <View style={[styles.wt75]}>
-                                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                                {(point_use !== '') ? Price(point_use) : '0'}P
-                                            </Text>
-                                        </View>
-                                    </View>
-                                </>
-                            ):(
-                                <>
-                                    <View style={[flex]}>
-                                        <View style={[styles.wt25]}>
-                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>사용 포인트</Text>
-                                        </View>
-                                        <View style={[styles.wt75]}>
-                                            <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
-                                                {Price(get_gd_order.point_use)}P
-                                            </Text>
-                                        </View>
-                                    </View>
-                                </>
-                            ) }
-                        </>
-                    )}
+
                     {/**----------------------요청옵션비--------------------------**/}
                     {(get_gd_order.tot_opt_price) && (
                         <>
@@ -1154,6 +1127,52 @@ export default function OrderDtail({route,navigation}) {
                                     </View>
                                 </>
                             )}
+                        </>
+                    )}
+                    {/**----------------------사용 포인트--------------------------**/}
+                    {(
+                        get_gd_order.ord_status === 'pay_ready' ||
+                        get_gd_order.ord_status === 'pay_done' ||
+                        get_gd_order.ord_status === 'deli_ready' ||
+                        get_gd_order.ord_status === 'deli_doing' ||
+                        get_gd_order.ord_status === 'deli_done'
+                    ) && (
+                        <>
+                            {(get_gd_order.settlekind === '') ? (
+                                <>
+                                    <View style={[flex]}>
+                                        <View style={[styles.wt25]}>
+                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>사용 포인트</Text>
+                                        </View>
+                                        <View style={[styles.wt75]}>
+                                            <Text style={[styles.GoodsDetail_info_txt_val,text_danger, styles.GoodsDetail_price_val]}>
+                                                -{(point_use !== '') ? Price(point_use) : '0'}P
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </>
+                            ):(
+                                <>
+                                    <View style={[flex]}>
+                                        <View style={[styles.wt25]}>
+                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>사용 포인트</Text>
+                                        </View>
+                                        <View style={[styles.wt75]}>
+                                            <Text style={[styles.GoodsDetail_info_txt_val,text_danger,styles.GoodsDetail_price_val]}>
+                                                {(0 >= Number(get_gd_order.point_use)) ? (
+                                                    <>
+                                                        0P
+                                                    </>
+                                                ):(
+                                                    <>
+                                                        -{Price(get_gd_order.point_use)}P
+                                                    </>
+                                                )}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </>
+                            ) }
                         </>
                     )}
                     {/**----------------------총결제 금액--------------------------**/}

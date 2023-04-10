@@ -121,7 +121,7 @@ export async function sendPushApp(App_PushToken, Member) {
 export const save_push_id = async (mem_uid) => {
     let App_PushToken = await buildApp();
     let os_type = Platform.OS;
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_send_push.php',{
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
         act_type        :"save_push_id",
         mem_uid         :mem_uid,
         app_device_os   :(os_type === 'ios') ? os_type : 'aos',
