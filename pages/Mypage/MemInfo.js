@@ -23,13 +23,15 @@ import {
     pos_center,
     ios_pb,
     mt2,
-    text_danger, text_black, text_center, h17, mb1, d_flex, bg_primary
+    text_danger, text_black, text_center, h17, mb1, d_flex, bg_primary, text_gray
 } from '../../common/style/AtStyle';
 import {AddrMatch, BankCode, bizNum, EmailDomain, Minlangth, Phone, regPW,} from "../../util/util";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import {get_Member, mod_mem_info} from "../UTIL_mem";
+import HomeLogoAt from "../../icons/home_logo_at.svg";
+import HomeLogo from "../../icons/home_logo.svg";
 
 
 export default function MemInfo({route, navigation}) {
@@ -220,7 +222,7 @@ export default function MemInfo({route, navigation}) {
                         <View style={styles.container}>
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
-                                    <Text style={styles.inputTopText}>비밀번호 <Text style={[text_danger]}>*</Text></Text>
+                                    <Text style={styles.inputTopText}>변경 비밀번호 <Text style={[text_danger]}>*</Text></Text>
                                     <TextInput style={[input]} secureTextEntry={true}
                                                onChangeText={(mem_pw) => goInput("mem_pw", mem_pw)}
                                                defaultValue={``}
@@ -231,7 +233,7 @@ export default function MemInfo({route, navigation}) {
                             {/*============ 현재 비밀번호 ============ */}
                             <View style={styles.formGroup}>
                                 <View style={styles.inputGroup}>
-                                    <Text style={styles.inputTopText}>비밀번호 확인 <Text style={[text_danger]}>*</Text></Text>
+                                    <Text style={styles.inputTopText}>변경 비밀번호 확인 <Text style={[text_danger]}>*</Text></Text>
                                     <TextInput style={[input]} secureTextEntry={true}
                                                onChangeText={(mem_pw_chk) => goInput("mem_pw_chk", mem_pw_chk)}
                                                defaultValue={``}
@@ -335,6 +337,7 @@ export default function MemInfo({route, navigation}) {
                                     <View style={flex}>
                                         <View style={[styles.flex_item_4_half]}>
                                             <TextInput style={[input]}
+                                                       autoCapitalize="none"
                                                        onChangeText={(mem_email1) => goInput("mem_email1", mem_email1)}
                                                        ref={val=>(goInput2.current[9] = val)}
                                                        placeholder=""
@@ -346,6 +349,7 @@ export default function MemInfo({route, navigation}) {
                                         </View>
                                         <View style={[styles.flex_item_4_half]}>
                                             <TextInput style={[input]}
+                                                       autoCapitalize="none"
                                                        onChangeText={(mem_email2) => goInput("mem_email2", mem_email2)}
                                                        ref={val=>(goInput2.current[10] = val)}
                                                        placeholder=""
@@ -492,7 +496,15 @@ export default function MemInfo({route, navigation}) {
                                             <View style={[styles.border]}>
                                                 {/**---------------------------선택주소 노출--------------------------------**/}
                                                 <Text style={[styles.select_txt,(MemInfo.pay_bank_code) ? text_black:'']}>
-                                                    {BankCode.map(label=>label.value === MemInfo.pay_bank_code && label.label)}
+                                                    {(!MemInfo.pay_bank_code) ? (
+                                                        <>
+                                                        <Text style={[text_gray]}>은행을 선택해주세요.</Text>
+                                                        </>
+                                                    ):(
+                                                        <>
+                                                            {BankCode.map(label=>label.value === MemInfo.pay_bank_code && label.label)}
+                                                        </>
+                                                    )}
                                                 </Text>
                                             </View>
                                         </TouchableOpacity>
@@ -795,7 +807,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     select_icon:{
-        color:"#999",
+        color:"#000",
     },
     upload_box:{
         width: "100%",
