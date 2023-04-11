@@ -10,6 +10,23 @@ export default function Cscenter({navigation}) {
     // const callNumber = () => {
     //     Linking.openURL(`tel:1666-7099`);
     // };
+
+
+
+
+    function makePhoneCall(phoneNumber) {
+        let phoneNumberWithPrefix = '';
+
+        if (Platform.OS === 'android') {
+            phoneNumberWithPrefix = `tel:${phoneNumber}`;
+        } else {
+            phoneNumberWithPrefix = `telprompt:${phoneNumber}`;
+        }
+
+        Linking.openURL(phoneNumberWithPrefix);
+    }
+
+
     return (
         <>
             <ScrollView style={[bg_white]}>
@@ -24,16 +41,16 @@ export default function Cscenter({navigation}) {
                             </View>
                         </View>
                     </TouchableOpacity>
-                    {/*<TouchableOpacity onPress={() => {navigation.navigate('1:1문의작성')}}>*/}
-                    {/*    <View style={styles.mypageListItem}>*/}
-                    {/*        <View style={styles.mypageListItemTitle}>*/}
-                    {/*            <Text style={styles.mypageList_name}>1:1문의</Text>*/}
-                    {/*        </View>*/}
-                    {/*        <View style={styles.mypageListItemIcon}>*/}
-                    {/*            <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>*/}
-                    {/*        </View>*/}
-                    {/*    </View>*/}
-                    {/*</TouchableOpacity>*/}
+                    <TouchableOpacity onPress={() => {navigation.navigate('1:1문의작성')}}>
+                        <View style={styles.mypageListItem}>
+                            <View style={styles.mypageListItemTitle}>
+                                <Text style={styles.mypageList_name}>1:1문의</Text>
+                            </View>
+                            <View style={styles.mypageListItemIcon}>
+                                <Text style={styles.mypageList_name}> <ArrowRight width={11} height={18} /> </Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
 
                     <View style={styles.mypageListItem}>
                         <View style={styles.mypageListItemTitle}>
@@ -45,7 +62,7 @@ export default function Cscenter({navigation}) {
                         </View>
                     </View>
 
-                    {/*<TouchableOpacity onPress={() => {Linking.openURL('tel:1666-7099');}}>*/}
+                    {/*<TouchableOpacity onPress={()=> makePhoneCall('1666-7099')} >*/}
                     {/*    <View style={styles.mypageListItem}>*/}
                     {/*        <View style={styles.mypageListItemTitle}>*/}
                     {/*            <Text style={styles.mypageList_name}>고객센터</Text>*/}
