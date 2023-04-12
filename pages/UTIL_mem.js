@@ -282,6 +282,17 @@ export const mem_out_reason_cfg = async (Member) => {
     return res;
 }
 
+export const get_my_point_log = async (Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_my.php', {
+        act_type    :"get_my_point_log",
+        mem_uid     :Member,
+    }, {
+        headers: {
+            'Content-type': 'multipart/form-data',
+        }
+    });
+    return res;
+}
 /**----------------------------------회원로그인시 푸시알림 설정------------------------------------------------------**/
 export const mem_push_token = async (Member, token) =>{
     let os_type = Platform.OS;
@@ -330,11 +341,17 @@ export const find_chk_mem = async (FindId, mem_info) => {
     return res;
 }
 
-// 나의 정보 가져오기 페이지
-export async function memChkSet() {
-    const [mem_info, set_mem_info]      = useState([]);  // 회원 정보
-    const [order_list, set_order_list]  = useState([]);  // 주문 정보
-    const [cart_list, set_cart_list]    = useState([]);  // 장바구니 정보
 
+export const get_my_refund_log = async (Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_my.php',{
+        act_type    :'get_my_refund_log',
+        mem_uid     :Member,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
 }
+
 
