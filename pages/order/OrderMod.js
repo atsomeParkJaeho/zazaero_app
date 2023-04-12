@@ -580,7 +580,7 @@ export default function ModOrder({route,navigation}) {
                     get_gd_order.ord_status === 'pay_try'
                 ) && (
                     <>
-                    {/*<PayReadyCancelTab/>*/}
+                    <PayReadyCancelTab/>
                     </>
                 )}
                 {/**-----------------------------------------------------------결제전 자재추가 2023-04-01----------------------------------------------------------------**/}
@@ -912,18 +912,18 @@ export default function ModOrder({route,navigation}) {
         return(
             <>
                 <View style={[container]}>
-                    <View style={[d_flex, justify_content_between,{marginBottom:15}]}>
-                        <TouchableOpacity
-                            onPress={ChkdelOrder}
-                            style={[styles.CancelBtnWrap, btn_outline_danger]}>
-                            <Text style={[text_center,styles.CancelBtn, text_danger]}>선택취소</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={AlldelOrder}
-                            style={[styles.CancelBtnWrap, btn_outline_danger]}>
-                            <Text style={[text_center,styles.CancelBtn, text_danger]}>전체취소</Text>
-                        </TouchableOpacity>
-                    </View>
+                    {/*<View style={[d_flex, justify_content_between,{marginBottom:15}]}>*/}
+                    {/*    <TouchableOpacity*/}
+                    {/*        onPress={ChkdelOrder}*/}
+                    {/*        style={[styles.CancelBtnWrap, btn_outline_danger]}>*/}
+                    {/*        <Text style={[text_center,styles.CancelBtn, text_danger]}>선택취소</Text>*/}
+                    {/*    </TouchableOpacity>*/}
+                    {/*    <TouchableOpacity*/}
+                    {/*        onPress={AlldelOrder}*/}
+                    {/*        style={[styles.CancelBtnWrap, btn_outline_danger]}>*/}
+                    {/*        <Text style={[text_center,styles.CancelBtn, text_danger]}>전체취소</Text>*/}
+                    {/*    </TouchableOpacity>*/}
+                    {/*</View>*/}
                     <View style={[d_flex, justify_content_between]}>
                         <TouchableOpacity
                             onPress={add_goods_listOrder}
