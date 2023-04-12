@@ -102,8 +102,8 @@ export default function MyPage({navigation, route}) {
                         </View>
                         <View style={styles.mypageListItem}>
                             <TouchableOpacity style={styles.mypageListItem_link} onPress={() => {
-                                 navigation.navigate('공사현황목록')
-                               // Alert.alert(``,`준비중입니다.`);
+                                 //navigation.navigate('공사현황목록')
+                                Alert.alert(``,`준비중입니다.`);
                             }}>
                                 <View style={styles.flex}>
                                     <View style={styles.mypageListItemTitle}>

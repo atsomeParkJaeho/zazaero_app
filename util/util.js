@@ -480,6 +480,14 @@ export const Time1 = [
 
 export const Time2 = [
     {
+        label     :"07:00",
+        value     :"07:00",
+    },
+    {
+        label     :"07:30",
+        value     :"07:30",
+    },
+    {
         label     :"08:00",
         value     :"08:00",
     },

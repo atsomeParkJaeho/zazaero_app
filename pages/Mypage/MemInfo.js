@@ -86,7 +86,7 @@ export default function MemInfo({route, navigation}) {
                 'Content-type': 'multipart/form-data'
             }
         }).then((res) => {
-            if(res) {
+            if(res) {r
                 const {result, mem_info} = res.data;
                 console.log()
                 if(result === 'OK') {
