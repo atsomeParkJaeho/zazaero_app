@@ -270,9 +270,9 @@ export default function ModOrder({route,navigation}) {
             }
         ]);
     }
-    const Chk = (goods_uid) => {
+    const Chk = (order_uid) => {
         let temp = A_order_list.map(val=>{
-            if(val.goods_uid === goods_uid) {
+            if(val.order_uid === order_uid) {
                 return {
                     ...val,
                     goods_chk:!val.goods_chk,
@@ -283,6 +283,8 @@ export default function ModOrder({route,navigation}) {
         });
         set_A_order_list(temp);
     }
+
+
     const Count = (name, value, goods_uid) => {
         if(value === 'plus') {
             let temp = A_order_list.map(val=>{
@@ -328,12 +330,18 @@ export default function ModOrder({route,navigation}) {
         }
     }
     const mod_recv_info = () => {
+
+        let chk_result = A_order_list.filter((val)=>val.goods_chk);
+        let chk_uid = chk_result.map(val=>val.order_uid);
+        console.log(chk_result,'/[필터링]');
+        console.log(chk_uid,'/[필터링 uid]');
+
         Alert.alert(``,`발주를 수정하시겠습니까?`,[
             {text:"아니요"},
             {text:"네",
             onPress:()=>{
                 // 1.장바구니 수정정보 보내기
-                OrderMod(get_gd_order, A_order_list, add_goods_list, Member).then((res)=>{
+                OrderMod(get_gd_order, A_order_list, add_goods_list, Member, chk_uid).then((res)=>{
                     if(res) {
                         const {result, err_msg} = res.data;
                         if(result === 'OK') {
@@ -481,10 +489,12 @@ export default function ModOrder({route,navigation}) {
                             <View style={[container]}>
                                 {/**==================상품명===============**/}
                                 <View style={[d_flex, align_items_center, mb1,flex_between]}>
-                                    <Checkbox style={styles.chk_view} color={"#4630eb"} value={val.goods_chk} onValueChange={()=>Chk(val.goods_uid)}/>
-                                    <View style={{flex:0.1}}>
-                                        <Checkbox style={styles.all_check} color={"#4630eb"} value={val.goods_chk} onValueChange={()=>Chk(val.goods_uid)}/>
+                                    <Checkbox style={styles.chk_view} color={"#4630eb"} value={val.goods_chk} onValueChange={()=>Chk(val.order_uid)}/>
+                                    <View style={{flex:0.2}}>
+                                        <Text style={[h12,pe1,text_danger]}>선택취소</Text>
+                                        <Checkbox style={styles.all_check} color={"#4630eb"} value={val.goods_chk} onValueChange={()=>Chk(val.order_uid)}/>
                                     </View>
+
                                     <View style={{flex:1}}>
                                         {/*상품명*/}
                                         <Text style={[h14]}>{val.goods_name}</Text>
@@ -501,38 +511,43 @@ export default function ModOrder({route,navigation}) {
                                                 </View>
                                                 {/**==================수량===============**/}
                                                 <View style={ms2}>
-                                                    <View style={[d_flex]}>
-                                                        <Text style={[h14,fw500,{paddingBottom:10,}]}>
-                                                            수량
-                                                        </Text>
-                                                    </View>
-                                                    <View style={[flex]}>
-                                                        {/*=============마이너스 버튼==========*/}
-                                                        <TouchableWithoutFeedback onPress={()=>Count(`option_cnt`,`minus`,val.goods_uid)}>
-                                                            <View style={[count_btn]}>
-                                                                <View style={[pos_center]}>
-                                                                    <Text style={[count_btn_txt]}>－</Text>
-                                                                </View>
+                                                    {(val.goods_chk === false) && (
+                                                        <>
+                                                            <View style={[d_flex]}>
+                                                                <Text style={[h14,fw500,{paddingBottom:10,}]}>
+                                                                    수량
+                                                                </Text>
                                                             </View>
-                                                        </TouchableWithoutFeedback>
-                                                        {/*============수량=================*/}
-                                                        {/**-----상품 uid, 발주 uid 추가----**/}
-                                                        <TextInput
-                                                            style={[countinput]}
-                                                            onChangeText={(option_cnt)=>goInput(`option_cnt`,option_cnt,val.goods_uid,val.order_uid,`cnt`)}
-                                                            value={`${item.option_cnt}`}
-                                                            keyboardType="number-pad"
-                                                            maxLength={3}
-                                                        />
-                                                        {/*=============플러스 버튼============*/}
-                                                        <TouchableWithoutFeedback onPress={()=>Count(`option_cnt`,`plus`,val.goods_uid)}>
-                                                            <View style={[count_btn]}>
-                                                                <View style={[pos_center]}>
-                                                                    <Text style={[count_btn_txt]}>＋</Text>
-                                                                </View>
+                                                            <View style={[flex]}>
+                                                                {/*=============마이너스 버튼==========*/}
+                                                                <TouchableWithoutFeedback onPress={()=>Count(`option_cnt`,`minus`,val.goods_uid)}>
+                                                                    <View style={[count_btn]}>
+                                                                        <View style={[pos_center]}>
+                                                                            <Text style={[count_btn_txt]}>－</Text>
+                                                                        </View>
+                                                                    </View>
+                                                                </TouchableWithoutFeedback>
+                                                                {/*============수량=================*/}
+                                                                {/**-----상품 uid, 발주 uid 추가----**/}
+                                                                <TextInput
+                                                                    style={[countinput]}
+                                                                    onChangeText={(option_cnt)=>goInput(`option_cnt`,option_cnt,val.goods_uid,val.order_uid,`cnt`)}
+                                                                    value={`${item.option_cnt}`}
+                                                                    keyboardType="number-pad"
+                                                                    maxLength={3}
+                                                                />
+                                                                {/*=============플러스 버튼============*/}
+                                                                <TouchableWithoutFeedback onPress={()=>Count(`option_cnt`,`plus`,val.goods_uid)}>
+                                                                    <View style={[count_btn]}>
+                                                                        <View style={[pos_center]}>
+                                                                            <Text style={[count_btn_txt]}>＋</Text>
+                                                                        </View>
+                                                                    </View>
+                                                                </TouchableWithoutFeedback>
                                                             </View>
-                                                        </TouchableWithoutFeedback>
-                                                    </View>
+                                                        </>
+                                                    )}
+
                                                 </View>
                                             </View>
                                             <View style={justify_content_end}>
@@ -564,7 +579,9 @@ export default function ModOrder({route,navigation}) {
                     get_gd_order.ord_status === 'pay_err'   ||
                     get_gd_order.ord_status === 'pay_try'
                 ) && (
-                    <PayReadyCancelTab/>
+                    <>
+                    {/*<PayReadyCancelTab/>*/}
+                    </>
                 )}
                 {/**-----------------------------------------------------------결제전 자재추가 2023-04-01----------------------------------------------------------------**/}
                 {(add_goods_list) && (
@@ -605,6 +622,7 @@ export default function ModOrder({route,navigation}) {
                                                         수량
                                                     </Text>
                                                 </View>
+
                                                 <View style={[flex]}>
                                                     {/*=============마이너스 버튼==========*/}
                                                     <TouchableWithoutFeedback onPress={()=>A_goInput('goods_cnt',val.goods_cnt,val.goods_uid,'minus')}>
@@ -634,6 +652,8 @@ export default function ModOrder({route,navigation}) {
                                                         </View>
                                                     </TouchableWithoutFeedback>
                                                 </View>
+
+
                                             </View>
                                         </View>
                                         <View style={justify_content_end}>
@@ -889,7 +909,6 @@ export default function ModOrder({route,navigation}) {
     );
 
     function PayReadyCancelTab() {
-
         return(
             <>
                 <View style={[container]}>

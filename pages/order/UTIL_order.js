@@ -198,7 +198,7 @@ export const OrderMod = async (OrderData, OrderGoodsList, Member, A_goods, A_ord
 }
 */
 
-export const OrderMod = async (get_gd_order, A_order_list, add_goods_list, Member) => {
+export const OrderMod = async (get_gd_order, A_order_list, add_goods_list, Member, chk_uid) => {
 
     let temp = A_order_list.map(val=>val.A_sel_option.map(val2=>val2));
     let temp2 = temp.reduce((val,idx)=>{return val.concat(idx);});
@@ -234,6 +234,9 @@ export const OrderMod = async (get_gd_order, A_order_list, add_goods_list, Membe
         A_add_goods_uid      :A_add_goods_uid,
         A_add_goods_cnt      :A_add_goods_cnt,
         A_add_goods_req_memo :A_add_goods_req_memo,
+
+        A_del_order_uid      :(chk_uid) ? chk_uid:'',
+
 
     }
     console.log(data,'/[데이터 확인]');
