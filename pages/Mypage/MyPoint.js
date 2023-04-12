@@ -3,7 +3,14 @@ import {StyleSheet, Text, TextInput, View, Image, TouchableOpacity, ScrollView, 
 
 
 // 공통 CSS 추가
-import {container, bg_white,flex_between} from '../../common/style/AtStyle';
+import {
+    container,
+    bg_white,
+    flex_between,
+    d_flex,
+    justify_content_center,
+    text_primary
+} from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 import {get_Member} from "../UTIL_mem";
 import {get_my_point_log} from "../UTIL_mem";
@@ -11,8 +18,10 @@ import {DateChg, Price} from "../../util/util";
 
 
 export default function MyPoint({route, navigation}) {
-    const [Member, setMember] = useState(``);
-    const [my_point_log, set_my_point_log] = useState([]);   // 회원정보 셋팅
+    const [Member, setMember]               = useState(``);
+    const [my_point_log, set_my_point_log]  = useState([]);   // 회원정보 셋팅
+    const [get_page, set_page]              = useState();
+    const [now_page, set_now_page]          = useState();
     useEffect(()=>{
 
         get_Member().then((res)=>{
@@ -24,17 +33,57 @@ export default function MyPoint({route, navigation}) {
         get_my_point_log(Member).then((res)=>{
             if(res) {
                 console.log(res.data,'/[데이터 로그]');
-                const {result,A_point_log} = res.data;
+                const {result,A_point_log, total_page, now_page} = res.data;
                 if(result === 'OK') {
                     set_my_point_log(A_point_log);
+                    set_page(total_page);
+                    set_now_page(now_page);
                 } else {
                     return Alert.alert(``,`${result}`);
                 }
             }
         });
+        // page(get_page);
+
+
     },[Member]);
 
+
+    const goPage = (Member, i) => {
+        get_my_point_log(Member,i).then((res)=>{
+            if(res) {
+                console.log(res.data,'/[데이터 로그]');
+                const {result,A_point_log, total_page, now_page} = res.data;
+                if(result === 'OK') {
+                    set_my_point_log(A_point_log);
+                    set_page(total_page);
+                    set_now_page(now_page);
+                } else {
+                    return Alert.alert(``,`${result}`);
+                }
+            }
+        });
+    }
+
+    function Page() {
+        let page = [];
+        for (let i=0; i<get_page; i++) {
+            page.push(
+                <TouchableOpacity onPress={()=>goPage(Member,i)}>
+                    {(i === Number(now_page)) ? (
+                        <Text style={[text_primary]}>{i+1}</Text>
+                    ):(
+                        <Text>{i+1}</Text>
+                    )}
+                </TouchableOpacity>
+            )
+        }
+        return page;
+    }
+
     console.log(my_point_log,'/[나의 포인트 내역]');
+    console.log(get_page,'/[전체 페이지]');
+    console.log(now_page,'/[현재 페이지]');
 
     return(
         <>
@@ -66,6 +115,9 @@ export default function MyPoint({route, navigation}) {
                         </View>
                     </>
                 ))}
+                <View style={[d_flex, justify_content_center]}>
+                    <Page/>
+                </View>
             </ScrollView>
         </>
     );
