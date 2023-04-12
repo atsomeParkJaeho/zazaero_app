@@ -282,10 +282,11 @@ export const mem_out_reason_cfg = async (Member) => {
     return res;
 }
 
-export const get_my_point_log = async (Member) => {
+export const get_my_point_log = async (Member,page) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_my.php', {
         act_type    :"get_my_point_log",
         mem_uid     :Member,
+        page        :(page) ? page:'',
     }, {
         headers: {
             'Content-type': 'multipart/form-data',
@@ -342,10 +343,11 @@ export const find_chk_mem = async (FindId, mem_info) => {
 }
 
 
-export const get_my_refund_log = async (Member) => {
+export const get_my_refund_log = async (Member,page) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_my.php',{
         act_type    :'get_my_refund_log',
         mem_uid     :Member,
+        page        :(page) ? page:'',
     },{
         headers: {
             'Content-type': 'multipart/form-data'
