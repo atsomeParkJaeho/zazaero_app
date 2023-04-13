@@ -179,7 +179,7 @@ function Footer({navigation,pages}) {
                 </View>
                 {/**---------------------마이페이지--------------------**/}
                 <View style={[styles.Tabs,]}>
-                    <TouchableOpacity onPress={()=>{navigation.navigate('마이페이지')}}>
+                    <TouchableOpacity onPress={()=>{navigation.replace('마이페이지')}}>
                         <View style={styles.SvgIcons}>
                             {(currentRoute === '마이페이지') ? (
                                 <>
