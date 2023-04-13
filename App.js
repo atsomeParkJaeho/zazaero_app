@@ -6,7 +6,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 //메인에 세팅할 네비게이션 도구들을 가져옵니다.
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import {NavigationContainer, useNavigation, NavigationAction} from '@react-navigation/native';
 import StackNavigator from './navigation/StackNavigator'
 import 'react-native-gesture-handler';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -29,36 +29,15 @@ Notifications.setNotificationHandler({
     }),
 });
 
-
 export default function App() {
-
-    const [Member, setMember] = useState();
-    const [expoPushToken, setExpoPushToken]     = useState('');
-    const [notification, setNotification]       = useState(false);
-    const notificationListener = useRef();
-    const responseListener = useRef();
-    // registerNNPushToken(7223, 'aUld0OehxNKDL8e7yQPtbk');
+    const [Member, setMember]       = useState();
     useEffect(()=>{
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
                 // Alert.alert(``,`실패`);
             }
         });
-        app_info();
-        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-            setNotification(notification);
-        });
-        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log(response,'/[클릭 이벤트]');
-        });
 
-
-
-        return () => {
-            Notifications.removeNotificationSubscription(notificationListener.current);
-            Notifications.removeNotificationSubscription(responseListener.current);
-        };
 
     },[Member]);
 
@@ -92,9 +71,6 @@ export default function App() {
             });
         }
     }
-
-
-
     return (
         <>
             <NavigationContainer>

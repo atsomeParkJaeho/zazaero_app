@@ -440,7 +440,10 @@ export default function OrderDtail({route,navigation}) {
     }
     useEffect(()=>{
         /**------------------------------회원 값 가져오기-----------------------**/
-        get_Member().then((res)=>{if(res) {setMember(res);} else {Alert.alert(``,`실패`);}});
+        get_Member().then((res)=>{if(res) {setMember(res);} else {
+            Alert.alert(``,`실패`);
+            return navigation.navigate('로그인');
+        }});
         /**------------------------------발주정보 가져오기----------------------------**/
         get_ready(Member, gd_order_uid);
     },[Member]);

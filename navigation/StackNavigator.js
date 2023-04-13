@@ -65,6 +65,10 @@ import {reloadAsync} from "expo-updates";
 
 import ModOrder from "../pages/order/OrderMod";
 import AddOrder from "../pages/order/AddOrder";
+import {registerForPushNotificationsAsync} from "../push/UTIL_push";
+import * as Notifications from "expo-notifications";
+import {useRef} from "react";
+import {useNavigation} from "@react-navigation/native";
 
 
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
@@ -89,7 +93,9 @@ const StackNavigator = () => {
     console.disableYellowBox = true;
     // 회원접속상태 확인
     console.log('네비게이션');
-    const [Member, setMember] = useState();
+    const [Member, setMember]       = useState();
+    const Navi                      = useNavigation();
+    const lastPush                  = Notifications.useLastNotificationResponse();
 
 
     const forFade = ({ current }) => ({
@@ -99,14 +105,23 @@ const StackNavigator = () => {
     });
 
     useEffect(() => {
+
         AsyncStorage.getItem('member').then((value) => {
             if (value) {
                 setMember(value);
             }
         });
 
+        if (lastPush) {
+            let {push_act_type, push_link_uid} = lastPush.notification.request.content.data;
+            Alert.alert(``,`${lastPush.notification.request.content.data}`);
+        }
 
-    }, [Member]);
+
+
+    }, [Member,lastPush]);
+
+
 
     console.log('회원코드 / ', Member);
 
