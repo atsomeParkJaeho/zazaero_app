@@ -393,7 +393,7 @@ export default function ModOrder({route,navigation}) {
     }
     /**-------------------------------전체발주취소--------------------------------**/
     const AlldelOrder = () => {
-        Alert.alert('','전체취소 하시겠습니까?',[
+        Alert.alert('','전체취소 하시겠습니까?\n()',[
             {text:"취소", onPress:()=>{}},
             {text:"확인", onPress:()=>{temp();}}
         ]);

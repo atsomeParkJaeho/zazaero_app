@@ -6,16 +6,19 @@ import React, {useEffect, useRef, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 //메인에 세팅할 네비게이션 도구들을 가져옵니다.
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import StackNavigator from './navigation/StackNavigator'
 import 'react-native-gesture-handler';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
-import {Alert} from "react-native";
+import {Alert, Linking} from "react-native";
 import {get_Member} from "./pages/UTIL_mem";
 import {reg_app_info, registerForPushNotificationsAsync} from "./push/UTIL_push";
 // import registerNNPushToken from "native-notify";
 import { v4 as uuidv4 } from 'uuid';
+
+
+
 
 // 1. 푸시알림 설정
 Notifications.setNotificationHandler({
@@ -26,11 +29,12 @@ Notifications.setNotificationHandler({
     }),
 });
 
+
 export default function App() {
 
     const [Member, setMember] = useState();
-    const [expoPushToken, setExpoPushToken] = useState('');
-    const [notification, setNotification] = useState(false);
+    const [expoPushToken, setExpoPushToken]     = useState('');
+    const [notification, setNotification]       = useState(false);
     const notificationListener = useRef();
     const responseListener = useRef();
     // registerNNPushToken(7223, 'aUld0OehxNKDL8e7yQPtbk');
@@ -46,8 +50,11 @@ export default function App() {
             setNotification(notification);
         });
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log(response);
+            console.log(response,'/[클릭 이벤트]');
         });
+
+
+
         return () => {
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);

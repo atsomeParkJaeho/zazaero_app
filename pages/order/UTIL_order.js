@@ -645,6 +645,19 @@ export const add_goods = async () => {
     return res;
 }
 
+/**-------------------------------------공사현황조회--------------------------------------------------**/
+export const get_work_name = async (Member)=>{
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type                    :"pay_cancel",
+        mem_uid                     :Member,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
+}
 
 
 

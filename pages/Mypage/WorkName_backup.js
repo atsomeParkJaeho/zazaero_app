@@ -34,7 +34,7 @@ import {
 import {sub_page} from '../../common/style/SubStyle';
 
 
-export default function ConstructionStatus({navigation,route}) {
+export default function WorkName({navigation,route}) {
 
 
     const order_List = [

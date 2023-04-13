@@ -58,7 +58,7 @@ import Wishlist from "../../icons/ico_heart_c.svg";
 import WishlistNon from "../../icons/ico_heart_nc.svg";
 
 
-export default function ConstructionStatus_DetailList({navigation,route}) {
+export default function WorkNameList({navigation,route}) {
 
 
     const order_List = [
