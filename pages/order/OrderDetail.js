@@ -276,10 +276,8 @@ export default function OrderDtail({route,navigation}) {
                 ]
             );
         }
-
-
-
     }
+
     const goSearch = (name, value, label) => {
         if(name === 'settlekind') {
             setShow_2(!Show_2);
@@ -974,26 +972,6 @@ export default function OrderDtail({route,navigation}) {
                 <View>
                     {/**--------------결제정보---------------**/}
                     <View style={container}>
-                        {(
-                            get_gd_order.ord_status === 'pay_done'   ||
-                            get_gd_order.ord_status === 'deli_ready' ||
-                            get_gd_order.ord_status === 'deli_doing' ||
-                            get_gd_order.ord_status === 'deli_done'
-                        ) && (
-                            <>
-                                {(cancel_doing > 0) && (
-                                    <>
-                                        <View style={[]}>
-                                            <TouchableOpacity onPress={cancel_detail} style={[mb3]}>
-                                                <View style={[btn_danger,wt10,{borderRadius:10,}]}>
-                                                    <Text style={[h16,text_white,text_center,pt1,pb1]}>주문취소 상세보기</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </>
-                                )}
-                            </>
-                        )}
                         {/*주문취소시 상세내역으로 가는 버튼*/}
                         <Text style={[h18]}>결제금액</Text>
                         {(get_gd_order.settlekind === 'bank') && (

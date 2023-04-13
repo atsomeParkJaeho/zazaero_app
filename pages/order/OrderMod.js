@@ -271,6 +271,11 @@ export default function ModOrder({route,navigation}) {
         ]);
     }
     const Chk = (order_uid) => {
+
+        if(1 >= A_order_list.length ) {
+            return Alert.alert(``,`전체취소를 클릭해주세요.`);
+        }
+
         let temp = A_order_list.map(val=>{
             if(val.order_uid === order_uid) {
                 return {
@@ -912,18 +917,13 @@ export default function ModOrder({route,navigation}) {
         return(
             <>
                 <View style={[container]}>
-                    {/*<View style={[d_flex, justify_content_between,{marginBottom:15}]}>*/}
-                    {/*    <TouchableOpacity*/}
-                    {/*        onPress={ChkdelOrder}*/}
-                    {/*        style={[styles.CancelBtnWrap, btn_outline_danger]}>*/}
-                    {/*        <Text style={[text_center,styles.CancelBtn, text_danger]}>선택취소</Text>*/}
-                    {/*    </TouchableOpacity>*/}
-                    {/*    <TouchableOpacity*/}
-                    {/*        onPress={AlldelOrder}*/}
-                    {/*        style={[styles.CancelBtnWrap, btn_outline_danger]}>*/}
-                    {/*        <Text style={[text_center,styles.CancelBtn, text_danger]}>전체취소</Text>*/}
-                    {/*    </TouchableOpacity>*/}
-                    {/*</View>*/}
+                    <View style={[d_flex, justify_content_between,{marginBottom:15}]}>
+                        <TouchableOpacity
+                            onPress={AlldelOrder}
+                            style={[styles.CancelBtnWrap, btn_outline_danger,{flex:1}]}>
+                            <Text style={[text_center,styles.CancelBtn, text_danger]}>전체취소</Text>
+                        </TouchableOpacity>
+                    </View>
                     <View style={[d_flex, justify_content_between]}>
                         <TouchableOpacity
                             onPress={add_goods_listOrder}
