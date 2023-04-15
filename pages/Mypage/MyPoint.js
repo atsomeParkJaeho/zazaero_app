@@ -50,7 +50,7 @@ export default function MyPoint({route, navigation,enableSomeButton}) {
                             set_my_point_log([...my_point_log,...A_point_log]);
                             set_page(total_page);
                             set_now_page(next_page);
-                            Alert.alert(``,`${now_page}`);
+                            // Alert.alert(``,`${now_page}`);
                         } else {
                             return Alert.alert(``,`${result}`);
                         }
