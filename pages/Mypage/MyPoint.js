@@ -81,6 +81,14 @@ export default function MyPoint({route, navigation}) {
         return page;
     }
 
+    /**------------------------------스크롤 끝에서 페이징 처리하기----------------------------**/
+    const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+        const paddingToBottom = 20;
+        return layoutMeasurement.height + contentOffset.y >=
+            contentSize.height - paddingToBottom;
+    };
+
+
     console.log(my_point_log,'/[나의 포인트 내역]');
     console.log(get_page,'/[전체 페이지]');
     console.log(now_page,'/[현재 페이지]');

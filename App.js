@@ -20,17 +20,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 
-// 1. 푸시알림 설정
-Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: true,
-    }),
-});
+
 
 export default function App() {
     const [Member, setMember]       = useState();
+
+
     useEffect(()=>{
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
@@ -38,39 +33,8 @@ export default function App() {
             }
         });
 
-
     },[Member]);
 
-    /**------------------------------------------앱정보 저장---------------------------------------------**/
-    const app_info = async () => {
-        let app_device_id = await AsyncStorage.getItem(`app_device_id`);
-        if(app_device_id) {
-            console.log(app_device_id,'/디바이스 app id2');
-            reg_app_info(app_device_id).then((res)=>{
-                if(res) {
-                    console.log(res.data,'/[실패]');
-                    const {result} = res.data;
-                    if(result === 'OK') {
-                        console.log(res.data,'/[성공]');
-                    }
-                }
-            });
-        } else {
-            console.log('디바이스 아이디 없음');
-            let uuid = uuidv4();
-            await AsyncStorage.setItem(`app_device_id`,uuid);
-            /**---------------------------2. db에 정보를 저장한다.------------------------------------**/
-            reg_app_info(uuid).then((res)=>{
-                if(res) {
-                    console.log(res.data,'/[실패]');
-                    const {result} = res.data;
-                    if(result === 'OK') {
-                        console.log(res.data,'/[성공]');
-                    }
-                }
-            });
-        }
-    }
     return (
         <>
             <NavigationContainer>
