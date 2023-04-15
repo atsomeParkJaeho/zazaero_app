@@ -1,31 +1,35 @@
 {
   "cli": {
-    "version": ">= 3.8.1"
+    "version": ">= 3.8.1",
+    "promptToConfigurePushNotifications": false
   },
   "build": {
     "development": {
-      "ios": {"image": "latest"},
+      "ios": {
+        "image": "latest",
+        "buildConfiguration": "Debug"
+      },
       "developmentClient": true,
       "distribution": "internal",
       "channel": "development"
     },
     "preview": {
-      "distribution": "internal",
       "channel": "preview",
       "android": {
         "buildType": "apk"
       }
     },
     "production": {
-      "distribution": "internal",
-      "ios": {"image": "latest"},
+      "ios": {
+        "image": "latest"
+      },
       "channel": "production"
     }
   },
   "submit": {
     "production": {
       "android": {
-        "serviceAccountKeyPath":"./pc-api-5961167133705272112-485-bf73bab80594.json"
+        "serviceAccountKeyPath": "./pc-api-5961167133705272112-485-bf73bab80594.json"
       },
       "ios": {
         "appleId": "cs@starchium.com",
@@ -33,8 +37,7 @@
         "sku": "EX1678426148349",
         "ascApiKeyId": "7D3WGJ7VHH",
         "ascApiKeyPath": "./AuthKey_7D3WGJ7VHH.p8",
-        "ascApiKeyIssuerId": "65de0dc2-a669-4f5d-af53-5f8b10aea994",
-        "bundleIdentifier": "com.zazaero.www"
+        "ascApiKeyIssuerId": "65de0dc2-a669-4f5d-af53-5f8b10aea994"
       }
     }
   }
