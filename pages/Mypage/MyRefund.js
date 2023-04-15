@@ -38,7 +38,7 @@ export default function MyRefund({route, navigation}) {
 
             /**----------------기존 스테이터스에 데이터를 추가한다.----------------**/
             let next_page = Number(now_page + 1);
-            if(Number(next_page) === Number(get_page)) {
+            if(Number(next_page) > Number(get_page)) {
                 return Alert.alert(``,`마지막 페이지 입니다.`);
             } else {
                 get_my_refund_log(Member,next_page).then((res)=>{
