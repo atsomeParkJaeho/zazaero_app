@@ -34,7 +34,7 @@ import {get_order_cancel_list} from "./UTIL_order";
 import {cancelType, DateChg, Price, refundStatus} from "../../util/util";
 import {get_Member} from "../UTIL_mem";
 
-export default function Cancel({navigation, route}) {
+export default function Return({route, navigation}) {
     const [Member, setMember] = useState();
     const [cancel_list, set_cancel_list] = useState([]);
 
@@ -47,12 +47,12 @@ export default function Cancel({navigation, route}) {
             }
         });
 
-        get_order_cancel_list(Member,``).then((res)=>{
+        get_order_cancel_list(Member).then((res)=>{
             if(res) {
                 console.log(res.data,'/ 데이터 확인123');
                 const {result, err_msg, gd_cancel} = res.data;
                 if(result === 'OK') {
-                    let temp = gd_cancel.filter((val)=>val.deli_status !== 'done');
+                    let temp = gd_cancel.filter((val)=>val.deli_status === 'done');
                     set_cancel_list(temp);
                 } else {
                     Alert.alert('','연결실패'+err_msg);
@@ -61,7 +61,7 @@ export default function Cancel({navigation, route}) {
         });
     },[Member]);
 
-    console.log(cancel_list,'/ [결제취소 리스트]');
+    console.log(cancel_list,'/[반품리스트]');
 
 
     function CancelList({item}) {
@@ -100,11 +100,10 @@ export default function Cancel({navigation, route}) {
                                         style={[styles.ft_14]}>{item.work_name}</Text>
                                 </View>
                             </View>
-
-                            {/**--------------------배송지----------------------------**/}
+                            {/**--------------------수거지----------------------------**/}
                             <View style={[flex]}>
                                 <View style={[styles.wt3]}>
-                                    <Text style={[styles.ft_14, item.text_gray]}> 배송지:</Text>
+                                    <Text style={[styles.ft_14, item.text_gray]}> 반품 수거지:</Text>
                                 </View>
                                 <View style={[styles.wt7]}>
                                     <Text style={[styles.ft_14, styles.text_gray]}>
@@ -156,18 +155,18 @@ export default function Cancel({navigation, route}) {
             {/**=================================탭===================================================**/}
             <View style={[styles.Tab, flex, bg_white]}>
                 <View style={[styles.InquiryTab_item]}>
-                    <TouchableOpacity style={[styles.InquiryTab_link, styles.active_link]} onPress={() => {
+                    <TouchableOpacity style={[styles.InquiryTab_link]} onPress={() => {
                         navigation.navigate('취소내역')
                     }}>
-                        <Text style={[styles.InquiryTab_txt, styles.active_txt]}>취소내역</Text>
+                        <Text style={[styles.InquiryTab_txt]}>취소내역</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={[styles.InquiryTab_item]}>
-                    <TouchableOpacity style={[styles.InquiryTab_link]} onPress={() => {
-                        navigation.navigate('반품내역')
-                        // Alert.alert('준비중입니다.');
+                    <TouchableOpacity style={[styles.InquiryTab_link,styles.active_link]} onPress={() => {
+                        // navigation.navigate('반품내역')
+                        Alert.alert('준비중입니다.');
                     }}>
-                        <Text style={[styles.InquiryTab_txt]}>반품내역</Text>
+                        <Text style={[styles.InquiryTab_txt, styles.active_txt]}>반품내역</Text>
                     </TouchableOpacity>
                 </View>
             </View>

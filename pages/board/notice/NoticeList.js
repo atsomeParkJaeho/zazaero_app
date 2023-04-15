@@ -1,30 +1,86 @@
-import React, {useEffect, useState} from 'react'
-import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView} from 'react-native'
+import React, {useEffect, useRef, useState} from 'react'
+import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert} from 'react-native'
 import logo from "../../../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
 import axios from "axios";
 import {bd_list} from "../UTIL_bd";
+import {get_my_point_log} from "../../UTIL_mem";
 
 
 export default function NoticeList({navigation}) {
     console.log('공지사항');
     const [NoticeList, setNoticeList] = useState([]);  // 공지사항 불러오기
+    const [get_page, set_page]              = useState();           // 전체 페이지
+    const [now_page, set_now_page]          = useState();           // 현재 페이지
+
+    /**--------------------스크롤 설정----------------------**/
+    const scrollViewRef = useRef();
+    const [scrollEndReached, setScrollEndReached] = useState(false);
+
+    const handleScroll = (event) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+        const paddingToBottom = 10; // adjust the value as needed
+
+        const isEndReached = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+
+        if (isEndReached && !scrollEndReached) {
+            setScrollEndReached(true);
+            // Alert.alert(``,`스크롤 끝`);
+            /**----------------기존 스테이터스에 데이터를 추가한다.----------------**/
+            let next_page = Number(now_page + 1);
+            if(Number(get_page) === 1 ) {
+                return  console.log('1페이지만 있습니다.');
+            } else if(Number(now_page) >= Number(get_page)) {
+                return  console.log('마지막 페이지 입니다.');
+            } else {
+                bd_list(next_page).then((res)=>{
+                    if(res) {
+                        const {result, A_board, total_page, now_page} = res.data;
+                        if(result === 'OK') {
+                            let temp = A_board.sort((a,b)=>{
+                                return b.bd_uid - a.bd_uid
+                            });
+                            set_page(total_page);
+                            set_now_page(next_page);
+                            setNoticeList(temp);
+                        } else {
+                            return Alert.alert(``,`${result}`);
+                        }
+                    }
+                });
+            }
+        } else if (!isEndReached && scrollEndReached) {
+            setScrollEndReached(false);
+        }
+    };
+
     useEffect(() => {
-        bd_list().then((res) => {
+        bd_list(``).then((res) => {
             if (res) {
                 console.log(res.data,'/[게시판 리턴값]');
-                const {A_board} = res.data;
+                const {A_board, total_page, now_page} = res.data;
                 let temp = A_board.sort((a,b)=>{
                     return b.bd_uid - a.bd_uid
                 });
+                set_page(total_page);
+                set_now_page(now_page);
                 setNoticeList(temp);
             }
         });
     }, []);
-    console.log(NoticeList);
+    console.log(NoticeList.length);
+    console.log(get_page,'/[전체 페이지]');
+    console.log(now_page,'/[현재 페이지]');
+
+
+
     return (
         <>
-            <ScrollView style={styles.container}>
+            <ScrollView style={styles.container}
+            ref={scrollViewRef}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            >
                 <View style={styles.mypageList}>
                     {NoticeList.map((val,idx)=>(
                         <>

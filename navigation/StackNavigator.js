@@ -70,6 +70,7 @@ import * as Notifications from "expo-notifications";
 import {useRef} from "react";
 import {useNavigation} from "@react-navigation/native";
 import * as TaskManager from "expo-task-manager";
+import Camera from "../pages/cam/CameraModal";
 // import messaging from '@react-native-firebase/messaging';
 
 
@@ -326,6 +327,7 @@ const StackNavigator = () => {
                     cardStyleInterpolator: forFade
                 }}/>
                 <Stack.Screen name="푸시알림" component={Push}/>
+                <Stack.Screen name="카메라"   component={Camera}/>
             </Stack.Navigator>
         </>
     );

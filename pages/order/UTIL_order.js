@@ -343,15 +343,22 @@ export const PayTry = async (OrderData, type) => {
 }
 
 /**-------------------------------------발주취소 자재 리스트 출력-----------------------------------------------------------------------**/
-export const get_order_cancel_list = async (Member) => {
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+export const get_order_cancel_list = async (Member,page) => {
+    let data = {
         act_type             :"get_order_cancel_list",
         mem_uid              :Member,
+        page                 :(page) ? page : '',
+    }
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', {
+        act_type             :"get_order_cancel_list",
+        mem_uid              :Member,
+        page                 :(page) ? page : '',
     },{
         headers: {
             'Content-type': 'multipart/form-data'
         }
     });
+    console.log(data,'/파라미터 값');
 
     return res;
 }
@@ -408,11 +415,13 @@ export const del_deli_addr = async (Member, uid) => {
     return res;
 }
 /**-------------------------------------발주리스트 출력-----------------------------------------------------------------------**/
-export const get_order_list = async (Member) => {
+export const get_order_list = async (Member,page,work_uid) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
         act_type        :"get_order_list",
         login_status    :"Y",
         mem_uid         :Member,
+        page            :(page) ? page:'',
+        work_uid        :(work_uid) ? work_uid:'',
     },{
         headers: {
             'Content-type': 'multipart/form-data'
@@ -512,7 +521,7 @@ export const add_order = async (OrderData, Member, A_goods_list ,chk_result) => 
     return res;
 }
 /**-----------------------------------------결제후 선택 발주 취소 이벤트---------------------------------------------------**/
-export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Member, ret_order) => {
+export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Member, ret_order, selectedImages) => {
     // 1. 체크박스를 클릭한다
     // refund_type = all, part
     let A_goods_uid = OrderGoodsList.map(val=>val.goods_uid);
@@ -526,6 +535,8 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
     console.log(A_order_item_uid,' / order_item_uid');
     console.log(A_order_item_cancel_cnt,' / 취소수량');
     console.log(cancel_type,' / 취소 타입');
+    console.log(selectedImages,' / 반품 이미지 출력');
+    
 
     let data = {
         act_type                    :"pay_done_gd_cancel",
@@ -542,6 +553,7 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
         return_mem_mobile           :(ret_order.return_mem_mobile) ? ret_order.return_mem_mobile : '',
         return_req_memo             :(ret_order.return_req_memo) ? ret_order.return_req_memo : '',
         cancel_type                 :cancel_type,
+        
     }
 
     console.log(data,'/ 발주취소 데이터 확인');
@@ -551,6 +563,7 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
             'Content-type': 'multipart/form-data'
         }
     });
+
     return res;
 }
 
@@ -646,10 +659,11 @@ export const add_goods = async () => {
 }
 
 /**-------------------------------------공사현황조회--------------------------------------------------**/
-export const get_work_name = async (Member)=>{
+export const get_work_name = async (Member,page)=>{
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-        act_type                    :"pay_cancel",
+        act_type                    :"get_my_work_list",
         mem_uid                     :Member,
+        page                        :(page) ? page:'',
     },{
         headers: {
             'Content-type': 'multipart/form-data'

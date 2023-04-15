@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
     StyleSheet,
     Button,
@@ -41,16 +41,68 @@ import {DateChg, order_List, ordStatus} from "../../util/util";
 import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {get_order_list} from "./UTIL_order";
-import {get_Member} from "../UTIL_mem";
+import {get_Member, get_my_point_log} from "../UTIL_mem";
+import Spinner from "../board/inquiry/spiner";
 
 
 function OrderStatus({route, navigation}) {
     /**-------------------기본 회원정보 셋팅-----------------------**/
     const [Member, setMember]               = useState();
-
     const Update                            = useIsFocused();
     const [OrderList, setOrderList]         = useState([]);     // 발주내역 출력
+    const [get_page, set_page]              = useState();           // 전체 페이지
+    const [now_page, set_now_page]          = useState();           // 현재 페이지
+    /**--------------------스크롤 설정----------------------**/
+    const scrollViewRef = useRef();
+    const [scrollEndReached, setScrollEndReached] = useState(false);
+
     console.log('전달 2값 / ',Member);
+
+    const handleScroll = (event) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+        const paddingToBottom = 10; // adjust the value as needed
+
+        const isEndReached = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+
+        if (isEndReached && !scrollEndReached) {
+            setScrollEndReached(true);
+            // Alert.alert(``,`스크롤 끝`);
+            /**----------------기존 스테이터스에 데이터를 추가한다.----------------**/
+            let next_page = Number(now_page + 1);
+            if(Number(get_page) === 1) {
+                // return Alert.alert(``,`마지막 페이지 입니다.`);
+
+                return  console.log('1페이지만 있습니다.');
+            } else if(Number(now_page) >= Number(get_page) ) {
+                return console.log('마지막 페이지 입니다.');
+            } else {
+                get_order_list(Member,next_page).then((res)=>{
+                    if(res) {
+                        const {result, A_gd_order, query, total_page, now_page} = res.data;
+                        if(result === 'OK') {
+                            let temp = A_gd_order.filter(
+                                val=>
+                                    val.ord_status === 'ord_ready'  ||
+                                    val.ord_status === 'ord_doing'  ||
+                                    val.ord_status === 'ord_edit'
+                            );
+                            let desc = temp.sort((a,b)=>{
+                                return new Date(b.gd_order_uid) - new Date(a.gd_order_uid);
+                            });
+                            set_page(total_page);
+                            set_now_page(next_page);
+                            setOrderList([...OrderList, ...desc]);
+                        } else {
+                            return Alert.alert(``,`${result}`);
+                        }
+                    }
+                });
+
+            }
+        } else if (!isEndReached && scrollEndReached) {
+            setScrollEndReached(false);
+        }
+    };
 
     /**---------------------------출력리스트----------------------------------**/
     useEffect(()=>{
@@ -60,14 +112,14 @@ function OrderStatus({route, navigation}) {
                 Alert.alert(``,`실패`);
             }
         });
-        getOrderStatus(Member);
+        getOrderStatus(Member,``);
 
     },[Member, Update]);
 
 
     /**-----------------------------발주서정보 출력----------------------------**/
-    const getOrderStatus = async (Member) => {
-        let {data:{result, A_gd_order, query}} = await get_order_list(Member);
+    const getOrderStatus = async (Member,page) => {
+        let {data:{result, A_gd_order, query, total_page, now_page}} = await get_order_list(Member,page);
         if(result === 'OK') {
             let temp = A_gd_order.filter(
                 val=>
@@ -78,109 +130,19 @@ function OrderStatus({route, navigation}) {
             let desc = temp.sort((a,b)=>{
                 return new Date(b.gd_order_uid) - new Date(a.gd_order_uid);
             });
-            return setOrderList(desc);
+            set_page(total_page);
+            set_now_page(now_page);
+            setOrderList(desc);
         }
         // return Alert.alert(``,`에러`);
     }
 
-    console.log(OrderList,' / [발주 리스트 출력]');
+    console.log(OrderList.length,' / [발주 리스트 출력]');
+    console.log(get_page,' / [전체 페이지]');
+    console.log(now_page,' / [현재 페이지]');
 
 
-    function OrdStatusList({item}) {
-        return(
-            <>
-                <View style={[styles.order_list_items]}>
-                    <View style={[container]}>
-                        {/**-------------------------발주번호----------------------------**/}
-                        <View style={[flex, styles.mb_5]}>
-                            <View style={[styles.wt3]}>
-                                <Text style={[styles.goods_num, h16]}> 발주번호 :</Text>
-                            </View>
-                            <View style={[styles.wt7]}>
-                                <Text style={[styles.goods_num_val, h16, fw600]}>{item.order_no}</Text>
-                            </View>
-                        </View>
-                        {/**-------------------------발주신청일시----------------------------**/}
-                        <View style={[flex, styles.mb_5]}>
-                            <View style={[styles.wt3]}>
-                                <Text style={[styles.Construction_name, h14]}> 신청일시
-                                    :</Text>
-                            </View>
-                            <View style={[styles.wt7]}>
-                                <Text style={[styles.Construction_name_val, h14]} numberOfLines={1}>{DateChg(item.order_date)} {item.order_time}</Text>
-                            </View>
-                        </View>
 
-
-                        {/**-------------------------공사명----------------------------**/}
-                        <View style={[flex, styles.mb_5]}>
-                            <View style={[styles.wt3]}>
-                                <Text style={[styles.Construction_name, h14]}> 공사명
-                                    :</Text>
-                            </View>
-                            <View style={[styles.wt7]}>
-                                <Text style={[styles.Construction_name_val, h14]} numberOfLines={1}>{item.work_name}</Text>
-                            </View>
-                        </View>
-                        {/**-------------------------희망배송일----------------------------**/}
-                        <View style={[flex, styles.mb_5]}>
-                            <View style={[styles.wt3]}>
-                                <Text
-                                    style={[styles.Desired_Delivery_Date_name, h14]}> 희망배송일
-                                    :</Text>
-                            </View>
-                            <View style={[styles.wt7]}>
-                                <Text
-                                    style={[styles.Desired_Delivery_Date_val, h14]}>{DateChg(item.hope_deli_date)} {item.hope_deli_time} 도착예정</Text>
-                            </View>
-                        </View>
-                        {/**-------------------------배송지----------------------------**/}
-                        <View style={[flex]}>
-                            <View style={[styles.wt3]}>
-                                <Text style={[styles.Delivery_destination_name, h14, item.text_gray]}> 배송지 :</Text>
-                            </View>
-                            <View style={[styles.wt7]}>
-                                <Text style={[styles.Delivery_destination_name_val, h14, text_gray]}>
-                                    {item.addr1} {item.addr2}
-                                </Text>
-                            </View>
-                        </View>
-                        {/**-------------------------최근수정일----------------------------**/}
-                        {(item.mod_date !== "0000-00-00") && (
-                            <>
-                                <View style={[flex]}>
-                                    <View style={[styles.wt3]}>
-                                        <Text style={[styles.Delivery_destination_name, h14, item.text_gray]}> 최근수정일 :</Text>
-                                    </View>
-                                    <View style={[styles.wt7]}>
-                                        <Text style={[styles.Delivery_destination_name_val, h14, text_primary]}>
-                                            {item.mod_date} {item.mod_time}
-                                        </Text>
-                                    </View>
-                                </View>
-                            </>
-                        )}
-                    </View>
-                    <View style={[styles.border_b_dotted]}></View>
-                    <View style={[container]}>
-                        <View style={[flex_between]}>
-                            <View style="">
-                                <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('발주상세',{gd_order_uid   :item.gd_order_uid, hope_deli_date :item.hope_deli_date,})}>
-                                    <Text style={[text_light]}>상세내역 / 정보변경</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={[flex]}>
-                                <Text style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>
-                                    {ordStatus(`${item.ord_status}`)}
-                                </Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={gray_bar}/>
-                </View>
-            </>
-        );
-    }
 
     return (
         <>
@@ -200,13 +162,134 @@ function OrderStatus({route, navigation}) {
                 </View>
             </View>
             {/**--------------------메인----------------**/}
-            <FlatList
-                style={[bg_white]}
-                keyExtractor={(val) => String(val.gd_order_uid)}
-                data={OrderList}
-                renderItem={OrdStatusList}
-                windowSize={3}
-            />
+            <ScrollView
+            style={[bg_white]}
+            ref={scrollViewRef}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            >
+
+                {(!OrderList) ? (
+                    <>
+                        <Spinner/>
+                    </>
+                ):(
+                    <>
+                        {/**반복문 구간**/}
+                        {(!OrderList) ? (
+                            <>
+                                <Spinner/>
+                            </>
+                        ):(
+                            <>
+                                {OrderList.map((val,idx)=>(
+                                    <>
+                                        <View style={[styles.order_list_items]} key={idx}>
+                                            <View style={[container]}>
+                                                {/**-------------------------발주번호----------------------------**/}
+                                                <View style={[flex, styles.mb_5]}>
+                                                    <View style={[styles.wt3]}>
+                                                        <Text style={[styles.goods_num, h16]}> 발주번호 :</Text>
+                                                    </View>
+                                                    <View style={[styles.wt7]}>
+                                                        <Text style={[styles.goods_num_val, h16, fw600]}>{val.order_no}</Text>
+                                                    </View>
+                                                </View>
+                                                {/**-------------------------발주신청일시----------------------------**/}
+                                                <View style={[flex, styles.mb_5]}>
+                                                    <View style={[styles.wt3]}>
+                                                        <Text style={[styles.Construction_name, h14]}> 신청일시
+                                                            :</Text>
+                                                    </View>
+                                                    <View style={[styles.wt7]}>
+                                                        <Text style={[styles.Construction_name_val, h14]} numberOfLines={1}>{DateChg(val.order_date)} {val.order_time}</Text>
+                                                    </View>
+                                                </View>
+
+
+                                                {/**-------------------------공사명----------------------------**/}
+                                                <View style={[flex, styles.mb_5]}>
+                                                    <View style={[styles.wt3]}>
+                                                        <Text style={[styles.Construction_name, h14]}> 공사명
+                                                            :</Text>
+                                                    </View>
+                                                    <View style={[styles.wt7]}>
+                                                        <Text style={[styles.Construction_name_val, h14]} numberOfLines={1}>{val.work_name}</Text>
+                                                    </View>
+                                                </View>
+                                                {/**-------------------------희망배송일----------------------------**/}
+                                                <View style={[flex, styles.mb_5]}>
+                                                    <View style={[styles.wt3]}>
+                                                        <Text
+                                                            style={[styles.Desired_Delivery_Date_name, h14]}> 희망배송일
+                                                            :</Text>
+                                                    </View>
+                                                    <View style={[styles.wt7]}>
+                                                        <Text
+                                                            style={[styles.Desired_Delivery_Date_val, h14]}>{DateChg(val.hope_deli_date)} {val.hope_deli_time} 도착예정</Text>
+                                                    </View>
+                                                </View>
+                                                {/**-------------------------배송지----------------------------**/}
+                                                <View style={[flex]}>
+                                                    <View style={[styles.wt3]}>
+                                                        <Text style={[styles.Delivery_destination_name, h14, val.text_gray]}> 배송지 :</Text>
+                                                    </View>
+                                                    <View style={[styles.wt7]}>
+                                                        <Text style={[styles.Delivery_destination_name_val, h14, text_gray]}>
+                                                            {val.addr1} {val.addr2}
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                                {/**-------------------------최근수정일----------------------------**/}
+                                                {(val.mod_date !== "0000-00-00") && (
+                                                    <>
+                                                        <View style={[flex]}>
+                                                            <View style={[styles.wt3]}>
+                                                                <Text style={[styles.Delivery_destination_name, h14, val.text_gray]}> 최근수정일 :</Text>
+                                                            </View>
+                                                            <View style={[styles.wt7]}>
+                                                                <Text style={[styles.Delivery_destination_name_val, h14, text_primary]}>
+                                                                    {val.mod_date} {val.mod_time}
+                                                                </Text>
+                                                            </View>
+                                                        </View>
+                                                    </>
+                                                )}
+                                            </View>
+                                            <View style={[styles.border_b_dotted]}></View>
+                                            <View style={[container]}>
+                                                <View style={[flex_between]}>
+                                                    <View style="">
+                                                        <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('발주상세',{gd_order_uid   :val.gd_order_uid, hope_deli_date :val.hope_deli_date,})}>
+                                                            <Text style={[text_light]}>상세내역 / 정보변경</Text>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                    <View style={[flex]}>
+                                                        <Text style={[ text_primary,btn_outline_primary,ps1,pe1, h14]}>
+                                                            {ordStatus(`${val.ord_status}`)}
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                            <View style={gray_bar}/>
+                                        </View>
+                                    </>
+                                ))}
+                            </>
+                        )}
+
+                        {(scrollEndReached && Number(get_page) >  1) && (
+                            <>
+                                {(Number(get_page) === Number(now_page)) ? (
+                                    <></>
+                                ):(
+                                    <Spinner/>
+                                )}
+                            </>
+                        )}
+                    </>
+                )}
+            </ScrollView>
             {/**--------------------하단----------------**/}
             <Footer navigation={navigation}/>
         </>

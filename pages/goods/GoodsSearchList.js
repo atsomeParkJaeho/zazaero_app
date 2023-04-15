@@ -45,7 +45,7 @@ import CartBag from "../../icons/cart_bag.svg";
 import {Price} from "../../util/util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {get_goods_search, go_goods_cate3rd_list, ins_cart, save_cart, save_wish} from "./UTIL_goods";
-import {get_Member} from "../UTIL_mem";
+import {get_Member, get_my_point_log} from "../UTIL_mem";
 import {getCartList} from "../cart/UTIL_cart";
 import Toast from "react-native-easy-toast";
 
@@ -53,12 +53,54 @@ import Toast from "react-native-easy-toast";
 export default function GoodsSearchList({route,navigation}) {
 
     const [Member, setMember] = useState();
+    const [get_page, set_page]              = useState();           // 전체 페이지
+    const [now_page, set_now_page]          = useState();           // 현재 페이지
     const {search} = route.params;
 
     // 1. 상태정의
     const [GoodsList, setGoodsList] = useState([]);
     const [cart_list, set_cart_list]            = useState([]);   // 장바구니 가져오기
     const toastRef = useRef();
+
+    /**--------------------스크롤 설정----------------------**/
+    const scrollViewRef = useRef();
+    const [scrollEndReached, setScrollEndReached] = useState(false);
+
+
+    const handleScroll = (event) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+        const paddingToBottom = 10; // adjust the value as needed
+
+        const isEndReached = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+
+        if (isEndReached && !scrollEndReached) {
+            setScrollEndReached(true);
+            // Alert.alert(``,`스크롤 끝`);
+            /**----------------기존 스테이터스에 데이터를 추가한다.----------------**/
+            let next_page = Number(now_page + 1);
+            if(Number(now_page) >= Number(get_page)) {
+                return Alert.alert(``,`마지막 페이지 입니다.`);
+            } else if(Number(get_page) === 1) {
+                console.log('1페이지만 있습니다.');
+            } else {
+                get_goods_search(search,next_page).then((res)=>{
+                    if(res) {
+                        const {result, A_goods, total_page, now_page} = res.data;
+                        if (result === 'OK') {
+                            set_page(total_page);
+                            set_now_page(now_page);
+                            setGoodsList([...GoodsList, ...A_goods]);
+                        } else {
+                            return Alert.alert(``,`${result}`);
+                        }
+                    }
+                });
+            }
+        } else if (!isEndReached && scrollEndReached) {
+            setScrollEndReached(false);
+        }
+    };
+
     // 2. 검색상품 출력
     useEffect(()=>{
         get_Member().then((res)=>{
@@ -66,11 +108,12 @@ export default function GoodsSearchList({route,navigation}) {
                 Alert.alert(``,`실패`);
             }
         });
-
-        get_goods_search(search).then((res) => {
+        get_goods_search(search,``).then((res) => {
             if (res) {
-                const {result, A_goods} = res.data;
+                const {result, A_goods, total_page, now_page} = res.data;
                 if (result === 'OK') {
+                    set_page(total_page);
+                    set_now_page(now_page);
                     setGoodsList(A_goods);
                 } else {
                     console.log('실패');
@@ -219,9 +262,17 @@ export default function GoodsSearchList({route,navigation}) {
     }, []);
     console.log(GoodsList);
 
+    // console.log(my_point_log,'/[나의 포인트 내역]');
+    console.log(get_page,'/[전체 페이지]');
+    console.log(now_page,'/[현재 페이지]');
+
     return (
         <>
-            <ScrollView style={[styles.GoodsCateList,]}>
+            <ScrollView
+                ref={scrollViewRef}
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
+                style={[styles.GoodsCateList,]}>
                 <View style={[flex,styles.flex_center,{paddingLeft:15,}]}>
                     <View style={[styles.search_input]}>
                         <TextInput style={[input,styles.input_wt]}

@@ -69,12 +69,13 @@ import {borderBottom1} from "../../common/style/SubStyle";
 import {Phone, Price} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import {image_upload} from "../board/UTIL_bd";
+import {Camera} from "expo-camera";
 
 
 
 export default function RequestReturn({route, navigation}) {
 
-    const {get_gd_order:{gd_order_uid},zonecode,addr1,addr2} = route.params;
+    const {get_gd_order:{gd_order_uid},zonecode,addr1,addr2,save_pic_list} = route.params;
 
     const [Member, setMember] = useState(``);                   // 회원 uid 가져오기
     const [get_gd_order, set_get_gd_order] = useState([]);      // 발주내역 가져오기
@@ -92,10 +93,11 @@ export default function RequestReturn({route, navigation}) {
     });
     const [A_order_list, set_A_order_list] = useState([]);      // 발주자재 내역 리스트 가져오기
     const [cancel_doing, set_cancel_doing] = useState([]);      // 발주자재 내역 리스트 가져오기
-    const [selectedImages, setSelectedImages] = useState([]);
+    const [selectedImages, setSelectedImages] = useState([]);   // 첨부이미지
     const MAX_IMAGES = 4;
     const Update    = useIsFocused();
     useEffect(()=>{
+
         /**------------------------회원정보 가져오기------------------------**/
         get_Member().then((res)=>{
             if(res) {
@@ -131,6 +133,8 @@ export default function RequestReturn({route, navigation}) {
         });
 
     },[Member,Update]);
+
+
     const select_addr = (type) => {
         if(type === 'add') {
             setmodAddr(type);
@@ -150,6 +154,9 @@ export default function RequestReturn({route, navigation}) {
         set_get_gd_order(gd_order);
         set_A_order_list(temp2);
         set_cancel_doing(cancel_doing_cnt);
+
+
+
         if(route.params) {
             set_ret_order({
                 ...ret_order,
@@ -157,6 +164,10 @@ export default function RequestReturn({route, navigation}) {
                 addr1       :addr1,
                 addr2       :addr2
             });
+            // setSelectedImages([...selectedImages, save_pic_list]);
+
+        } else if(save_pic_list) {
+            setSelectedImages([...selectedImages, ...save_pic_list]);
         } else {
             set_ret_order({
                 ...ret_order,
@@ -167,6 +178,19 @@ export default function RequestReturn({route, navigation}) {
         }
     }
     const order_Cancel = (cancel_type) => {
+
+
+        if(!ret_order.return_mem_name) {
+            return Alert.alert(``,`반품 담당자 성명을 입력해주세요.`);
+        }
+        if(!ret_order.return_mem_mobile) {
+            return Alert.alert(``,`반품 담당자 연락처를 입력해주세요.`);
+        }
+        if(!ret_order.return_req_memo) {
+            return Alert.alert(``,`반품 사유 및 수거 요청 사항을 입력해주세요.`);
+        }
+
+
         if(cancel_type === 'all') {
             Alert.alert('','자재를 전부 반품하시겠습니까?',[
                 {text:'반품', onPress:()=>{}},
@@ -207,7 +231,7 @@ export default function RequestReturn({route, navigation}) {
                         let all_cancel_cnt = 0;
                         for(let i = 0; cancel_cnt_chk.length > i; i++) {all_cancel_cnt += cancel_cnt_chk[i];}
                         if(all_cancel_cnt === 0) {return Alert.alert('','반품수량을 입력해주세요.');}
-                        order_cancel(get_gd_order, cancel_type, A_order_list, Member, ret_order).then((res)=>{
+                        order_cancel(get_gd_order, cancel_type, A_order_list, Member, ret_order, selectedImages).then((res)=>{
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
@@ -265,6 +289,18 @@ export default function RequestReturn({route, navigation}) {
         }
 
     }
+
+    const takePicture = async () => {
+        let data = {
+            get_gd_order:get_gd_order,
+            addr1:addr1,
+            addr2:addr2,
+            zonecode:zonecode,
+            save_pic_list:save_pic_list,
+        }
+       navigation.navigate(`카메라`,data);
+    };
+
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -292,6 +328,7 @@ export default function RequestReturn({route, navigation}) {
     console.log(ret_order,'/[반품신청]');
     console.table(A_order_list);
     console.log(selectedImages,'/[이미지 데이터 확인]');
+    console.log(save_pic_list,'/[카메라 이미지 데이터 확인]');
 
     let disable_cancel = A_order_list.map(val=>val.disable_cancel);
     let disable_cancel_chk = (disable_cancel.includes('Y'));
@@ -369,6 +406,14 @@ export default function RequestReturn({route, navigation}) {
                             <TouchableOpacity onPress={pickImage} style={[styles.button,bg_primary]}>
                                 <Text style={[h13,text_center,text_white]}>사진 선택하기</Text>
                             </TouchableOpacity>
+                            <TouchableOpacity onPress={takePicture} style={[styles.button,bg_primary]}>
+                                <Text style={[h13,text_center,text_white]}>카메라로 사진 추가</Text>
+                            </TouchableOpacity>
+                            {/*<Camera*/}
+                            {/*    style={{ width: 200, height: 200 }}*/}
+                            {/*    type={Camera.Constants.Type.back}*/}
+                            {/*    ref={(ref) => setCamera(ref)}*/}
+                            {/*/>*/}
                             {(selectedImages.length > 0) ? (
                                 <>
                                     <View style={[styles.imagesContainer,{borderWidth:1,borderColor:'#000'}]}>

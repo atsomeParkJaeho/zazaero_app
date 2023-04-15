@@ -283,11 +283,13 @@ export const mem_out_reason_cfg = async (Member) => {
 }
 
 export const get_my_point_log = async (Member,page) => {
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_my.php', {
+    let data = {
         act_type    :"get_my_point_log",
         mem_uid     :Member,
         page        :(page) ? page:'',
-    }, {
+    }
+    console.log(data,' / 페이지 불러오기');
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_my.php', data, {
         headers: {
             'Content-type': 'multipart/form-data',
         }

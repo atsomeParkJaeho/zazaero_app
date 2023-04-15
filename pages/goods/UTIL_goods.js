@@ -1,25 +1,27 @@
 import axios from "axios";
 
 /** 자재목록 불러오기 **/
-export const get_goods_list = async (Member, Cate1stUid, Cate2ndUid) => {
+export const get_goods_list = async (Member, Cate1stUid, Cate2ndUid, Cate3rdUid, page) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
-        act_type: "get_goods_list",
-        mem_uid: Member,
-        cate_1st: Cate1stUid,
-        cate_2nd: Cate2ndUid,
+        act_type    :"get_goods_list",
+        mem_uid     :Member,
+        cate_1st    :(Cate1stUid) ? Cate1stUid:'',
+        cate_2nd    :(Cate2ndUid) ? Cate2ndUid:'',
+        cate_3rd    :(Cate3rdUid) ? Cate3rdUid:'',
+        page        :(page) ? page:'',
     }, {
         headers: {
-            'Content-type': 'multipart/form-data',
-        },
+            'Content-type': 'multipart/form-data'
+        }
     });
-
     return res;
 };
 
-export const get_goods_search = async (search) => {
+export const get_goods_search = async (search,page) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
         act_type        : "get_goods_list",
         f_goods_name    :search,
+        page            :(page) ? page:'',
     }, {
         headers: {
             'Content-type': 'multipart/form-data'
@@ -55,12 +57,13 @@ export const get_cate_list = async (Cate1stUid, Cate2ndUid) => {
     return res;
 };
 
-export const get_goods_cate2nd_list = async (Cate1stUid, Cate2ndUid, Member) => {
+export const get_goods_cate2nd_list = async (Cate1stUid, Cate2ndUid, Member, page) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
         act_type    : "get_goods_list",
         cate_1st    : Cate1stUid,
         cate_2nd    : Cate2ndUid,
-        mem_uid     :Member
+        mem_uid     :Member,
+        page        :(page) ? page:''
     }, {
         headers: {
             'Content-type': 'multipart/form-data',
@@ -76,7 +79,7 @@ export const get_goods_cate3rd_list = async (Cate1stUid, Cate2ndUid, Member) => 
         depth           :"3",
         cate_1st_uid    :Cate1stUid,
         cate_2nd_uid    :Cate2ndUid,
-        mem_uid         :Member
+        mem_uid         :Member,
     }, {
         headers: {
             'Content-type': 'multipart/form-data'
@@ -85,13 +88,14 @@ export const get_goods_cate3rd_list = async (Cate1stUid, Cate2ndUid, Member) => 
     return res;
 }
 
-export const go_goods_cate3rd_list = async (Cate1stUid, Cate2ndUid, Cate3rdUid,Member) => {
+export const go_goods_cate3rd_list = async (Cate1stUid, Cate2ndUid, Cate3rdUid,Member, page) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
         act_type: "get_goods_list",
         cate_1st: Cate1stUid,
         cate_2nd: Cate2ndUid,
         cate_3rd: Cate3rdUid,
-        mem_uid :Member
+        mem_uid :Member,
+        page    : (page) ? page: '',
     }, {
         headers: {
             'Content-type': 'multipart/form-data',

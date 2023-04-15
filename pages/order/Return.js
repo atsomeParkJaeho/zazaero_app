@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
     StyleSheet,
     Button,
@@ -33,10 +33,54 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {get_order_cancel_list} from "./UTIL_order";
 import {cancelType, DateChg, Price, refundStatus} from "../../util/util";
 import {get_Member} from "../UTIL_mem";
+import Spinner from "../board/inquiry/spiner";
 
 export default function Return({route, navigation}) {
     const [Member, setMember] = useState();
     const [cancel_list, set_cancel_list] = useState([]);
+    const [get_page, set_page]              = useState();           // 전체 페이지
+    const [now_page, set_now_page]          = useState();           // 현재 페이지
+    /**--------------------스크롤 설정----------------------**/
+    const scrollViewRef = useRef();
+    const [scrollEndReached, setScrollEndReached] = useState(false);
+
+    const handleScroll = (event) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+        const paddingToBottom = 10; // adjust the value as needed
+
+        const isEndReached = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+
+        if (isEndReached && !scrollEndReached) {
+            setScrollEndReached(true);
+            // Alert.alert(``,`스크롤 끝`);
+            /**----------------기존 스테이터스에 데이터를 추가한다.----------------**/
+            let next_page = Number(now_page + 1);
+            if(Number(get_page) === 1) {
+                console.log('1페이지만 있습니다.');
+            } else if( Number(now_page) >= Number(get_page)) {
+                console.log('마지막 페이지 입니다.');
+            } else {
+
+                get_order_cancel_list(Member,next_page).then((res)=>{
+                    if(res) {
+                        console.log(res.result,'/ 데이터 확인');
+                        const {result, gd_cancel, total_page, now_page} = res.data;
+                        if(result === 'OK') {
+                            let temp = gd_cancel.filter((val)=>val.deli_status !== 'done');
+                            set_page(total_page);       // 전체페이지
+                            set_now_page(next_page);     // 현재페이지
+                            set_cancel_list(temp);      // 취소리스트 불러오기
+                        } else {
+                            Alert.alert('',`${result}`);
+                        }
+                    }
+                });
+
+            }
+        } else if (!isEndReached && scrollEndReached) {
+            setScrollEndReached(false);
+        }
+    };
 
     /**1. 발주취소 내역 리스트 출력 **/
     useEffect(()=>{
@@ -47,109 +91,30 @@ export default function Return({route, navigation}) {
             }
         });
 
-        get_order_cancel_list(Member).then((res)=>{
+        get_order_cancel_list(Member,``).then((res)=>{
             if(res) {
-                console.log(res.data,'/ 데이터 확인123');
-                const {result, err_msg, gd_cancel} = res.data;
+                console.log(res.result,'/ 데이터 확인');
+                const {result, gd_cancel, total_page, now_page} = res.data;
                 if(result === 'OK') {
-                    let temp = gd_cancel.filter((val)=>val.deli_status === 'done');
-                    set_cancel_list(temp);
+                    let temp = gd_cancel.filter((val)=>val.deli_status !== 'done');
+                    set_page(total_page);       // 전체페이지
+                    set_now_page(now_page);     // 현재페이지
+                    set_cancel_list(temp);      // 취소리스트 불러오기
                 } else {
-                    Alert.alert('','연결실패'+err_msg);
+                    Alert.alert('',`${result}`);
                 }
             }
         });
+
+
+
     },[Member]);
 
-    console.log(cancel_list,'/[반품리스트]');
+    console.log(cancel_list.length,'/ [결제취소 리스트1]');
+    console.log(Member,'/ 회원 코드12');
+    console.log(get_page,'/ 전체 페이지');
+    console.log(now_page,'/ 현재 페이지');
 
-
-    function CancelList({item}) {
-        return(
-            <>
-                <View style={[styles.order_list_items]}>
-                    <View style={[styles.order_list_items]}>
-                        <View style={[container]}>
-                            {/**--------------------발주번호----------------------------**/}
-                            <View style={[flex, styles.mb_5]}>
-                                <View style={[styles.wt3]}>
-                                    <Text style={[styles.goods_num, styles.ft_16]}> 발주번호 : </Text>
-                                </View>
-                                <View style={[styles.wt7]}>
-                                    <Text
-                                        style={[styles.ft_16, styles.fw_6]}>{item.order_no}</Text>
-                                </View>
-                            </View>
-                            {/**--------------------공사명----------------------------**/}
-                            <View style={[flex, styles.mb_5]}>
-                                <View style={[styles.wt3]}>
-                                    <Text style={[styles.Construction_name, styles.ft_14]}> 취소일 :</Text>
-                                </View>
-                                <View style={[styles.wt7]}>
-                                    <Text
-                                        style={[styles.ft_14]}>{DateChg(item.reg_date)} {item.reg_time}</Text>
-                                </View>
-                            </View>
-                            {/**--------------------공사명----------------------------**/}
-                            <View style={[flex, styles.mb_5]}>
-                                <View style={[styles.wt3]}>
-                                    <Text style={[styles.Construction_name, styles.ft_14]}> 공사명 :</Text>
-                                </View>
-                                <View style={[styles.wt7]}>
-                                    <Text
-                                        style={[styles.ft_14]}>{item.work_name}</Text>
-                                </View>
-                            </View>
-                            {/**--------------------수거지----------------------------**/}
-                            <View style={[flex]}>
-                                <View style={[styles.wt3]}>
-                                    <Text style={[styles.ft_14, item.text_gray]}> 반품 수거지:</Text>
-                                </View>
-                                <View style={[styles.wt7]}>
-                                    <Text style={[styles.ft_14, styles.text_gray]}>
-                                        {item.zonecode} {item.addr1} {item.addr2}
-                                    </Text>
-                                </View>
-                            </View>
-                        </View>
-                        <View style={[styles.border_b_dotted]}></View>
-                        <View style={[container]}>
-                            <View style={[flex_between]}>
-                                <View style={[styles.wt2]}>
-                                    <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('취소내역상세',{gd_cancel_uid:item.gd_cancel_uid, gd_order_uid:item.gd_order_uid})}>
-                                        <Text style={[text_center, text_white]}>상세내역 </Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style="">
-                                    <View style={[flex, styles.justify_content_end]}>
-                                        {(item.refund_status === 'done') ? (
-                                            <>
-                                                <Text>처리완료</Text>
-                                            </>
-                                        ):(
-                                            <>
-                                                <Text>{cancelType(item.cancel_type)}</Text>
-                                            </>
-                                        )}
-
-                                    </View>
-                                    <View style="">
-                                        <View style={flex}>
-                                            <Text style={[h12, styles.color1]}>취소금액 :</Text>
-                                            <Text style={[ms1, h18]}>
-                                                {Price(item.sum_set_refund_money)}원
-                                            </Text>
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-                        <View style={gray_bar}/>
-                    </View>
-                </View>
-            </>
-        );
-    }
     return(
         <>
             {/**=================================탭===================================================**/}
@@ -162,22 +127,117 @@ export default function Return({route, navigation}) {
                     </TouchableOpacity>
                 </View>
                 <View style={[styles.InquiryTab_item]}>
-                    <TouchableOpacity style={[styles.InquiryTab_link,styles.active_link]} onPress={() => {
-                        // navigation.navigate('반품내역')
-                        Alert.alert('준비중입니다.');
+                    <TouchableOpacity style={[styles.InquiryTab_link, styles.active_link]} onPress={() => {
+                        navigation.navigate('반품내역')
+                        // Alert.alert('준비중입니다.');
                     }}>
                         <Text style={[styles.InquiryTab_txt, styles.active_txt]}>반품내역</Text>
                     </TouchableOpacity>
                 </View>
             </View>
             {/**==============================--리스트--================================================**/}
-            <FlatList
+            <ScrollView
                 style={[bg_white]}
-                keyExtractor={(val) => String(val.gd_cancel_uid)}
-                data={cancel_list}
-                renderItem={CancelList}
-                windowSize={3}
-            />
+                ref={scrollViewRef}
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
+            >
+                {/**반복문 구간**/}
+                {cancel_list.map((val,idx)=>(
+                    <>
+                        <View style={[styles.order_list_items]} key={idx}>
+                            <View style={[styles.order_list_items]}>
+                                <View style={[container]}>
+                                    {/**--------------------발주번호----------------------------**/}
+                                    <View style={[flex, styles.mb_5]}>
+                                        <View style={[styles.wt3]}>
+                                            <Text style={[styles.goods_num, styles.ft_16]}> 발주번호 : </Text>
+                                        </View>
+                                        <View style={[styles.wt7]}>
+                                            <Text
+                                                style={[styles.ft_16, styles.fw_6]}>{val.order_no}</Text>
+                                        </View>
+                                    </View>
+                                    {/**--------------------공사명----------------------------**/}
+                                    <View style={[flex, styles.mb_5]}>
+                                        <View style={[styles.wt3]}>
+                                            <Text style={[styles.Construction_name, styles.ft_14]}> 취소일 :</Text>
+                                        </View>
+                                        <View style={[styles.wt7]}>
+                                            <Text
+                                                style={[styles.ft_14]}>{DateChg(val.reg_date)} {val.reg_time}</Text>
+                                        </View>
+                                    </View>
+                                    {/**--------------------공사명----------------------------**/}
+                                    <View style={[flex, styles.mb_5]}>
+                                        <View style={[styles.wt3]}>
+                                            <Text style={[styles.Construction_name, styles.ft_14]}> 공사명 :</Text>
+                                        </View>
+                                        <View style={[styles.wt7]}>
+                                            <Text
+                                                style={[styles.ft_14]}>{val.work_name}</Text>
+                                        </View>
+                                    </View>
+                                    {/**--------------------수거지----------------------------**/}
+                                    <View style={[flex]}>
+                                        <View style={[styles.wt3]}>
+                                            <Text style={[styles.ft_14, val.text_gray]}> 반품 수거지:</Text>
+                                        </View>
+                                        <View style={[styles.wt7]}>
+                                            <Text style={[styles.ft_14, styles.text_gray]}>
+                                                {val.zonecode} {val.addr1} {val.addr2}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </View>
+                                <View style={[styles.border_b_dotted]}></View>
+                                <View style={[container]}>
+                                    <View style={[flex_between]}>
+                                        <View style={[styles.wt2]}>
+                                            <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('취소내역상세',{gd_cancel_uid:val.gd_cancel_uid, gd_order_uid:val.gd_order_uid})}>
+                                                <Text style={[text_center, text_white]}>상세내역 </Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style="">
+                                            <View style={[flex, styles.justify_content_end]}>
+                                                {(val.refund_status === 'done') ? (
+                                                    <>
+                                                        <Text>처리완료</Text>
+                                                    </>
+                                                ):(
+                                                    <>
+                                                        <Text>{cancelType(val.cancel_type)}</Text>
+                                                    </>
+                                                )}
+
+                                            </View>
+                                            <View style="">
+                                                <View style={flex}>
+                                                    <Text style={[h12, styles.color1]}>취소금액 :</Text>
+                                                    <Text style={[ms1, h18]}>
+                                                        {Price(val.sum_set_refund_money)}원
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                                <View style={gray_bar}/>
+                            </View>
+                        </View>
+                    </>
+                ))}
+                {(scrollEndReached && Number(get_page) >  1) && (
+                    <>
+                        {(Number(get_page) === Number(now_page)) ? (
+                            <></>
+                        ):(
+                            <Spinner/>
+                        )}
+
+                    </>
+                )}
+            </ScrollView>
             {/**==============================--하단--================================================**/}
             <Footer navigation={navigation}/>
 

@@ -15,6 +15,7 @@ import {sub_page} from '../../common/style/SubStyle';
 import {get_Member} from "../UTIL_mem";
 import {get_my_point_log} from "../UTIL_mem";
 import {DateChg, Price} from "../../util/util";
+import Spinner from "../board/inquiry/spiner";
 
 
 export default function MyPoint({route, navigation,enableSomeButton}) {
@@ -38,13 +39,15 @@ export default function MyPoint({route, navigation,enableSomeButton}) {
             // Alert.alert(``,`스크롤 끝`);
             /**----------------기존 스테이터스에 데이터를 추가한다.----------------**/
             let next_page = Number(now_page + 1);
-            if(Number(next_page) > Number(get_page)) {
-                return Alert.alert(``,`마지막 페이지 입니다.`);
+            if(Number(get_page) === 1 ) {
+                return  console.log('1페이지만 있습니다.');
+            } else if(Number(now_page) >= Number(get_page)) {
+                return console.log('마지막 페이지 입니다.');
             } else {
                 get_my_point_log(Member,next_page).then((res)=>{
                     if(res) {
-                        console.log(res.data,'/[데이터 로그]');
-                        console.log(next_page,'/[다음 페이지]');
+                        // console.log(res.data,'/[데이터 로그]');
+                        // console.log(next_page,'/[다음 페이지]');
                         const {result,A_point_log, total_page, now_page} = res.data;
                         if(result === 'OK') {
                             set_my_point_log([...my_point_log,...A_point_log]);
@@ -89,41 +92,9 @@ export default function MyPoint({route, navigation,enableSomeButton}) {
     },[Member]);
 
 
-    // const goPage = (Member, i) => {
-    //     get_my_point_log(Member,i).then((res)=>{
-    //         if(res) {
-    //             console.log(res.data,'/[데이터 로그]');
-    //             const {result,A_point_log, total_page, now_page} = res.data;
-    //             if(result === 'OK') {
-    //                 set_my_point_log(A_point_log);
-    //                 set_page(total_page);
-    //                 set_now_page(now_page);
-    //             } else {
-    //                 return Alert.alert(``,`${result}`);
-    //             }
-    //         }
-    //     });
-    // }
-    //
-    // function Page() {
-    //     let page = [];
-    //     for (let i=0; i<get_page; i++) {
-    //         page.push(
-    //             <TouchableOpacity onPress={()=>goPage(Member,i)}>
-    //                 {(i === Number(now_page)) ? (
-    //                     <Text style={[text_primary]}>{i+1}</Text>
-    //                 ):(
-    //                     <Text>{i+1}</Text>
-    //                 )}
-    //             </TouchableOpacity>
-    //         )
-    //     }
-    //     return page;
-    // }
-
     /**------------------------------스크롤 끝에서 페이징 처리하기----------------------------**/
 
-    console.log(my_point_log,'/[나의 포인트 내역]');
+    // console.log(my_point_log,'/[나의 포인트 내역]');
     console.log(get_page,'/[전체 페이지]');
     console.log(now_page,'/[현재 페이지]');
 
@@ -162,9 +133,15 @@ export default function MyPoint({route, navigation,enableSomeButton}) {
                         </View>
                     </>
                 ))}
-                <View style={[d_flex, justify_content_center]}>
-                    {/*<Page/>*/}
-                </View>
+                {(scrollEndReached && Number(get_page) >  1) && (
+                    <>
+                        {(Number(get_page) === Number(now_page)) ? (
+                            <></>
+                        ):(
+                            <Spinner/>
+                        )}
+                    </>
+                )}
             </ScrollView>
         </>
     );
