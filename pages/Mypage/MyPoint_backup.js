@@ -3,98 +3,130 @@ import {StyleSheet, Text, TextInput, View, Image, TouchableOpacity, ScrollView, 
 
 
 // 공통 CSS 추가
-import {container, bg_white,flex_between} from '../../common/style/AtStyle';
+import {
+    container,
+    bg_white,
+    flex_between,
+    d_flex,
+    justify_content_center,
+    text_primary
+} from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 import {get_Member} from "../UTIL_mem";
-import {useIsFocused} from "@react-navigation/native";
-import {get_my_point_log} from "../board/UTIL_bd";
+import {get_my_point_log} from "../UTIL_mem";
+import {DateChg, Price} from "../../util/util";
 
 
-export default function MyPoint({navigation, route}) {
-
-    const [Member, setMember]                  = useState();
-    const [get_my_point, set_my_point]         = useState([]); // 나의 포인트 내역
-    const Update = useIsFocused();
+export default function MyPoint({route, navigation}) {
+    const [Member, setMember]               = useState(``);
+    const [my_point_log, set_my_point_log]  = useState([]);   // 회원정보 셋팅
+    const [get_page, set_page]              = useState();
+    const [now_page, set_now_page]          = useState();
     useEffect(()=>{
+
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
                 // Alert.alert(``,`실패`);
             }
         });
-        get_my_point_log(Member,`get_my_point_log`).then((res)=>{
-            console.log(res,'/[데이터 로그 확인]');
+
+        get_my_point_log(Member).then((res)=>{
+            if(res) {
+                console.log(res.data,'/[데이터 로그]');
+                const {result,A_point_log, total_page, now_page} = res.data;
+                if(result === 'OK') {
+                    set_my_point_log(A_point_log);
+                    set_page(total_page);
+                    set_now_page(now_page);
+                } else {
+                    return Alert.alert(``,`${result}`);
+                }
+            }
         });
+        // page(get_page);
 
-    },[Member,Update]);
+
+    },[Member]);
 
 
-    return  (
+    const goPage = (Member, i) => {
+        get_my_point_log(Member,i).then((res)=>{
+            if(res) {
+                console.log(res.data,'/[데이터 로그]');
+                const {result,A_point_log, total_page, now_page} = res.data;
+                if(result === 'OK') {
+                    set_my_point_log(A_point_log);
+                    set_page(total_page);
+                    set_now_page(now_page);
+                } else {
+                    return Alert.alert(``,`${result}`);
+                }
+            }
+        });
+    }
 
-        <View style={[sub_page,styles.MyPoint,bg_white]}>
-            <View style={[styles.MyPoint_list]}>
-                <View style={[styles.MyPoint_list_item,flex_between]}>
-                    <View style={styles.item}>
-                        <Text style={styles.MyPoint_title}>상품구입시 적립금 결제 사용</Text>
-                        <Text style={styles.MyPoint_date}>2022-12-05</Text>
-                    </View>
-                    <View style={[styles.item]}>
-                        <Text style={[styles.MyPoint_Score,styles.MyPoint_Score_p]}>+5000P</Text>
-                    </View>
+    function Page() {
+        let page = [];
+        for (let i=0; i<get_page; i++) {
+            page.push(
+                <TouchableOpacity onPress={()=>goPage(Member,i)}>
+                    {(i === Number(now_page)) ? (
+                        <Text style={[text_primary]}>{i+1}</Text>
+                    ):(
+                        <Text>{i+1}</Text>
+                    )}
+                </TouchableOpacity>
+            )
+        }
+        return page;
+    }
+
+    console.log(my_point_log,'/[나의 포인트 내역]');
+    console.log(get_page,'/[전체 페이지]');
+    console.log(now_page,'/[현재 페이지]');
+
+    return(
+        <>
+            <ScrollView style={[styles.MyPoint_list, bg_white]}>
+                {/**===========================반복문 구간=================================**/}
+                {my_point_log.map((val,idx)=>(
+                    <>
+                        <View style={[styles.MyPoint_list_item,flex_between]} key={idx}>
+                            <View style={styles.item}>
+                                <Text style={styles.MyPoint_title}>{val.memo}</Text>
+                                <Text style={styles.MyPoint_date}>{DateChg(val.reg_date)} {val.reg_time}</Text>
+                            </View>
+                            <View style={[styles.item]}>
+                                {(Number(val.mem_point) > 0) ? (
+                                    <>
+                                        <Text style={[styles.MyPoint_Score,styles.MyPoint_Score_p]}>
+                                            {Price(val.mem_point)}P
+                                        </Text>
+                                    </>
+                                ):(
+                                    <>
+                                        <Text style={[styles.MyPoint_Score,styles.MyPoint_Score_m]}>
+                                            {Price(val.mem_point)}P
+                                        </Text>
+                                    </>
+                                )}
+
+                            </View>
+                        </View>
+                    </>
+                ))}
+                <View style={[d_flex, justify_content_center]}>
+                    <Page/>
                 </View>
-                <View style={[styles.MyPoint_list_item,flex_between]}>
-                    <View style={[styles.item]}>
-                        <Text style={styles.MyPoint_title}>상품환불로 인한 포인트 적립</Text>
-                        <Text style={styles.MyPoint_date}>2022-12-05</Text>
-                    </View>
-                    <View style={[styles.item]}>
-                        <Text style={[styles.MyPoint_Score,styles.MyPoint_Score_m]}>-5000P</Text>
-                    </View>
-                </View>
-                <View style={[styles.MyPoint_list_item,flex_between]}>
-                    <View style={styles.item}>
-                        <Text style={styles.MyPoint_title}>상품구입시 적립금 결제 사용</Text>
-                        <Text style={styles.MyPoint_date}>2022-12-05</Text>
-                    </View>
-                    <View style={[styles.item]}>
-                        <Text style={[styles.MyPoint_Score,styles.MyPoint_Score_p]}>+5000P</Text>
-                    </View>
-                </View>
-                <View style={[styles.MyPoint_list_item,flex_between]}>
-                    <View style={[styles.item]}>
-                        <Text style={styles.MyPoint_title}>상품환불로 인한 포인트 적립</Text>
-                        <Text style={styles.MyPoint_date}>2022-12-05</Text>
-                    </View>
-                    <View style={[styles.item]}>
-                        <Text style={[styles.MyPoint_Score,styles.MyPoint_Score_m]}>-5000P</Text>
-                    </View>
-                </View>
-                <View style={[styles.MyPoint_list_item,flex_between]}>
-                    <View style={styles.item}>
-                        <Text style={styles.MyPoint_title}>상품구입시 적립금 결제 사용</Text>
-                        <Text style={styles.MyPoint_date}>2022-12-05</Text>
-                    </View>
-                    <View style={[styles.item]}>
-                        <Text style={[styles.MyPoint_Score,styles.MyPoint_Score_p]}>+5000P</Text>
-                    </View>
-                </View>
-                <View style={[styles.MyPoint_list_item,flex_between]}>
-                    <View style={[styles.item]}>
-                        <Text style={styles.MyPoint_title}>상품환불로 인한 포인트 적립</Text>
-                        <Text style={styles.MyPoint_date}>2022-12-05</Text>
-                    </View>
-                    <View style={[styles.item]}>
-                        <Text style={[styles.MyPoint_Score,styles.MyPoint_Score_m]}>-5000P</Text>
-                    </View>
-                </View>
-            </View>
-        </View>
+            </ScrollView>
+        </>
     );
 }
 
 const styles = StyleSheet.create({
     MyPoint_list_item:{
-      paddingVertical:16,
-      paddingHorizontal:20,
+        paddingVertical:16,
+        paddingHorizontal:20,
     },
     MyPoint_title:{
         fontSize: Platform.OS === 'ios' ? 16 : 15,

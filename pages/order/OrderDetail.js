@@ -979,7 +979,7 @@ export default function OrderDtail({route,navigation}) {
                         <Text style={[h18]}>결제금액</Text>
                         {(get_gd_order.settlekind === 'bank') && (
                             <>
-                                {(get_gd_order.pay_status === 'ready') && (
+                                {(get_gd_order.pay_status === 'ready' || get_gd_order.ord_status === 'pay_done') && (
                                     <Text style={[text_danger]}>(입금대기)</Text>
                                 )}
                             </>
