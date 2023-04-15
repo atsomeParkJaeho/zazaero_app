@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {StyleSheet, Text, TextInput, View, Image, TouchableOpacity, ScrollView, Alert} from 'react-native';
 
 
@@ -18,8 +18,50 @@ import {DateChg, Price} from "../../util/util";
 export default function MyRefund({route, navigation}) {
     const [Member, setMember] = useState(``);
     const [my_refund_log, set_my_refund_log] = useState([]);
-    const [get_page, set_page]              = useState();
-    const [now_page, set_now_page]          = useState();
+    const [get_page, set_page]              = useState();           // 전체 페이지
+    const [now_page, set_now_page]          = useState();           // 현재 페이지
+
+    /**--------------------스크롤 설정----------------------**/
+    const scrollViewRef = useRef();
+    const [scrollEndReached, setScrollEndReached] = useState(false);
+
+    const handleScroll = (event) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+        const paddingToBottom = 10; // adjust the value as needed
+
+        const isEndReached = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+
+        if (isEndReached && !scrollEndReached) {
+            setScrollEndReached(true);
+            // Alert.alert(``,`스크롤 끝`);
+            /**----------------기존 스테이터스에 데이터를 추가한다.----------------**/
+
+            /**----------------기존 스테이터스에 데이터를 추가한다.----------------**/
+            let next_page = Number(now_page + 1);
+            if(Number(next_page) === Number(get_page)) {
+                return Alert.alert(``,`마지막 페이지 입니다.`);
+            } else {
+                get_my_refund_log(Member,next_page).then((res)=>{
+                    if(res) {
+                        console.log(res.data,'/[데이터 로그]');
+                        const {result,A_refund_log, total_page, now_page} = res.data;
+                        if(result === 'OK') {
+                            set_my_refund_log([...my_refund_log, ...A_refund_log]);
+                            set_page(total_page);
+                            set_now_page(next_page);
+                        } else {
+                            return Alert.alert(``,`마지막 페이지 입니다.`);
+                        }
+                    }
+                });
+            }
+
+
+        } else if (!isEndReached && scrollEndReached) {
+            setScrollEndReached(false);
+        }
+    };
+
     useEffect(()=>{
 
         get_Member().then((res)=>{
@@ -43,44 +85,48 @@ export default function MyRefund({route, navigation}) {
         });
     },[Member]);
 
-    const goPage = (Member, i) => {
-        get_my_refund_log(Member,i).then((res)=>{
-            if(res) {
-                console.log(res.data,'/[데이터 로그]');
-                const {result,A_refund_log, total_page, now_page} = res.data;
-                if(result === 'OK') {
-                    set_my_refund_log(A_refund_log);
-                    set_page(total_page);
-                    set_now_page(now_page);
-                } else {
-                    return Alert.alert(``,`${result}`);
-                }
-            }
-        });
-    }
-
-    function Page() {
-        let page = [];
-        for (let i=0; i<get_page; i++) {
-            page.push(
-                <TouchableOpacity onPress={()=>goPage(Member,i)}>
-                    {(i === Number(now_page)) ? (
-                        <Text style={[text_primary]}>{i+1}</Text>
-                    ):(
-                        <Text>{i+1}</Text>
-                    )}
-                </TouchableOpacity>
-            )
-        }
-        return page;
-    }
+    // const goPage = (Member, i) => {
+    //     get_my_refund_log(Member,i).then((res)=>{
+    //         if(res) {
+    //             console.log(res.data,'/[데이터 로그]');
+    //             const {result,A_refund_log, total_page, now_page} = res.data;
+    //             if(result === 'OK') {
+    //                 set_my_refund_log(A_refund_log);
+    //                 set_page(total_page);
+    //                 set_now_page(now_page);
+    //             } else {
+    //                 return Alert.alert(``,`${result}`);
+    //             }
+    //         }
+    //     });
+    // }
+    //
+    // function Page() {
+    //     let page = [];
+    //     for (let i=0; i<get_page; i++) {
+    //         page.push(
+    //             <TouchableOpacity onPress={()=>goPage(Member,i)}>
+    //                 {(i === Number(now_page)) ? (
+    //                     <Text style={[text_primary]}>{i+1}</Text>
+    //                 ):(
+    //                     <Text>{i+1}</Text>
+    //                 )}
+    //             </TouchableOpacity>
+    //         )
+    //     }
+    //     return page;
+    // }
     console.log(my_refund_log,'/[나의 환불내역]');
     console.log(get_page,'/[전체 페이지]');
     console.log(now_page,'/[현재 페이지]');
 
     return  (
             <>
-                <ScrollView style={[bg_white]}>
+                <ScrollView style={[bg_white]}
+                ref={scrollViewRef}
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
+                >
                     <View style={[styles.MyRefund]}>
                         <View style={[styles.MyPoint_list]}>
                             {my_refund_log.map((val,ide)=>
@@ -99,7 +145,7 @@ export default function MyRefund({route, navigation}) {
                     </View>
                     <View style={[styles.ios_pb]} />
                     <View style={[d_flex, justify_content_center]}>
-                        <Page/>
+                        {/*<Page/>*/}
                     </View>
                 </ScrollView>
 

@@ -22,7 +22,6 @@ export default function MyPoint({route, navigation,enableSomeButton}) {
     const [my_point_log, set_my_point_log]  = useState([]);   // 회원정보 셋팅
     const [get_page, set_page]              = useState();           // 전체 페이지
     const [now_page, set_now_page]          = useState();           // 현재 페이지
-    const [total_page, set_total_page]      = useState();           // 전체 페이지
 
     /**--------------------스크롤 설정----------------------**/
     const scrollViewRef = useRef();
@@ -32,32 +31,32 @@ export default function MyPoint({route, navigation,enableSomeButton}) {
         const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
         const paddingToBottom = 10; // adjust the value as needed
 
-        const isEndReached =
-            layoutMeasurement.height + contentOffset.y >=
-            contentSize.height - paddingToBottom;
+        const isEndReached = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
 
         if (isEndReached && !scrollEndReached) {
             setScrollEndReached(true);
             // Alert.alert(``,`스크롤 끝`);
             /**----------------기존 스테이터스에 데이터를 추가한다.----------------**/
             let next_page = Number(now_page + 1);
-
-            get_my_point_log(Member,next_page).then((res)=>{
-                if(res) {
-                    console.log(res.data,'/[데이터 로그]');
-                    console.log(next_page,'/[다음 페이지]');
-                    const {result,A_point_log, total_page, now_page} = res.data;
-                    if(result === 'OK') {
-                        set_my_point_log([...my_point_log,...A_point_log]);
-                        set_page(total_page);
-                        set_now_page(now_page + 1);
-                    } else {
-                        return Alert.alert(``,`마지막 페이지 입니다.`);
+            if(Number(next_page) === Number(get_page)) {
+                return Alert.alert(``,`마지막 페이지 입니다.`);
+            } else {
+                get_my_point_log(Member,next_page).then((res)=>{
+                    if(res) {
+                        console.log(res.data,'/[데이터 로그]');
+                        console.log(next_page,'/[다음 페이지]');
+                        const {result,A_point_log, total_page, now_page} = res.data;
+                        if(result === 'OK') {
+                            set_my_point_log([...my_point_log,...A_point_log]);
+                            set_page(total_page);
+                            set_now_page(next_page);
+                            Alert.alert(``,`${now_page}`);
+                        } else {
+                            return Alert.alert(``,`${result}`);
+                        }
                     }
-                }
-            });
-
-
+                });
+            }
         } else if (!isEndReached && scrollEndReached) {
             setScrollEndReached(false);
         }
