@@ -31,6 +31,7 @@ import CameraIcon from "../../../icons/camera_icon.svg";
 import * as ImagePicker from "expo-image-picker";
 import {img_upload_test} from "../../order/UTIL_order";
 import Close from "../../../icons/close_black.svg";
+import {get_Member, save_bd} from "../../UTIL_mem";
 
 
 export default function InquiryWrite({navigation,route}) {
@@ -38,58 +39,56 @@ export default function InquiryWrite({navigation,route}) {
     // console.log('1:1문의작성');
 
     // 1. 글입력 상태 셋팅
-    const [Write,setWrite] = useState({
-        bd_type:'inquiry',
-        man_name:'',                // 작성자
-        bd_title:'',                // 제목
-        bd_contents:'',             // 내용
-        act_type:'INS',             // 글쓰기 옵션
+    const [Member, setMember] = useState(``);
+    const [Write,setWrite]    = useState({
+        bd_type             :'inquiry',
+        bd_title            :'',
+        bd_contents         :'',
     }); // 작성폼 설정
+    const [selectedImages, setSelectedImages] = useState([]);   // 첨부이미지
     // 2. 글쓰는 회원 uid 정보 추가
     useEffect(()=>{
-        const mem_uid = AsyncStorage.getItem('member').then((value) => {
-            if (value) {
-                setWrite({
-                    ...Write,
-                    man_name:value,
-                });
-            }
-        });
-    },[])
+        get_Member().then((res)=>{if(res) {setMember(res);} else {
+            Alert.alert(``,`실패`);
+            return navigation.navigate('로그인');
+        }});
+
+    },[Member])
     // 3. 글입력시 status 업데이트
-    const goInput = (keyValue, e) => {
+    const goInput = (name, value) => {
         setWrite({
             ...Write,
-            [keyValue]:e,
+            [name]:value,
         });
     };
 
     // 4. 문의하기 클릭시 관리자로 전달
     const goForm = () => {
-        axios.post('',Write,{
-            headers:{
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res)=>{
-            if(res) {
-                alert('문의하기에 등록되었습니다.');
-                navigation.navigate('1:1문의목록');
-            } else {
-                alert('연결실패');
-            }
-        });
+
+        Alert.alert(``,`게시물을 등록하시겠습니까?`,[
+            {text:'취소', onPress:()=>{}},
+            {text:"확인", onPress:()=>{
+                    save_bd(Member,Write,selectedImages).then((res)=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                return Alert.alert(``,`등록이 완료되었습니다.`);
+                            } else {
+                                return Alert.alert(``,`${result}`);
+                            }
+                        }
+                    });
+                }}
+        ])
+
+
     }
-    console.log(Write);
 
     //===========================================
-    const [selectedImages, setSelectedImages] = useState([]);   // 첨부이미지
+
     const MAX_IMAGES = 2;
     const takePicture = async () => {
         let data = {
-            get_gd_order:get_gd_order,
-            addr1:addr1,
-            addr2:addr2,
-            zonecode:zonecode,
             save_pic_list:save_pic_list,
         }
         navigation.navigate(`카메라`,data);
@@ -118,18 +117,8 @@ export default function InquiryWrite({navigation,route}) {
         setSelectedImages(images);
     };
 
-    const upload_test = () => {
-        img_upload_test(selectedImages).then((res)=>{
-            if(res) {
-                const {result} = res.data;
-                if(result === 'OK') {
-                    return Alert.alert(``,`성공`);
-                } else {
-                    return Alert.alert(``,`${result}`);
-                }
-            }
-        });
-    }
+
+    console.log(Write,'/[작성글]');
     //===========================================
 
     return (
@@ -161,7 +150,7 @@ export default function InquiryWrite({navigation,route}) {
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>내용</Text>
                                 <TextInput
-                                    onChangeText={(bd_contents) => goInput("bd_contents", bd_contents)} value={Write.bd_contents}
+                                    onChangeText={(bd_content) => goInput("bd_content", bd_content)} value={Write.bd_content}
                                     style={textarea} multiline={true} numberOfLines={4}/>
                             </View>
                             <View style={styles.inputGroup}>

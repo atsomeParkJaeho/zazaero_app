@@ -342,6 +342,51 @@ export const find_chk_mem = async (FindId, mem_info) => {
 }
 
 
+/**---------------------------게시판------------------------------------------**/
+export const save_bd = async (Member,Write,selectedImages) => {
+    let temp = selectedImages.map(val=>{
+        return {
+            filename    :(val.filename) ? val.filename:'',
+            uri         :(Platform.OS === 'ios') ? val.uri.replace('file://','') : val.uri,
+            base64      :val.base64,
+            type        :'image',
+        }
+    });
+    let bd_file1 = temp.filter((val,idx)=>idx===0);
+    let bd_file2 = temp.filter((val,idx)=>idx===1);
+    let data = {
+        act_type    :'save_bd',
+        bd_type     :Write.bd_type,
+        mem_uid     :Member,
+        bd_title    :Write.bd_title,
+        bd_contents  :Write.bd_contents,
+        bd_file1    :(bd_file1) ? bd_file1 : '',
+        bd_file2    :(bd_file2) ? bd_file2 : ''
+    }
+    console.log(data,'/[파라미터 확인]');
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_bd.php',data,{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}
+
+export const bd_del = async (Member, bd_uid) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_bd.php',{
+        mem_uid    :Member,
+        bd_uid     :bd_uid,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}
+
+
+
+
 export const get_my_refund_log = async (Member,page) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_my.php',{
         act_type    :'get_my_refund_log',
