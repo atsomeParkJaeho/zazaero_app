@@ -23,7 +23,18 @@ import {
     pos_center,
     ios_pb,
     mt2,
-    text_danger, text_black, text_center, h17, mb1, d_flex, bg_primary, text_gray
+    text_danger,
+    text_black,
+    text_center,
+    h17,
+    mb1,
+    d_flex,
+    bg_primary,
+    text_gray,
+    justify_content_between,
+    wt5,
+    ms1,
+    me1, h13, text_white, wt10
 } from '../../common/style/AtStyle';
 import {AddrMatch, BankCode, bizNum, EmailDomain, Minlangth, Phone, regPW,} from "../../util/util";
 import axios from "axios";
@@ -32,6 +43,8 @@ import {useIsFocused} from "@react-navigation/native";
 import {get_Member, mod_mem_info} from "../UTIL_mem";
 import HomeLogoAt from "../../icons/home_logo_at.svg";
 import HomeLogo from "../../icons/home_logo.svg";
+import Close from "../../icons/close_black.svg";
+import * as ImagePicker from "expo-image-picker";
 
 
 export default function MemInfo({route, navigation}) {
@@ -125,6 +138,46 @@ export default function MemInfo({route, navigation}) {
             [keyValue]      :value,
         });
     }
+
+    //===============================================
+    const [selectedImages, setSelectedImages] = useState([]);   // 첨부이미지
+    const MAX_IMAGES = 1;
+
+    const takePicture = async () => {
+        let data = {
+            get_gd_order:get_gd_order,
+            addr1:addr1,
+            addr2:addr2,
+            zonecode:zonecode,
+            save_pic_list:save_pic_list,
+        }
+        navigation.navigate(`카메라`,data);
+    };
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes          :ImagePicker.MediaTypeOptions.Images,
+            allowsEditing       :false,
+            quality             :1,
+            base64              :true,
+        });
+        console.log(result,'/[첨부확인]');
+        if (!result.cancelled) {
+            if (selectedImages.length < MAX_IMAGES) {
+                setSelectedImages([...selectedImages, result]);
+            } else {
+                return Alert.alert(``,`최대 1장까지만 등록 가능합니다.`);
+            }
+        }
+    };
+
+    const removeImage = (index) => {
+        const images = [...selectedImages];
+        images.splice(index, 1);
+        setSelectedImages(images);
+    };
+
+    //===============================================
 
     // 3. 데이터 전송
     const goForm = () => {
@@ -498,7 +551,7 @@ export default function MemInfo({route, navigation}) {
                                                 <Text style={[styles.select_txt,(MemInfo.pay_bank_code) ? text_black:'']}>
                                                     {(!MemInfo.pay_bank_code) ? (
                                                         <>
-                                                        <Text style={[text_gray]}>은행을 선택해주세요.</Text>
+                                                            <Text style={[text_gray]}>은행을 선택해주세요.</Text>
                                                         </>
                                                     ):(
                                                         <>
@@ -549,41 +602,77 @@ export default function MemInfo({route, navigation}) {
                                            value={MemInfo.pay_bank_owner}/>
                             </View>
                             {/*============ 예금주명 ============ */}
+                            <View style={styles.formGroup}>
+                                <Text style={[]}>사업자등록증 첨부</Text>
+                                {/*   */}
+                                <View  style={[]} >
+                                    <View  style={[flex,justify_content_between]} >
 
-                            {/*<View style={styles.formGroup}>*/}
-                            {/*    <View style={styles.inputGroup}>*/}
-                            {/*        <Text style={styles.inputTopText}>사업자 등록증</Text>*/}
+                                        <View  style={[wt10]} >
+                                            <TouchableOpacity onPress={pickImage} style={[styles.button,bg_primary,ms1,me1]}>
+                                                <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
 
-                            {/*        <Pressable style={[styles.upload_btn]}>*/}
-                            {/*            <View  style={[pos_center]} >*/}
-                            {/*                <CameraIcon width={30} height={24}/>*/}
-                            {/*            </View>*/}
-                            {/*        </Pressable>*/}
-                            {/*        <View  style={[mt2,styles.upload_box]} >*/}
+                                    {(selectedImages !== undefined) && (
+                                        <>
+                                            <View style={[styles.imagesContainer]}>
+                                                {selectedImages.map((image, index) => (
+                                                    <View key={index} style={styles.imageContainer}>
+                                                        <TouchableOpacity onPress={() => removeImage(index)} style={styles.deleteButton}>
+                                                            <Close width={11} height={11}/>
+                                                        </TouchableOpacity>
+                                                        {(image.base64) && (
+                                                            <Image source={{ uri: `data:image/jpg;base64,${image.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                        )}
+                                                    </View>
+                                                ))}
+                                            </View>
+                                        </>
+                                    )}
 
-                            {/*            <Image style={styles.upload_img} source={imgSrc}/>*/}
-                            {/*        </View>*/}
 
-                            {/*    </View>*/}
-                            {/*</View>*/}
-                            {/*============ 사업자 등록증 ============ */}
+                                </View>
+                                {/*    */}
+                            </View>
+                            {/*============ 사업자등록증 첨부 ============ */}
 
-                            {/*<View style={styles.formGroup}>*/}
-                            {/*    <View style={styles.inputGroup}>*/}
-                            {/*        <Text style={styles.inputTopText}>통장사본</Text>*/}
+                            <View style={styles.formGroup}>
+                                <Text style={[]}>통장사본 첨부</Text>
+                                {/*   */}
+                                <View  style={[]} >
+                                    <View  style={[flex,justify_content_between]} >
 
-                            {/*        <Pressable style={[styles.upload_btn]} onPress={(CopyBankbook=>uploadImage('CopyBankbook',CopyBankbook))}>*/}
-                            {/*            <View  style={[pos_center]} >*/}
-                            {/*                <CameraIcon width={30} height={24}/>*/}
-                            {/*            </View>*/}
-                            {/*        </Pressable>*/}
-                            {/*        <View  style={[mt2,styles.upload_box]} >*/}
-                            {/*            /!*<Image style={styles.upload_img} source={{uri: imageUrl.CopyBankbook}}/>*!/*/}
-                            {/*        </View>*/}
+                                        <View  style={[wt10]} >
+                                            <TouchableOpacity onPress={pickImage} style={[styles.button,bg_primary,ms1,me1]}>
+                                                <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
 
-                            {/*    </View>*/}
-                            {/*</View>*/}
-                            {/*============ 통장사본 ============ */}
+                                    {(selectedImages !== undefined) && (
+                                        <>
+                                            <View style={[styles.imagesContainer]}>
+                                                {selectedImages.map((image, index) => (
+                                                    <View key={index} style={styles.imageContainer}>
+                                                        <TouchableOpacity onPress={() => removeImage(index)} style={styles.deleteButton}>
+                                                            <Close width={11} height={11}/>
+                                                        </TouchableOpacity>
+                                                        {(image.base64) && (
+                                                            <Image source={{ uri: `data:image/jpg;base64,${image.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                        )}
+                                                    </View>
+                                                ))}
+                                            </View>
+                                        </>
+                                    )}
+
+
+                                </View>
+                                {/*    */}
+                            </View>
+                            {/*============ 사업자등록증 첨부 ============ */}
 
                         </View>
                     </View>
@@ -834,5 +923,40 @@ const styles = StyleSheet.create({
         paddingVertical:10,
         borderColor:"#eee",
 
+    },
+    image: {
+        width: '100%',
+        height: '100%',
+        margin: 5,
+        borderWidth:1,
+        borderColor:"#ccc",
+    },
+    button: {
+        backgroundColor: '#3498db',
+        padding: 10,
+        borderRadius: 5,
+        marginTop: 20,
+    },
+    imagesContainer: {
+
+        flexDirection: 'row',
+        marginVertical: 10,
+        justifyContent:"center",
+    },
+    imageContainer: {
+        position: 'relative',
+        width: 300,
+        height: 450,
+        marginRight: 10,
+        marginBottom: 10,
+    },
+    deleteButton: {
+        position: 'absolute',
+        top: 0,
+        right: -5,
+        zIndex: 1,
+        backgroundColor:'red',
+        borderRadius:100,
+        padding:7,
     },
 });
