@@ -9,16 +9,28 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    Pressable
+    Pressable, Alert
 } from 'react-native';
 
 
 // 공통 CSS 추가
-import {container, bg_white, flex_between, flex, input, textarea, mt2} from '../../../common/style/AtStyle';
+import {
+    container,
+    bg_white,
+    flex_between,
+    flex,
+    input,
+    textarea,
+    mt2,
+    justify_content_between, wt5, bg_primary, ms1, me1, h13, text_center, text_white
+} from '../../../common/style/AtStyle';
 import {sub_page} from '../../../common/style/SubStyle';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import CameraIcon from "../../../icons/camera_icon.svg";
+import * as ImagePicker from "expo-image-picker";
+import {img_upload_test} from "../../order/UTIL_order";
+import Close from "../../../icons/close_black.svg";
 
 
 export default function InquiryWrite({navigation,route}) {
@@ -68,37 +80,57 @@ export default function InquiryWrite({navigation,route}) {
         });
     }
     console.log(Write);
-    /*
-    const [imageUrl, setimageUrl] = useState('');
-    //권한 요청을 위한 hooks
-    const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
 
-    const uploadImage = async () => {
-        //권한 확인 코드 : 권한 없으면 물어보고, 승인하지 않으면 함수종료
-        if (!status.granted){
-            const permission = await requestPermission();
-            if (!permission.granted){
-                return null;
+    //===========================================
+    const [selectedImages, setSelectedImages] = useState([]);   // 첨부이미지
+    const MAX_IMAGES = 2;
+    const takePicture = async () => {
+        let data = {
+            get_gd_order:get_gd_order,
+            addr1:addr1,
+            addr2:addr2,
+            zonecode:zonecode,
+            save_pic_list:save_pic_list,
+        }
+        navigation.navigate(`카메라`,data);
+    };
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes          :ImagePicker.MediaTypeOptions.Images,
+            allowsEditing       :false,
+            quality             :1,
+            base64              :true,
+        });
+        console.log(result,'/[첨부확인]');
+        if (!result.cancelled) {
+            if (selectedImages.length < MAX_IMAGES) {
+                setSelectedImages([...selectedImages, result]);
+            } else {
+                return Alert.alert(``,`최대 2장까지만 등록 가능합니다.`);
             }
         }
-        //이미지 업로드 가능
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing : false,
-            quality: 1,
-            aspect:[1,1]
+    };
+
+    const removeImage = (index) => {
+        const images = [...selectedImages];
+        images.splice(index, 1);
+        setSelectedImages(images);
+    };
+
+    const upload_test = () => {
+        img_upload_test(selectedImages).then((res)=>{
+            if(res) {
+                const {result} = res.data;
+                if(result === 'OK') {
+                    return Alert.alert(``,`성공`);
+                } else {
+                    return Alert.alert(``,`${result}`);
+                }
+            }
         });
-        if (result.cancelled){
-            return null; //이미지 업로드 취소한 경우
-        }
-        //이미지 업로드 결과 및 이미지 경로 업데이트
-        console.log('이미지경로 : '+ result.uri);
-
-        setimageUrl(result.uri);
-
     }
-    console.log('이미지경로데이터값 : '+ imageUrl);
-    */
+    //===========================================
 
     return (
         <>
@@ -134,16 +166,43 @@ export default function InquiryWrite({navigation,route}) {
                             </View>
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>첨부파일</Text>
+                                {/**/}
                                 <View  style={[]} >
-                                    <Pressable style={[styles.upload_btn]} onPress={uploadImage}>
-                                        <View  style={[]} >
-                                            <CameraIcon width={30} height={24} style={[styles.CameraIcon]}/>
+                                    <View  style={[flex,justify_content_between]} >
+                                        <View  style={[wt5]} >
+                                            <TouchableOpacity onPress={takePicture} style={[styles.button,bg_primary,ms1,me1]}>
+                                                <Text style={[h13,text_center,text_white]}>사진 촬영</Text>
+                                            </TouchableOpacity>
                                         </View>
-                                    </Pressable>
-                                    <View  style={[mt2,styles.upload_box,]} >
-                                        <Image style={styles.upload_img} source={{uri: imageUrl}}/>
+                                        <View  style={[wt5]} >
+                                            <TouchableOpacity onPress={pickImage} style={[styles.button,bg_primary,ms1,me1]}>
+                                                <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
+                                            </TouchableOpacity>
+                                        </View>
                                     </View>
+
+                                    {(selectedImages !== undefined) && (
+                                        <>
+                                            <View style={[styles.imagesContainer]}>
+                                                {selectedImages.map((image, index) => (
+                                                    <View key={index} style={styles.imageContainer}>
+                                                        <TouchableOpacity onPress={() => removeImage(index)} style={styles.deleteButton}>
+                                                            <Close width={11} height={11}/>
+                                                        </TouchableOpacity>
+                                                        {(image.base64) && (
+                                                            <Image source={{ uri: `data:image/jpg;base64,${image.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                        )}
+                                                    </View>
+                                                ))}
+                                            </View>
+                                        </>
+                                    )}
+
+                                    {/*<TouchableOpacity onPress={upload_test} style={[styles.button,bg_primary]}>*/}
+                                    {/*    <Text style={[h13,text_center,text_white]}>이미지 업로드 테스트</Text>*/}
+                                    {/*</TouchableOpacity>*/}
                                 </View>
+                                {/**/}
                             </View>
                         </View>
                     </View>
@@ -206,35 +265,40 @@ const styles = StyleSheet.create({
         lineHeight:24,
         color:"#fff",
     },
-    upload_btn:{
+//
+    image: {
+        width: 160,
+        height: 220,
+        margin: 5,
         borderWidth:1,
-        borderColor:"#EDEDF1",
-        borderRadius:5,
-        paddingVertical:10,
+        borderColor:"#ccc",
     },
-    camera_line:{
-        borderWidth:1,
-        height:75,
-        borderColor:"#EDEDF1",
-        position:"relative",
+    button: {
+        backgroundColor: '#3498db',
+        padding: 10,
+        borderRadius: 5,
+        marginTop: 20,
     },
-    upload_box:{
-        borderWidth:1,
-        borderColor:"#EDEDF1",
-        width:"100%",
-        height:300,
-        position:"relative",
-        paddingVertical:10,
+    imagesContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginVertical: 10,
+        justifyContent:"center",
     },
-    upload_img:{
-        resizeMode:"contain",
-        width:"100%",
-        height:'100%',
+    imageContainer: {
+        position: 'relative',
+        width: 160,
+        height: 220,
+        marginRight: 10,
+        marginBottom: 10,
     },
-    CameraIcon:{
-        borderWidth:1,
-        borderColor:"#fff",
-        marginLeft:'auto',
-        marginRight:'auto',
+    deleteButton: {
+        position: 'absolute',
+        top: 0,
+        right: -5,
+        zIndex: 1,
+        backgroundColor:'red',
+        borderRadius:100,
+        padding:7,
     },
 });
