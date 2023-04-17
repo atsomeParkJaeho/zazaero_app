@@ -58,9 +58,12 @@ export default function MemInfo({route, navigation}) {
 
     console.log(Member);
     // 1. data로 넘길 status 셋팅
-    const [MemInfo, setMemInfo] = useState({});
-    const [Show_1, setShow_1]         = useState(false);    // 셀렉트창 노출 여부
-    const [Show_2, setShow_2]         = useState(false);    // 셀렉트창 노출 여부
+    const [MemInfo,             setMemInfo]                 = useState({});
+    const [Show_1,              setShow_1]                  = useState(false);    // 셀렉트창 노출 여부
+    const [Show_2,              setShow_2]                  = useState(false);    // 셀렉트창 노출 여부
+    const [mem_biz_paper,       set_mem_biz_paper]          = useState([]);
+    const [mem_bank_paper,      set_mem_bank_paper]         = useState([]);
+    const [selectedImages, setSelectedImages]               = useState([]);   // 첨부이미지
     const Update = useIsFocused();
 
 
@@ -105,8 +108,6 @@ export default function MemInfo({route, navigation}) {
             }
         });
     }, [Update, Member]);
-
-
     const goSearch = (key,value) => {
         if(key === 'AddrMatch') {
             setShow_1(!Show_1)
@@ -125,8 +126,6 @@ export default function MemInfo({route, navigation}) {
 
         }
     }
-
-
     const goInput = (keyValue, value) => {
         setMemInfo({...MemInfo,
             [keyValue]      :value,
@@ -134,21 +133,9 @@ export default function MemInfo({route, navigation}) {
     }
 
     //===============================================
-    const [selectedImages, setSelectedImages] = useState([]);   // 첨부이미지
+
     const MAX_IMAGES = 2;
-
-    const takePicture = async () => {
-        let data = {
-            get_gd_order:get_gd_order,
-            addr1:addr1,
-            addr2:addr2,
-            zonecode:zonecode,
-            save_pic_list:save_pic_list,
-        }
-        navigation.navigate(`카메라`,data);
-    };
-
-    const pickImage = async () => {
+    const pickImage = async (pickImage) => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes          :ImagePicker.MediaTypeOptions.Images,
             allowsEditing       :false,
@@ -157,18 +144,24 @@ export default function MemInfo({route, navigation}) {
         });
         console.log(result,'/[첨부확인]');
         if (!result.cancelled) {
-            if (selectedImages.length < MAX_IMAGES) {
-                setSelectedImages([...selectedImages, result]);
-            } else {
-                return Alert.alert(``,`최대 1장까지만 등록 가능합니다.`);
+            /** ----------------------------사업자 등록증 사본 ----------------------------**/
+            if(pickImage === 'mem_biz_paper') {
+                set_mem_biz_paper(result);
+            }
+            /** ----------------------------통장사본 ----------------------------**/
+            if(pickImage === 'mem_bank_paper') {
+                set_mem_bank_paper(result);
             }
         }
     };
 
-    const removeImage = (index) => {
-        const images = [...selectedImages];
-        images.splice(index, 1);
-        setSelectedImages(images);
+    const removeImage = (name) => {
+        if(name === 'mem_biz_paper') {
+            set_mem_biz_paper([]);
+        }
+        if(name === 'mem_biz_paper') {
+            set_mem_biz_paper([]);
+        }
     };
 
     //===============================================
@@ -237,7 +230,7 @@ export default function MemInfo({route, navigation}) {
                 text:"확인",
                 onPress:()=>{
                     console.log(MemInfo,'/전달값')
-                    mod_mem_info(Member, MemInfo,selectedImages).then((res)=>{
+                    mod_mem_info(Member, MemInfo, mem_biz_paper, mem_bank_paper).then((res)=>{
                         if(res.data) {
                             console.log(res.data);
                             const {result} = res.data;
@@ -259,6 +252,8 @@ export default function MemInfo({route, navigation}) {
     }
 
     console.log(MemInfo,'/[들어간 값]');
+    console.log(mem_biz_paper,'/[사업자등록증 사본]');
+    console.log(mem_bank_paper,'/[통장 사본]');
 
     return (
         <>
@@ -601,36 +596,26 @@ export default function MemInfo({route, navigation}) {
                                 {/*   */}
                                 <View  style={[]} >
                                     <View  style={[flex,justify_content_between]} >
-
                                         <View  style={[wt10]} >
-                                            <TouchableOpacity onPress={pickImage} style={[styles.button,bg_primary,ms1,me1]}>
+                                            <TouchableOpacity onPress={()=>pickImage(`mem_biz_paper`)} style={[styles.button,bg_primary,ms1,me1]}>
                                                 <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
                                             </TouchableOpacity>
                                         </View>
                                     </View>
-
-                                    {(selectedImages !== undefined) && (
+                                    {(mem_biz_paper.uri) && (
                                         <>
                                             <View style={[styles.imagesContainer]}>
-                                                {selectedImages.map((image, index) => (
-                                                    <>
-                                                        {(index === 0) && (
-                                                            <View key={index} style={styles.imageContainer}>
-                                                                <TouchableOpacity onPress={() => removeImage(index)} style={styles.deleteButton}>
-                                                                    <Close width={11} height={11}/>
-                                                                </TouchableOpacity>
-                                                                {(image.base64) && (
-                                                                    <Image source={{ uri: `data:image/jpg;base64,${image.base64}` }} style={styles.image}  resizeMode="contain"/>
-                                                                )}
-                                                            </View>
-                                                        )}
-                                                    </>
-                                                ))}
+                                                <View style={styles.imageContainer}>
+                                                    <TouchableOpacity onPress={() => removeImage(`mem_biz_paper`)} style={styles.deleteButton}>
+                                                        <Close width={11} height={11}/>
+                                                    </TouchableOpacity>
+                                                    {(mem_biz_paper.base64) && (
+                                                        <Image source={{ uri: `data:image/jpg;base64,${mem_biz_paper.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                    )}
+                                                </View>
                                             </View>
                                         </>
                                     )}
-
-
                                 </View>
                                 {/*    */}
                             </View>
@@ -640,37 +625,27 @@ export default function MemInfo({route, navigation}) {
                                 <Text style={[]}>통장사본 첨부</Text>
                                 {/*   */}
                                 <View  style={[]} >
-                                    <View  style={[flex,justify_content_between]} >
-
+                                    <View  style={[flex,justify_content_between]}>
                                         <View  style={[wt10]} >
-                                            <TouchableOpacity onPress={pickImage} style={[styles.button,bg_primary,ms1,me1]}>
+                                            <TouchableOpacity onPress={()=>pickImage(`mem_bank_paper`)} style={[styles.button,bg_primary,ms1,me1]}>
                                                 <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
                                             </TouchableOpacity>
                                         </View>
                                     </View>
-
-                                    {(selectedImages !== undefined) && (
+                                    {(mem_bank_paper.uri) && (
                                         <>
                                             <View style={[styles.imagesContainer]}>
-                                                {selectedImages.map((image, index) => (
-                                                    <>
-                                                        {(index === 1) && (
-                                                            <View key={index} style={styles.imageContainer}>
-                                                                <TouchableOpacity onPress={() => removeImage(index)} style={styles.deleteButton}>
-                                                                    <Close width={11} height={11}/>
-                                                                </TouchableOpacity>
-                                                                {(image.base64) && (
-                                                                    <Image source={{ uri: `data:image/jpg;base64,${image.base64}` }} style={styles.image}  resizeMode="contain"/>
-                                                                )}
-                                                            </View>
-                                                        )}
-                                                    </>
-                                                ))}
+                                                <View style={styles.imageContainer}>
+                                                    <TouchableOpacity onPress={() => removeImage(`mem_bank_paper`)} style={styles.deleteButton}>
+                                                        <Close width={11} height={11}/>
+                                                    </TouchableOpacity>
+                                                    {(mem_bank_paper.base64) && (
+                                                        <Image source={{ uri: `data:image/jpg;base64,${mem_bank_paper.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                    )}
+                                                </View>
                                             </View>
                                         </>
                                     )}
-
-
                                 </View>
                                 {/*    */}
                             </View>

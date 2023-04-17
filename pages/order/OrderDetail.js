@@ -99,31 +99,24 @@ export default function OrderDtail({route,navigation}) {
     const {gd_order_uid, imp_log, addr1, zonecode, A_goods_list} = route.params;
     /**--------------------------------------필수 정보사항--------------------------------------------------**/
     const [Member, setMember]          = useState(``);
-    const InputFocus = useRef([]);
     /**-----------------------------------------수정 상태 설정-------------------------------------------------------**/
-    const [Mod, setMod] = useState(false);          // 발주현황시 수정 변경가능
     /**--------------------------------------상태값 셋팅--------------------------------------------------**/
-    const [A_order_list,    set_A_order_list]              = useState([]);             // 발주상품상태정의
-    const [BankCode,        setBankCode]                    = useState([]);             // 관리자 무통장입금계좌 출력
-    const [PayMement,       setPayMement]                   = useState('bank');         // 결제창 노출 여부
-    const [get_gd_order,    set_get_gd_order]                   = useState([]);
-    const [cancel_doing,    set_cancel_doing]               = useState(0);
-    const [Show_1,          setShow_1]                      = useState(false);
-    const [Show_2,          setShow_2]                      = useState(false);           // 셀렉트창 노출 여부
-    const [get_gd_cancel,   set_gd_cancel]                        = useState([]);             // 취소 리스트
+    const [A_order_list,        set_A_order_list]               = useState([]);             // 발주상품상태정의
+    const [BankCode,            setBankCode]                    = useState([]);             // 관리자 무통장입금계좌 출력
+    const [PayMement,           setPayMement]                   = useState('bank');         // 결제창 노출 여부
+    const [get_gd_order,        set_get_gd_order]               = useState([]);
+    const [cancel_doing,        set_cancel_doing]               = useState(0);
+    const [Show_2,              setShow_2]                      = useState(false);           // 셀렉트창 노출 여부
+    const [get_gd_cancel,       set_gd_cancel]                  = useState([]);             // 취소 리스트
     //모달창 오픈
-    const [isModalVisible,  setIsModalVisible]               = useState(false);
-    const [isModalVisible2, setIsModalVisible2]             = useState(false);
-    const [isModalVisible3, setIsModalVisible3]             = useState(false);
-    const [ret_order, set_ret_order]                        = useState({});
-    // 추가발주 창 오픈 상태정의
-    const [add_goods_list, set_add_goods_list]              = useState(false);
-    const [A_goods, set_A_goods]                            = useState([]);
-    const [get_mem_info, set_mem_info]                      = useState([]);
-    const [point_use, set_point_use]                        = useState(0);
-    const [all_point_chk, set_all_point_chk]                        = useState(false);
+    const [isModalVisible2,     setIsModalVisible2]             = useState(false);
 
-    const Chkinput = useRef([]);                // 입력값 위치 설정
+    // 추가발주 창 오픈 상태정의
+    const [get_mem_info,        set_mem_info]                   = useState([]);
+    const [point_use,           set_point_use]                  = useState(0);
+    const [all_point_chk,       set_all_point_chk]              = useState(false);
+
+    const Chkinput = useRef([]);                      // 입력값 위치 설정
     /**------------------------입력값 설정----------------------**/
     const goInput = (name, value, goods_uid, order_uid) => {
         console.log(name,'[입력값] 타입');
@@ -177,10 +170,8 @@ export default function OrderDtail({route,navigation}) {
         let {gd_order, cancel_doing_cnt} = await get_order(Member, gd_order_uid); // 발주정보 불러오기
         let temp2 = gd_order.A_order.map(val =>{return {...val, goods_chk: false, goods_del: false,}});
         let mem_info = (await my_page(Member)).data;
-        
         let {gd_cancel} = (await get_order_cancel_list(Member)).data;
         let cancel_result = gd_cancel.filter(val=>val.gd_order_uid === gd_order_uid);
-
         console.log(gd_cancel,'/취소 불러오기');
         set_mem_info(mem_info.mem_info);
         navigation.setOptions({title:gd_order.ord_status_name+' 상태 입니다.',});

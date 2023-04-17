@@ -216,21 +216,28 @@ export const reset_pw = async (FindPw) => {
 
 
 /**---------------------------------회원정보 수정-------------------------------------------**/
-export const mod_mem_info = async (Member, MemInfo, selectedImages) => {
+export const mod_mem_info = async (Member, MemInfo, get_mem_biz_paper, get_mem_bank_paper) => {
 
-    let temp = selectedImages.map(val=>{
-        return {
-            filename    :(val.filename) ? val.filename:'',
-            uri         :(Platform.OS === 'ios') ? val.uri.replace('file://','') : val.uri,
-            base64      :val.base64,
+    let mem_biz_paper = [
+        {
+            filename    :(get_mem_biz_paper.filename) ? get_mem_biz_paper.filename:'',
+            uri         :(Platform.OS === 'ios') ? get_mem_biz_paper.uri.replace('file://','') : get_mem_biz_paper.uri,
+            base64      :get_mem_biz_paper.base64,
             type        :'image',
         }
-    });
-    let mem_biz_paper   = temp.filter((val,idx)=>idx===0);
-    let mem_bank_paper  = temp.filter((val,idx)=>idx===1);
+    ];
 
-    console.log(MemInfo,'/확인 값');
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
+    let mem_bank_paper = [
+        {
+            filename    :(get_mem_bank_paper.filename) ? get_mem_bank_paper.filename:'',
+            uri         :(Platform.OS === 'ios') ? val.uri.replace('file://','') : get_mem_bank_paper.uri,
+            base64      :get_mem_bank_paper.base64,
+            type        :'image',
+        }
+    ];
+
+
+    let data = {
         act_type                :'mod_mem_info',
         mem_pw                  :MemInfo.mem_pw,
         mem_pw_chk              :MemInfo.mem_pw_chk,
@@ -257,15 +264,13 @@ export const mod_mem_info = async (Member, MemInfo, selectedImages) => {
         road_address            :MemInfo.road_address,
         mod_mem_uid             :Member,
         mem_uid                 :Member,
+        mem_biz_paper           :(mem_biz_paper)  ? [mem_biz_paper]   :'',
+        mem_bank_paper          :(mem_bank_paper) ? [mem_bank_paper]  :'',
+    }
 
+    console.log(data,'/[데이터 확인]');
 
-        mem_biz_paper           :(mem_biz_paper)  ? mem_biz_paper   :'',
-        mem_bank_paper          :(mem_bank_paper) ? mem_bank_paper  :'',
-
-
-
-
-    },{
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',data,{
         headers: {
             'Content-type': 'multipart/form-data'
         }
