@@ -462,13 +462,13 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
     let A_order_item_cancel_cnt = OrderGoodsList.map(val=>String(val.cancel_cnt));
 
     // 2. 첨부파일 이미지 업로드
-    let imagefile = selectedImages.map((val,idx)=>{
-        return {
-            img         :`img_${idx}`,
-            filename    :val.filename,
-            base64      :val.base64,
-        }
-    });
+    // let imagefile = selectedImages.map((val,idx)=>{
+    //     return {
+    //         img         :`img_${idx}`,
+    //         filename    :val.filename,
+    //         base64      :val.base64,
+    //     }
+    // });
 
 
 
@@ -477,7 +477,7 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
     console.log(A_order_item_uid,' / order_item_uid');
     console.log(A_order_item_cancel_cnt,' / 취소수량');
     console.log(cancel_type,' / 취소 타입');
-    console.log(imagefile,' / 반품 이미지 출력');
+    // console.log(imagefile,' / 반품 이미지 출력');
 
     let data = {
         act_type                    :"pay_done_gd_cancel",

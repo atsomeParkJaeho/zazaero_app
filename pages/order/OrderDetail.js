@@ -344,7 +344,7 @@ export default function OrderDtail({route,navigation}) {
                 {text:'확인',
                     onPress:()=>{
                         // ================1. 결제취소 이벤트 실행====================
-                        order_cancel(get_gd_order, cancel_type, A_order_list, Member,``).then((res)=>{
+                        order_cancel(get_gd_order, cancel_type, A_order_list, Member,``,``).then((res)=>{
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
@@ -352,7 +352,7 @@ export default function OrderDtail({route,navigation}) {
                                         {text:'확인',
                                             onPress:()=>{
                                                 // ================2. 결제취소 이벤트 결과값 db에 전송====================
-                                                all_cancel_push(Member, get_gd_order);
+                                                // all_cancel_push(Member, get_gd_order);
                                                 return navigation.replace('배송상태');
                                             }
                                         }

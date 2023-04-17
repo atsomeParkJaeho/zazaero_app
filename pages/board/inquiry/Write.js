@@ -34,7 +34,7 @@ import Close from "../../../icons/close_black.svg";
 import {get_Member, save_bd} from "../../UTIL_mem";
 
 
-export default function InquiryWrite({navigation,route}) {
+export default function InquiryWrite({route, navigation}) {
 
     // console.log('1:1문의작성');
 
