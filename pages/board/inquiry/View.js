@@ -13,6 +13,7 @@ export default function inquiryView({route, navigation}){
     const {bd_uid} = route.params;
     const [Member,  setMember]          = useState(``);
     const [get_bd_data, set_bd_data]    = useState([]);
+    const [get_file, set_file]          = useState([]);
     useEffect(()=>{
         get_Member().then((res)=>{if(res) {setMember(res);} else {
             Alert.alert(``,`실패`);
@@ -20,9 +21,11 @@ export default function inquiryView({route, navigation}){
         }});
         get_bd_detail(bd_uid, `inquiry`).then((res)=>{
             if(res) {
-                const {result,bd_data} = res.data;
+                console.log(res.data,'/[리턴값]');
+                const {result,bd_data, A_file} = res.data;
                 if(result === 'OK') {
                     set_bd_data(bd_data);
+                    set_file(A_file);
                 }  else {
                     return Alert.alert(``,`${result}`);
                 }
@@ -36,6 +39,7 @@ export default function inquiryView({route, navigation}){
     }
 
     console.log(get_bd_data,'/[게시판 상세]');
+    console.log(get_file,'/[이미지]');
 
     return(
         <>
@@ -50,8 +54,8 @@ export default function inquiryView({route, navigation}){
                             <Text style={styles.get_bd_data_date}>{get_bd_data.reg_date}</Text>
                         </View>
                         <TouchableOpacity style={[bg_primary]} onPress={form_mod}>
-                            <Text>
-                                수정하기123123
+                            <Text style={[text_white]}>
+                                수정하기
                             </Text>
                         </TouchableOpacity>
                     </View>
