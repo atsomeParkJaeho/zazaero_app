@@ -52,6 +52,7 @@ import RenderHtml from "react-native-render-html";
 import {get_Member, get_my_point_log} from "../UTIL_mem";
 import {getCartList} from "../cart/UTIL_cart";
 import Toast from 'react-native-easy-toast';
+import Spinner from "../board/inquiry/spiner";
 
 
 
@@ -83,25 +84,24 @@ export default function GoodsCateList({route, navigation}) {
     const [scrollEndReached, setScrollEndReached] = useState(false);
 
 
-    const handleScroll = (event) => {
-        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-        const paddingToBottom = 10; // adjust the value as needed
-        const isEndReached = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
-
-        if (isEndReached && !scrollEndReached) {
-            setScrollEndReached(true);
-            // Alert.alert(``,`스크롤 끝`);
-            /**----------------기존 스테이터스에 데이터를 추가한다.----------------**/
-            let next_page = Number(now_page + 1);
-            if(Number(now_page) >= Number(get_page)) {
-                return Alert.alert(``,`마지막 페이지 입니다.`);
-            } else if(Number(get_page) === 1) {
-                console.log('1페이지만 있습니다.');
-            } else {
-
-            }
-        } else if (!isEndReached && scrollEndReached) {
-            setScrollEndReached(false);
+    const handleScroll = async () => {
+        setScrollEndReached(false);
+        let next_page = Number(now_page + 1);
+        if(Number(get_page) === 1 ) {
+        } else if(Number(now_page) >= Number(get_page)) {
+        } else {
+            get_goods_list(Member, Cate1stUid, Cate2ndActive, Cate3rdActive, next_page).then((res)=>{
+                if(res) {
+                    const {result, A_goods, now_page, total_page} = res.data;
+                    if(result === 'OK') {
+                        setGoodsList([...GoodsList, ...A_goods]);
+                        set_page(total_page);   // 전체페이지
+                        set_now_page(next_page); // 현재페이지
+                    } else {
+                        return Alert.alert(``,`${result}`);
+                    }
+                }
+            });
         }
     };
 
@@ -135,14 +135,14 @@ export default function GoodsCateList({route, navigation}) {
         });
 
         // ==========================상품 불러오기 2023.01.02 수정 ========================== //
-        get_goods_list(Member, Cate1stUid, Cate2ndUid, ``).then((res) => {
+        get_goods_list(Member, Cate1stUid, Cate2ndUid, ``,``).then((res) => {
             if (res) {
                 console.log(res.data,'/[ajax 자재리스트 연결 확인1]');
                 const {result, A_goods, now_page, total_page} = res.data;
                 if (result === 'OK') {
                     set_page(total_page);   // 전체페이지 추가
                     set_now_page(now_page); // 현재페이지
-                    setGoodsList(A_goods);
+                    setGoodsList(A_goods);  // 자재목록 넣기
                 } else {
                     return Alert.alert('','실패');
                 }
@@ -191,17 +191,21 @@ export default function GoodsCateList({route, navigation}) {
         setCate3rdActive(``);
         console.log('2차 카테고리 uid', Cate2ndUid);
         // ==============2차 카테고리 상품 불러오기==============//
-        get_goods_cate2nd_list(Cate1stUid, Cate2ndUid, Member).then((res) => {
+        get_goods_cate2nd_list(Cate1stUid, Cate2ndUid, Member, ``).then((res) => {
             if (res) {
-                const {result, A_goods} = res.data;
+                const {result, A_goods, now_page, total_page} = res.data;
                 if (result === 'OK') {
                     console.log('확인');
-                    return setGoodsList(A_goods);
+                    set_now_page(now_page);
+                    set_page(total_page);
+                    setGoodsList(A_goods);
+                    return
                 } else {
                     return Alert.alert('','실패');
                 }
             }
         });
+
         // ===================3차 카테고리 리스트를 출력=====================//
         // 3차 카테고리 버튼 설정
         get_goods_cate3rd_list(Cate1stUid, Cate2ndUid, Member).then((res) => {
@@ -217,16 +221,19 @@ export default function GoodsCateList({route, navigation}) {
 
     }
 
-    // ===============5. 카테고리 클릭시 상품 상태 변경(3차)===============
+    // ==============3차 카테고리 상품 불러오기==============//
     const goCate3rd = (Cate3rdUid) => {
         setCate3rdActive(Cate3rdUid);
         console.log('3차 카테고리 uid', Cate3rdUid);
-        go_goods_cate3rd_list(Cate1stUid, Cate2ndUid, Cate3rdUid, Member).then((res) => {
+        go_goods_cate3rd_list(Cate1stUid, Cate2ndUid, Cate3rdUid, Member,``).then((res) => {
             if (res) {
-                const {result, A_goods} = res.data;
+                const {result, A_goods, now_page, total_page} = res.data;
                 if (result === 'OK') {
                     console.log('확인');
-                    return setGoodsList(A_goods);
+                    set_now_page(now_page);
+                    set_page(total_page);
+                    setGoodsList(A_goods);
+                    return
                 } else {
                     return Alert.alert('','실패');
                 }
@@ -234,14 +241,11 @@ export default function GoodsCateList({route, navigation}) {
         });
     }
 
-
     // 4. ================상품체크시 상태변경=======================
     const goChk = (goods_uid) => {
-
         if(cart_list.includes(goods_uid)) {
             return Alert.alert(``,`장바구니에 있습니다.`);
         }
-
         let temp = GoodsList.map((val) => {
             if (goods_uid === val.goods_uid) {
                 return {...val, goods_cart_chk: !val.goods_cart_chk,};
@@ -330,11 +334,9 @@ export default function GoodsCateList({route, navigation}) {
 
 
     const goInput = (key, value, type) => {
-
         console.log(key,' / 키 ');
         console.log(value,' / 값 ');
         console.log(type,' / 타입 ');
-
         if(type === 'plus') {
             setGoodsCnt(GoodsCnt+1);
         } else if(type === 'minus') {
@@ -379,6 +381,7 @@ export default function GoodsCateList({route, navigation}) {
         }
     }
 
+
     // 상세페이지 노출
     const go_goods_detail = (goods_uid) => {
         console.log('이벤트');
@@ -405,11 +408,16 @@ export default function GoodsCateList({route, navigation}) {
         toastRef.current.show('장바구니에 추가되었습니다.');
     }, []);
 
-    console.log(GoodsList,'/[자재목록 리스트]');
+    console.log(GoodsList.length,'/[자재목록 리스트]');
+    console.log(get_page,'/[전체 페이지]');
+    console.log(now_page,'/[현재 페이지]');
+    // console.log(scrollEndReached,'/[스크롤 끝 확인]');
 
-    /**--------자재목록-------------**/
-    function goodsList ({item}) {
-        return (
+
+
+    /**-----------------------------------------------무한스크롤-------------------------------------------------------------------**/
+    function goodsLlist({item}) {
+        return(
             <>
                 <View>
                     <View style={styles.cate_goods_list_item}>
@@ -526,11 +534,7 @@ export default function GoodsCateList({route, navigation}) {
                 </View>
             </>
         );
-    };
-
-
-    console.log(Cate2ndActive,'/ 현재 2차카테고리 uid');
-    console.log(Cate3rdActive,'/ 현재 3차카테고리 uid');
+    }
 
     return (
         /*
@@ -579,14 +583,30 @@ export default function GoodsCateList({route, navigation}) {
                 }
             </View>
 
-            {/**---------------------------자재목록------------------**/}
             <FlatList
                 style={[bg_white]}
-                keyExtractor={(val) => String(val.goods_uid)}
                 data={GoodsList}
-                renderItem={goodsList}
+                renderItem={goodsLlist}
+                keyExtractor={(item)=>item.id}
+                onEndReachedThreshold={1}
                 windowSize={3}
+                onEndReached={()=>{
+                    setScrollEndReached(true);
+                    handleScroll();
+                }}
             />
+            {(ScrollEndReached) && (
+                <>
+                    {(Number(now_page) >= Number(get_page)) ? (
+                        <></>
+                    ):(
+                        <><Spinner/></>
+                    )}
+
+                </>
+            )}
+
+            {/**---------------------------자재목록------------------**/}
             <Toast ref={toastRef}
                    position='top'
                    positionValue={400}

@@ -1004,15 +1004,6 @@ export default function OrderDtail({route,navigation}) {
         /**----------------총 결제금액은 자재가격 + 요청옵션비 + 배송비 + 포인트----------------**/
         // 총 결제금액
         let point_use_chk = (point_use > get_gd_order.settleprice) ?  get_gd_order.settleprice : point_use;
-        // let Settlekindprice = Number(get_gd_order.goodsprice)+Number(get_gd_order.deli_price)+Number(get_gd_order.tot_opt_price) - Number(point_use_chk);
-        // let cancel_detail = () => {
-        //     console.log('[주문취소 상세페이지로 이동]');
-        //     let data = {
-        //         gd_order_uid    :get_gd_order.gd_order_uid,
-        //         gd_cancel_uid   :get_gd_order.gd_cancel_uid
-        //     }
-        //     return navigation.navigate(`취소내역상세`,data);
-        // }
 
         return(
             <>
