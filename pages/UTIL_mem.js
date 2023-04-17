@@ -257,8 +257,10 @@ export const mod_mem_info = async (Member, MemInfo, selectedImages) => {
         road_address            :MemInfo.road_address,
         mod_mem_uid             :Member,
         mem_uid                 :Member,
-        mem_biz_paper           :(mem_biz_paper) ? mem_biz_paper:'',
-        mem_bank_paper          :(mem_bank_paper) ? mem_bank_paper:'',
+
+
+        mem_biz_paper           :(mem_biz_paper)  ? mem_biz_paper   :'',
+        mem_bank_paper          :(mem_bank_paper) ? mem_bank_paper  :'',
 
 
 
@@ -360,23 +362,6 @@ export const find_chk_mem = async (FindId, mem_info) => {
 }
 
 
-
-
-export const bd_del = async (Member, bd_uid) => {
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_bd.php',{
-        mem_uid    :Member,
-        bd_uid     :bd_uid,
-    },{
-        headers: {
-            'Content-type': 'multipart/form-data'
-        }
-    });
-    return res;
-}
-
-
-
-
 export const get_my_refund_log = async (Member,page) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_my.php',{
         act_type    :'get_my_refund_log',
@@ -390,4 +375,14 @@ export const get_my_refund_log = async (Member,page) => {
     return res;
 }
 
-
+export const get_mem_info = async (Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
+        act_type    :"get_mem_info",
+        mem_uid     :Member,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}

@@ -8,21 +8,21 @@ import {bg_gray, bg_primary, bg_white, h14, pb1, pt1, text_center, text_white} f
 import {get_Member} from "../../UTIL_mem";
 import {get_bd_detail} from "../UTIL_bd";
 
-export default function NoticeView({route, navigation}){
+export default function inquiryView({route, navigation}){
     console.log('상세내용');
     const {bd_uid} = route.params;
-    const [Member, setMember]          = useState(``);
-    const [NoticeView, setNoticeView] = useState([]);
+    const [Member,  setMember]          = useState(``);
+    const [get_bd_data, set_bd_data]    = useState([]);
     useEffect(()=>{
         get_Member().then((res)=>{if(res) {setMember(res);} else {
             Alert.alert(``,`실패`);
             return navigation.navigate('로그인');
         }});
-        get_bd_detail(bd_uid).then((res)=>{
+        get_bd_detail(bd_uid, `inquiry`).then((res)=>{
             if(res) {
                 const {result,bd_data} = res.data;
                 if(result === 'OK') {
-                    setNoticeView(bd_data);
+                    set_bd_data(bd_data);
                 }  else {
                     return Alert.alert(``,`${result}`);
                 }
@@ -30,24 +30,24 @@ export default function NoticeView({route, navigation}){
         });
     },[Member]);
 
-
+    /**------------------------------수정하기 이동---------------------------------**/
     const form_mod = () => {
-
+        return navigation.navigate('1:1문의작성',{get_bd_data:get_bd_data});
     }
 
-    console.log(NoticeView.length,'/[게시판 상세]');
+    console.log(get_bd_data,'/[게시판 상세]');
 
     return(
         <>
             <ScrollView style={[bg_white]}>
-                <View style={styles.NoticeView}>
+                <View style={styles.get_bd_data}>
                     {/*================글제목====================*/}
-                    <View style={styles.NoticeView_title_box}>
-                        <View style={styles.NoticeView_title_in}>
-                            <Text style={styles.NoticeView_title}>{NoticeView.bd_title}</Text>
+                    <View style={styles.get_bd_data_title_box}>
+                        <View style={styles.get_bd_data_title_in}>
+                            <Text style={styles.get_bd_data_title}>{get_bd_data.bd_title}</Text>
                         </View>
-                        <View style={styles.NoticeView_date_in}>
-                            <Text style={styles.NoticeView_date}>{NoticeView.reg_date}</Text>
+                        <View style={styles.get_bd_data_date_in}>
+                            <Text style={styles.get_bd_data_date}>{get_bd_data.reg_date}</Text>
                         </View>
                         <TouchableOpacity style={[bg_primary]} onPress={form_mod}>
                             <Text>
@@ -56,16 +56,16 @@ export default function NoticeView({route, navigation}){
                         </TouchableOpacity>
                     </View>
                     {/*=============상세내용===============*/}
-                    <View style={styles.NoticeView_disc}>
-                        <View style={styles.NoticeView_disc_in}>
-                            <RenderHTML source={{html:`${NoticeView.bd_contents}`}}/>
+                    <View style={styles.get_bd_data_disc}>
+                        <View style={styles.get_bd_data_disc_in}>
+                            <RenderHTML source={{html:`${get_bd_data.bd_contents}`}}/>
                         </View>
-                        {(NoticeView.bd_status_name === '답변완료') ? (
+                        {(get_bd_data.bd_status_name === '답변완료') ? (
                             <>
                                 <View style={styles.reply}>
-                                    <Text style={styles.NoticeView_title}>답변내용</Text>
+                                    <Text style={styles.get_bd_data_title}>답변내용</Text>
                                     <View style={styles.reply_box}>
-                                        <Text style={[h14,styles.reply_txt]}>{NoticeView.bd_reply}</Text>
+                                        <Text style={[h14,styles.reply_txt]}>{get_bd_data.bd_reply}</Text>
                                     </View>
                                 </View>
                             </>
@@ -81,25 +81,25 @@ export default function NoticeView({route, navigation}){
 }
 
 const styles = StyleSheet.create({
-    NoticeView:{
+    get_bd_data:{
         marginTop:30,
         paddingLeft:16,
         paddingRight:16,
     },
-    NoticeView_title:{
+    get_bd_data_title:{
         fontSize:18,
         paddingBottom:23,
     },
-    NoticeView_date_in:{
+    get_bd_data_date_in:{
         paddingBottom:23,
         borderBottomWidth:1,
         borderColor:'#ededf1',
     },
-    NoticeView_date:{
+    get_bd_data_date:{
         fontSize:12,
         color:'#b1b2c3',
     },
-    NoticeView_disc_in:{
+    get_bd_data_disc_in:{
         marginTop:20,
     },
     reply_box:{

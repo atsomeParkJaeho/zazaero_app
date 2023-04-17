@@ -40,7 +40,7 @@ import {AddrMatch, BankCode, bizNum, EmailDomain, Minlangth, Phone, regPW,} from
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
-import {get_Member, mod_mem_info} from "../UTIL_mem";
+import {get_mem_info, get_Member, mod_mem_info} from "../UTIL_mem";
 import HomeLogoAt from "../../icons/home_logo_at.svg";
 import HomeLogo from "../../icons/home_logo.svg";
 import Close from "../../icons/close_black.svg";
@@ -91,19 +91,13 @@ export default function MemInfo({route, navigation}) {
             }
         });
 
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app.php', {
-            act_type    :"get_mem_info",
-            mem_uid     :Member,
-        },{
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        get_mem_info(Member).then((res) => {
             if(res) {
                 const {result, mem_info} = res.data;
                 console.log()
                 if(result === 'OK') {
                     setMemInfo(mem_info);
+                    
                 }
                 if(result === 'NG') {
                     console.log('비정상');
@@ -243,7 +237,7 @@ export default function MemInfo({route, navigation}) {
                 text:"확인",
                 onPress:()=>{
                     console.log(MemInfo,'/전달값')
-                    mod_mem_info(Member, MemInfo).then((res)=>{
+                    mod_mem_info(Member, MemInfo,selectedImages).then((res)=>{
                         if(res.data) {
                             console.log(res.data);
                             const {result} = res.data;
@@ -264,7 +258,7 @@ export default function MemInfo({route, navigation}) {
 
     }
 
-    console.log('들어간값 확인 ',MemInfo);
+    console.log(MemInfo,'/[들어간 값]');
 
     return (
         <>
@@ -619,14 +613,18 @@ export default function MemInfo({route, navigation}) {
                                         <>
                                             <View style={[styles.imagesContainer]}>
                                                 {selectedImages.map((image, index) => (
-                                                    <View key={index} style={styles.imageContainer}>
-                                                        <TouchableOpacity onPress={() => removeImage(index)} style={styles.deleteButton}>
-                                                            <Close width={11} height={11}/>
-                                                        </TouchableOpacity>
-                                                        {(image.base64) && (
-                                                            <Image source={{ uri: `data:image/jpg;base64,${image.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                    <>
+                                                        {(index === 0) && (
+                                                            <View key={index} style={styles.imageContainer}>
+                                                                <TouchableOpacity onPress={() => removeImage(index)} style={styles.deleteButton}>
+                                                                    <Close width={11} height={11}/>
+                                                                </TouchableOpacity>
+                                                                {(image.base64) && (
+                                                                    <Image source={{ uri: `data:image/jpg;base64,${image.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                                )}
+                                                            </View>
                                                         )}
-                                                    </View>
+                                                    </>
                                                 ))}
                                             </View>
                                         </>
@@ -655,14 +653,18 @@ export default function MemInfo({route, navigation}) {
                                         <>
                                             <View style={[styles.imagesContainer]}>
                                                 {selectedImages.map((image, index) => (
-                                                    <View key={index} style={styles.imageContainer}>
-                                                        <TouchableOpacity onPress={() => removeImage(index)} style={styles.deleteButton}>
-                                                            <Close width={11} height={11}/>
-                                                        </TouchableOpacity>
-                                                        {(image.base64) && (
-                                                            <Image source={{ uri: `data:image/jpg;base64,${image.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                    <>
+                                                        {(index === 1) && (
+                                                            <View key={index} style={styles.imageContainer}>
+                                                                <TouchableOpacity onPress={() => removeImage(index)} style={styles.deleteButton}>
+                                                                    <Close width={11} height={11}/>
+                                                                </TouchableOpacity>
+                                                                {(image.base64) && (
+                                                                    <Image source={{ uri: `data:image/jpg;base64,${image.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                                )}
+                                                            </View>
                                                         )}
-                                                    </View>
+                                                    </>
                                                 ))}
                                             </View>
                                         </>

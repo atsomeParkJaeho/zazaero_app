@@ -31,21 +31,24 @@ import CameraIcon from "../../../icons/camera_icon.svg";
 import * as ImagePicker from "expo-image-picker";
 import {img_upload_test} from "../../order/UTIL_order";
 import Close from "../../../icons/close_black.svg";
-import {get_Member, save_bd} from "../../UTIL_mem";
+import {get_Member} from "../../UTIL_mem";
+import {get_bd_detail, save_bd} from "../UTIL_bd";
+import {useIsFocused} from "@react-navigation/native";
 
 
-export default function InquiryWrite({route, navigation}) {
+export default function Inquirybd_data({route, navigation}) {
 
     // console.log('1:1문의작성');
 
+
     // 1. 글입력 상태 셋팅
-    const [Member, setMember] = useState(``);
-    const [Write,setWrite]    = useState({
-        bd_type             :'inquiry',
+    const [Member,  setMember] = useState(``);
+    const [bd_data, set_bd_data]    = useState({
         bd_title            :'',
         bd_contents         :'',
     }); // 작성폼 설정
     const [selectedImages, setSelectedImages] = useState([]);   // 첨부이미지
+    const update = useIsFocused();
     // 2. 글쓰는 회원 uid 정보 추가
     useEffect(()=>{
         get_Member().then((res)=>{if(res) {setMember(res);} else {
@@ -53,22 +56,35 @@ export default function InquiryWrite({route, navigation}) {
             return navigation.navigate('로그인');
         }});
 
-    },[Member])
+        /**-----------------------------------게시물 수정시----------------------------------------**/
+        if(route.params) {
+            const {get_bd_data} = route.params;
+            get_bd_detail(get_bd_data.bd_uid, get_bd_data.bd_type).then((res)=>{
+                if(res) {
+                    const {result, bd_data} = res.data;
+                    if(result === 'OK') {
+                        set_bd_data(bd_data);
+                        // setSelectedImages();
+                    } else {
+                        return Alert.alert(``,`${result}`);
+                    }
+                }
+            });
+        }
+    },[Member,update])
     // 3. 글입력시 status 업데이트
     const goInput = (name, value) => {
-        setWrite({
-            ...Write,
+        set_bd_data({
+            ...bd_data,
             [name]:value,
         });
     };
-
     // 4. 문의하기 클릭시 관리자로 전달
     const goForm = () => {
-
         Alert.alert(``,`게시물을 등록하시겠습니까?`,[
             {text:'취소', onPress:()=>{}},
             {text:"확인", onPress:()=>{
-                    save_bd(Member,Write,selectedImages).then((res)=>{
+                    save_bd(Member,bd_data,selectedImages).then((res)=>{
                         if(res) {
                             const {result} = res.data;
                             if(result === 'OK') {
@@ -79,9 +95,7 @@ export default function InquiryWrite({route, navigation}) {
                         }
                     });
                 }}
-        ])
-
-
+        ]);
     }
 
     //===========================================
@@ -118,13 +132,13 @@ export default function InquiryWrite({route, navigation}) {
     };
 
 
-    console.log(Write,'/[작성글]');
+    console.log(bd_data,'/[작성글]');
     //===========================================
 
     return (
         <>
             <ScrollView style={[bg_white]}>
-                <View style={[styles.InquiryWrite]}>
+                <View style={[styles.Inquirybd_data]}>
                     {/*  상단탭 영역  */}
                     <View style={[styles.InquiryTab,flex]}>
                         <View style={[styles.InquiryTab_item]}>
@@ -144,13 +158,13 @@ export default function InquiryWrite({route, navigation}) {
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>제목</Text>
                                 <TextInput
-                                    onChangeText={(bd_title) => goInput("bd_title", bd_title)} value={Write.bd_title}
+                                    onChangeText={(bd_title) => goInput("bd_title", bd_title)} value={bd_data.bd_title}
                                     style={input}/>
                             </View>
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>내용</Text>
                                 <TextInput
-                                    onChangeText={(bd_content) => goInput("bd_content", bd_content)} value={Write.bd_content}
+                                    onChangeText={(bd_contents) => goInput("bd_contents", bd_contents)} value={bd_data.bd_contents}
                                     style={textarea} multiline={true} numberOfLines={4}/>
                             </View>
                             <View style={styles.inputGroup}>

@@ -1,5 +1,16 @@
 import React,{useState,useEffect} from 'react';
-import { StyleSheet, Button, CheckBox,  Text, TextInput, View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {
+    StyleSheet,
+    Button,
+    CheckBox,
+    Text,
+    TextInput,
+    View,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    Alert
+} from 'react-native';
 
 
 // 공통 CSS 추가
@@ -16,32 +27,34 @@ import {
 } from '../../../common/style/AtStyle';
 import {sub_page} from '../../../common/style/SubStyle';
 import axios from "axios";
+import {get_Member} from "../../UTIL_mem";
+import {bd_list} from "../UTIL_bd";
 
 
 
-export default function InquiryList({navigation,route}) {
+export default function InquiryList({route, navigation}) {
     console.log('나의 문의내역');
-
-    const [InqList, setInqList] = useState([]);  // 공지사항 불러오기
+    const [Member,  setMember] = useState();
+    const [A_board, set_A_board] = useState([]);  // 공지사항 불러오기
     useEffect(() => {
-        // 1. 설정
-        let data = {
-            act_type: "bd_list",
-            bd_type: "inquiry",
-        }
-        // 3. 연결 추출
-        axios.post('http://49.50.162.86:80/ajax/UTIL_bd.php', data, {
-            headers: {
-                'Content-type': 'multipart/form-data',
-            }
-        }).then((res) => {
-            if (res) {
-                const {bd_list} = res.data;
-                setInqList(bd_list);
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                Alert.alert(``,`실패`);
             }
         });
-    }, []);
-    console.log('1:1문의 리스트목록',InqList);
+        bd_list(`inquiry`,Member,``).then((res)=>{
+            if(res) {
+                const {result, A_board} = res.data;
+                if(result === 'OK') {
+                    return set_A_board(A_board);
+                } else {
+                    return Alert.alert(``,`${result}`);
+                }
+            }
+        });
+
+    }, [Member]);
+    console.log(A_board,'/[1:1문의 리스트]');
     return (
         <>
             <ScrollView style={bg_white}>
@@ -59,9 +72,9 @@ export default function InquiryList({navigation,route}) {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    {(InqList) ? (
+                    {(A_board) ? (
                         <>
-                            {InqList.map((val,idx)=>(
+                            {A_board.map((val,idx)=>(
                                 <View style={styles.mypageListItem} key={idx}>
                                     <TouchableOpacity onPress={() => navigation.navigate('1:1문의상세',{bd_uid:val.bd_uid})}>
                                         <View style={[flex]} >
@@ -76,16 +89,17 @@ export default function InquiryList({navigation,route}) {
                                                 </View>
                                             </View>
                                             <View style={[wt3]} >
-                                                {(val.bd_reply) ? (
-                                                    <>
-                                                        <View style={[bg_primary,pt1,pb1,styles.round1]}>
-                                                            <Text style={[text_center,text_white,h14]}>답변완료</Text>
-                                                        </View>
-                                                    </>
-                                                ):(
+                                                {(val.bd_status === 'doing') ? (
                                                     <>
                                                         <View style={[bg_gray,pt1,pb1,styles.round1]}>
                                                             <Text style={[text_center,text_white,h14]}>답변대기</Text>
+                                                        </View>
+
+                                                    </>
+                                                ):(
+                                                    <>
+                                                        <View style={[bg_primary,pt1,pb1,styles.round1]}>
+                                                            <Text style={[text_center,text_white,h14]}>답변완료</Text>
                                                         </View>
                                                     </>
                                                 )}
