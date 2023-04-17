@@ -62,12 +62,12 @@ export default function InquiryList({route, navigation}) {
                     {/*  상단탭 영역  */}
                     <View style={[styles.InquiryTab,flex]}>
                         <View style={[styles.InquiryTab_item]}>
-                            <TouchableOpacity style={styles.InquiryTab_link} onPress={()=>{navigation.navigate('1:1문의작성')}} >
+                            <TouchableOpacity style={styles.InquiryTab_link} onPress={()=>{navigation.replace('1:1문의작성')}} >
                                 <Text style={[styles.InquiryTab_txt]}>1:1 문의</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={[styles.InquiryTab_item]}>
-                            <TouchableOpacity style={[styles.InquiryTab_link,styles.active_link]} onPress={()=>{navigation.navigate('1:1문의목록')}} >
+                            <TouchableOpacity style={[styles.InquiryTab_link,styles.active_link]} onPress={()=>{navigation.replace('1:1문의목록')}} >
                                 <Text style={[styles.InquiryTab_txt,styles.active_txt]}>나의 문의 내역</Text>
                             </TouchableOpacity>
                         </View>
