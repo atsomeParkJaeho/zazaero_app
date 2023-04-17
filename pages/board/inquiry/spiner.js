@@ -16,7 +16,7 @@ export default function Spinner() {
             alignItems: 'center',
             justifyContent: 'center',
             position:"relative",
-            zIndex:"99",
+            // zIndex:"99",
             padding:20
         }}>
             {loading && <ActivityIndicator size="large" color="blue" />}

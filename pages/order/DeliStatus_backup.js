@@ -52,7 +52,7 @@ function DeliStatus({route, navigation}) {
     const [Member, setMember]               = useState();
 
     const Update                            = useIsFocused();
-    const [OrderList, setOrderList]         = useState([]);     // 발주내역 출력
+    const [OrderList, setOrderList]         = useState([]);     // 발주현황 출력
     console.log('전달 2값 / ',Member);
     /**-----------------------------발주서정보 출력----------------------------**/
     const getOrderStatus = () => {
@@ -216,7 +216,7 @@ function DeliStatus({route, navigation}) {
 
             <View style={[styles.Order,bg_white]}>
                 <View style={[flex]}>
-                    <TouchableOpacity style={[styles.wt_3, ]} onPress={()=>navigation.navigate('발주상태')}>
+                    <TouchableOpacity style={[styles.wt_3, ]} onPress={()=>navigation.navigate('발주현황')}>
                         <Text style={[styles.tab_txt,]}>발주검수</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.wt_3, ]} onPress={()=>navigation.navigate('결제상태')}>

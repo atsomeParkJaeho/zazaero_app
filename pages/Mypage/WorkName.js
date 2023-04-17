@@ -84,7 +84,7 @@ export default function WorkName({navigation,route}) {
 
     const go_work_name_list = (work_uid, order_cnt) => {
         if(0 >= Number(order_cnt)) {
-            return Alert.alert(``,`발주내역이 존재하지 않습니다.`);
+            return Alert.alert(``,`발주현황이 존재하지 않습니다.`);
         } else {
             navigation.navigate(`공사현황발주서목록`,{work_uid:work_uid});
         }

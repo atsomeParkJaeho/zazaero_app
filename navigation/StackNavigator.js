@@ -279,10 +279,10 @@ const StackNavigator = () => {
                 }}/>
                 <Stack.Screen name="추가발주" component={AddOrder}/>
                 <Stack.Screen name="수정하기" component={ModOrder}/>
-                {/*================발주내역 상태 변경===================*/}
-                <Stack.Screen name="결제상태" options={{title:'발주내역',cardStyleInterpolator: forFade,}} component={PayStatus} />
-                <Stack.Screen name="발주상태" options={{title:'발주내역',cardStyleInterpolator: forFade,}} component={OrderStatus}/>
-                <Stack.Screen name="배송상태" options={{title:'발주내역',cardStyleInterpolator: forFade,}} component={DeliStatus}/>
+                {/*================발주현황 상태 변경===================*/}
+                <Stack.Screen name="결제상태" options={{title:'발주현황',cardStyleInterpolator: forFade,}} component={PayStatus} />
+                <Stack.Screen name="발주현황" options={{title:'발주현황',cardStyleInterpolator: forFade,}} component={OrderStatus}/>
+                <Stack.Screen name="배송상태" options={{title:'발주현황',cardStyleInterpolator: forFade,}} component={DeliStatus}/>
                 {/*================취소/반품===================*/}
                 <Stack.Screen name="취소내역" options={{title:'취소,반품내역',cardStyleInterpolator: forFade}} component={Cancel}/>
                 <Stack.Screen name="취소내역상세" options={{title:'취소내역',cardStyleInterpolator: forFade}} component={CancelDetail}/>

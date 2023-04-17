@@ -361,7 +361,7 @@ export default function ModOrder({route,navigation}) {
                             console.log(err_msg);
                             Alert.alert('',msg,[
                                 {text:"OK", onPress:()=>{
-                                    return navigation.replace(`발주상태`)}
+                                    return navigation.replace(`발주현황`)}
                                 }
                             ]);
                         } else {
@@ -376,10 +376,10 @@ export default function ModOrder({route,navigation}) {
     /**----------------------------------결제전 자재추가--------------------------------**/
     const add_goods_listOrder = () => {
         // 1. 즐겨찾기 페이지로 이동한다
-        let msg = '자재를 추가하시겠습니까?';
+        let msg = `* 즐겨찾기된 자재만 추가됩니다. *`;
 
         console.log('[결제전 자재추가 이벤트]');
-        Alert.alert(``,msg
+        Alert.alert(`자재를 추가하시겠습니까?`,msg
                 ,[
             {text:'아니오', onPress:()=>{}},
             {text:'예',
@@ -406,7 +406,7 @@ export default function ModOrder({route,navigation}) {
                     const {result} = res.data;
                     if(result === 'OK') {
                         Alert.alert('','발주가 취소되었습니다.');
-                        return navigation.replace('발주상태');
+                        return navigation.replace('발주현황');
                     }
                 }
             });
@@ -447,7 +447,7 @@ export default function ModOrder({route,navigation}) {
                     Alert.alert(``,msg,[
                         {text:'확인',
                             onPress:()=>{
-                                return navigation.replace(`발주상태`);
+                                return navigation.replace(`발주현황`);
                             }
                         }
                     ]);
@@ -903,8 +903,14 @@ export default function ModOrder({route,navigation}) {
             ) && (
                 <View style={[bg_gray,styles.btn_default]}>
                     <TouchableOpacity onPress={mod_recv_info}>
-                        <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
-                            <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
+                        <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: (get_gd_order.ord_status === 'pay_ready') ? 20 : 10,}]}>
+                            {(get_gd_order.ord_status === 'pay_ready') ? (
+                                <></>
+                            ) : (
+                                <>
+                                    <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
+                                </>
+                            )}
                         </View>
                         <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
                             수정완료

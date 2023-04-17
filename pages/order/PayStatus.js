@@ -63,7 +63,7 @@ function PayStatus({route, navigation}) {
     /**-------------------기본 회원정보 셋팅-----------------------**/
     const [Member, setMember]               = useState();
     const Update                            = useIsFocused();
-    const [OrderList, setOrderList]         = useState([]);     // 발주내역 출력
+    const [OrderList, setOrderList]         = useState([]);     // 발주현황 출력
     const [get_page, set_page]              = useState();           // 전체 페이지
     const [now_page, set_now_page]          = useState();           // 현재 페이지
     /**--------------------스크롤 설정----------------------**/
@@ -162,7 +162,7 @@ function PayStatus({route, navigation}) {
 
             <View style={[styles.Order,bg_white]}>
                 <View style={[flex]}>
-                    <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('발주상태')}>
+                    <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('발주현황')}>
                         <Text style={[styles.tab_txt]}>발주검수</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.wt_3, active_link]} onPress={()=>navigation.navigate('결제상태')}>
@@ -266,7 +266,9 @@ function PayStatus({route, navigation}) {
                                         <View style={[flex_between]}>
                                             <View style="">
                                                 <TouchableOpacity style={[btn_primary, p1,]} onPress={()=>navigation.navigate('발주상세',{gd_order_uid   :val.gd_order_uid, hope_deli_date :val.hope_deli_date,})}>
-                                                    <Text style={[text_light]}>상세내역 / 결제하기</Text>
+                                                    <Text style={[text_light]}>
+                                                        상세내역 / 결제하기
+                                                    </Text>
                                                 </TouchableOpacity>
                                             </View>
                                             <View style={[]}>

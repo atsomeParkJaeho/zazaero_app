@@ -818,7 +818,7 @@ export default function OrderForm({route,navigation}) {
                                         text:'확인',
                                         onPress:()=>{
                                             /**----------1. 발주가 정상적으로 등록시 푸시알림을 전송한다. --------------- **/
-                                            return navigation.replace('발주상태');
+                                            return navigation.replace('발주현황');
                                         }
                                     }]);
                                 } else {return Alert.alert('',`에러[1]${result}`);}
@@ -836,7 +836,7 @@ export default function OrderForm({route,navigation}) {
                                     msg += '\n발주번호 : '+order_no;
                                     Alert.alert('',msg,[{
                                         text:'확인',
-                                        onPress:()=>{return navigation.replace('발주상태');}
+                                        onPress:()=>{return navigation.replace('발주현황');}
                                     }]);
                                 } else {
                                     return Alert.alert('',`에러[2]${result}`);

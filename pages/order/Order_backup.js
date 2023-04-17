@@ -81,7 +81,7 @@ export default function Order({navigation, route}) {
                     <View style={[flex]}>
                         <TouchableOpacity style={[styles.wt_3, styles.active]} onPress={() => {
                             category('Home')
-                        }}><Text style={styles.tab_txt}>발주상태</Text></TouchableOpacity>
+                        }}><Text style={styles.tab_txt}>발주현황</Text></TouchableOpacity>
                         <TouchableOpacity style={styles.wt_3} onPress={() => {
                             category('Updates')
                         }}><Text style={styles.tab_txt}>결제상태</Text></TouchableOpacity>
@@ -145,7 +145,7 @@ export default function Order({navigation, route}) {
                                                 </TouchableOpacity>
                                             </View>
                                             <View style={[flex]}>
-                                                <Text style={[styles.ft_14]}>발주상태</Text>
+                                                <Text style={[styles.ft_14]}>발주현황</Text>
                                                 {(items.order_type == 'ready') ? (
                                                     <Text style={[styles.order_type,styles.text_danger]}>신청</Text>
                                                 ):(

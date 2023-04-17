@@ -12,7 +12,7 @@ import {order_List} from "../../util/util";
 
 export default function Order({navigation, route}) {
 
-    const [OrderList, setOrderList] = useState(order_List);     // 발주내역 출력
+    const [OrderList, setOrderList] = useState(order_List);     // 발주현황 출력
     useEffect(()=>{
         // ======================= db 연결용==================//
         /*
@@ -30,7 +30,7 @@ export default function Order({navigation, route}) {
     },[]);
 
 
-    // 1. 발주상태 페이지
+    // 1. 발주현황 페이지
     /*
     * order_status 에서 ready, doing, done 상태 표출
     *
@@ -64,8 +64,8 @@ export default function Order({navigation, route}) {
                         {/*<MyTabs />*/}
                     </NavigationContainer>
                     <View style={[flex]}>
-                        <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('발주상태')}>
-                            <Text style={[styles.tab_txt,styles.active,]}>발주상태</Text>
+                        <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('발주현황')}>
+                            <Text style={[styles.tab_txt,styles.active,]}>발주현황</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.wt_3]} onPress={()=>navigation.navigate('결제상태')}>
                             <Text style={styles.tab_txt}>결제상태</Text>
@@ -132,7 +132,7 @@ export default function Order({navigation, route}) {
                                                         </TouchableOpacity>
                                                     </View>
                                                     <View style={[flex]}>
-                                                        <Text style={[styles.ft_14]}>발주상태</Text>
+                                                        <Text style={[styles.ft_14]}>발주현황</Text>
                                                         {(val.order_type == 'ready') ? (
                                                             <Text style={[styles.order_type,styles.text_danger]}>신청</Text>
                                                         ):(

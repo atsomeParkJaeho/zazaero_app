@@ -40,7 +40,7 @@ import {cancel_d_List} from "../../util/util";
 
 export default function ReturnDetail({navigation,route}) {
 
-    const [CanceDlList, setOrderList] = useState(cancel_d_List);     // 발주내역 출력
+    const [CanceDlList, setOrderList] = useState(cancel_d_List);     // 발주현황 출력
 
 
     console.log(CanceDlList);

@@ -825,7 +825,7 @@ export default function OrderForm({route,navigation}) {
                                 if(result === 'OK') {
                                     Alert.alert('',msg,[{
                                         text:'확인',
-                                        onPress:()=>{navigation.replace('발주상태')}
+                                        onPress:()=>{navigation.replace('발주현황')}
                                     }]);
                                 } else {
                                     Alert.alert('','에러');
@@ -839,7 +839,7 @@ export default function OrderForm({route,navigation}) {
                                 if(result === 'OK') {
                                     Alert.alert('',msg,[{
                                         text:'확인',
-                                        onPress:()=>{navigation.replace('발주상태')}
+                                        onPress:()=>{navigation.replace('발주현황')}
                                     }]);
                                 } else {
                                     Alert.alert('','에러');

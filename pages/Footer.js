@@ -157,11 +157,11 @@ function Footer({navigation,pages}) {
                         </View>
                     </TouchableOpacity>
                 </View>
-                {/**---------------------발주상태--------------------**/}
+                {/**---------------------발주현황--------------------**/}
                 <View style={[styles.Tabs,]}>
-                    <TouchableOpacity onPress={()=>{navigation.navigate('발주상태')}}>
+                    <TouchableOpacity onPress={()=>{navigation.navigate('발주현황')}}>
                         <View style={styles.SvgIcons}>
-                            {(currentRoute === '발주상태' || currentRoute === '결제상태' || currentRoute === '배송상태') ? (
+                            {(currentRoute === '발주현황' || currentRoute === '결제상태' || currentRoute === '배송상태') ? (
                                 <>
                                     <OrderListAt width={22} height={18}/>
                                 </>
@@ -173,7 +173,7 @@ function Footer({navigation,pages}) {
 
                         </View>
                         <View>
-                            <Text style={[text_center,(currentRoute === '발주상태' || currentRoute === '결제상태' || currentRoute === '배송상태') &&  text_primary,fw500]}>발주상태</Text>
+                            <Text style={[text_center,(currentRoute === '발주현황' || currentRoute === '결제상태' || currentRoute === '배송상태') &&  text_primary,fw500]}>발주현황</Text>
                         </View>
                     </TouchableOpacity>
                 </View>

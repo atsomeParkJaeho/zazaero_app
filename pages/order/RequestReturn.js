@@ -61,7 +61,7 @@ import {
 
 import CameraIcon from '../../icons/camera_icon.svg';
 import {get_Member} from "../UTIL_mem";
-import {get_deli_addr_list, getOrderInfo, order_cancel} from "./UTIL_order";
+import {get_deli_addr_list, getOrderInfo, img_upload_test, order_cancel} from "./UTIL_order";
 import {app_info, get_order} from "./OrderInfo";
 import Close from "../../icons/close_black.svg";
 import {FormStyle} from "./FormStyle";
@@ -78,7 +78,7 @@ export default function RequestReturn({route, navigation}) {
     const {get_gd_order:{gd_order_uid},zonecode,addr1,addr2,save_pic_list} = route.params;
 
     const [Member, setMember] = useState(``);                   // 회원 uid 가져오기
-    const [get_gd_order, set_get_gd_order] = useState([]);      // 발주내역 가져오기
+    const [get_gd_order, set_get_gd_order] = useState([]);      // 발주현황 가져오기
     const [modAddr, setmodAddr]           = useState(`add`); // 신규수거지, 기존 배송지 선택 상태 정의
     const [DeliList, setDeliList] = useState([]);
     const [ret_order, set_ret_order] = useState({
@@ -106,11 +106,17 @@ export default function RequestReturn({route, navigation}) {
                 return Alert.alert(``,`에러`);
             }
         });
-        /**------------------------발주내역 가져오기------------------------**/
+        /**------------------------발주현황 가져오기------------------------**/
         get_ready(Member, gd_order_uid);
         /**------------------------발주자재 내역 가져오기-----------------------**/
         (async () => {
             if (Constants.platform.ios) {
+                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                if (status !== 'granted') {
+                    alert('Sorry, we need camera roll permissions to make this work!');
+                }
+            }
+            if (Constants.platform.android) {
                 const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
                 if (status !== 'granted') {
                     alert('Sorry, we need camera roll permissions to make this work!');
@@ -155,8 +161,6 @@ export default function RequestReturn({route, navigation}) {
         set_A_order_list(temp2);
         set_cancel_doing(cancel_doing_cnt);
 
-
-
         if(route.params) {
             set_ret_order({
                 ...ret_order,
@@ -164,10 +168,12 @@ export default function RequestReturn({route, navigation}) {
                 addr1       :addr1,
                 addr2       :addr2
             });
-            // setSelectedImages([...selectedImages, save_pic_list]);
+            if(save_pic_list) {
+                setSelectedImages([...selectedImages, save_pic_list]);
+            }
 
         } else if(save_pic_list) {
-            setSelectedImages([...selectedImages, ...save_pic_list]);
+            // setSelectedImages([...selectedImages, save_pic_list]);
         } else {
             set_ret_order({
                 ...ret_order,
@@ -303,12 +309,12 @@ export default function RequestReturn({route, navigation}) {
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: false,
-            quality: 1,
-            base64: true
+            mediaTypes          :ImagePicker.MediaTypeOptions.Images,
+            allowsEditing       :false,
+            quality             :1,
+            base64              :true,
         });
-
+        console.log(result,'/[첨부확인]');
         if (!result.cancelled) {
             if (selectedImages.length < MAX_IMAGES) {
                 setSelectedImages([...selectedImages, result]);
@@ -323,8 +329,21 @@ export default function RequestReturn({route, navigation}) {
         images.splice(index, 1);
         setSelectedImages(images);
     };
+
+    const upload_test = () => {
+        img_upload_test(selectedImages).then((res)=>{
+            if(res) {
+                const {result} = res.data;
+                if(result === 'OK') {
+                    return Alert.alert(``,`성공`);
+                } else {
+                    return Alert.alert(``,`${result}`);
+                }
+            }
+        });
+    }
     console.log(Member,'/[회원uid]');
-    console.log(get_gd_order,'/[발주내역]');
+    console.log(get_gd_order,'/[발주현황]');
     console.log(ret_order,'/[반품신청]');
     console.table(A_order_list);
     console.log(selectedImages,'/[이미지 데이터 확인]');
@@ -409,30 +428,26 @@ export default function RequestReturn({route, navigation}) {
                             <TouchableOpacity onPress={takePicture} style={[styles.button,bg_primary]}>
                                 <Text style={[h13,text_center,text_white]}>카메라로 사진 추가</Text>
                             </TouchableOpacity>
-                            {/*<Camera*/}
-                            {/*    style={{ width: 200, height: 200 }}*/}
-                            {/*    type={Camera.Constants.Type.back}*/}
-                            {/*    ref={(ref) => setCamera(ref)}*/}
-                            {/*/>*/}
-                            {(selectedImages.length > 0) ? (
+                            {(selectedImages !== undefined) && (
                                 <>
-                                    <View style={[styles.imagesContainer,{borderWidth:1,borderColor:'#000'}]}>
+                                    <View style={[styles.imagesContainer]}>
                                         {selectedImages.map((image, index) => (
                                             <View key={index} style={styles.imageContainer}>
                                                 <TouchableOpacity onPress={() => removeImage(index)} style={styles.deleteButton}>
                                                     <Close width={11} height={11}/>
                                                 </TouchableOpacity>
-                                                <Image source={{ uri: `data:image/jpg;base64,${image.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                {(image.base64) && (
+                                                    <Image source={{ uri: `data:image/jpg;base64,${image.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                )}
                                             </View>
                                         ))}
                                     </View>
                                 </>
-                            ):(
-                                <>
-                                    {/* 값이없을때*/}
-                                </>
                             )}
 
+                            <TouchableOpacity onPress={upload_test} style={[styles.button,bg_primary]}>
+                                <Text style={[h13,text_center,text_white]}>이미지 업로드 테스트</Text>
+                            </TouchableOpacity>
                         </View>
                         {/*==============반품사진 등록==============*/}
                     </View>

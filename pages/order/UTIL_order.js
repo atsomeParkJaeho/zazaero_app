@@ -131,87 +131,20 @@ export const ATorderDel = async (OrderData, Member, order_uid) => {
     });
     return res;
 }
+
 /**-------------------------------------발주정보 수정-----------------------------------------------------------------------**/
-/*
-export const OrderMod = async (OrderData, OrderGoodsList, Member, A_goods, A_order_item_uid, A_order_item_cnt) => {
-
-    let A_order_uid                 = OrderGoodsList.map((val)=>val.order_uid);
-    let A_add_goods_uid             = A_goods.map(val=>String(val.goods_uid));
-    let A_add_goods_cnt             = A_goods.map(val=>String(val.goods_cnt));
-    let A_add_goods_req_memo        = A_goods.map(val=>String(val.req_memo));
-
-
-    console.log(OrderData,'/ 발주정보');
-    console.log(Member,'/ 회원정보');
-    console.log(A_goods,'/ 자재추가한 자재');
-
-    console.log(A_order_uid,'/ 발주상품 uid');
-    console.log(A_order_item_uid,'/ 발주옵션 uid');
-    console.log(A_order_item_cnt,'/ 상품 수량');
-
-    console.log(A_add_goods_uid,'/ 자재추가 상품 uid');
-    console.log(A_add_goods_cnt,'/ 자재추가 상품 수량');
-
-    let data = {
-        act_type             :"mod_recv_info",
-        gd_order_uid         :OrderData.gd_order_uid,
-        mem_uid              :Member,
-        addr1                :OrderData.addr1,
-        addr2                :OrderData.addr2,
-        hope_deli_date       :OrderData.hope_deli_date,
-        hope_deli_time       :OrderData.hope_deli_time,
-        zonecode             :OrderData.zonecode,
-        recv_name            :OrderData.recv_name,
-        recv_mobile          :OrderData.recv_mobile,
-        A_order_uid          :A_order_uid,
-        A_order_item_uid     :A_order_item_uid,
-        A_order_item_cnt     :A_order_item_cnt,
-        A_add_goods_uid      :A_add_goods_uid,
-        A_add_goods_cnt      :A_add_goods_cnt,
-    }
-    console.log(data,' / [전송 파라미터]');
-
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
-        act_type             :"mod_recv_info",
-        gd_order_uid         :OrderData.gd_order_uid,
-        mem_uid              :Member,
-        addr1                :OrderData.addr1,
-        addr2                :OrderData.addr2,
-        order_memo           :OrderData.order_memo,
-        hope_deli_date       :OrderData.hope_deli_date,
-        hope_deli_time       :OrderData.hope_deli_time,
-        zonecode             :OrderData.zonecode,
-        recv_name            :OrderData.recv_name,
-        recv_mobile          :OrderData.recv_mobile,
-        A_order_uid          :A_order_uid,
-        A_order_item_uid     :A_order_item_uid,
-        A_order_item_cnt     :A_order_item_cnt,
-        A_add_goods_uid      :A_add_goods_uid,
-        A_add_goods_cnt      :A_add_goods_cnt,
-        A_add_goods_req_memo :A_add_goods_req_memo
-    },{
-        headers: {
-            'Content-type': 'multipart/form-data'
-        }
-    });
-    return res;
-}
-*/
 
 export const OrderMod = async (get_gd_order, A_order_list, add_goods_list, Member, chk_uid) => {
 
     let temp = A_order_list.map(val=>val.A_sel_option.map(val2=>val2));
     let temp2 = temp.reduce((val,idx)=>{return val.concat(idx);});
-
     let A_order_uid          = A_order_list.map(val=>String(val.order_uid));
     let A_order_item_uid     = temp2.map(val=>String(val.order_item_uid));
     let A_order_item_cnt     = temp2.map(val=>String(val.option_cnt));
     let A_req_memo           = temp2.map(val=>String(val.req_memo));
-
     let A_add_goods_uid      = add_goods_list.map(val=>String(val.goods_uid));
     let A_add_goods_cnt      = add_goods_list.map(val=>String(val.goods_cnt));
     let A_add_goods_req_memo = add_goods_list.map(val=>String(val.req_memo));
-
 
     let data = {
         act_type             :"mod_recv_info",
@@ -237,7 +170,6 @@ export const OrderMod = async (get_gd_order, A_order_list, add_goods_list, Membe
 
         A_del_order_uid      :(chk_uid) ? chk_uid:'',
 
-
     }
     console.log(data,'/[데이터 확인]');
     console.log(add_goods_list,'/[추가 자재 데이터]');
@@ -258,7 +190,7 @@ export const OrderMod = async (get_gd_order, A_order_list, add_goods_list, Membe
 }
 
 
-/**---------------------------------발주상태 리스트 설정---------------------------------------**/
+/**---------------------------------발주현황 리스트 설정---------------------------------------**/
 
 
 
@@ -529,14 +461,23 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
     let A_order_item_uid = OrderGoodsList.map(val=>String(val.A_sel_option.map(item=>Number(item.order_item_uid))));
     let A_order_item_cancel_cnt = OrderGoodsList.map(val=>String(val.cancel_cnt));
 
+    // 2. 첨부파일 이미지 업로드
+    let imagefile = selectedImages.map((val,idx)=>{
+        return {
+            img         :`img_${idx}`,
+            filename    :val.filename,
+            base64      :val.base64,
+        }
+    });
+
+
 
     console.log(A_goods_uid,'/ goods_uid');
     console.log(A_order_uid,'/ order_uid');
     console.log(A_order_item_uid,' / order_item_uid');
     console.log(A_order_item_cancel_cnt,' / 취소수량');
     console.log(cancel_type,' / 취소 타입');
-    console.log(selectedImages,' / 반품 이미지 출력');
-    
+    console.log(imagefile,' / 반품 이미지 출력');
 
     let data = {
         act_type                    :"pay_done_gd_cancel",
@@ -557,14 +498,48 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
     }
 
     console.log(data,'/ 발주취소 데이터 확인');
+    //
+    // let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', data,{
+    //     headers: {
+    //         'Content-type': 'multipart/form-data'
+    //     }
+    // });
+    //
+    // return res;
+}
 
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', data,{
-        headers: {
-            'Content-type': 'multipart/form-data'
+export const img_upload_test = async (selectedImages) =>{
+
+    let temp = selectedImages.map(val=>{
+        return {
+            filename    :(Platform.OS === 'android') ? val.uri.split('/').pop() : val.filename,
+            type        :val.type,
+            uri         :(Platform.OS === 'ios') ? val.uri.replace('file://','') : val.uri,
         }
-    });
+    })
 
-    return res;
+    let data = new FormData();
+    data.append(`img_1`,{
+        filename    :(Platform.OS === 'android') ? temp.uri.split('/').pop() : temp.filename,
+        type        :temp.type,
+        uri         :(Platform.OS === 'ios') ? temp.uri.replace('file://','') : temp.uri,
+    })
+
+
+
+
+
+    console.log(selectedImages,'/보내는 파라미터');
+    console.log(data,'/[act_type : img_upload_test]');
+
+    // let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', data,{
+    //     headers: {
+    //         'Content-type': 'multipart/form-data'
+    //     }
+    // });
+    //
+    // return res;
+
 }
 
 
@@ -672,6 +647,8 @@ export const get_work_name = async (Member,page)=>{
 
     return res;
 }
+
+/****/
 
 
 

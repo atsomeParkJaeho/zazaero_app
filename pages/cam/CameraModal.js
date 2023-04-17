@@ -22,9 +22,14 @@ export default function CameraModal({route, navigation}) {
     /**-------------------1. 카메라 버튼--------------------------------**/
     const PicButton = async () => {
         try {
-            const photo  = await camera.takePictureAsync({ base64: true });
+            const photo  = await camera.takePictureAsync({
+                base64:true,
+                quality:0.5,
+                scale:0.5
+            });
             const save_pic  = await MediaLibrary.createAssetAsync(photo.uri);
             console.log(save_pic,'/[사진 데이터]');
+            console.log(photo,'/[사진 첨부이미지 데이터 확인]');
             if(save_pic) {
                 set_picture([...picture, save_pic]);
                 let data = {
@@ -32,7 +37,12 @@ export default function CameraModal({route, navigation}) {
                     addr1:addr1,
                     addr2:addr2,
                     zonecode:zonecode,
-                    save_pic_list: {uri:photo.uri,base64:photo.base64},
+                    save_pic_list: {
+                        filename    :save_pic.filename,
+                        uri         :(Platform.OS === 'ios') ? photo.uri.replace('file://','') : photo.uri,
+                        base64      :photo.base64,
+                        type        :photo.type,
+                    },
                 }
                 return navigation.navigate(`반품요청`,data)
                 // return Alert.alert(``,`사진이 저장되었습니다.`);
@@ -46,8 +56,8 @@ export default function CameraModal({route, navigation}) {
 
     /**-------------------2. 카메라 모듈 접근허용 셋팅--------------------------------**/
     const get_ready = async () => {
-        const cameraStatus = await Camera.requestPermissionsAsync();
-        const media_lib = await MediaLibrary.requestPermissionsAsync();
+        const cameraStatus  = await Camera.requestPermissionsAsync();
+        const media_lib     = await MediaLibrary.requestPermissionsAsync();
         set_camera(cameraStatus.status === "granted");
         set_camera(media_lib.status === "granted");
     }

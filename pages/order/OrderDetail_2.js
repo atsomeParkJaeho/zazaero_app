@@ -132,7 +132,7 @@ export default function OrderDtail({route,navigation}) {
     const [Member, setMember]          = useState();
     const InputFocus = useRef([]);
     /**-----------------------------------------수정 상태 설정-------------------------------------------------------**/
-    const [Mod, setMod] = useState(false);          // 발주상태시 수정 변경가능
+    const [Mod, setMod] = useState(false);          // 발주현황시 수정 변경가능
     /**--------------------------------------상태값 셋팅--------------------------------------------------**/
     const [A_order_list,  set_A_order_list]              = useState([]);             // 발주상품상태정의
     const [BankCode,        setBankCode]                    = useState([]);             // 관리자 무통장입금계좌 출력

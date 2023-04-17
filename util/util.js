@@ -208,9 +208,9 @@ export const goodsDetail = [
     },
 ];
 
-// 발주내역 샘플
+// 발주현황 샘플
 
-// 발주상태 (order_status) : ready(발주신청),doing(발주검수중), done(검수완료)
+// 발주현황 (order_status) : ready(발주신청),doing(발주검수중), done(검수완료)
 
 // 결제상태 (pay_status) : ready(결제대기), done(결제완료)
 
@@ -225,8 +225,8 @@ export const order_List = [
         Construction_name: "호반베르디움 102동 604호 아파트리모델링",                //공사명
         Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
         Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
-        order_type: "ready",                                     //발주상태
-        order_status  :"done",      // 발주상태
+        order_type: "ready",                                     //발주현황
+        order_status  :"done",      // 발주현황
         pay_status    :"done",      // 결제상태
         deli_status   :"raedy",      // 배송상태
 
@@ -237,8 +237,8 @@ export const order_List = [
         Construction_name: "스타리우빌딩 3층 상가리모델링",       //공사명
         Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
         Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
-        order_type: "request",                                     //발주상태
-        order_status  :"done",      // 발주상태
+        order_type: "request",                                     //발주현황
+        order_status  :"done",      // 발주현황
         pay_status    :"ready",      // 결제상태
         deli_status   :"doing",      // 배송상태
     },
@@ -248,8 +248,8 @@ export const order_List = [
         Construction_name: "석촌호수공원 분수대 옆 호반베르디움 102동 604호 아파트리모델링",       //공사명
         Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
         Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
-        order_type: "ready",                                     //발주상태
-        order_status  :"doing",      // 발주상태
+        order_type: "ready",                                     //발주현황
+        order_status  :"doing",      // 발주현황
         pay_status    :"ready",      // 결제상태
         deli_status   :"raedy",      // 배송상태
     },
@@ -259,8 +259,8 @@ export const order_List = [
         Construction_name: "스타리우빌딩 3층 상가리모델링",       //공사명
         Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
         Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
-        order_type: "request",                                     //발주상태
-        order_status  :"done",      // 발주상태
+        order_type: "request",                                     //발주현황
+        order_status  :"done",      // 발주현황
         pay_status    :"done",      // 결제상태
         deli_status   :"done",      // 배송상태
     },

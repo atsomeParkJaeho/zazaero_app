@@ -65,7 +65,7 @@ function PayStatus({route, navigation}) {
 
     console.log('전달 3값 / ',Member);
 
-    const [OrderList, setOrderList] = useState([]);     // 발주내역 출력
+    const [OrderList, setOrderList] = useState([]);     // 발주현황 출력
     useEffect(()=>{
 
         get_Member().then((res)=>{
@@ -220,7 +220,7 @@ function PayStatus({route, navigation}) {
 
             <View style={[styles.Order,bg_white]}>
                 <View style={[flex]}>
-                    <TouchableOpacity style={[styles.wt_3,]} onPress={()=>navigation.navigate('발주상태')}>
+                    <TouchableOpacity style={[styles.wt_3,]} onPress={()=>navigation.navigate('발주현황')}>
                         <Text style={[styles.tab_txt,]}>발주검수</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.wt_3, active_link]} onPress={()=>navigation.navigate('결제상태')}>

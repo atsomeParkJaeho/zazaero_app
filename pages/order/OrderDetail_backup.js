@@ -132,7 +132,7 @@ export default function OrderDtail({route,navigation}) {
     const [Member, setMember]          = useState();
     const InputFocus = useRef([]);
     /**-----------------------------------------수정 상태 설정-------------------------------------------------------**/
-    const [Mod, setMod] = useState(false);          // 발주상태시 수정 변경가능
+    const [Mod, setMod] = useState(false);          // 발주현황시 수정 변경가능
     const [expended, setExpended] = useState(false);
     const [PopData, setPopupData] = useState({
         goods_uid   :'',
@@ -277,7 +277,7 @@ export default function OrderDtail({route,navigation}) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
                                     Alert.alert('','추가발주 요청이\n완료되었습니다.');
-                                    return navigation.replace('발주내역');
+                                    return navigation.replace('발주현황');
                                 } else {
                                     Alert.alert('','에러');
                                 }
@@ -1552,7 +1552,7 @@ export default function OrderDtail({route,navigation}) {
                         const {result} = res.data;
                         if(result === 'OK') {
                             Alert.alert('','발주가 취소되었습니다.');
-                            return navigation.replace('발주상태');
+                            return navigation.replace('발주현황');
                         }
                     }
                 });

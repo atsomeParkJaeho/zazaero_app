@@ -348,7 +348,7 @@ export default function ModOrder({route,navigation}) {
                                 console.log(err_msg);
                                 Alert.alert('',msg,[
                                     {text:"OK", onPress:()=>{
-                                            return navigation.replace(`발주상태`)}
+                                            return navigation.replace(`발주현황`)}
                                     }
                                 ]);
                             } else {
@@ -390,7 +390,7 @@ export default function ModOrder({route,navigation}) {
                     const {result} = res.data;
                     if(result === 'OK') {
                         Alert.alert('','발주가 취소되었습니다.');
-                        return navigation.replace('발주상태');
+                        return navigation.replace('발주현황');
                     }
                 }
             });
@@ -431,7 +431,7 @@ export default function ModOrder({route,navigation}) {
                     Alert.alert(``,msg,[
                         {text:'확인',
                             onPress:()=>{
-                                return navigation.replace(`발주상태`);
+                                return navigation.replace(`발주현황`);
                             }
                         }
                     ]);

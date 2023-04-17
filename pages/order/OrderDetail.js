@@ -103,7 +103,7 @@ export default function OrderDtail({route,navigation}) {
     const [Member, setMember]          = useState(``);
     const InputFocus = useRef([]);
     /**-----------------------------------------수정 상태 설정-------------------------------------------------------**/
-    const [Mod, setMod] = useState(false);          // 발주상태시 수정 변경가능
+    const [Mod, setMod] = useState(false);          // 발주현황시 수정 변경가능
     /**--------------------------------------상태값 셋팅--------------------------------------------------**/
     const [A_order_list,  set_A_order_list]              = useState([]);             // 발주상품상태정의
     const [BankCode,        setBankCode]                    = useState([]);             // 관리자 무통장입금계좌 출력
@@ -123,6 +123,9 @@ export default function OrderDtail({route,navigation}) {
     const [A_goods, set_A_goods]                            = useState([]);
     const [get_mem_info, set_mem_info]                      = useState([]);
     const [point_use, set_point_use]                        = useState(``);
+    const [all_point_chk, set_all_point_chk]                        = useState(false);
+
+    const Chkinput = useRef([]);                // 입력값 위치 설정
     /**------------------------입력값 설정----------------------**/
     const goInput = (name, value, goods_uid, order_uid) => {
         console.log(name,'[입력값] 타입');
@@ -158,12 +161,13 @@ export default function OrderDtail({route,navigation}) {
         }
     }
 
-    const all_point = () => {
-        if(get_gd_order.settleprice === point_use) {
-            set_point_use(``);
+    const all_point = (chk) => {
+        if(chk) {
+            set_point_use(get_mem_info.mem_point);
         } else {
-            set_point_use(get_gd_order.settleprice);
+            set_point_use(``);
         }
+        set_all_point_chk(!all_point_chk);
     }
 
     /**-------------------------추출항목-----------------------**/
@@ -172,19 +176,21 @@ export default function OrderDtail({route,navigation}) {
         let {A_pay_bank} = await app_info();
         let temp = A_pay_bank.map(val=>{return {label:val.name, value:val.key,}});
         /**발주정보 추출**/
-        let {gd_order, cancel_doing_cnt} = await get_order(Member, gd_order_uid);
+        let {gd_order, cancel_doing_cnt} = await get_order(Member, gd_order_uid); // 발주정보 불러오기
         let temp2 = gd_order.A_order.map(val =>{return {...val, goods_chk: false, goods_del: false,}});
         let mem_info = (await my_page(Member)).data;
         
-        let test = (await get_order_cancel_list(Member)).data;
-        console.log(test,'/취소 불러오기');
+        let {gd_cancel} = (await get_order_cancel_list(Member)).data;
+        let cancel_result = gd_cancel.filter(val=>val.gd_order_uid === gd_order_uid);
+
+        console.log(gd_cancel,'/취소 불러오기');
         set_mem_info(mem_info.mem_info);
         navigation.setOptions({title:gd_order.ord_status_name+' 상태 입니다.',});
         setBankCode(temp);                      // 은행코드 추가
         set_get_gd_order(gd_order);             // 발주내용 추가
         set_A_order_list(temp2);                // 발주자재목록 내용 추가
         set_cancel_doing(cancel_doing_cnt);     // 발주취소상태 내용 추가
-        set_gd_cancel(gd_cancel);               // 발주취소 목록 내용 추가
+        set_gd_cancel(cancel_result);               // 발주취소 목록 내용 추가
 
     }
     /**-------------------------발주정보수정하기 페이지 이동---------------------------**/
@@ -198,7 +204,7 @@ export default function OrderDtail({route,navigation}) {
                             get_gd_order:get_gd_order,
                             A_order_list:A_order_list,
                         }
-                        return navigation.replace('수정하기',data);
+                        return navigation.navigate('수정하기',data);
                     }
                 }
             ]);
@@ -459,6 +465,10 @@ export default function OrderDtail({route,navigation}) {
     let disable_cancel_chk = (disable_cancel.includes('Y'));
 
     console.log(disable_cancel_chk,'/전체취소 가능여부 확인');
+    const go_gd_cancel = (gd_cancel_uid) => {
+        navigation.navigate('취소내역상세',{gd_cancel_uid:gd_cancel_uid})
+    }
+
 
     return (
         <>
@@ -675,6 +685,32 @@ export default function OrderDtail({route,navigation}) {
                         </View>
                     </View>
                 )}
+                {(get_gd_cancel.length > 0 && Number(cancel_doing) > 0 ) && (
+                    <>
+                        {get_gd_cancel.map((val,idx)=>(
+                            <>
+                                {(idx === 0) && (
+                                    <View style={[mt2, {padding:5,}]}>
+                                        <TouchableOpacity onPress={()=>go_gd_cancel(val.gd_cancel_uid)} style={[mb3]}>
+                                            <View style={[btn_danger,wt10,{borderRadius:10,}]}>
+                                                <Text style={[h16,text_white,text_center,pt1,pb1]}>
+                                                    {(get_gd_order.ord_status === 'deli_done') && (
+                                                        <>반품신청 상세보기</>
+                                                    )}
+                                                    {(get_gd_order.ord_status === 'deli_ready' || get_gd_order.ord_status === 'pay_done') && (
+                                                        <>발주취소 상세보기</>
+                                                    )}
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                )}
+                            </>
+                        ))}
+
+                    </>
+                )}
+                
                 {/**-----------------------------------------------------------결제금액----------------------------------------------------------------**/}
                 {(
                     get_gd_order.ord_status === 'pay_ready'
@@ -698,8 +734,9 @@ export default function OrderDtail({route,navigation}) {
                                                 <View style={[d_flex, justify_content_between, align_items_center]}>
                                                     <Text style={{marginRight:10}}>포인트 전액 사용</Text>
                                                     <Checkbox style={styles.all_check} color={"#4630eb"}
-                                                              onValueChange={all_point}
-                                                              value={(get_gd_order.settleprice === point_use)}
+                                                              ref={val=>(Chkinput.current[0] = val)}
+                                                              onValueChange={(chk)=>all_point(chk)}
+                                                              value={all_point_chk}
                                                     />
                                                 </View>
                                             </View>
@@ -707,6 +744,7 @@ export default function OrderDtail({route,navigation}) {
                                                        onChangeText={( point_use )=>point_use_input(" point_use ",point_use)}
                                                        placeholder="사용하실 포인트를 입력해주세요."
                                                        keyboardType="number-pad"
+                                                       defaultValue={`0`}
                                                        value={`${point_use}`}
                                             />
                                         </View>
@@ -839,8 +877,14 @@ export default function OrderDtail({route,navigation}) {
                 ) && (
                     <View style={[bg_gray,styles.btn_default]}>
                         <TouchableOpacity onPress={mod_recv_info}>
-                            <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: 10,}]}>
-                                <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
+                            <View style={[d_flex, justify_content_center, align_items_center, {paddingBottom: (get_gd_order.ord_status === 'pay_ready') ? 20 : 10,}]}>
+                                {(get_gd_order.ord_status === 'pay_ready') ? (
+                                    <></>
+                                ) : (
+                                    <>
+                                        <Text style={[text_light]}>관리자확인 후 결제가 가능합니다.</Text>
+                                    </>
+                                )}
                             </View>
                             <Text style={[{textAlign: "center", color: "#fff", fontSize: 18,}]}>
                                 수정하기
@@ -960,15 +1004,15 @@ export default function OrderDtail({route,navigation}) {
         /**----------------총 결제금액은 자재가격 + 요청옵션비 + 배송비 + 포인트----------------**/
         // 총 결제금액
         let point_use_chk = (point_use > get_gd_order.settleprice) ?  get_gd_order.settleprice : point_use;
-        let Settlekindprice = Number(get_gd_order.goodsprice)+Number(get_gd_order.deli_price)+Number(get_gd_order.tot_opt_price) - Number(point_use_chk);
-        let cancel_detail = () => {
-            console.log('[주문취소 상세페이지로 이동]');
-            let data = {
-                gd_order_uid    :get_gd_order.gd_order_uid,
-                gd_cancel_uid   :get_gd_order.gd_cancel_uid
-            }
-            return navigation.navigate(`취소내역상세`,data);
-        }
+        // let Settlekindprice = Number(get_gd_order.goodsprice)+Number(get_gd_order.deli_price)+Number(get_gd_order.tot_opt_price) - Number(point_use_chk);
+        // let cancel_detail = () => {
+        //     console.log('[주문취소 상세페이지로 이동]');
+        //     let data = {
+        //         gd_order_uid    :get_gd_order.gd_order_uid,
+        //         gd_cancel_uid   :get_gd_order.gd_cancel_uid
+        //     }
+        //     return navigation.navigate(`취소내역상세`,data);
+        // }
 
         return(
             <>
@@ -979,7 +1023,7 @@ export default function OrderDtail({route,navigation}) {
                         <Text style={[h18]}>결제금액</Text>
                         {(get_gd_order.settlekind === 'bank') && (
                             <>
-                                {(get_gd_order.pay_status === 'ready' || get_gd_order.ord_status === 'pay_done') && (
+                                {(get_gd_order.pay_status === 'ready') && (
                                     <Text style={[text_danger]}>(입금대기)</Text>
                                 )}
                             </>
@@ -990,10 +1034,10 @@ export default function OrderDtail({route,navigation}) {
                         {/**----------------------발주신청일--------------------------**/}
                         {(get_gd_order.order_date) && (
                             <>
-                                <View style={[styles.wt25]}>
+                                <View style={[styles.wt30]}>
                                     <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>발주신청일시</Text>
                                 </View>
-                                <View style={[styles.wt75]}>
+                                <View style={[styles.wt70]}>
                                     <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
                                         {DateChg(get_gd_order.order_date)} {get_gd_order.order_time}
                                     </Text>
@@ -1004,10 +1048,10 @@ export default function OrderDtail({route,navigation}) {
                     {/**----------------------결제요청일--------------------------**/}
                     {(get_gd_order.pay_status_date !== '0000-00-00') && (
                         <View style={[flex]}>
-                            <View style={[styles.wt25]}>
+                            <View style={[styles.wt30]}>
                                 <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>결제요청일시</Text>
                             </View>
-                            <View style={[styles.wt75]}>
+                            <View style={[styles.wt70]}>
                                 <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
                                     {DateChg(get_gd_order.pay_status_date)} {get_gd_order.pay_status_time}
                                 </Text>
@@ -1019,10 +1063,10 @@ export default function OrderDtail({route,navigation}) {
                         <>
                             {(get_gd_order.settlekind) && (
                                 <View style={[flex]}>
-                                    <View style={[styles.wt25]}>
+                                    <View style={[styles.wt30]}>
                                         <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>결제유형</Text>
                                     </View>
-                                    <View style={[styles.wt75]}>
+                                    <View style={[styles.wt70]}>
                                         <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
                                             {settleKind(get_gd_order.settlekind)}
                                             {/*{get_gd_order.settlekind}*/}
@@ -1035,23 +1079,23 @@ export default function OrderDtail({route,navigation}) {
                     {/**----------------------입금계좌정보--------------------------**/}
                     {(get_gd_order.settlekind === 'bank') && (
                         <View style={[flex]}>
-                            <View style={[styles.wt25]}>
+                            <View style={[styles.wt30]}>
                                 <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>입금계좌</Text>
                             </View>
-                            <View style={[styles.wt75]}>
+                            <View style={[styles.wt70]}>
                                 <Text style={[styles.GoodsDetail_info_txt_val,h12, styles.GoodsDetail_price_val]}>
                                     {BankCode.map(label=>label.value === get_gd_order.bankAccount && label.label)}
                                 </Text>
                             </View>
                         </View>
                     )}
-                    {/**----------------------결제요청일(* 발주검수 완료후 결제대기시에 노출한다.)--------------------------**/}
-                    {(get_gd_order.pay_date) && (
+                    {/**----------------------결제완료일시(* 발주검수 완료후 결제대기시에 노출한다.)--------------------------**/}
+                    {(get_gd_order.pay_date !== '') && (
                         <View style={[flex]}>
-                            <View style={[styles.wt25]}>
+                            <View style={[styles.wt30]}>
                                 <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>결제완료일시</Text>
                             </View>
-                            <View style={[styles.wt75]}>
+                            <View style={[styles.wt70]}>
                                 <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
                                     {DateChg(get_gd_order.pay_date)} {get_gd_order.pay_time}
                                 </Text>
@@ -1061,10 +1105,10 @@ export default function OrderDtail({route,navigation}) {
                     {/**----------------------자재 가격--------------------------**/}
                     {(get_gd_order.goodsprice) && (
                         <View style={[flex]}>
-                            <View style={[styles.wt25]}>
-                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재가격</Text>
+                            <View style={[styles.wt30]}>
+                                <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재가격 합계</Text>
                             </View>
-                            <View style={[styles.wt75]}>
+                            <View style={[styles.wt70]}>
                                 <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
                                     {Price(get_gd_order.goodsprice)}원
                                 </Text>
@@ -1078,10 +1122,10 @@ export default function OrderDtail({route,navigation}) {
                             {(get_gd_order.ord_status !== 'ord_ready' && get_gd_order.ord_status !== 'ord_doing') && (
                                 <>
                                     <View style={[flex]}>
-                                        <View style={[styles.wt25]}>
-                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>옵션요청비</Text>
+                                        <View style={[styles.wt30]}>
+                                            <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>요청사항 합계</Text>
                                         </View>
-                                        <View style={[styles.wt75]}>
+                                        <View style={[styles.wt70]}>
                                             <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
                                                 {Price(get_gd_order.tot_opt_price)}원
                                             </Text>
@@ -1097,10 +1141,10 @@ export default function OrderDtail({route,navigation}) {
                             {(get_gd_order.ord_status !== 'ord_ready' && get_gd_order.ord_status !== 'ord_doing') && (
                                 <>
                                     <View style={[flex]}>
-                                        <View style={[styles.wt25]}>
+                                        <View style={[styles.wt30]}>
                                             <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>배송비</Text>
                                         </View>
-                                        <View style={[styles.wt75]}>
+                                        <View style={[styles.wt70]}>
                                             <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
                                                 {Price(get_gd_order.deli_price)}원
                                             </Text>
@@ -1122,10 +1166,10 @@ export default function OrderDtail({route,navigation}) {
                             {(get_gd_order.settlekind === '') ? (
                                 <>
                                     <View style={[flex]}>
-                                        <View style={[styles.wt25]}>
+                                        <View style={[styles.wt30]}>
                                             <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>사용 포인트</Text>
                                         </View>
-                                        <View style={[styles.wt75]}>
+                                        <View style={[styles.wt70]}>
                                             <Text style={[styles.GoodsDetail_info_txt_val,text_danger, styles.GoodsDetail_price_val]}>
                                                 {(0 >= Number(point_use)) ? (
                                                     <>
@@ -1151,10 +1195,10 @@ export default function OrderDtail({route,navigation}) {
                             ):(
                                 <>
                                     <View style={[flex]}>
-                                        <View style={[styles.wt25]}>
+                                        <View style={[styles.wt30]}>
                                             <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>사용 포인트</Text>
                                         </View>
-                                        <View style={[styles.wt75]}>
+                                        <View style={[styles.wt70]}>
                                             <Text style={[styles.GoodsDetail_info_txt_val,text_danger,styles.GoodsDetail_price_val]}>
                                                 {(0 >= Number(get_gd_order.point_use)) ? (
                                                     <>
@@ -1178,10 +1222,10 @@ export default function OrderDtail({route,navigation}) {
                             {(get_gd_order.settlekind === '') ? (
                                 <>
                                     <View style={[flex]}>
-                                        <View style={[styles.wt25]}>
+                                        <View style={[styles.wt30]}>
                                             <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>총 결제금액</Text>
                                         </View>
-                                        <View style={[styles.wt75]}>
+                                        <View style={[styles.wt70]}>
                                             <Text style={[styles.GoodsDetail_info_txt_val,h16,text_primary]}>
                                                 {Price(get_gd_order.settleprice - point_use)}원
                                             </Text>
@@ -1191,10 +1235,10 @@ export default function OrderDtail({route,navigation}) {
                             ):(
                                 <>
                                     <View style={[flex]}>
-                                        <View style={[styles.wt25]}>
+                                        <View style={[styles.wt30]}>
                                             <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>총 결제금액</Text>
                                         </View>
-                                        <View style={[styles.wt75]}>
+                                        <View style={[styles.wt70]}>
                                             <Text style={[styles.GoodsDetail_info_txt_val,h16,text_primary]}>
                                                 {(0 >= Number(get_gd_order.settleprice)) ? (
                                                     <>
@@ -1214,10 +1258,10 @@ export default function OrderDtail({route,navigation}) {
                     ) : (
                         <>
                             <View style={[flex]}>
-                                <View style={[styles.wt25]}>
+                                <View style={[styles.wt30]}>
                                     <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>총 결제금액</Text>
                                 </View>
-                                <View style={[styles.wt75]}>
+                                <View style={[styles.wt70]}>
                                     <Text style={[styles.GoodsDetail_info_txt_val,h16,text_primary]}>
                                         {(0 >= Number(get_gd_order.settleprice)) ? (
                                             <>
