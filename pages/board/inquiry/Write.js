@@ -166,7 +166,8 @@ export default function Inquirybd_data({route, navigation}) {
                                 <Text style={styles.inputTopText}>내용</Text>
                                 <TextInput
                                     onChangeText={(bd_contents) => goInput("bd_contents", bd_contents)} value={bd_data.bd_contents}
-                                    style={textarea} multiline={true} numberOfLines={4}/>
+                                    style={textarea} multiline={true} numberOfLines={4}
+                                />
                             </View>
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>첨부파일</Text>

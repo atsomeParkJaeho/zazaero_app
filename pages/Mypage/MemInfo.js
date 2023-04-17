@@ -64,6 +64,7 @@ export default function MemInfo({route, navigation}) {
     const [mem_biz_paper,       set_mem_biz_paper]          = useState([]);
     const [mem_bank_paper,      set_mem_bank_paper]         = useState([]);
     const [selectedImages, setSelectedImages]               = useState([]);   // 첨부이미지
+    const [get_file, set_file]                              = useState([]);
     const Update = useIsFocused();
 
 
@@ -96,11 +97,11 @@ export default function MemInfo({route, navigation}) {
 
         get_mem_info(Member).then((res) => {
             if(res) {
-                const {result, mem_info} = res.data;
+                const {result, mem_info,A_file} = res.data;
                 console.log()
                 if(result === 'OK') {
                     setMemInfo(mem_info);
-                    
+                    set_file(A_file);
                 }
                 if(result === 'NG') {
                     console.log('비정상');
@@ -254,6 +255,7 @@ export default function MemInfo({route, navigation}) {
     console.log(MemInfo,'/[들어간 값]');
     console.log(mem_biz_paper,'/[사업자등록증 사본]');
     console.log(mem_bank_paper,'/[통장 사본]');
+    console.log(get_file,'/[이미지]');
 
     return (
         <>
