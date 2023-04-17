@@ -205,15 +205,12 @@ export const reset_pw = async (FindPw) => {
         mem_id          :FindPw.mem_id,
         mem_pw          :FindPw.mem_pw,
     }
-
     console.log(data,'/[파라이터값 확인]');;
-
     let res = await axios.post(`http://49.50.162.86:80/ajax/UTIL_app.php`,data,{
         headers: {
             'Content-type': 'multipart/form-data'
         }
     });
-
     return res;
 }
 

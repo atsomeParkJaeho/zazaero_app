@@ -36,6 +36,7 @@ import NoticeView from '../pages/board/notice/NoticeView';                      
 import Cscenter from '../pages/Cscenter';                                    //고객센터
 import inquiryWrite from '../pages/board/inquiry/Write';                     //1:1문의 작성
 import inquiryList from '../pages/board/inquiry/List';                       //1:1문의 목록
+import inquiryView from '../pages/board/inquiry/View';                       //1:1문의 상세
 import Provision from '../pages/Provision';                                  //개인정보처리방침
 
 
@@ -309,6 +310,9 @@ const StackNavigator = () => {
                     cardStyleInterpolator: forFade
                 }}/>
                 <Stack.Screen name="1:1문의목록" component={inquiryList} options={{
+                    cardStyleInterpolator: forFade
+                }}/>
+                <Stack.Screen name="1:1문의상세" component={inquiryView} options={{
                     cardStyleInterpolator: forFade
                 }}/>
                 <Stack.Screen name="공지사항" component={NoticeList} options={{

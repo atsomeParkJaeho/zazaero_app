@@ -498,14 +498,14 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
     }
 
     console.log(data,'/ 발주취소 데이터 확인');
-    //
-    // let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', data,{
-    //     headers: {
-    //         'Content-type': 'multipart/form-data'
-    //     }
-    // });
-    //
-    // return res;
+
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', data,{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
+    return res;
 }
 
 export const img_upload_test = async (selectedImages) =>{

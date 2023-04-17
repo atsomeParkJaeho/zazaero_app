@@ -73,7 +73,7 @@ export default function InquiryWrite({navigation,route}) {
         }).then((res)=>{
             if(res) {
                 alert('문의하기에 등록되었습니다.');
-                navigation.navigate('나의 문의내역');
+                navigation.navigate('1:1문의목록');
             } else {
                 alert('연결실패');
             }
@@ -197,10 +197,6 @@ export default function InquiryWrite({navigation,route}) {
                                             </View>
                                         </>
                                     )}
-
-                                    {/*<TouchableOpacity onPress={upload_test} style={[styles.button,bg_primary]}>*/}
-                                    {/*    <Text style={[h13,text_center,text_white]}>이미지 업로드 테스트</Text>*/}
-                                    {/*</TouchableOpacity>*/}
                                 </View>
                                 {/**/}
                             </View>
