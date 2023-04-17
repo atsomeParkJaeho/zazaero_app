@@ -135,7 +135,7 @@ export default function MemInfo({route, navigation}) {
 
     //===============================================
     const [selectedImages, setSelectedImages] = useState([]);   // 첨부이미지
-    const MAX_IMAGES = 1;
+    const MAX_IMAGES = 2;
 
     const takePicture = async () => {
         let data = {
