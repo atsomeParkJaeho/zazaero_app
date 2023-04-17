@@ -221,7 +221,7 @@ export const mod_mem_info = async (Member, MemInfo, get_mem_biz_paper, get_mem_b
     let mem_biz_paper = [
         {
             filename    :(get_mem_biz_paper.filename) ? get_mem_biz_paper.filename:'',
-            uri         :(Platform.OS === 'ios') ? get_mem_biz_paper.uri.replace('file://','') : get_mem_biz_paper.uri,
+            uri         :get_mem_biz_paper.uri,
             base64      :get_mem_biz_paper.base64,
             type        :'image',
         }
@@ -230,7 +230,7 @@ export const mod_mem_info = async (Member, MemInfo, get_mem_biz_paper, get_mem_b
     let mem_bank_paper = [
         {
             filename    :(get_mem_bank_paper.filename) ? get_mem_bank_paper.filename:'',
-            uri         :(Platform.OS === 'ios') ? get_mem_bank_paper.uri.replace('file://','') : get_mem_bank_paper.uri,
+            uri         :get_mem_bank_paper.uri,
             base64      :get_mem_bank_paper.base64,
             type        :'image',
         }
