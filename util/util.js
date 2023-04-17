@@ -115,255 +115,15 @@ const locale = {
 // 경로
 export const At_db = 'http://49.50.162.86:80';
 
-
-// 자재목록
-export const goodsList = [
-    {
-        goods_uid:"125",
-        goods_name:"일반석고보드 9.5T X 900 X 1800",
-        goods_price:"3,410",
-        goods_wish_chk:"N",
-        goods_cart_chk:false,
-        goods_guid_link:"발주일로부터 5일 소요",
-    },
-    {
-        goods_uid:"115",
-        goods_name:"라이트 브라운 테라조 포쉐린 타일[300*300] 일반석고보드",
-        goods_price:"3,410",
-        goods_wish_chk:"N",
-        goods_cart_chk:false,
-        goods_guid_link:"발주일로부터 3일 소요",
-    },
-    {
-        goods_uid:"119",
-        goods_name:"도배장판",
-        goods_price:"3,410",
-        goods_wish_chk:"N",
-        goods_cart_chk:false,
-        goods_guid_link:"즉시 발주가능",
-    },  {
-        goods_uid:"125",
-        goods_name:"일반석고보드 9.5T X 900 X 1800",
-        goods_price:"3,410",
-        goods_wish_chk:"N",
-        goods_cart_chk:false,
-        goods_guid_link:"발주일로부터 5일 소요",
-    },
-    {
-        goods_uid:"115",
-        goods_name:"라이트 브라운 테라조 포쉐린 타일[300*300] 일반석고보드",
-        goods_price:"3,410",
-        goods_wish_chk:"N",
-        goods_cart_chk:false,
-        goods_guid_link:"발주일로부터 3일 소요",
-    },
-    {
-        goods_uid:"119",
-        goods_name:"도배장판",
-        goods_price:"3,410",
-        goods_wish_chk:"N",
-        goods_cart_chk:false,
-        goods_guid_link:"즉시 발주가능",
-    },
-    {
-        goods_uid:"125",
-        goods_name:"일반석고보드 9.5T X 900 X 1800",
-        goods_price:"3,410",
-        goods_wish_chk:"N",
-        goods_cart_chk:false,
-        goods_guid_link:"발주일로부터 5일 소요",
-    },
-    {
-        goods_uid:"115",
-        goods_name:"라이트 브라운 테라조 포쉐린 타일[300*300] 일반석고보드",
-        goods_price:"3,410",
-        goods_wish_chk:"N",
-        goods_cart_chk:false,
-        goods_guid_link:"발주일로부터 3일 소요",
-    },
-    {
-        goods_uid:"119",
-        goods_name:"도배장판",
-        goods_price:"3,410",
-        goods_wish_chk:"N",
-        goods_cart_chk:false,
-        goods_guid_link:"즉시 발주가능",
-    },
-];
-
-//발주상세
-// 자재목록
-export const goodsDetail = [
-    {
-
-        goods_uid:"306",                                        //상품번호
-        goods_1thct:"목/형틀공사",                                    //1차카테고리
-        goods_2thct:"석고/보드류",                                    //2차카테고리
-        goods_3thct:"E보드",                                          //3차카테고리
-        goods_name:"일반석고보드 9.5T X 900 X 1800",                  //상품명
-        goods_price:"8000",                                         //판매가
-        goods_wish_chk:"N",                                         //즐겨찾기 상태
-        goods_cart_chk:false,                                       //장바구니 상태
-        goods_guid_link:"당일출고 가능합니다.",                         //가이드 멘트
-    },
-];
-
-// 발주현황 샘플
-
-// 발주현황 (order_status) : ready(발주신청),doing(발주검수중), done(검수완료)
-
-// 결제상태 (pay_status) : ready(결제대기), done(결제완료)
-
-// 배송상태 (deli_status) : raedy(배송준비), doing(배송중), done(배송완료)
-
-
-export const order_List = [
-
-    {
-        user_id: "1",                                                 //아이디값
-        goods_num: "A_123451231",                                     //발주번호
-        Construction_name: "호반베르디움 102동 604호 아파트리모델링",                //공사명
-        Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
-        Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
-        order_type: "ready",                                     //발주현황
-        order_status  :"done",      // 발주현황
-        pay_status    :"done",      // 결제상태
-        deli_status   :"raedy",      // 배송상태
-
-    },
-    {
-        user_id: "1",                                                 //아이디값
-        goods_num: "B_123451231",                                     //발주번호
-        Construction_name: "스타리우빌딩 3층 상가리모델링",       //공사명
-        Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
-        Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
-        order_type: "request",                                     //발주현황
-        order_status  :"done",      // 발주현황
-        pay_status    :"ready",      // 결제상태
-        deli_status   :"doing",      // 배송상태
-    },
-    {
-        user_id: "1",                                                 //아이디값
-        goods_num: "C_123451231",                                     //발주번호
-        Construction_name: "석촌호수공원 분수대 옆 호반베르디움 102동 604호 아파트리모델링",       //공사명
-        Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
-        Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
-        order_type: "ready",                                     //발주현황
-        order_status  :"doing",      // 발주현황
-        pay_status    :"ready",      // 결제상태
-        deli_status   :"raedy",      // 배송상태
-    },
-    {
-        user_id: "1",                                                 //아이디값
-        goods_num: "A_123451231",                                     //발주번호
-        Construction_name: "스타리우빌딩 3층 상가리모델링",       //공사명
-        Desired_Delivery_Date: "2022-05-11 19:00 도착예정",                   //희망배송일
-        Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
-        order_type: "request",                                     //발주현황
-        order_status  :"done",      // 발주현황
-        pay_status    :"done",      // 결제상태
-        deli_status   :"done",      // 배송상태
-    },
-
-];
-
-//취소/반품내역
-export const cancel_List = [
-
-    {
-        user_id: "1",                                                 //아이디값
-        goods_num: "608505015001",                                     //발주번호
-        Desired_Delivery_Date: "2023-03-17 19:00",                   //취소일
-        Construction_name: "호반베르디움 102동 604호 아파트리모델링",                //공사명
-
-        Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
-        cancel_type: "doing",                                               //취소상태
-        cancel_type2: "부분취소",                                            //취소상태
-
-
-    },
-    {
-        user_id: "1",                                                 //아이디값
-        goods_num: "608505015001",                                     //발주번호
-        Desired_Delivery_Date: "2023-03-17 19:00",                   //취소일
-        Construction_name: "호반베르디움 102동 604호 아파트리모델링",                //공사명
-
-        Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
-        cancel_type: "done",                                               //취소상태
-        cancel_type2: "부분취소",                                            //취소상태
-
-
-    },
-    {
-        user_id: "1",                                                 //아이디값
-        goods_num: "608505015001",                                     //발주번호
-        Desired_Delivery_Date: "2023-03-17 19:00",                   //취소일
-        Construction_name: "스타리우빌딩 3층 상가리모델링",       //공사명
-
-        Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
-        cancel_type: "doing",                                            //취소상태
-        cancel_type2: "전체취소",                                            //취소상태
-    },
-    {
-        user_id: "1",                                                 //아이디값
-        goods_num: "608505015001",                                     //발주번호
-        Desired_Delivery_Date: "2023-03-17 19:00",                   //취소일
-        Construction_name: "스타리우빌딩 3층 상가리모델링",       //공사명
-
-        Delivery_destination_name: "경기 성남시 분당구 구미로 16 호반베르디움",       //배송지
-        cancel_type: "done",                                            //취소상태
-        cancel_type2: "전체취소",                                            //취소상태
-    },
-
-
-];
-
-//취소상세
-export const cancel_d_List = [
-
-    {
-        user_id: "1",                                                   //아이디값
-        goods_num: "165196846",                                         //상품번호
-        title: "일반석고보드 9.5T X 900 X 1800",                          //상품명
-        goods_thum: "../../assets/img/goods_thum1.jpg",             //상품이미지
-        count: "15",                                                    //수량
-        can_count: "5",                                                    //취소수량
-        price: "3,5000",                                                //판매가
-        total_price: "150,000",                                         //총금액
-
-
-    },
-    {
-        user_id: "1",                                                   //아이디값
-        goods_num: "165196846",                                         //상품번호
-        title: "방염벽지_F시리즈(1롤=5평)_1.06m×15.6m",                          //상품명
-        count: "10",                                                    //수량
-        can_count: "5",                                                    //취소수량
-        price: "3,5000",                                                //판매가
-        total_price: "100,000",                                         //총금액
-    },
-    {
-        user_id: "1",                                                   //아이디값
-        goods_num: "165196846",                                         //상품번호
-        title: "방염벽지_F시리즈(1롤=5평)_1.06m×15.5m",                          //상품명
-        count: "7",                                                    //수량
-        can_count: "3",                                                    //취소수량
-        price: "3,5000",                                                //판매가
-        total_price: "50,000",                                         //총금액
-    },
-
-
-];
-
-
-
-
-
-
-
 // =================가격표 설정=====================//
 export const Price = (text) => {
-    return String(text).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    if(text) {
+        if(0 > Number(text) ) {
+            return String(0);
+        } else {
+            return String(text).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+    }
 }
 
 // =================전화번호 입력제어=====================//
@@ -435,17 +195,19 @@ export const priName = (key) => {
 // 주문상태 정의 함수화
 
 export const ordStatus = (key) => {
-    if(key === 'ord_ready')         {return '발주신청'; }
-    if(key === 'ord_doing')         {return '발주검수중'; }
-    if(key === 'ord_edit')          {return '발주수정중'; }
-    if(key === 'ord_done')          {return '발주검수완료'; }
-    if(key === 'pay_try')           {return '결제시도'; }
-    if(key === 'pay_err')           {return '결제에러'; }
-    if(key === 'pay_ready')         {return '결제대기'; }
-    if(key === 'pay_done')          {return '결제완료'; }
-    if(key === 'deli_ready')        {return '배송대기'; }
-    if(key === 'deli_doing')        {return '배송중'; }
-    if(key === 'deli_done')         {return '배송완료'; }
+    if(key) {
+        if(key === 'ord_ready')         {return '발주신청'; }
+        if(key === 'ord_doing')         {return '발주검수중'; }
+        if(key === 'ord_edit')          {return '발주수정중'; }
+        if(key === 'ord_done')          {return '발주검수완료'; }
+        if(key === 'pay_try')           {return '결제시도'; }
+        if(key === 'pay_err')           {return '결제에러'; }
+        if(key === 'pay_ready')         {return '결제대기'; }
+        if(key === 'pay_done')          {return '결제완료'; }
+        if(key === 'deli_ready')        {return '배송대기'; }
+        if(key === 'deli_doing')        {return '배송중'; }
+        if(key === 'deli_done')         {return '배송완료'; }
+    }
 }
 export const payStatus = (key) => {
     if(key === 'ready')         {return '입금대기'; }
@@ -984,12 +746,16 @@ export const EmailDomain = [
 ];
 
 export const cancelType = (type) => {
-    if(type === 'part') { return '부분취소'; }
-    if(type === 'all')  { return '전체취소'; }
+    if(type) {
+        if(type === 'part') { return '부분취소'; }
+        if(type === 'all')  { return '전체취소'; }
+    }
 }
 export const cancelStatus = (type) => {
-    if(type === 'none') { return ''; }
-    if(type === 'ready')  { return '처리중'; }
-    if(type === 'done')  { return '취소완료'; }
+    if(type) {
+        if(type === 'none') { return ''; }
+        if(type === 'ready')  { return '처리중'; }
+        if(type === 'done')  { return '취소완료'; }
+    }
 }
 

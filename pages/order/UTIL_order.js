@@ -510,36 +510,42 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
 
 export const img_upload_test = async (selectedImages) =>{
 
-    let temp = selectedImages.map(val=>{
-        return {
-            filename    :(Platform.OS === 'android') ? val.uri.split('/').pop() : val.filename,
-            type        :val.type,
-            uri         :(Platform.OS === 'ios') ? val.uri.replace('file://','') : val.uri,
-        }
-    })
+    // let temp = selectedImages.map(val=>{
+    //     return {
+    //         filename    :(Platform.OS === 'android') ? val.uri.split('/').pop() : val.filename,
+    //         type        :val.type,
+    //         uri         :(Platform.OS === 'ios') ? val.uri.replace('file://','') : val.uri,
+    //     }
+    // })
+    //
+    // let data = new FormData();
+    // data.append(`img_1`,{
+    //     filename    :(Platform.OS === 'android') ? temp.uri.split('/').pop() : temp.filename,
+    //     type        :temp.type,
+    //     uri         :(Platform.OS === 'ios') ? temp.uri.replace('file://','') : temp.uri,
+    // })
 
-    let data = new FormData();
-    data.append(`img_1`,{
-        filename    :(Platform.OS === 'android') ? temp.uri.split('/').pop() : temp.filename,
-        type        :temp.type,
-        uri         :(Platform.OS === 'ios') ? temp.uri.replace('file://','') : temp.uri,
-    })
-
-
-
-
-
-    console.log(selectedImages,'/보내는 파라미터');
+    let data = {
+        act_type    :'img_upload_test',
+        img_1       :selectedImages.map((val)=>{
+            return {
+                filename    :(val.filename) ? val.filename:'',
+                uri         :(Platform.OS === 'ios') ? val.uri.replace('file://','') : val.uri,
+                base64      :val.base64,
+                type        :'image',
+            }
+        })
+    }
+    // console.log(selectedImages,'/보내는 파라미터');
     console.log(data,'/[act_type : img_upload_test]');
 
-    // let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', data,{
-    //     headers: {
-    //         'Content-type': 'multipart/form-data'
-    //     }
-    // });
-    //
-    // return res;
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', data,{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
 
+    return res;
 }
 
 

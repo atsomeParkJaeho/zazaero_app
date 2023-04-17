@@ -63,20 +63,20 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let you share them with your friends."
+          "photosPermission": "$(PRODUCT_NAME)이(가) 사용자의 사진에 접근허용 합니다."
         }
       ],
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
+          "cameraPermission": "$(PRODUCT_NAME)이(가) 사용자의 카메라에 사진을 허묭합니다."
         }
       ],
       [
         "expo-media-library",
         {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
-          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
+          "photosPermission": "$(PRODUCT_NAME)이(가) 사용자의 사진에 접근허용 합니다.",
+          "savePhotosPermission": "$(PRODUCT_NAME)이(가) 사용자의 앨범에 저장을 허용합니다.",
           "isAccessMediaLocationEnabled": true
         }
       ]
