@@ -95,8 +95,6 @@ import {all_cancel_push, part_cancel_push} from "../../push/UTIL_push";
 
 
 export default function OrderDtail({route,navigation}) {
-
-
     /**------------페이지 파라미터-----------**/
     const {gd_order_uid, imp_log, addr1, zonecode, A_goods_list} = route.params;
     /**--------------------------------------필수 정보사항--------------------------------------------------**/
@@ -105,16 +103,16 @@ export default function OrderDtail({route,navigation}) {
     /**-----------------------------------------수정 상태 설정-------------------------------------------------------**/
     const [Mod, setMod] = useState(false);          // 발주현황시 수정 변경가능
     /**--------------------------------------상태값 셋팅--------------------------------------------------**/
-    const [A_order_list,  set_A_order_list]              = useState([]);             // 발주상품상태정의
+    const [A_order_list,    set_A_order_list]              = useState([]);             // 발주상품상태정의
     const [BankCode,        setBankCode]                    = useState([]);             // 관리자 무통장입금계좌 출력
     const [PayMement,       setPayMement]                   = useState('bank');         // 결제창 노출 여부
     const [get_gd_order,    set_get_gd_order]                   = useState([]);
     const [cancel_doing,    set_cancel_doing]               = useState(0);
     const [Show_1,          setShow_1]                      = useState(false);
     const [Show_2,          setShow_2]                      = useState(false);           // 셀렉트창 노출 여부
-    const [get_gd_cancel, set_gd_cancel]                        = useState([]);             // 취소 리스트
+    const [get_gd_cancel,   set_gd_cancel]                        = useState([]);             // 취소 리스트
     //모달창 오픈
-    const [isModalVisible, setIsModalVisible]               = useState(false);
+    const [isModalVisible,  setIsModalVisible]               = useState(false);
     const [isModalVisible2, setIsModalVisible2]             = useState(false);
     const [isModalVisible3, setIsModalVisible3]             = useState(false);
     const [ret_order, set_ret_order]                        = useState({});
@@ -122,7 +120,7 @@ export default function OrderDtail({route,navigation}) {
     const [add_goods_list, set_add_goods_list]              = useState(false);
     const [A_goods, set_A_goods]                            = useState([]);
     const [get_mem_info, set_mem_info]                      = useState([]);
-    const [point_use, set_point_use]                        = useState(``);
+    const [point_use, set_point_use]                        = useState(0);
     const [all_point_chk, set_all_point_chk]                        = useState(false);
 
     const Chkinput = useRef([]);                // 입력값 위치 설정
@@ -154,10 +152,10 @@ export default function OrderDtail({route,navigation}) {
         }
     }
     const point_use_input = (name, value) => {
-        if(Number(value) > Number(get_gd_order.settleprice)) {
-            set_point_use(get_gd_order.settleprice);
-        } else {
+        if(value) {
             set_point_use(value);
+        } else {
+            set_point_use(``);
         }
     }
 
@@ -741,11 +739,11 @@ export default function OrderDtail({route,navigation}) {
                                                 </View>
                                             </View>
                                             <TextInput style={[input,{flex:1}]}
-                                                       onChangeText={( point_use )=>point_use_input(" point_use ",point_use)}
+                                                       onChangeText={( point_use )=>point_use_input("point_use",point_use)}
                                                        placeholder="사용하실 포인트를 입력해주세요."
                                                        keyboardType="number-pad"
-                                                       defaultValue={`0`}
-                                                       value={`${point_use}`}
+                                                       value={point_use}
+                                                       // value={point_use}
                                             />
                                         </View>
                                     </View>

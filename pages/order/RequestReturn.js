@@ -184,8 +184,7 @@ export default function RequestReturn({route, navigation}) {
         }
     }
     const order_Cancel = (cancel_type) => {
-
-
+        
         if(!ret_order.return_mem_name) {
             return Alert.alert(``,`반품 담당자 성명을 입력해주세요.`);
         }
@@ -195,7 +194,6 @@ export default function RequestReturn({route, navigation}) {
         if(!ret_order.return_req_memo) {
             return Alert.alert(``,`반품 사유 및 수거 요청 사항을 입력해주세요.`);
         }
-
 
         if(cancel_type === 'all') {
             Alert.alert('','자재를 전부 반품하시겠습니까?',[
