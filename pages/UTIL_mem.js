@@ -264,8 +264,8 @@ export const mod_mem_info = async (Member, MemInfo, get_mem_biz_paper, get_mem_b
         road_address            :MemInfo.road_address,
         mod_mem_uid             :Member,
         mem_uid                 :Member,
-        mem_biz_paper           :(mem_biz_paper)  ? [mem_biz_paper]   :'',
-        mem_bank_paper          :(mem_bank_paper) ? [mem_bank_paper]  :'',
+        mem_biz_paper           :(mem_biz_paper)  ? mem_biz_paper   :'',
+        mem_bank_paper          :(mem_bank_paper) ? mem_bank_paper  :'',
     }
 
     console.log(data,'/[데이터 확인]');
