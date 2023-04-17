@@ -56,7 +56,7 @@ import {
     align_items_end,
     h16,
     text_right,
-    pb2, ms2, mb2, text_gray, wt5, btn_outline_primary, wt10, mb5
+    pb2, ms2, mb2, text_gray, wt5, btn_outline_primary, wt10, mb5, wt4, me1
 } from '../../common/style/AtStyle';
 
 import CameraIcon from '../../icons/camera_icon.svg';
@@ -94,7 +94,7 @@ export default function RequestReturn({route, navigation}) {
     const [A_order_list, set_A_order_list] = useState([]);      // 발주자재 내역 리스트 가져오기
     const [cancel_doing, set_cancel_doing] = useState([]);      // 발주자재 내역 리스트 가져오기
     const [selectedImages, setSelectedImages] = useState([]);   // 첨부이미지
-    const MAX_IMAGES = 4;
+    const MAX_IMAGES = 2;
     const Update    = useIsFocused();
     useEffect(()=>{
 
@@ -319,7 +319,7 @@ export default function RequestReturn({route, navigation}) {
             if (selectedImages.length < MAX_IMAGES) {
                 setSelectedImages([...selectedImages, result]);
             } else {
-                return Alert.alert(``,`최대 4장까지만 등록 가능합니다.`);
+                return Alert.alert(``,`최대 2장까지만 등록 가능합니다.`);
             }
         }
     };
@@ -422,12 +422,19 @@ export default function RequestReturn({route, navigation}) {
                             <Text style={[]}>반품 자재 사진 등록</Text>
                         </View>
                         <View  style={[]} >
-                            <TouchableOpacity onPress={pickImage} style={[styles.button,bg_primary]}>
-                                <Text style={[h13,text_center,text_white]}>사진 선택하기</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={takePicture} style={[styles.button,bg_primary]}>
-                                <Text style={[h13,text_center,text_white]}>카메라로 사진 추가</Text>
-                            </TouchableOpacity>
+                            <View  style={[flex,justify_content_between]} >
+                                <View  style={[wt5]} >
+                                    <TouchableOpacity onPress={takePicture} style={[styles.button,bg_primary,ms1,me1]}>
+                                        <Text style={[h13,text_center,text_white]}>사진 촬영</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View  style={[wt5]} >
+                                    <TouchableOpacity onPress={pickImage} style={[styles.button,bg_primary,ms1,me1]}>
+                                        <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+
                             {(selectedImages !== undefined) && (
                                 <>
                                     <View style={[styles.imagesContainer]}>
@@ -445,9 +452,9 @@ export default function RequestReturn({route, navigation}) {
                                 </>
                             )}
 
-                            <TouchableOpacity onPress={upload_test} style={[styles.button,bg_primary]}>
-                                <Text style={[h13,text_center,text_white]}>이미지 업로드 테스트</Text>
-                            </TouchableOpacity>
+                            {/*<TouchableOpacity onPress={upload_test} style={[styles.button,bg_primary]}>*/}
+                            {/*    <Text style={[h13,text_center,text_white]}>이미지 업로드 테스트</Text>*/}
+                            {/*</TouchableOpacity>*/}
                         </View>
                         {/*==============반품사진 등록==============*/}
                     </View>
