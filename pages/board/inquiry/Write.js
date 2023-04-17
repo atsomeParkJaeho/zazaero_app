@@ -44,6 +44,7 @@ export default function Inquirybd_data({route, navigation}) {
     // 1. 글입력 상태 셋팅
     const [Member,  setMember] = useState(``);
     const [bd_data, set_bd_data]    = useState({
+        bd_type             :'inquiry',
         bd_title            :'',
         bd_contents         :'',
     }); // 작성폼 설정
@@ -55,7 +56,6 @@ export default function Inquirybd_data({route, navigation}) {
             Alert.alert(``,`실패`);
             return navigation.navigate('로그인');
         }});
-
         /**-----------------------------------게시물 수정시----------------------------------------**/
         if(route.params) {
             const {get_bd_data} = route.params;
@@ -84,10 +84,11 @@ export default function Inquirybd_data({route, navigation}) {
         Alert.alert(``,`게시물을 등록하시겠습니까?`,[
             {text:'취소', onPress:()=>{}},
             {text:"확인", onPress:()=>{
-                    save_bd(Member,bd_data,selectedImages).then((res)=>{
+                    save_bd(Member,bd_data,selectedImages,``).then((res)=>{
                         if(res) {
                             const {result} = res.data;
                             if(result === 'OK') {
+                                navigation.navigate(`1:1문의목록`);
                                 return Alert.alert(``,`등록이 완료되었습니다.`);
                             } else {
                                 return Alert.alert(``,`${result}`);
