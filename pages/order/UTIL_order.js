@@ -460,6 +460,7 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
     let A_order_uid = OrderGoodsList.map(val=>val.order_uid);
     let A_order_item_uid = OrderGoodsList.map(val=>String(val.A_sel_option.map(item=>Number(item.order_item_uid))));
     let A_order_item_cancel_cnt = OrderGoodsList.map(val=>String(val.cancel_cnt));
+
     let temp = selectedImages.map(val=>{
         return {
             filename    :(val.filename) ? val.filename:'',
@@ -468,10 +469,10 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
             type        :'image',
         }
     });
-    let ord_return_1 = temp.filter((val,idx)=>idx===0);
-    let ord_return_2 = temp.filter((val,idx)=>idx===1);
-    let ord_return_3 = temp.filter((val,idx)=>idx===2);
-    let ord_return_4 = temp.filter((val,idx)=>idx===3);
+    let ord_return1 = temp.filter((val,idx)=>idx===0);
+    let ord_return2 = temp.filter((val,idx)=>idx===1);
+    let ord_return3 = temp.filter((val,idx)=>idx===2);
+    let ord_return4 = temp.filter((val,idx)=>idx===3);
 
 
     console.log(A_goods_uid,'/ goods_uid');
@@ -479,7 +480,6 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
     console.log(A_order_item_uid,' / order_item_uid');
     console.log(A_order_item_cancel_cnt,' / 취소수량');
     console.log(cancel_type,' / 취소 타입');
-    // console.log(imagefile,' / 반품 이미지 출력');
 
     let data = {
         act_type                    :"pay_done_gd_cancel",
@@ -497,10 +497,10 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
         return_req_memo             :(ret_order.return_req_memo) ? ret_order.return_req_memo : '',
         cancel_type                 :cancel_type,
 
-        ord_return_1                :(ord_return_1) ? ord_return_1:'',
-        ord_return_2                :(ord_return_2) ? ord_return_2:'',
-        ord_return_3                :(ord_return_3) ? ord_return_3:'',
-        ord_return_4                :(ord_return_4) ? ord_return_4:'',
+        ord_return1                :(ord_return1) ? ord_return1:'',
+        ord_return2                :(ord_return2) ? ord_return2:'',
+        ord_return3                :(ord_return3) ? ord_return3:'',
+        ord_return4                :(ord_return4) ? ord_return4:'',
 
         
     }
@@ -517,43 +517,26 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
 }
 
 export const img_upload_test = async (selectedImages) =>{
-
-    // let temp = selectedImages.map(val=>{
-    //     return {
-    //         filename    :(Platform.OS === 'android') ? val.uri.split('/').pop() : val.filename,
-    //         type        :val.type,
-    //         uri         :(Platform.OS === 'ios') ? val.uri.replace('file://','') : val.uri,
-    //     }
-    // })
-    //
-    // let data = new FormData();
-    // data.append(`img_1`,{
-    //     filename    :(Platform.OS === 'android') ? temp.uri.split('/').pop() : temp.filename,
-    //     type        :temp.type,
-    //     uri         :(Platform.OS === 'ios') ? temp.uri.replace('file://','') : temp.uri,
-    // })
-
-    let data = {
-        act_type    :'img_upload_test',
-        img_1       :selectedImages.map((val)=>{
-            return {
-                filename    :(val.filename) ? val.filename:'',
-                uri         :(Platform.OS === 'ios') ? val.uri.replace('file://','') : val.uri,
-                base64      :val.base64,
-                type        :'image',
-            }
-        })
-    }
-    // console.log(selectedImages,'/보내는 파라미터');
-    console.log(data,'/[act_type : img_upload_test]');
-
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php', data,{
-        headers: {
-            'Content-type': 'multipart/form-data'
+    let temp = selectedImages.map(val=>{
+        return {
+            filename    :(val.filename) ? val.filename:'',
+            uri         :(Platform.OS === 'ios') ? val.uri.replace('file://','') : val.uri,
+            base64      :val.base64,
+            type        :'image',
         }
     });
+    let ord_retrun1 = temp.filter((val,idx)=>idx===0);
+    let ord_return2 = temp.filter((val,idx)=>idx===1);
+    let ord_return3 = temp.filter((val,idx)=>idx===2);
+    let ord_return4 = temp.filter((val,idx)=>idx===3);
 
-    return res;
+    let data = {
+        ord_retrun1                :(ord_retrun1) ? ord_retrun1:'',
+        ord_return2                :(ord_return2) ? ord_return2:'',
+        ord_return3                :(ord_return3) ? ord_return3:'',
+        ord_return4                :(ord_return4) ? ord_return4:'',
+    }
+    console.log(data,'/[업로드 테스트]');
 }
 
 

@@ -1,33 +1,41 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, useWindowDimensions} from 'react-native'
+import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, useWindowDimensions, Alert} from 'react-native'
 import logo from "../../../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
 import axios from "axios";
 import RenderHTML from "react-native-render-html";
 import {bg_gray, bg_primary, bg_white, h14, pb1, pt1, text_center, text_white} from "../../../common/style/AtStyle";
+import {get_Member} from "../../UTIL_mem";
+import {get_bd_detail} from "../UTIL_bd";
 
 export default function NoticeView({route, navigation}){
     console.log('상세내용');
     const {bd_uid} = route.params;
+    const [Member, setMember]          = useState(``);
     const [NoticeView, setNoticeView] = useState([]);
     useEffect(()=>{
-        let data = {
-            act_type    :'get_info',
-            bd_uid      :bd_uid,
-        }
-        axios.post('http://49.50.162.86:80/ajax/UTIL_bd.php',data,{
-            headers: {
-                'Content-type': 'multipart/form-data',
-            }
-        }).then((res)=>{
+        get_Member().then((res)=>{if(res) {setMember(res);} else {
+            Alert.alert(``,`실패`);
+            return navigation.navigate('로그인');
+        }});
+        get_bd_detail(bd_uid).then((res)=>{
             if(res) {
-                const {bd_data} = res.data;
-                setNoticeView(bd_data);
+                const {result,bd_data} = res.data;
+                if(result === 'OK') {
+                    setNoticeView(bd_data);
+                }  else {
+                    return Alert.alert(``,`${result}`);
+                }
             }
         });
-    },[]);
+    },[Member]);
 
-    console.log(NoticeView);
+
+    const form_mod = () => {
+
+    }
+
+    console.log(NoticeView.length,'/[게시판 상세]');
 
     return(
         <>
@@ -39,15 +47,20 @@ export default function NoticeView({route, navigation}){
                             <Text style={styles.NoticeView_title}>{NoticeView.bd_title}</Text>
                         </View>
                         <View style={styles.NoticeView_date_in}>
-                            <Text style={styles.NoticeView_date}>{NoticeView.reg_date} </Text>
+                            <Text style={styles.NoticeView_date}>{NoticeView.reg_date}</Text>
                         </View>
+                        <TouchableOpacity style={[bg_primary]} onPress={form_mod}>
+                            <Text>
+                                수정하기123123
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                     {/*=============상세내용===============*/}
                     <View style={styles.NoticeView_disc}>
                         <View style={styles.NoticeView_disc_in}>
                             <RenderHTML source={{html:`${NoticeView.bd_contents}`}}/>
                         </View>
-                        {(NoticeView.bd_reply) ? (
+                        {(NoticeView.bd_status_name === '답변완료') ? (
                             <>
                                 <View style={styles.reply}>
                                     <Text style={styles.NoticeView_title}>답변내용</Text>

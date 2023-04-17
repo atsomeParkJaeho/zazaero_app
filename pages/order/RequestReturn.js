@@ -427,6 +427,11 @@ export default function RequestReturn({route, navigation}) {
                                         <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
                                     </TouchableOpacity>
                                 </View>
+                                {/*<View  style={[wt5]} >*/}
+                                {/*    <TouchableOpacity onPress={pickImage} style={[styles.button,bg_primary,ms1,me1]}>*/}
+                                {/*        <Text style={[h13,text_center,text_white]}>사진 업로드 테스트</Text>*/}
+                                {/*    </TouchableOpacity>*/}
+                                {/*</View>*/}
                             </View>
 
                             {(selectedImages !== undefined) && (
