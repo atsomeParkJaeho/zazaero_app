@@ -460,16 +460,18 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
     let A_order_uid = OrderGoodsList.map(val=>val.order_uid);
     let A_order_item_uid = OrderGoodsList.map(val=>String(val.A_sel_option.map(item=>Number(item.order_item_uid))));
     let A_order_item_cancel_cnt = OrderGoodsList.map(val=>String(val.cancel_cnt));
-
-    // 2. 첨부파일 이미지 업로드
-    // let imagefile = selectedImages.map((val,idx)=>{
-    //     return {
-    //         img         :`img_${idx}`,
-    //         filename    :val.filename,
-    //         base64      :val.base64,
-    //     }
-    // });
-
+    let temp = selectedImages.map(val=>{
+        return {
+            filename    :(val.filename) ? val.filename:'',
+            uri         :(Platform.OS === 'ios') ? val.uri.replace('file://','') : val.uri,
+            base64      :val.base64,
+            type        :'image',
+        }
+    });
+    let ord_return_1 = temp.filter((val,idx)=>idx===0);
+    let ord_return_2 = temp.filter((val,idx)=>idx===1);
+    let ord_return_3 = temp.filter((val,idx)=>idx===2);
+    let ord_return_4 = temp.filter((val,idx)=>idx===3);
 
 
     console.log(A_goods_uid,'/ goods_uid');
@@ -494,6 +496,12 @@ export const order_cancel = async (OrderData, cancel_type, OrderGoodsList, Membe
         return_mem_mobile           :(ret_order.return_mem_mobile) ? ret_order.return_mem_mobile : '',
         return_req_memo             :(ret_order.return_req_memo) ? ret_order.return_req_memo : '',
         cancel_type                 :cancel_type,
+
+        ord_return_1                :(ord_return_1) ? ord_return_1:'',
+        ord_return_2                :(ord_return_2) ? ord_return_2:'',
+        ord_return_3                :(ord_return_3) ? ord_return_3:'',
+        ord_return_4                :(ord_return_4) ? ord_return_4:'',
+
         
     }
 

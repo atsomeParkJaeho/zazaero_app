@@ -216,7 +216,19 @@ export const reset_pw = async (FindPw) => {
 
 
 /**---------------------------------회원정보 수정-------------------------------------------**/
-export const mod_mem_info = async (Member, MemInfo) => {
+export const mod_mem_info = async (Member, MemInfo, selectedImages) => {
+
+    let temp = selectedImages.map(val=>{
+        return {
+            filename    :(val.filename) ? val.filename:'',
+            uri         :(Platform.OS === 'ios') ? val.uri.replace('file://','') : val.uri,
+            base64      :val.base64,
+            type        :'image',
+        }
+    });
+    let mem_biz_paper   = temp.filter((val,idx)=>idx===0);
+    let mem_bank_paper  = temp.filter((val,idx)=>idx===1);
+
     console.log(MemInfo,'/확인 값');
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
         act_type                :'mod_mem_info',
@@ -245,6 +257,12 @@ export const mod_mem_info = async (Member, MemInfo) => {
         road_address            :MemInfo.road_address,
         mod_mem_uid             :Member,
         mem_uid                 :Member,
+        mem_biz_paper           :(mem_biz_paper) ? mem_biz_paper:'',
+        mem_bank_paper          :(mem_bank_paper) ? mem_bank_paper:'',
+
+
+
+
     },{
         headers: {
             'Content-type': 'multipart/form-data'

@@ -184,7 +184,7 @@ export default function RequestReturn({route, navigation}) {
         }
     }
     const order_Cancel = (cancel_type) => {
-        
+
         if(!ret_order.return_mem_name) {
             return Alert.alert(``,`반품 담당자 성명을 입력해주세요.`);
         }
@@ -217,10 +217,6 @@ export default function RequestReturn({route, navigation}) {
                                     return Alert.alert('',`${result}`);
                                 }
                             }
-                        });
-                        /**-----------취소 반품 이미지 업로드------**/
-                        image_upload().then((res)=>{
-
                         });
                     }
                 }
