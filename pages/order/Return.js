@@ -63,10 +63,10 @@ export default function Return({route, navigation}) {
 
                 get_order_cancel_list(Member,next_page).then((res)=>{
                     if(res) {
-                        console.log(res.result,'/ 데이터 확인');
+                        console.log(res.data,'/ 데이터 확인');
                         const {result, gd_cancel, total_page, now_page} = res.data;
                         if(result === 'OK') {
-                            let temp = gd_cancel.filter((val)=>val.deli_status !== 'done');
+                            let temp = gd_cancel.filter((val)=>val.deli_status === 'done');
                             set_page(total_page);       // 전체페이지
                             set_now_page(next_page);     // 현재페이지
                             set_cancel_list(temp);      // 취소리스트 불러오기
@@ -93,7 +93,7 @@ export default function Return({route, navigation}) {
 
         get_order_cancel_list(Member,``).then((res)=>{
             if(res) {
-                console.log(res.result,'/ 데이터 확인');
+                console.log(res.data,'/ 데이터 확인');
                 const {result, gd_cancel, total_page, now_page} = res.data;
                 if(result === 'OK') {
                     let temp = gd_cancel.filter((val)=>val.deli_status !== 'done');
@@ -110,7 +110,7 @@ export default function Return({route, navigation}) {
 
     },[Member]);
 
-    console.log(cancel_list.length,'/ [결제취소 리스트1]');
+    console.log(cancel_list,'/ [결제취소 리스트1]');
     console.log(Member,'/ 회원 코드12');
     console.log(get_page,'/ 전체 페이지');
     console.log(now_page,'/ 현재 페이지');

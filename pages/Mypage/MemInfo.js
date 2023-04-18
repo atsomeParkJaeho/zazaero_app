@@ -97,9 +97,18 @@ export default function MemInfo({route, navigation}) {
 
         get_mem_info(Member).then((res) => {
             if(res) {
-                const {result, mem_info,A_file} = res.data;
+                const {result, mem_info, A_file} = res.data;
                 console.log()
                 if(result === 'OK') {
+                    /*-----------------------------사업자등록증 사본, 통장사본 스테이터스에 담기----------------------------*/
+                    let mem_biz_paper = {
+                        uri             :'',
+                        uid             :'',
+                        upload_name     :'',
+                    }
+
+                    set_mem_biz_paper();
+                    set_mem_bank_paper()
                     setMemInfo(mem_info);
                     set_file(A_file);
                 }
