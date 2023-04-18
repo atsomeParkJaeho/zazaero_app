@@ -1,10 +1,32 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, useWindowDimensions, Alert} from 'react-native'
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+    useWindowDimensions,
+    Alert,
+    Platform,
+    Modal
+} from 'react-native'
 import logo from "../../../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
 import axios from "axios";
 import RenderHTML from "react-native-render-html";
-import {bg_gray, bg_primary, bg_white, h14, pb1, pt1, text_center, text_white} from "../../../common/style/AtStyle";
+import {
+    align_items_center,
+    bg_gray,
+    bg_primary,
+    bg_white,
+    d_flex,
+    h14, h18, justify_content_center, mb2, mb3, mt3,
+    pb1,
+    pt1,
+    text_center,
+    text_white
+} from "../../../common/style/AtStyle";
 import {get_Member} from "../../UTIL_mem";
 import {get_bd_detail} from "../UTIL_bd";
 
@@ -14,6 +36,9 @@ export default function inquiryView({route, navigation}){
     const [Member,  setMember]          = useState(``);
     const [get_bd_data, set_bd_data]    = useState([]);
     const [get_file, set_file]          = useState([]);
+
+    const [modalVisible, setModalVisible] = useState(false);
+
     useEffect(()=>{
         get_Member().then((res)=>{if(res) {setMember(res);} else {
             Alert.alert(``,`실패`);
@@ -38,6 +63,8 @@ export default function inquiryView({route, navigation}){
         return navigation.navigate('1:1문의작성',{get_bd_data:get_bd_data});
     }
 
+
+
     console.log(get_bd_data,'/[게시판 상세]');
     console.log(get_file,'/[이미지]');
 
@@ -53,16 +80,26 @@ export default function inquiryView({route, navigation}){
                         <View style={styles.get_bd_data_date_in}>
                             <Text style={styles.get_bd_data_date}>{get_bd_data.reg_date}</Text>
                         </View>
-                        <TouchableOpacity style={[bg_primary]} onPress={form_mod}>
-                            <Text style={[text_white]}>
-                                수정하기
-                            </Text>
-                        </TouchableOpacity>
                     </View>
                     {/*=============상세내용===============*/}
                     <View style={styles.get_bd_data_disc}>
                         <View style={styles.get_bd_data_disc_in}>
                             <RenderHTML source={{html:`${get_bd_data.bd_contents}`}}/>
+                        </View>
+                        <View style={[mt3,mb3]}>
+                            <Text style={[h14,mb2]}>첨부사진</Text>
+                            <TouchableOpacity onPress={() => setModalVisible(true)}>
+                                <Image source={{ uri: `http://www.zazaero.com/upload/999999994022/mem_photo/61151121098446.jpg` }} style={styles.image} />
+                            </TouchableOpacity>
+                            <Modal visible={modalVisible} transparent={true}>
+                                <View style={styles.modalBackground}>
+                                    <TouchableOpacity onPress={() => setModalVisible(false)}>
+                                        <View style={[styles.modalBackground_flex]}>
+                                            <Image source={{ uri: `http://www.zazaero.com/upload/999999994022/mem_photo/61151121098446.jpg` }} style={styles.modalImage} />
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </Modal>
                         </View>
                         {(get_bd_data.bd_status_name === '답변완료') ? (
                             <>
@@ -80,11 +117,24 @@ export default function inquiryView({route, navigation}){
                     </View>
                 </View>
             </ScrollView>
+            <TouchableOpacity style={[bg_primary,styles.btn_default]} onPress={form_mod}>
+                <View style={[d_flex, justify_content_center, align_items_center]}>
+                    <Text style={[text_white,h18]}>
+                        수정하기
+                    </Text>
+                </View>
+            </TouchableOpacity>
         </>
     )
 }
 
 const styles = StyleSheet.create({
+    btn_default:{
+        paddingTop      : 25,
+        paddingBottom   : Platform.OS === 'ios' ? 35 : 25,
+        width           : "100%",
+
+    },
     get_bd_data:{
         marginTop:30,
         paddingLeft:16,
@@ -111,5 +161,24 @@ const styles = StyleSheet.create({
         paddingVertical:16,
         paddingHorizontal:10,
         borderRadius:5,
-    }
+    },
+    image: {
+        width: 80,
+        height: 80,
+        resizeMode: 'contain',
+    },
+    modalBackground: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    },
+    modalBackground_flex:{
+        width: 350,
+    },
+    modalImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'contain',
+    },
 })
