@@ -216,7 +216,7 @@ export const reset_pw = async (FindPw) => {
 
 
 /**---------------------------------회원정보 수정-------------------------------------------**/
-export const mod_mem_info = async (Member, MemInfo, get_mem_biz_paper, get_mem_bank_paper) => {
+export const mod_mem_info = async (Member, MemInfo, get_mem_biz_paper, get_mem_bank_paper, A_del_file) => {
 
     let mem_biz_paper = [
         {
@@ -266,6 +266,7 @@ export const mod_mem_info = async (Member, MemInfo, get_mem_biz_paper, get_mem_b
         mem_uid                 :Member,
         mem_biz_paper           :(mem_biz_paper)  ? mem_biz_paper   :'',
         mem_bank_paper          :(mem_bank_paper) ? mem_bank_paper  :'',
+        A_del_file_uid          :(A_del_file) ? A_del_file : '',
     }
 
     console.log(data,'/[데이터 확인]');

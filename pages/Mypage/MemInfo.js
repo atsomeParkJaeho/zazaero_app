@@ -63,7 +63,7 @@ export default function MemInfo({route, navigation}) {
     const [Show_2,              setShow_2]                  = useState(false);    // 셀렉트창 노출 여부
     const [mem_biz_paper,       set_mem_biz_paper]          = useState([]);
     const [mem_bank_paper,      set_mem_bank_paper]         = useState([]);
-    const [selectedImages, setSelectedImages]               = useState([]);   // 첨부이미지
+    const [A_del_file,          set_A_del_file]             = useState([]);
     const [get_file, set_file]                              = useState([]);
     const Update = useIsFocused();
 
@@ -98,17 +98,27 @@ export default function MemInfo({route, navigation}) {
         get_mem_info(Member).then((res) => {
             if(res) {
                 const {result, mem_info, A_file} = res.data;
-                console.log()
                 if(result === 'OK') {
                     /*-----------------------------사업자등록증 사본, 통장사본 스테이터스에 담기----------------------------*/
-                    let mem_biz_paper = {
-                        uri             :'',
-                        uid             :'',
-                        upload_name     :'',
+
+                    if(A_file.mem_biz_paper) {
+                        let mem_biz_paper = {
+                            uri             :(A_file.mem_biz_paper.src_path) ? A_file.mem_biz_paper.src_path : '',
+                            uid             :(A_file.mem_biz_paper.uid) ? A_file.mem_biz_paper.uid : '',
+                            upload_name     :(A_file.mem_biz_paper.upload_name) ? A_file.mem_biz_paper.upload_name : '',
+                        }
+                        set_mem_biz_paper(mem_biz_paper);
+
                     }
 
-                    set_mem_biz_paper();
-                    set_mem_bank_paper()
+                    if(A_file.mem_bank_paper) {
+                        let mem_bank_paper = {
+                            uri             :(A_file.mem_bank_paper.src_path) ? A_file.mem_bank_paper.src_path : '',
+                            uid             :(A_file.mem_bank_paper.uid) ? A_file.mem_bank_paper.uid : '',
+                            upload_name     :(A_file.mem_bank_paper.upload_name) ? A_file.mem_bank_paper.upload_name : '',
+                        }
+                        set_mem_bank_paper(mem_bank_paper);
+                    }
                     setMemInfo(mem_info);
                     set_file(A_file);
                 }
@@ -143,8 +153,6 @@ export default function MemInfo({route, navigation}) {
     }
 
     //===============================================
-
-    const MAX_IMAGES = 2;
     const pickImage = async (pickImage) => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes          :ImagePicker.MediaTypeOptions.Images,
@@ -165,12 +173,14 @@ export default function MemInfo({route, navigation}) {
         }
     };
 
-    const removeImage = (name) => {
+    const removeImage = (name,uid) => {
         if(name === 'mem_biz_paper') {
             set_mem_biz_paper([]);
+            set_A_del_file([...A_del_file, uid]);
         }
-        if(name === 'mem_biz_paper') {
-            set_mem_biz_paper([]);
+        if(name === 'mem_bank_paper') {
+            set_mem_bank_paper([]);
+            set_A_del_file([...A_del_file, uid]);
         }
     };
 
@@ -240,7 +250,7 @@ export default function MemInfo({route, navigation}) {
                 text:"확인",
                 onPress:()=>{
                     console.log(MemInfo,'/전달값')
-                    mod_mem_info(Member, MemInfo, mem_biz_paper, mem_bank_paper).then((res)=>{
+                    mod_mem_info(Member, MemInfo, mem_biz_paper, mem_bank_paper,A_del_file).then((res)=>{
                         if(res.data) {
                             console.log(res.data);
                             const {result} = res.data;
@@ -265,6 +275,7 @@ export default function MemInfo({route, navigation}) {
     console.log(mem_biz_paper,'/[사업자등록증 사본]');
     console.log(mem_bank_paper,'/[통장 사본]');
     console.log(get_file,'/[이미지]');
+    console.log(A_del_file,'/[삭제 이미지]');
 
     return (
         <>
@@ -617,11 +628,15 @@ export default function MemInfo({route, navigation}) {
                                         <>
                                             <View style={[styles.imagesContainer]}>
                                                 <View style={styles.imageContainer}>
-                                                    <TouchableOpacity onPress={() => removeImage(`mem_biz_paper`)} style={styles.deleteButton}>
+                                                    <TouchableOpacity onPress={() => removeImage(`mem_biz_paper`,`${mem_biz_paper.uid}`)} style={styles.deleteButton}>
                                                         <Close width={11} height={11}/>
                                                     </TouchableOpacity>
-                                                    {(mem_biz_paper.base64) && (
+                                                    {(mem_biz_paper.base64) ? (
                                                         <Image source={{ uri: `data:image/jpg;base64,${mem_biz_paper.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                    ):(
+                                                        <>
+                                                            <Image source={{ uri: `http://www.zazaero.com${mem_biz_paper.uri}` }} style={styles.image}  resizeMode="contain"/>
+                                                        </>
                                                     )}
                                                 </View>
                                             </View>
@@ -647,11 +662,15 @@ export default function MemInfo({route, navigation}) {
                                         <>
                                             <View style={[styles.imagesContainer]}>
                                                 <View style={styles.imageContainer}>
-                                                    <TouchableOpacity onPress={() => removeImage(`mem_bank_paper`)} style={styles.deleteButton}>
+                                                    <TouchableOpacity onPress={() => removeImage(`mem_bank_paper`,`${mem_bank_paper.uid}`)} style={styles.deleteButton}>
                                                         <Close width={11} height={11}/>
                                                     </TouchableOpacity>
-                                                    {(mem_bank_paper.base64) && (
+                                                    {(mem_bank_paper.base64) ? (
                                                         <Image source={{ uri: `data:image/jpg;base64,${mem_bank_paper.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                    ):(
+                                                        <>
+                                                            <Image source={{ uri: `http://www.zazaero.com${mem_bank_paper.uri}` }} style={styles.image}  resizeMode="contain"/>
+                                                        </>
                                                     )}
                                                 </View>
                                             </View>
