@@ -29,6 +29,7 @@ import {
 } from "../../../common/style/AtStyle";
 import {get_Member} from "../../UTIL_mem";
 import {get_bd_detail} from "../UTIL_bd";
+import {useIsFocused} from "@react-navigation/native";
 
 export default function inquiryView({route, navigation}){
     console.log('상세내용');
@@ -38,7 +39,7 @@ export default function inquiryView({route, navigation}){
     const [get_image, set_image]        = useState([]);
     
     const [modalVisible, setModalVisible] = useState(false);
-
+    const updata = useIsFocused();
     useEffect(()=>{
         get_Member().then((res)=>{if(res) {setMember(res);} else {
             Alert.alert(``,`실패`);
@@ -75,7 +76,7 @@ export default function inquiryView({route, navigation}){
                 }
             }
         });
-    },[Member]);
+    },[Member,updata]);
 
     /**-------------------------확대이미지 띄우기--------------------------**/
     const show_modal = (uid) => {
@@ -85,7 +86,11 @@ export default function inquiryView({route, navigation}){
 
     /**------------------------------수정하기 이동---------------------------------**/
     const form_mod = () => {
-        return navigation.navigate('1:1문의작성',{get_bd_data:get_bd_data});
+        let data = {
+            get_bd_data :get_bd_data,
+            A_file      :get_image,
+        }
+        return navigation.navigate('1:1문의작성',data);
     }
     console.log(get_bd_data,'/[게시판 상세1]');
     console.log(get_image,'/[이미지]');

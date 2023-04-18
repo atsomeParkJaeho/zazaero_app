@@ -8,7 +8,15 @@ import {View} from "react-native-web";
 export default function CameraModal({route, navigation}) {
 
 
-    const {get_gd_order, addr1, addr2, zonecode, save_pic_list} = route.params;
+    const {
+        page,
+        get_gd_order,
+        addr1,
+        addr2,
+        zonecode,
+        save_pic_list,
+        bd_file
+    } = route.params;
 
     const [Member, setMember] = useState(``);
     const [camera, set_camera] = useState(null);
@@ -33,6 +41,8 @@ export default function CameraModal({route, navigation}) {
             if(save_pic) {
                 set_picture([...picture, save_pic]);
                 let data = {
+                    page:page,
+                    bd_file    : (bd_file) ? bd_file : '',
                     get_gd_order:get_gd_order,
                     addr1:addr1,
                     addr2:addr2,
@@ -44,7 +54,7 @@ export default function CameraModal({route, navigation}) {
                         type        :photo.type,
                     },
                 }
-                return navigation.navigate(`반품요청`,data)
+                return navigation.navigate(page,data);
                 // return Alert.alert(``,`사진이 저장되었습니다.`);
             } else {
 

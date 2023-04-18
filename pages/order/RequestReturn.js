@@ -292,6 +292,7 @@ export default function RequestReturn({route, navigation}) {
 
     const takePicture = async () => {
         let data = {
+            page:'반품요청',
             get_gd_order:get_gd_order,
             addr1:addr1,
             addr2:addr2,

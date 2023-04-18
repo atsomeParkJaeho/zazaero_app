@@ -53,26 +53,9 @@ import PayStatus from "../pages/order/PayStatus";
 import DeliStatus from "../pages/order/DeliStatus";
 
 import CancelDetail from "../pages/order/CancelDetail";                     //취소상세내역
-import ReturnDetail from "../pages/order/ReturnDetail";
-
-import RequestReturn from "../pages/order/RequestReturn";
-import Postcode from "@actbase/react-daum-postcode/lib/app.native";
-import DaumPostCode from "../util/DaumPostCode";
-import Payment from "../util/ImportPay";
-import Push from "../Push";
-import {Alert, Animated, LogBox, YellowBox} from "react-native";
-import {my_page} from "../pages/UTIL_mem";
-import {reloadAsync} from "expo-updates";
-
-import ModOrder from "../pages/order/OrderMod";
-import AddOrder from "../pages/order/AddOrder";
-
+import messaging from '@react-native-firebase/messaging';
 import * as Notifications from "expo-notifications";
-import {useRef} from "react";
-import {useNavigation} from "@react-navigation/native";
-import * as TaskManager from "expo-task-manager";
-import Camera from "../pages/cam/CameraModal";
-// import messaging from '@react-native-firebase/messaging';
+import {Alert} from "react-native";
 
 
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
@@ -98,7 +81,19 @@ Notifications.setNotificationHandler({
         shouldSetBadge: true,
     }),
 });
+async function requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
+    if (enabled) {
+        console.log('Authorization status:', authStatus);
+    }
+}
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+    console.log('Message handled in the background!', remoteMessage);
+});
 
 const StackNavigator = () => {
 
@@ -106,8 +101,7 @@ const StackNavigator = () => {
     // 회원접속상태 확인
     console.log('네비게이션');
     const [Member, setMember]       = useState();
-    const lastPush = Notifications.useLastNotificationResponse();
-    let navigation = useNavigation();
+
 
     const forFade = ({ current }) => ({
         cardStyle: {
@@ -119,74 +113,19 @@ const StackNavigator = () => {
 
     useEffect(() => {
 
-
         AsyncStorage.getItem('member').then((value) => {
             if (value) {
                 setMember(value);
             }
         });
-        /**---------------------------------앱이 백그라운드 상태시 푸시알림-------------------------------------------**/
-        
-
-        /**---------------------------------앱이 포그라운드 상태시 푸시알림-------------------------------------------**/
-        Notifications.addNotificationReceivedListener((res)=>{
-            let push = res.request.trigger.remoteMessage.data;
-            let {push_act_type, push_link_uid} = push;
-            if(push_act_type === 'ins_ord') {
-                return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
-            }
+        requestUserPermission();
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
         });
 
-        Notifications.addNotificationResponseReceivedListener((res)=>{
-            let push = res.notification.request.trigger.remoteMessage.data;
-            let {push_act_type, push_link_uid} = push;
-            if(push_act_type === 'ins_ord') {
-                return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
-            }
-        });
+        return unsubscribe;
 
-
-        if(lastPush) {
-            let push = lastPush.notification.request.trigger.remoteMessage.data;
-            let {push_act_type, push_link_uid} = push;
-            // 발주신청
-            if(push_act_type === 'ord_ins') {
-                return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
-            }
-            // 발주검수진행
-            if(push_act_type === 'ord_doing') {
-                return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
-            }
-            // 결제요청
-            if(push_act_type === 'sel_cust') {
-                return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
-            }
-            // 포인트변경
-            if(push_act_type === 'mem_point_list') {
-                return navigation.navigate(`포인트내역`);
-            }
-            // 무통장, 카드결제확인
-            if(push_act_type === 'ord_pay_done') {
-                return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
-            }
-            // 결제완료
-            if(push_act_type === 'deli_mem_mobile') {
-                return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
-            }
-            // 발주취소접수, 반품취소
-            if(push_act_type === 'pay_done_gd_cancel') {
-                return navigation.navigate(`취소내역`,{gd_cancel_uid:push_link_uid});
-            }
-            // 환불완료
-            if(push_act_type === 'refund_done') {
-                return navigation.navigate(`취소내역`,{gd_cancel_uid:push_link_uid});
-            }
-        }
-
-
-
-        /**--------------------1. 어플실행시 푸시알림 로그가 나타난다----------------------**/
-    }, [Member, lastPush]);
+    }, [Member]);
 
 
 

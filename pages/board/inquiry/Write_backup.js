@@ -22,7 +22,7 @@ import {
     input,
     textarea,
     mt2,
-    justify_content_between, wt5, bg_primary, ms1, me1, h13, text_center, text_white, wt10
+    justify_content_between, wt5, bg_primary, ms1, me1, h13, text_center, text_white
 } from '../../../common/style/AtStyle';
 import {sub_page} from '../../../common/style/SubStyle';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -38,54 +38,78 @@ import {useIsFocused} from "@react-navigation/native";
 
 export default function Inquirybd_data({route, navigation}) {
     // 1. 글입력 상태 셋팅
-
-
     const [Member,  setMember] = useState(``);
-    const [Write,   set_Write]    = useState({
+    const [bd_data, set_bd_data]    = useState({
         bd_type             :'inquiry',
         bd_title            :'',
         bd_contents         :'',
     }); // 작성폼 설정
-    const [A_del_file,        set_A_del_file]           = useState([]);   // 삭제 이미지
+    const [A_del_file,        set_A_del_file]      = useState([]);   // 삭제 이미지
     const [get_bd_file1,      set_bd_file1]             = useState([]);
     const [get_bd_file2,      set_bd_file2]             = useState([]);
     const update = useIsFocused();
-    // 3. 글입력시 status 업데이트
-
-    /**---------------------------------2. 입력설정------------------------------**/
-    const goInput = (name, value) => {
-        set_Write({
-            ...Write,
-            [name]:value,
-        });
-    };
-    const goForm = () => {
-        if(!Write.bd_title) {
-            return Alert.alert(``,`제목을 입력해주세요.`);
-        }
-        if(!Write.bd_contents) {
-            return Alert.alert(``,`내용을 입력해주세요.`);
-        }
-        Alert.alert(``,`저장하시겠습니까?`,[
-            {text:'취소',onPress:()=>{}},
-            {text:'확인',onPress:()=>{
-                save_bd(Member, Write, A_del_file, get_bd_file1, get_bd_file2).then((res)=>{
+    const MAX_IMAGES = 2;
+    // 2. 글쓰는 회원 uid 정보 추가
+    useEffect(()=>{
+        get_Member().then((res)=>{if(res) {setMember(res);} else {
+            Alert.alert(``,`실패`);
+            return navigation.navigate('로그인');
+        }});
+        /**-----------------------------------게시물 수정시----------------------------------------**/
+        if(route.params) {
+            const {get_bd_data,save_pic_list,bd_file} = route.params;
+            if(get_bd_data.bd_uid) {
+                get_bd_detail(get_bd_data.bd_uid, get_bd_data.bd_type).then((res)=>{
                     if(res) {
-                        const {result} = res.data;
+                        console.log(res.data);
+                        const {result, bd_data, A_file} = res.data;
                         if(result === 'OK') {
-                            Alert.alert(``,`저장이 완료되었습니다.`);
-                            return navigation.replace(`1:1문의목록`);
+                            // 1. 상세보기 데이터 불러오기
+                            set_bd_data(bd_data);
+                            if(A_file.bd_file1) {
+                                let bd_file1 = {
+                                    uri      :(A_file.bd_file1.src_path) ? A_file.bd_file1.src_path:'',
+                                    uid      :(A_file.bd_file1.uid) ? A_file.bd_file1.uid:'',
+                                    upload_name :(A_file.bd_file1.upload_name) ? A_file.bd_file1.upload_name:'',
+                                };
+                                set_bd_file1(bd_file1);
+                            }
+                            if(A_file.bd_file2) {
+                                let bd_file2 = {
+                                    uri      :(A_file.bd_file2.src_path) ? A_file.bd_file2.src_path:'',
+                                    uid      :(A_file.bd_file2.uid) ? A_file.bd_file2.uid:'',
+                                    upload_name :(A_file.bd_file2.upload_name) ? A_file.bd_file2.upload_name:'',
+                                };
+                                set_bd_file2(bd_file2);
+                            }
+                            // 2. 첨부파일 이미지 불러오기
                         } else {
-                            return  Alert.alert(``,`${result}`);
+                            return Alert.alert(``,`${result}`);
                         }
                     }
                 });
+            }
+            if(save_pic_list) {
+                if(bd_file === 'bd_file1') {
+                    set_bd_file1(save_pic_list);
+                }
+                if(bd_file === 'bd_file2') {
+                    set_bd_file2(save_pic_list);
+                }
+            }
+        }
+    },[Member,update]);
 
-                }},
-        ]);
-    }
-    /**-------------------------------------사진추가-----------------------------------------**/
-    const pickImage = async (type) => {
+    const takePicture = async (bd_file) => {
+        let data = {
+            page         :'1:1문의 작성',
+            bd_file      :bd_file,
+            save_pic_list:[get_bd_file1, get_bd_file2],
+        }
+        navigation.navigate(`카메라`,data);
+    };
+
+    const pickImage = async (pickImage) => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes          :ImagePicker.MediaTypeOptions.Images,
             allowsEditing       :false,
@@ -94,70 +118,68 @@ export default function Inquirybd_data({route, navigation}) {
         });
         console.log(result,'/[첨부확인]');
         if (!result.cancelled) {
-            if(type === 'bd_file1') {
+            /** ----------------------------사업자 등록증 사본 ----------------------------**/
+            if(pickImage === 'bd_file1') {
                 set_bd_file1(result);
             }
-            if(type === 'bd_file2') {
-                set_bd_file1(result);
+            /** ----------------------------통장사본 ----------------------------**/
+            if(pickImage === 'bd_file2') {
+                set_bd_file2(result);
             }
         }
     };
-    const removeImage = (type,uid) => {
-        if(type === 'get_bd_file1') {
+
+    const removeImage = (name,uid) => {
+        if(name === 'get_bd_file1') {
             set_bd_file1([]);
-            set_A_del_file([...A_del_file,uid]);
+            set_A_del_file([...A_del_file, uid]);
         }
-        if(type === 'get_bd_file2') {
-            set_bd_file2([]);
-            set_A_del_file([...A_del_file,uid]);
+        if(name === 'get_bd_file2') {
+            set_bd_file1([]);
+            set_A_del_file([...A_del_file, uid]);
         }
+    };
+
+    // 3. 글입력시 status 업데이트
+    const goInput = (name, value) => {
+        set_bd_data({
+            ...bd_data,
+            [name]:value,
+        });
+    };
+    // 4. 문의하기 클릭시 관리자로 전달
+    const goForm = () => {
+        if(!bd_data.bd_title) {
+            return  Alert.alert(``,`제목을 입력해주세요.`);
+        }
+        if(!bd_data.bd_contents) {
+            return  Alert.alert(``,`내용을 입력해주세요.`);
+        }
+        Alert.alert(``,`게시물을 등록하시겠습니까?`,[
+            {text:'취소', onPress:()=>{}},
+            {text:"확인", onPress:()=>{
+                    save_bd(Member, bd_data, A_del_file, get_bd_file1, get_bd_file2).then((res)=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                navigation.replace(`1:1문의목록`);
+                                return Alert.alert(``,`등록이 완료되었습니다.`);
+                            } else {
+                                return Alert.alert(``,`${result}`);
+                            }
+                        }
+                    });
+                }}
+        ]);
     }
 
     //===========================================
 
-    // 2. 글쓰는 회원 uid 정보 추가
-    useEffect(()=>{
-        get_Member().then((res)=>{if(res) {setMember(res);} else {
-            Alert.alert(``,`실패`);
-            return navigation.navigate('로그인');
-        }});
-        if(route.params) {
-            let {
-                get_bd_data,
-                A_file,
-            } = route.params;
-            if(get_bd_data) {
-                set_Write(get_bd_data);
-                get_bd_detail(get_bd_data.bd_uid, get_bd_data.bd_type).then((res)=>{
-                    if(res) {
-                        console.log(res.data,'/[확인]');
-                        const {result, A_file} = res.data;
-                        if(result === 'OK'){
-                            set_bd_file1({
-                                uri           :A_file.bd_file1.src_path,
-                                uid           :A_file.bd_file1.uid,
-                                src_name      :A_file.bd_file1.upload_name,
-                            });
-                            set_bd_file2({
-                                uri           :A_file.bd_file2.src_path,
-                                uid           :A_file.bd_file2.uid,
-                                upload_name   :A_file.bd_file2.upload_name,
-                            });
-                        } else {
-                            // return Alert.alert(``,`${result}`);
-                        }
-                    }
-                });
-            }
-        }
-    },[Member,update]);
 
-
-    console.log(Member,'/[회원 uid]');
-    console.log(Write,'/[작성내용]');
-    console.log(A_del_file,'/[삭제 이미지]');
-    console.log(get_bd_file1,'/[첨부 이미지1]');
-    console.log(get_bd_file2,'/[첨부 이미지2]');
+    //===========================================
+    console.log(A_del_file,'/삭제이미지');
+    console.log(get_bd_file1,'/이미지1');
+    console.log(get_bd_file2,'/이미지2');
 
     return (
         <>
@@ -182,13 +204,13 @@ export default function Inquirybd_data({route, navigation}) {
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>제목</Text>
                                 <TextInput
-                                    onChangeText={(bd_title) => goInput("bd_title", bd_title)} value={Write.bd_title}
+                                    onChangeText={(bd_title) => goInput("bd_title", bd_title)} value={bd_data.bd_title}
                                     style={input}/>
                             </View>
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>내용</Text>
                                 <TextInput
-                                    onChangeText={(bd_contents) => goInput("bd_contents", bd_contents)} value={Write.bd_contents}
+                                    onChangeText={(bd_contents) => goInput("bd_contents", bd_contents)} value={bd_data.bd_contents}
                                     style={textarea} multiline={true} numberOfLines={4}
                                 />
                             </View>
@@ -197,11 +219,12 @@ export default function Inquirybd_data({route, navigation}) {
                                 {/**/}
                                 <View  style={[]} >
                                     {/**등록시 노출**/}
+
                                     {(get_bd_file1.uri) ? (
                                         <>
                                             <View style={[styles.imagesContainer]}>
                                                 <View style={styles.imageContainer}>
-                                                    <TouchableOpacity onPress={() => removeImage(`get_bd_file1`,get_bd_file1.uid)} style={styles.deleteButton}>
+                                                    <TouchableOpacity onPress={() => removeImage(`get_bd_file1`,`${get_bd_file1.uid}`)} style={styles.deleteButton}>
                                                         <Close width={11} height={11}/>
                                                     </TouchableOpacity>
                                                     {(get_bd_file1.base64) ? (
@@ -217,7 +240,12 @@ export default function Inquirybd_data({route, navigation}) {
                                     ) : (
                                         <>
                                             <View  style={[flex,justify_content_between]} >
-                                                <View  style={[wt10]} >
+                                                <View  style={[wt5]} >
+                                                    <TouchableOpacity onPress={()=>takePicture(`bd_file1`)} style={[styles.button,bg_primary,ms1,me1]}>
+                                                        <Text style={[h13,text_center,text_white]}>사진 촬영</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <View  style={[wt5]} >
                                                     <TouchableOpacity onPress={()=>pickImage(`bd_file1`)} style={[styles.button,bg_primary,ms1,me1]}>
                                                         <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
                                                     </TouchableOpacity>
@@ -229,7 +257,7 @@ export default function Inquirybd_data({route, navigation}) {
                                         <>
                                             <View style={[styles.imagesContainer]}>
                                                 <View style={styles.imageContainer}>
-                                                    <TouchableOpacity onPress={() => removeImage(`get_bd_file2`,get_bd_file2.uid)} style={styles.deleteButton}>
+                                                    <TouchableOpacity onPress={() => removeImage(`get_bd_file2`,`${get_bd_file2.uid}`)} style={styles.deleteButton}>
                                                         <Close width={11} height={11}/>
                                                     </TouchableOpacity>
                                                     {(get_bd_file2.base64) ? (
@@ -245,7 +273,12 @@ export default function Inquirybd_data({route, navigation}) {
                                     ) : (
                                         <>
                                             <View  style={[flex,justify_content_between]} >
-                                                <View  style={[wt10]} >
+                                                <View  style={[wt5]} >
+                                                    <TouchableOpacity onPress={()=>takePicture(`bd_file2`)} style={[styles.button,bg_primary,ms1,me1]}>
+                                                        <Text style={[h13,text_center,text_white]}>사진 촬영</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <View  style={[wt5]} >
                                                     <TouchableOpacity onPress={()=>pickImage(`bd_file2`)} style={[styles.button,bg_primary,ms1,me1]}>
                                                         <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
                                                     </TouchableOpacity>

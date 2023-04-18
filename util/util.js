@@ -126,6 +126,17 @@ export const Price = (text) => {
     }
 }
 
+export const firebaseConfig = {
+    apiKey                  : 'api-key',
+    authDomain              : 'project-id.firebaseapp.com',
+    databaseURL             : 'https://project-id.firebaseio.com',
+    projectId               : 'pc-api-5961167133705272112-485',
+    storageBucket           : 'project-id.appspot.com',
+    messagingSenderId       : 'sender-id',
+    appId                   : 'app-id',
+    measurementId           : 'G-measurement-id',
+};
+
 // =================전화번호 입력제어=====================//
 export const Phone = (num) => {
    return num.replace(/[^0-9]/g, '').replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3").replace(/(\-{1,2})$/g, "");

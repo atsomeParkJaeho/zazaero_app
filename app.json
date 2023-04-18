@@ -27,7 +27,13 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.zazaero.www",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "buildNumber": "10"
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification"
+        ]
+      },
+      "buildNumber": "13"
     },
     "android": {
       "adaptiveIcon": {
@@ -37,7 +43,7 @@
       "package": "com.www.zazaero",
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
-      "versionCode": 10
+      "versionCode": 13
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -53,12 +59,17 @@
     },
     "plugins": [
       [
+
         "expo-build-properties",
         {
           "ios": {
-            "deploymentTarget": "13.0"
+            "deploymentTarget": "13.0",
+            "useFrameworks": "static"
           }
         }
+      ],
+      [
+        "@react-native-firebase/app"
       ],
       [
         "expo-image-picker",
