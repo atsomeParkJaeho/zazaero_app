@@ -38,9 +38,6 @@ import {useIsFocused} from "@react-navigation/native";
 
 export default function Inquirybd_data({route, navigation}) {
 
-    // console.log('1:1문의작성');
-
-
     // 1. 글입력 상태 셋팅
     const [Member,  setMember] = useState(``);
     const [bd_data, set_bd_data]    = useState({
@@ -48,7 +45,10 @@ export default function Inquirybd_data({route, navigation}) {
         bd_title            :'',
         bd_contents         :'',
     }); // 작성폼 설정
-    const [selectedImages, setSelectedImages] = useState([]);   // 첨부이미지
+    const [selectedImages,    setSelectedImages]   = useState([]);   // 첨부이미지
+    const [A_del_file,        set_A_del_file]      = useState([]);   // 삭제 이미지
+    const [get_bd_file1,      set_bd_file1]             = useState([]);
+    const [get_bd_file2,      set_bd_file2]             = useState([]);
     const update = useIsFocused();
     // 2. 글쓰는 회원 uid 정보 추가
     useEffect(()=>{
@@ -61,10 +61,29 @@ export default function Inquirybd_data({route, navigation}) {
             const {get_bd_data} = route.params;
             get_bd_detail(get_bd_data.bd_uid, get_bd_data.bd_type).then((res)=>{
                 if(res) {
-                    const {result, bd_data} = res.data;
+                    console.log(res.data);
+                    const {result, bd_data, A_file} = res.data;
                     if(result === 'OK') {
+                        // 1. 상세보기 데이터 불러오기
                         set_bd_data(bd_data);
-                        // setSelectedImages();
+                        if(A_file.bd_file1) {
+                            let temp = {
+                                uri      :(A_file.bd_file1.src_path) ? A_file.bd_file1.src_path:'',
+                                uid      :(A_file.bd_file1.uid) ? A_file.bd_file1.uid:'',
+                                src_name :(A_file.bd_file1.src_name) ? A_file.bd_file1.src_name:'',
+                            };
+                            set_bd_file1(temp);
+                        }
+                        if(A_file.bd_file2) {
+                            let temp = {
+                                uri      :(A_file.bd_file2.src_path) ? A_file.bd_file2.src_path:'',
+                                uid      :(A_file.bd_file2.uid) ? A_file.bd_file2.uid:'',
+                                src_name :(A_file.bd_file2.src_name) ? A_file.bd_file2.src_name:'',
+                            };
+                            set_bd_file2(temp);
+                        }
+                        // 2. 첨부파일 이미지 불러오기
+
                     } else {
                         return Alert.alert(``,`${result}`);
                     }
@@ -84,11 +103,11 @@ export default function Inquirybd_data({route, navigation}) {
         Alert.alert(``,`게시물을 등록하시겠습니까?`,[
             {text:'취소', onPress:()=>{}},
             {text:"확인", onPress:()=>{
-                    save_bd(Member,bd_data,selectedImages,``).then((res)=>{
+                    save_bd(Member, bd_data, selectedImages, A_del_file, get_bd_file1, get_bd_file2).then((res)=>{
                         if(res) {
                             const {result} = res.data;
                             if(result === 'OK') {
-                                navigation.navigate(`1:1문의목록`);
+                                navigation.replace(`1:1문의목록`);
                                 return Alert.alert(``,`등록이 완료되었습니다.`);
                             } else {
                                 return Alert.alert(``,`${result}`);
@@ -106,34 +125,63 @@ export default function Inquirybd_data({route, navigation}) {
         let data = {
             save_pic_list:save_pic_list,
         }
-        navigation.navigate(`카메라`,data);
+        return navigation.navigate(`카메라`,data);
     };
-
-    const pickImage = async () => {
+    const pickImage = async (type,bd_file) => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes          :ImagePicker.MediaTypeOptions.Images,
             allowsEditing       :false,
             quality             :1,
             base64              :true,
         });
-        console.log(result,'/[첨부확인]');
-        if (!result.cancelled) {
-            if (selectedImages.length < MAX_IMAGES) {
-                setSelectedImages([...selectedImages, result]);
-            } else {
-                return Alert.alert(``,`최대 2장까지만 등록 가능합니다.`);
+
+        if(type === 'mod') {
+            if(bd_file === 'bd_file1') {
+                if(!result.cancelled) {
+                    set_bd_file1(result);
+                }
+            }
+            if(bd_file === 'bd_file2') {
+                if(!result.cancelled) {
+                    set_bd_file2(result);
+                }
+            }
+        } else {
+            console.log(result,'/[첨부확인]');
+            if (!result.cancelled) {
+                if (selectedImages.length < MAX_IMAGES) {
+                    setSelectedImages([...selectedImages, result]);
+                } else {
+                    return Alert.alert(``,`최대 2장까지만 등록 가능합니다.`);
+                }
+            }
+        }
+
+    };
+    const removeImage = (name,bd_file,uid) => {
+        if(name === 'add') {
+            let img = [...selectedImages]
+            img.splice(uid,1);
+            selectedImages(img);
+        }
+        if(name === 'mod') {
+            if(bd_file === 'bd_file1') {
+                set_A_del_file([...A_del_file, uid]);
+                set_bd_file1([]);
+            }
+            if(bd_file === 'bd_file2') {
+                set_A_del_file([...A_del_file, uid]);
+                set_bd_file1([]);
             }
         }
     };
 
-    const removeImage = (index) => {
-        const images = [...selectedImages];
-        images.splice(index, 1);
-        setSelectedImages(images);
-    };
-
 
     console.log(bd_data,'/[작성글]');
+    console.log(selectedImages,'/[업로드 이미지]');
+    console.log(get_bd_file1,'/[기존 이미지1]');
+    console.log(get_bd_file2,'/[기존 이미지2]');
+    console.log(A_del_file,'/[삭제 이미지]');
     //===========================================
 
     return (
@@ -173,35 +221,106 @@ export default function Inquirybd_data({route, navigation}) {
                                 <Text style={styles.inputTopText}>첨부파일</Text>
                                 {/**/}
                                 <View  style={[]} >
-                                    <View  style={[flex,justify_content_between]} >
-                                        <View  style={[wt5]} >
-                                            <TouchableOpacity onPress={takePicture} style={[styles.button,bg_primary,ms1,me1]}>
-                                                <Text style={[h13,text_center,text_white]}>사진 촬영</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View  style={[wt5]} >
-                                            <TouchableOpacity onPress={pickImage} style={[styles.button,bg_primary,ms1,me1]}>
-                                                <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-
-                                    {(selectedImages !== undefined) && (
+                                    {/**등록시 노출**/}
+                                    {(!route.params) && (
                                         <>
-                                            <View style={[styles.imagesContainer]}>
-                                                {selectedImages.map((image, index) => (
-                                                    <View key={index} style={styles.imageContainer}>
-                                                        <TouchableOpacity onPress={() => removeImage(index)} style={styles.deleteButton}>
-                                                            <Close width={11} height={11}/>
-                                                        </TouchableOpacity>
-                                                        {(image.base64) && (
-                                                            <Image source={{ uri: `data:image/jpg;base64,${image.base64}` }} style={styles.image}  resizeMode="contain"/>
-                                                        )}
-                                                    </View>
-                                                ))}
+                                            <View  style={[flex,justify_content_between]} >
+                                                <View  style={[wt5]} >
+                                                    <TouchableOpacity onPress={takePicture} style={[styles.button,bg_primary,ms1,me1]}>
+                                                        <Text style={[h13,text_center,text_white]}>사진 촬영</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <View  style={[wt5]} >
+                                                    <TouchableOpacity onPress={()=>pickImage(`add`)} style={[styles.button,bg_primary,ms1,me1]}>
+                                                        <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
+                                                    </TouchableOpacity>
+                                                </View>
                                             </View>
                                         </>
                                     )}
+                                    {(selectedImages.map((val,idx)=>(
+                                        <>
+                                            <View style={[styles.imagesContainer]}>
+                                                <View style={styles.imageContainer}>
+                                                    <TouchableOpacity onPress={()=>removeImage(`add`,``,idx)} style={styles.deleteButton}>
+                                                        <Close width={11} height={11}/>
+                                                    </TouchableOpacity>
+                                                    {(val.base64) ? (
+                                                        <Image source={{uri:`data:image/jpg;base64,${val.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                    ):(
+                                                        <Image source={{uri:`http://www.zazaero.com${val.uri}` }} style={styles.image}  resizeMode="contain"/>
+                                                    )}
+                                                </View>
+                                            </View>
+                                        </>
+                                    )))}
+                                    {/**수정시 노출**/}
+
+                                    {(route.params) && (
+                                        <>
+                                            <View  style={[flex,justify_content_between]} >
+                                                <View  style={[wt5]} >
+                                                    <TouchableOpacity onPress={takePicture} style={[styles.button,bg_primary,ms1,me1]}>
+                                                        <Text style={[h13,text_center,text_white]}>사진 촬영</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <View  style={[wt5]} >
+                                                    <TouchableOpacity onPress={()=>pickImage(`mod`,`bd_file1`)} style={[styles.button,bg_primary,ms1,me1]}>
+                                                        <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                            {(get_bd_file1.uri) && (
+                                                <View style={[styles.imagesContainer]}>
+                                                    <View style={styles.imageContainer}>
+                                                        <TouchableOpacity onPress={()=>removeImage(`mod`,`bd_file1`,get_bd_file1.uid)} style={styles.deleteButton}>
+                                                            <Close width={11} height={11}/>
+                                                        </TouchableOpacity>
+                                                       {(get_bd_file1.base64) ? (
+                                                            <Image source={{ uri: `data:image/jpg;base64,${get_bd_file1.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                        ):(
+                                                            <>
+                                                                <Image source={{ uri: `http://www.zazaero.com${get_bd_file1.uri}` }} style={styles.image}  resizeMode="contain"/>
+                                                            </>
+                                                        )}
+                                                    </View>
+                                                </View>
+                                            )}
+                                        </>
+                                    )}
+                                    {(route.params) && (
+                                        <>
+                                            <View  style={[flex,justify_content_between]} >
+                                                <View  style={[wt5]} >
+                                                    <TouchableOpacity onPress={takePicture} style={[styles.button,bg_primary,ms1,me1]}>
+                                                        <Text style={[h13,text_center,text_white]}>사진 촬영</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <View  style={[wt5]} >
+                                                    <TouchableOpacity onPress={()=>pickImage(`mod`,`bd_file2`)} style={[styles.button,bg_primary,ms1,me1]}>
+                                                        <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                            {(get_bd_file2.uri) && (
+                                                <View style={[styles.imagesContainer]}>
+                                                    <View style={styles.imageContainer}>
+                                                        <TouchableOpacity onPress={()=>removeImage(`mod`,`bd_file2`,get_bd_file1.uid)} style={styles.deleteButton}>
+                                                            <Close width={11} height={11}/>
+                                                        </TouchableOpacity>
+                                                        {(get_bd_file2.base64) ? (
+                                                            <Image source={{ uri: `data:image/jpg;base64,${get_bd_file2.base64}` }} style={styles.image}  resizeMode="contain"/>
+                                                        ):(
+                                                            <>
+                                                                <Image source={{ uri: `http://www.zazaero.com${get_bd_file2.uri}` }} style={styles.image}  resizeMode="contain"/>
+                                                            </>
+                                                        )}
+                                                    </View>
+                                                </View>
+                                            )}
+                                        </>
+                                    )}
+
                                 </View>
                                 {/**/}
                             </View>

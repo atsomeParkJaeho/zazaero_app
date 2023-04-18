@@ -35,8 +35,8 @@ export default function inquiryView({route, navigation}){
     const {bd_uid} = route.params;
     const [Member,  setMember]          = useState(``);
     const [get_bd_data, set_bd_data]    = useState([]);
-    const [get_file, set_file]          = useState([]);
-
+    const [get_image, set_image]        = useState([]);
+    
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(()=>{
@@ -50,7 +50,26 @@ export default function inquiryView({route, navigation}){
                 const {result,bd_data, A_file} = res.data;
                 if(result === 'OK') {
                     set_bd_data(bd_data);
-                    set_file(A_file);
+                    if(A_file.bd_file1) {
+                        let temp =
+                            {
+                                uri         :A_file.bd_file1.src_path,
+                                uid         :A_file.bd_file1.uid,
+                                src_name    :A_file.bd_file1.src_name,
+                            };
+
+                        set_image([...get_image, temp]);
+                    }
+                    if(A_file.bd_file2) {
+                        let temp =
+                            {
+                                uri         :A_file.bd_file2.src_path,
+                                uid         :A_file.bd_file2.uid,
+                                src_name    :A_file.bd_file2.src_name,
+                            };
+
+                        set_image([...get_image, temp]);
+                    }
                 }  else {
                     return Alert.alert(``,`${result}`);
                 }
@@ -58,16 +77,18 @@ export default function inquiryView({route, navigation}){
         });
     },[Member]);
 
+    /**-------------------------확대이미지 띄우기--------------------------**/
+    const show_modal = (uid) => {
+        setModalVisible(!modalVisible);
+    }
+
+
     /**------------------------------수정하기 이동---------------------------------**/
     const form_mod = () => {
         return navigation.navigate('1:1문의작성',{get_bd_data:get_bd_data});
     }
-
-
-
-    console.log(get_bd_data,'/[게시판 상세]');
-    console.log(get_file,'/[이미지]');
-
+    console.log(get_bd_data,'/[게시판 상세1]');
+    console.log(get_image,'/[이미지]');
     return(
         <>
             <ScrollView style={[bg_white]}>
@@ -88,18 +109,31 @@ export default function inquiryView({route, navigation}){
                         </View>
                         <View style={[mt3,mb3]}>
                             <Text style={[h14,mb2]}>첨부사진</Text>
-                            <TouchableOpacity onPress={() => setModalVisible(true)}>
-                                <Image source={{ uri: `http://www.zazaero.com/upload/999999994022/mem_photo/61151121098446.jpg` }} style={styles.image} />
-                            </TouchableOpacity>
-                            <Modal visible={modalVisible} transparent={true}>
-                                <View style={styles.modalBackground}>
-                                    <TouchableOpacity onPress={() => setModalVisible(false)}>
-                                        <View style={[styles.modalBackground_flex]}>
-                                            <Image source={{ uri: `http://www.zazaero.com/upload/999999994022/mem_photo/61151121098446.jpg` }} style={styles.modalImage} />
-                                        </View>
+                            {get_image.map((val,idx)=>(
+                                <>
+                                    <TouchableOpacity onPress={() => show_modal(val.uid)}>
+                                        {(get_image) && (
+                                            <>
+                                                <Image source={{ uri: `http://www.zazaero.com${val.uri}` }} style={styles.image} />
+                                            </>
+                                        )}
                                     </TouchableOpacity>
-                                </View>
-                            </Modal>
+                                    <Modal visible={modalVisible} transparent={true}>
+                                        <View style={styles.modalBackground}>
+                                            <TouchableOpacity onPress={() => show_modal(val.uid)}>
+                                                <View style={[styles.modalBackground_flex]}>
+                                                    {(get_image) && (
+                                                        <>
+                                                            <Image source={{ uri: `http://www.zazaero.com${val.uri}` }} style={styles.modalImage} />
+                                                        </>
+                                                    )}
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </Modal>
+                                </>
+                            ))}
+
                         </View>
                         {(get_bd_data.bd_status_name === '답변완료') ? (
                             <>
