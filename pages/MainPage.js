@@ -26,11 +26,12 @@ import {ComPhone, FCM} from "../util/util";
 import NotificationIcon from "../icons/Notification_icon.svg";
 import {
     buildApp,
-    creact_push_id, order_push,
+    creact_push_id, FCM_Token, order_push,
     registerForPushNotificationsAsync,
     requestUserPermission, save_push_id, sendPushApp,
     sendPushNotification
 } from "../push/UTIL_push";
+import messaging from "@react-native-firebase/messaging";
 
 
 
@@ -102,12 +103,14 @@ export default function MainPage({route,navigation}) {
     const [A_banner, set_A_banner] = useState([]);
 
     useEffect(() => {
-        registerForPushNotificationsAsync().then((res)=>{
+
+        FCM_Token().then((res)=>{
             if(res) {
-                console.log(res,'/엑스포');
                 set_PushToken(res);
             }
         });
+
+
         save_push_id(Member).then((res)=>{
             if(res) {
                 const {result} = res.data;

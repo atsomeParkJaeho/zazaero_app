@@ -52,7 +52,6 @@ export default function InquiryList({route, navigation}) {
                 }
             }
         });
-
     }, [Member]);
     console.log(A_board,'/[1:1문의 리스트]');
     return (
@@ -82,6 +81,11 @@ export default function InquiryList({route, navigation}) {
                                                 {/*===========제목=========*/}
                                                 <View style={styles.mypageListItemTitle}>
                                                     <Text style={styles.mypageList_name}>{val.bd_title}</Text>
+                                                    {(val.mem_uid === '116') && (
+                                                        <>
+                                                            <Text style={styles.mypageList_name}>{val.reg_mem_uid}</Text>
+                                                        </>
+                                                    )}
                                                 </View>
                                                 {/*===========날짜============*/}
                                                 <View style={styles.mypageListItemRegDate}>

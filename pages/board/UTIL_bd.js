@@ -2,16 +2,19 @@ import axios from "axios";
 import {Platform} from "react-native";
 
 export const bd_list = async (bd_type,Member,page) => {
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_bd.php', {
+    let data = {
         act_type    :"get_bd_list",
         mem_uid     :Member,
         bd_type     :bd_type,
         page        :(page) ? page : '',
-    }, {
+    }
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_bd.php', data, {
         headers: {
             'Content-type': 'multipart/form-data',
         }
     });
+    console.log(data,'/[게시판 리스트 파리미터]');
+
     return res;
 }
 
@@ -51,6 +54,7 @@ export const save_bd = async (Member, bd_data, A_del_file, get_bd_file1, get_bd_
     ];
     let data = {
         act_type            :'save_bd',
+        reg_mem_uid         :Member,
         mem_uid             :Member,
         bd_uid              :(bd_data.bd_uid)  ? bd_data.bd_uid   :'',
         bd_type             :(bd_data.bd_type) ? bd_data.bd_type  :'',

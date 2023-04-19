@@ -272,37 +272,20 @@ export async function registerForPushNotificationsAsync() {
 
     return token;
 }
-// 배포용 토큰 가져오기
-export async function buildApp() {
-    let token = await messaging().getToken();
 
-    //
-    //
-    // if (Device.isDevice) {
-    //     const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    //     let finalStatus = existingStatus;
-    //     if (existingStatus !== 'granted') {
-    //         const { status } = await Notifications.requestPermissionsAsync();
-    //         finalStatus = status;
-    //     }
-    //     if (finalStatus !== 'granted') {
-    //
-    //         return;
-    //     }
-    //     token = (await Notifications.getDevicePushTokenAsync()).data;
-    //     console.log(token);
-    // } else {
-    //
-    // }
-    //
-    // if (Platform.OS === 'android') {
-    //     await Notifications.setNotificationChannelAsync('default', {
-    //         name: 'default',
-    //         importance: Notifications.AndroidImportance.MAX,
-    //         vibrationPattern: [0, 250, 250, 250],
-    //         lightColor: '#FF231F7C',
-    //     });
-    // }
-    console.log(token,'/[파이어베이스 토큰]');
-    return token;
+/**---------------------------------------------파이어베이스 토큰 가져오기-------------------------------------------**/
+export const FCM_Token = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    //android의 경우 기본값이 authorizaed
+
+    if (enabled) {
+        let res = await messaging().getToken();
+        return res;
+    }
 }
+
+/** -------------------------------------------ios 푸시접근 허용-----------------------------------------**/
+

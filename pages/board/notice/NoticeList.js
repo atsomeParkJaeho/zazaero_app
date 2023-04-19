@@ -7,14 +7,14 @@ import {bd_list} from "../UTIL_bd";
 import {get_my_point_log} from "../../UTIL_mem";
 
 
-export default function NoticeList({navigation}) {
+export default function NoticeList({route, navigation}) {
     console.log('공지사항');
-    const [NoticeList, setNoticeList] = useState([]);  // 공지사항 불러오기
-    const [get_page, set_page]              = useState();           // 전체 페이지
-    const [now_page, set_now_page]          = useState();           // 현재 페이지
+    const [NoticeList, setNoticeList]             = useState([]);  // 공지사항 불러오기
+    const [get_page, set_page]                    = useState();           // 전체 페이지
+    const [now_page, set_now_page]                = useState();           // 현재 페이지
 
     /**--------------------스크롤 설정----------------------**/
-    const scrollViewRef = useRef();
+    const scrollViewRef                           = useRef();
     const [scrollEndReached, setScrollEndReached] = useState(false);
 
     const handleScroll = (event) => {
@@ -55,7 +55,7 @@ export default function NoticeList({navigation}) {
     };
 
     useEffect(() => {
-        bd_list(``).then((res) => {
+        bd_list(`notice`).then((res) => {
             if (res) {
                 console.log(res.data,'/[게시판 리턴값]');
                 const {A_board, total_page, now_page} = res.data;
