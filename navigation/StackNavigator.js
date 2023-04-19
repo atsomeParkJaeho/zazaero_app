@@ -53,14 +53,38 @@ import PayStatus from "../pages/order/PayStatus";
 import DeliStatus from "../pages/order/DeliStatus";
 
 import CancelDetail from "../pages/order/CancelDetail";                     //취소상세내역
-import messaging from '@react-native-firebase/messaging';
+import ReturnDetail from "../pages/order/ReturnDetail";
+
+import RequestReturn from "../pages/order/RequestReturn";
+import DaumPostCode from "../util/DaumPostCode";
+import Payment from "../util/ImportPay";
+import Push from "../Push";
+import {Alert, Animated, LogBox, YellowBox} from "react-native";
+
+import ModOrder from "../pages/order/OrderMod";
+import AddOrder from "../pages/order/AddOrder";
+
 import * as Notifications from "expo-notifications";
-import {Alert} from "react-native";
+import {useNavigation} from "@react-navigation/native";
+import Camera from "../pages/cam/CameraModal";
+import messaging from '@react-native-firebase/messaging';
 
 
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
 //그래서 이렇게 항상 상단에 선언하고 시작하는게 규칙입니다!
 const Stack = createStackNavigator();
+
+
+async function requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+        console.log('Authorization status:', authStatus);
+    }
+}
 
 const config = {
     animation: 'spring',
@@ -81,19 +105,7 @@ Notifications.setNotificationHandler({
         shouldSetBadge: true,
     }),
 });
-async function requestUserPermission() {
-    const authStatus = await messaging().requestPermission();
-    const enabled =
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-    if (enabled) {
-        console.log('Authorization status:', authStatus);
-    }
-}
-messaging().setBackgroundMessageHandler(async remoteMessage => {
-    console.log('Message handled in the background!', remoteMessage);
-});
 
 const StackNavigator = () => {
 
@@ -101,7 +113,8 @@ const StackNavigator = () => {
     // 회원접속상태 확인
     console.log('네비게이션');
     const [Member, setMember]       = useState();
-
+    const lastPush = Notifications.useLastNotificationResponse();
+    let navigation = useNavigation();
 
     const forFade = ({ current }) => ({
         cardStyle: {
@@ -113,19 +126,28 @@ const StackNavigator = () => {
 
     useEffect(() => {
 
+
         AsyncStorage.getItem('member').then((value) => {
             if (value) {
                 setMember(value);
             }
         });
+        /**---------------------------------앱이 백그라운드 상태시 푸시알림-------------------------------------------**/
         requestUserPermission();
-        const unsubscribe = messaging().onMessage(async remoteMessage => {
+
+        /*
+        messaging().onMessage(async remoteMessage => {
             Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
         });
+        messaging().getToken().then((res)=>{
+            Alert.alert(``,`${JSON.stringify(res)}`);
+        });
+        */
 
-        return unsubscribe;
 
-    }, [Member]);
+
+        /**--------------------1. 어플실행시 푸시알림 로그가 나타난다----------------------**/
+    }, [Member, lastPush]);
 
 
 
@@ -173,7 +195,7 @@ const StackNavigator = () => {
                     cardStyleInterpolator: forFade
                 }}/>
                 <Stack.Screen name="마이페이지" component={MyPage} options={{
-                     cardStyleInterpolator: forFade
+                    cardStyleInterpolator: forFade
                 }}/>
                 <Stack.Screen name="회원정보수정" component={MemInfo} options={{
                     cardStyleInterpolator: forFade

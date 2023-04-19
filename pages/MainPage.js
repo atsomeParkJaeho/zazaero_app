@@ -367,7 +367,7 @@ export default function MainPage({route,navigation}) {
                             </View>
                             <View style={[flex,justify_content_center]}>
                                 <Text style={styles.main_footer_disc_txt}>
-                                    앱 버전 : 9.2.5
+                                    앱 버전 : 9.2.6
                                 </Text>
                             </View>
                         </View>

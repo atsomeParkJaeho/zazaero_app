@@ -364,7 +364,7 @@ export default function OrderDtail({route,navigation}) {
                         let all_cancel_cnt = 0;
                         for(let i = 0; cancel_cnt_chk.length > i; i++) {all_cancel_cnt += cancel_cnt_chk[i];}
                         if(all_cancel_cnt === 0) {return Alert.alert('','취소수량을 입력해주세요.');}
-                        order_cancel(get_gd_order, cancel_type, A_order_list, Member,``).then((res)=>{
+                        order_cancel(get_gd_order, cancel_type, A_order_list, Member,``,``).then((res)=>{
                             if(res) {
                                 const {result} = res.data;
                                 if(result === 'OK') {
@@ -373,7 +373,6 @@ export default function OrderDtail({route,navigation}) {
                                             onPress:()=>{
                                                 // ================2. 결제취소 이벤트 결과값 db에 전송====================
                                                 console.log(res.data,'/발주완료시 파라미터');
-                                                part_cancel_push(Member, get_gd_order);
                                                 return navigation.replace('발주상세',{gd_order_uid:get_gd_order.gd_order_uid});
                                             }
                                         }

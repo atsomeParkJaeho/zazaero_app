@@ -8,6 +8,7 @@ import * as Notifications from "expo-notifications";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 import {app_build, app_version, FCM} from "../util/util";
 import {getExpoPushTokenAsync} from "expo-notifications";
+import messaging from "@react-native-firebase/messaging";
 // 디바이스 id 만드는 변수
 
 
@@ -273,32 +274,35 @@ export async function registerForPushNotificationsAsync() {
 }
 // 배포용 토큰 가져오기
 export async function buildApp() {
-    let token;
-    if (Device.isDevice) {
-        const { status: existingStatus } = await Notifications.getPermissionsAsync();
-        let finalStatus = existingStatus;
-        if (existingStatus !== 'granted') {
-            const { status } = await Notifications.requestPermissionsAsync();
-            finalStatus = status;
-        }
-        if (finalStatus !== 'granted') {
+    let token = await messaging().getToken();
 
-            return;
-        }
-        token = (await Notifications.getDevicePushTokenAsync()).data;
-        console.log(token);
-    } else {
-
-    }
-
-    if (Platform.OS === 'android') {
-        await Notifications.setNotificationChannelAsync('default', {
-            name: 'default',
-            importance: Notifications.AndroidImportance.MAX,
-            vibrationPattern: [0, 250, 250, 250],
-            lightColor: '#FF231F7C',
-        });
-    }
-
+    //
+    //
+    // if (Device.isDevice) {
+    //     const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    //     let finalStatus = existingStatus;
+    //     if (existingStatus !== 'granted') {
+    //         const { status } = await Notifications.requestPermissionsAsync();
+    //         finalStatus = status;
+    //     }
+    //     if (finalStatus !== 'granted') {
+    //
+    //         return;
+    //     }
+    //     token = (await Notifications.getDevicePushTokenAsync()).data;
+    //     console.log(token);
+    // } else {
+    //
+    // }
+    //
+    // if (Platform.OS === 'android') {
+    //     await Notifications.setNotificationChannelAsync('default', {
+    //         name: 'default',
+    //         importance: Notifications.AndroidImportance.MAX,
+    //         vibrationPattern: [0, 250, 250, 250],
+    //         lightColor: '#FF231F7C',
+    //     });
+    // }
+    console.log(token,'/[파이어베이스 토큰]');
     return token;
 }

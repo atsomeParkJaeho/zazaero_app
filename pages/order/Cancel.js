@@ -68,7 +68,7 @@ export default function Cancel({navigation, route}) {
                         console.log(res.data,'/ 데이터 확인');
                         const {result, gd_cancel, total_page, now_page} = res.data;
                         if(result === 'OK') {
-                            let temp = gd_cancel.filter((val)=>val.deli_status !== 'done');
+                            let temp = gd_cancel.filter((val)=>val.deli_status === 'ready');
                             set_page(total_page);       // 전체페이지
                             set_now_page(next_page);     // 현재페이지
                             set_cancel_list(temp);      // 취소리스트 불러오기
@@ -98,7 +98,7 @@ export default function Cancel({navigation, route}) {
                 console.log(res.data,'/ 데이터 확인');
                 const {result, gd_cancel, total_page, now_page} = res.data;
                 if(result === 'OK') {
-                    let temp = gd_cancel.filter((val)=>val.deli_status === 'ready' || val.pay_status === 'done');
+                    let temp = gd_cancel.filter((val)=>val.deli_status === 'ready');
                     set_page(total_page);       // 전체페이지
                     set_now_page(now_page);     // 현재페이지
                     set_cancel_list(temp);      // 취소리스트 불러오기
