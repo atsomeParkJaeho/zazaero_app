@@ -72,6 +72,9 @@
         "@react-native-firebase/app"
       ],
       [
+        "@notifee/react-native"
+      ],
+      [
         "expo-image-picker",
         {
           "photosPermission": "$(PRODUCT_NAME)이(가) 사용자의 사진에 접근허용 합니다."

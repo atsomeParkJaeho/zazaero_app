@@ -9,6 +9,7 @@ import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncSto
 import {app_build, app_version, FCM} from "../util/util";
 import {getExpoPushTokenAsync} from "expo-notifications";
 import messaging from "@react-native-firebase/messaging";
+import notifee from "@notifee/react-native";
 // 디바이스 id 만드는 변수
 
 
@@ -115,6 +116,22 @@ export const FCM_Token = async () => {
         return res;
     }
 }
+
+
+export const onDisplayNotification = async (title,body) => {
+    const channelId = await notifee.createChannel({
+        id: 'zazaero',
+        name: '자재로',
+    });
+
+    await notifee.displayNotification({
+        title,
+        body,
+        android: {
+            channelId,
+        },
+    });
+};
 
 /** -------------------------------------------ios 푸시접근 허용-----------------------------------------**/
 

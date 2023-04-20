@@ -67,10 +67,9 @@ import AddOrder from "../pages/order/AddOrder";
 import * as Notifications from "expo-notifications";
 import {useNavigation} from "@react-navigation/native";
 import Camera from "../pages/cam/CameraModal";
-import messaging from "@react-native-firebase/messaging";
 
-
-
+import messaging from '@react-native-firebase/messaging'
+import {FCM_Token, onDisplayNotification} from "../push/UTIL_push";
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
 //그래서 이렇게 항상 상단에 선언하고 시작하는게 규칙입니다!
 const Stack = createStackNavigator();
@@ -96,7 +95,9 @@ Notifications.setNotificationHandler({
         shouldSetBadge: true,
     }),
 });
-
+messaging().setBackgroundMessageHandler(async message => {
+    console.log(message)
+})
 
 const StackNavigator = () => {
 
@@ -116,19 +117,24 @@ const StackNavigator = () => {
 
     useEffect(() => {
 
-
+        FCM_Token();
         AsyncStorage.getItem('member').then((value) => {
             if (value) {
                 setMember(value);
             }
         });
-        /**---------------------------------앱이 백그라운드 상태시 푸시알림-------------------------------------------**/
-        messaging().onMessage(res=>{
-            return Alert.alert(`푸시알림 내용`,`${JSON.stringify(res)}`);
+        messaging().onMessage(async res=>{
+            if(res) {
+                const {title, body} = res;
+                await onDisplayNotification(title, body);
+            }
         });
 
+
+
+
         /**-----------------------------꺼진상태에서 열릴때--------------------------------**/
-        messaging().onNotificationOpenedApp(remoteMessage => {
+        messaging().onNotificationOpenedApp(async remoteMessage => {
             if (remoteMessage) {
                 const {data:{push_act_type, push_link_uid}} = remoteMessage;
                 /**-------------------------발주신청시--------------------------------**/
