@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>411915234426-q3eeqkdhv1km98u7p8g8f0a0gurqd6ir.apps.googleusercontent.com</string>
+	<string>411915234426-sgl1rqf1omihs9m8ho0vr0tlnbjrrleh.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.411915234426-q3eeqkdhv1km98u7p8g8f0a0gurqd6ir</string>
+	<string>com.googleusercontent.apps.411915234426-sgl1rqf1omihs9m8ho0vr0tlnbjrrleh</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDul0Ffzd1GBv41F1--XOHJy8-_SA8TE_w</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.www.zazaero</string>
+	<string>com.zazaero.www</string>
 	<key>PROJECT_ID</key>
 	<string>pc-api-5961167133705272112-485</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:411915234426:ios:29aef3dc37a1ad75a61fc3</string>
+	<string>1:411915234426:ios:961eb0c124c8b6dba61fc3</string>
 </dict>
 </plist>

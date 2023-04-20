@@ -33,7 +33,8 @@
           "remote-notification"
         ]
       },
-      "buildNumber": "15"
+
+      "buildNumber": "16"
     },
     "android": {
       "adaptiveIcon": {
@@ -43,7 +44,7 @@
       "package": "com.www.zazaero",
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
-      "versionCode": 15
+      "versionCode": 16
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -108,10 +108,15 @@ export async function registerForPushNotificationsAsync() {
 
 /**---------------------------------------------파이어베이스 토큰 가져오기-------------------------------------------**/
 export const FCM_Token = async () => {
-    const authStatus = await messaging().requestPermission();
+    const authStatus = await messaging().requestPermission({
+        sound:true,
+        announcement:true,
+        providesAppNotificationSettings:true,
+    });
     const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED || authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     if (enabled) {
+
         let res = await messaging().getToken();
         return res;
     }

@@ -9,13 +9,18 @@
         "image": "latest",
         "buildConfiguration": "Debug"
       },
+      "android": {
+        "image": "ubuntu-18.04-jdk-11-ndk-r19c"
+      },
       "developmentClient": true,
       "channel": "development"
     },
     "preview": {
       "channel": "preview",
+
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "image": "ubuntu-18.04-jdk-11-ndk-r19c"
       }
     },
     "production": {

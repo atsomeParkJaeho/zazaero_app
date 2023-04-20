@@ -59,7 +59,7 @@ import RequestReturn from "../pages/order/RequestReturn";
 import DaumPostCode from "../util/DaumPostCode";
 import Payment from "../util/ImportPay";
 import Push from "../Push";
-import {Alert, Animated, LogBox, YellowBox} from "react-native";
+import {Alert, Animated, LogBox, Platform, YellowBox} from "react-native";
 
 import ModOrder from "../pages/order/OrderMod";
 import AddOrder from "../pages/order/AddOrder";
@@ -67,8 +67,8 @@ import AddOrder from "../pages/order/AddOrder";
 import * as Notifications from "expo-notifications";
 import {useNavigation} from "@react-navigation/native";
 import Camera from "../pages/cam/CameraModal";
-
-import messaging from '@react-native-firebase/messaging'
+import notifee, { EventType } from '@notifee/react-native';
+import messaging, {firebase} from '@react-native-firebase/messaging'
 import {FCM_Token, onDisplayNotification} from "../push/UTIL_push";
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
 //그래서 이렇게 항상 상단에 선언하고 시작하는게 규칙입니다!
@@ -99,6 +99,10 @@ messaging().setBackgroundMessageHandler(async message => {
     console.log(message)
 })
 
+messaging().setOpenSettingsForNotificationsHandler(async res => {
+    console.log(res);
+})
+
 const StackNavigator = () => {
 
     console.disableYellowBox = true;
@@ -116,23 +120,48 @@ const StackNavigator = () => {
 
 
     useEffect(() => {
-
         FCM_Token();
+
         AsyncStorage.getItem('member').then((value) => {
             if (value) {
                 setMember(value);
             }
         });
-        messaging().onMessage(async res=>{
-            if(res) {
-                const {title, body} = res;
-                await onDisplayNotification(title, body);
-            }
-        });
+
+        /**------------------------------ios 설정-----------------------------------**/
 
 
+        if(Platform.OS === 'ios') {
+            notifee.onForegroundEvent(({ type, detail }) => {
+                switch (type) {
+                    case EventType.PRESS:
+                        // Alert.alert(`누를시`,`${JSON.stringify(detail.notification)}`);
+                        const {data:{push_act_type, push_link_uid}} = detail.notification;
+                        /**-------------------------발주신청시--------------------------------**/
+                        if(
+                            push_act_type === 'ord_ins'             ||        // 발주요청완료
+                            push_act_type === 'ord_doing'           ||        // 발주검수진행
+                            push_act_type === 'ord_pay_done'        ||        // 결제요청
+                            push_act_type === 'deli_mem_mobile'               // 배차완료
 
+                        ) {
 
+                            return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
+                        }
+                        /**-------------------------포인트 내역 변경시--------------------------------**/
+                        if(push_act_type === 'mem_point_list') {
+                            return navigation.navigate(`포인트내역`);
+                        }
+                        /**-------------------------취소 신청시--------------------------------**/
+                        if(push_act_type === 'pay_done_gd_cancel') {
+                            return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                        }
+                        break;
+                }
+            });
+        }
+
+        /**------------------------------안드로이드 설정------------------------------**/
         /**-----------------------------꺼진상태에서 열릴때--------------------------------**/
         messaging().onNotificationOpenedApp(async remoteMessage => {
             if (remoteMessage) {
@@ -145,14 +174,17 @@ const StackNavigator = () => {
                     push_act_type === 'deli_mem_mobile'               // 배차완료
 
                 ) {
+                    Alert.alert(`꺼진상태에서`,`${JSON.stringify(remoteMessage)}`);
                     return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
                 }
                 /**-------------------------포인트 내역 변경시--------------------------------**/
                 if(push_act_type === 'mem_point_list') {
+                    Alert.alert(`꺼진상태에서`,`${JSON.stringify(remoteMessage)}`);
                     return navigation.navigate(`포인트내역`);
                 }
                 /**-------------------------취소 신청시--------------------------------**/
                 if(push_act_type === 'pay_done_gd_cancel') {
+                    Alert.alert(`꺼진상태에서`,`${JSON.stringify(remoteMessage)}`);
                     return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
                 }
 
@@ -161,32 +193,35 @@ const StackNavigator = () => {
 
         /**-----------------------------백그라운드 상태에서 열릴때---------------------------------**/
         messaging().getInitialNotification().then(remoteMessage => {
-                if (remoteMessage) {
-                    const {data:{push_act_type, push_link_uid}} = remoteMessage;
-                    /**-------------------------발주신청시--------------------------------**/
-                    if(
-                        push_act_type === 'ord_ins'             ||        // 발주요청완료
-                        push_act_type === 'ord_doing'           ||        // 발주검수진행
-                        push_act_type === 'ord_pay_done'        ||        // 결제요청
-                        push_act_type === 'deli_mem_mobile'               // 배차완료
 
-                    ) {
-                        return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
-                    }
-                    /**-------------------------포인트 내역 변경시--------------------------------**/
-                    if(push_act_type === 'mem_point_list') {
-                        return navigation.navigate(`포인트내역`);
-                    }
-                    /**-------------------------취소 신청시--------------------------------**/
-                    if(push_act_type === 'pay_done_gd_cancel') {
-                        return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
-                    }
+            if (remoteMessage) {
+                const {data:{push_act_type, push_link_uid}} = remoteMessage;
+                /**-------------------------발주신청시--------------------------------**/
+                if(
+                    push_act_type === 'ord_ins'             ||        // 발주요청완료
+                    push_act_type === 'ord_doing'           ||        // 발주검수진행
+                    push_act_type === 'ord_pay_done'        ||        // 결제요청
+                    push_act_type === 'deli_mem_mobile'               // 배차완료
 
+                ) {
+                    Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
+                    return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
                 }
-            });
-        /**-----------------------------백그라운드 상태에서 열릴때--------------------------------**/
+                /**-------------------------포인트 내역 변경시--------------------------------**/
+                if(push_act_type === 'mem_point_list') {
+                    Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
+                    return navigation.navigate(`포인트내역`);
+                }
+                /**-------------------------취소 신청시--------------------------------**/
+                if(push_act_type === 'pay_done_gd_cancel') {
+                    Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
+                    return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                }
 
-        /**--------------------1. 어플실행시 푸시알림 로그가 나타난다----------------------**/
+            }
+
+        });
+
     }, [Member]);
 
 
