@@ -9,37 +9,8 @@ import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncSto
 import {app_build, app_version, FCM} from "../util/util";
 import {getExpoPushTokenAsync} from "expo-notifications";
 import messaging from "@react-native-firebase/messaging";
-import notifee from "@notifee/react-native";
+
 // 디바이스 id 만드는 변수
-
-
-
-export const reg_app_info = async (uuid) => {
-    let barnd           = Device.brand;         // 브랜드
-    let modelName       = Device.modelName;     // 기기 이름
-    let osName          = Device.osName;        // os
-    let osVersion       = Device.osVersion;     // os version
-    let appVersion      = app_version;
-    let appBuild        = app_build;
-    let Push_id         = await buildApp();
-    console.log(Push_id,'/푸시_id');
-    let data = {
-        act_type        :"reg_app_info",
-        app_version     :appVersion,
-        app_build       :appBuild,
-        os_version      :osVersion,
-        push_id         :Push_id,
-        device_id       :uuid,
-        os_type         :osName,
-    }
-    console.log(data,'/[디바이스 정보 저장]');
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',data,{
-        headers: {
-            'Content-type': 'multipart/form-data'
-        }
-    });
-    return res;
-}
 
 
 
@@ -108,35 +79,23 @@ export async function registerForPushNotificationsAsync() {
 
 /**---------------------------------------------파이어베이스 토큰 가져오기-------------------------------------------**/
 export const FCM_Token = async () => {
+
     const authStatus = await messaging().requestPermission({
-        sound:true,
-        announcement:true,
-        providesAppNotificationSettings:true,
+        sound                               :true,
+        announcement                        :true,
+        providesAppNotificationSettings     :true,
     });
+
     const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED || authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     if (enabled) {
-
+        if(Platform.OS === 'ios') {
+            await messaging().registerDeviceForRemoteMessages();
+        }
         let res = await messaging().getToken();
         return res;
     }
 }
-
-
-export const onDisplayNotification = async (title,body) => {
-    const channelId = await notifee.createChannel({
-        id: 'zazaero',
-        name: '자재로',
-    });
-
-    await notifee.displayNotification({
-        title,
-        body,
-        android: {
-            channelId,
-        },
-    });
-};
 
 /** -------------------------------------------ios 푸시접근 허용-----------------------------------------**/
 

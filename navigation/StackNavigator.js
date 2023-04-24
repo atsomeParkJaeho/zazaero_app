@@ -67,13 +67,12 @@ import AddOrder from "../pages/order/AddOrder";
 import * as Notifications from "expo-notifications";
 import {useNavigation} from "@react-navigation/native";
 import Camera from "../pages/cam/CameraModal";
-import notifee, { EventType } from '@notifee/react-native';
 import messaging, {firebase} from '@react-native-firebase/messaging'
-import {FCM_Token, onDisplayNotification} from "../push/UTIL_push";
+import notifee, { EventType } from '@notifee/react-native';
+import {FCM_Token} from "../push/UTIL_push";
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
 //그래서 이렇게 항상 상단에 선언하고 시작하는게 규칙입니다!
 const Stack = createStackNavigator();
-
 
 
 const config = {
@@ -89,27 +88,27 @@ const config = {
 };
 // 1. 푸시알림 설정
 Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: true,
+    handleNotification      : async () => ({
+        shouldShowAlert     : true,
+        shouldPlaySound     : true,
+        shouldSetBadge      : true,
     }),
 });
-messaging().setBackgroundMessageHandler(async message => {
-    console.log(message)
-})
+
 
 messaging().setOpenSettingsForNotificationsHandler(async res => {
     console.log(res);
 })
-
+firebase.messaging().setBackgroundMessageHandler(async message => {
+    console.log(message);
+})
 const StackNavigator = () => {
 
     console.disableYellowBox = true;
     // 회원접속상태 확인
     console.log('네비게이션');
     const [Member, setMember]       = useState();
-    let navigation                  = useNavigation();
+    let   navigation                = useNavigation();
 
     const forFade = ({ current }) => ({
         cardStyle: {
@@ -117,53 +116,42 @@ const StackNavigator = () => {
         },
     });
 
-
-
     useEffect(() => {
-        FCM_Token();
-
         AsyncStorage.getItem('member').then((value) => {
             if (value) {
                 setMember(value);
             }
         });
+        /**------------------------------로컬 푸시 설정-----------------------------------**/
 
-        /**------------------------------ios 설정-----------------------------------**/
 
+        firebase.messaging().onMessage((res)=>{
+            if(res) {
+                // const {data:{push_act_type, push_link_uid}} = res;
+                // /* 안드로이드 설정*/
+                // // return Alert.alert(``,`${JSON.stringify(res)}`);
+
+            }
+        });
 
         if(Platform.OS === 'ios') {
-            notifee.onForegroundEvent(({ type, detail }) => {
-                switch (type) {
-                    case EventType.PRESS:
-                        // Alert.alert(`누를시`,`${JSON.stringify(detail.notification)}`);
-                        const {data:{push_act_type, push_link_uid}} = detail.notification;
-                        /**-------------------------발주신청시--------------------------------**/
-                        if(
-                            push_act_type === 'ord_ins'             ||        // 발주요청완료
-                            push_act_type === 'ord_doing'           ||        // 발주검수진행
-                            push_act_type === 'ord_pay_done'        ||        // 결제요청
-                            push_act_type === 'deli_mem_mobile'               // 배차완료
-
-                        ) {
-
-                            return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
-                        }
-                        /**-------------------------포인트 내역 변경시--------------------------------**/
-                        if(push_act_type === 'mem_point_list') {
-                            return navigation.navigate(`포인트내역`);
-                        }
-                        /**-------------------------취소 신청시--------------------------------**/
-                        if(push_act_type === 'pay_done_gd_cancel') {
-                            return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
-                        }
-                        break;
+            
+            messaging().onNotificationOpenedApp((res)=>{
+                if(res) {
+                    return Alert.alert(`어플이 열릴시 `, `${JSON.stringify(res)}`);
                 }
             });
-        }
+            messaging().getInitialNotification().then((res)=>{
+                if(res) {
+                    return Alert.alert(``,`${JSON.stringify(res)}`);
+                }
+            });
 
+        }
         /**------------------------------안드로이드 설정------------------------------**/
-        /**-----------------------------꺼진상태에서 열릴때--------------------------------**/
-        messaging().onNotificationOpenedApp(async remoteMessage => {
+        firebase.messaging().onNotificationOpenedApp(async remoteMessage => {
+
+            Alert.alert(``,`${JSON.stringify(remoteMessage)}`);
             if (remoteMessage) {
                 const {data:{push_act_type, push_link_uid}} = remoteMessage;
                 /**-------------------------발주신청시--------------------------------**/
@@ -174,26 +162,21 @@ const StackNavigator = () => {
                     push_act_type === 'deli_mem_mobile'               // 배차완료
 
                 ) {
-                    Alert.alert(`꺼진상태에서`,`${JSON.stringify(remoteMessage)}`);
                     return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
                 }
                 /**-------------------------포인트 내역 변경시--------------------------------**/
                 if(push_act_type === 'mem_point_list') {
-                    Alert.alert(`꺼진상태에서`,`${JSON.stringify(remoteMessage)}`);
                     return navigation.navigate(`포인트내역`);
                 }
                 /**-------------------------취소 신청시--------------------------------**/
                 if(push_act_type === 'pay_done_gd_cancel') {
-                    Alert.alert(`꺼진상태에서`,`${JSON.stringify(remoteMessage)}`);
                     return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
                 }
-
             }
         });
 
         /**-----------------------------백그라운드 상태에서 열릴때---------------------------------**/
-        messaging().getInitialNotification().then(remoteMessage => {
-
+        firebase.messaging().getInitialNotification().then(remoteMessage => {
             if (remoteMessage) {
                 const {data:{push_act_type, push_link_uid}} = remoteMessage;
                 /**-------------------------발주신청시--------------------------------**/
@@ -204,23 +187,23 @@ const StackNavigator = () => {
                     push_act_type === 'deli_mem_mobile'               // 배차완료
 
                 ) {
-                    Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
+                    // Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
                     return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
                 }
                 /**-------------------------포인트 내역 변경시--------------------------------**/
                 if(push_act_type === 'mem_point_list') {
-                    Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
+                    // Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
                     return navigation.navigate(`포인트내역`);
                 }
                 /**-------------------------취소 신청시--------------------------------**/
                 if(push_act_type === 'pay_done_gd_cancel') {
-                    Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
+                    // Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
                     return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
                 }
-
             }
-
         });
+
+
 
     }, [Member]);
 
@@ -259,12 +242,8 @@ const StackNavigator = () => {
                         headerTitle:'',
                         headerStatusBarHeight:0,
                         cardStyleInterpolator: forFade,
-                        // headerLeftContainerStyle:
                     }
                 }/>
-                {/*==============상단===============*/}
-                {/*<Stack.Screen name="검색" component={GoodsSearch}/>*/}
-                {/*<Stack.Screen name="검색상품" component={GoodsSearchList}/>*/}
                 {/*==============마이페이지===============*/}
                 <Stack.Screen name="회원탈퇴" component={MemOut} options={{
                     cardStyleInterpolator: forFade

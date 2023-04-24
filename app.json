@@ -34,7 +34,7 @@
         ]
       },
 
-      "buildNumber": "16"
+      "buildNumber": "17"
     },
     "android": {
       "adaptiveIcon": {
@@ -44,7 +44,7 @@
       "package": "com.www.zazaero",
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
-      "versionCode": 16
+      "versionCode": 17
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -60,7 +60,6 @@
     },
     "plugins": [
       [
-
         "expo-build-properties",
         {
           "ios": {
@@ -71,9 +70,6 @@
       ],
       [
         "@react-native-firebase/app"
-      ],
-      [
-        "@notifee/react-native"
       ],
       [
         "expo-image-picker",

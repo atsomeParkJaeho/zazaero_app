@@ -686,8 +686,19 @@ export const get_work_name = async (Member,page)=>{
     return res;
 }
 
-/****/
+/**-----------------------------------최근 발주수량 표시----------------------------**/
+export const get_recent_ord_cnt = async (Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_order.php',{
+        act_type                    :"get_recent_ord_cnt",
+        mem_uid                     :Member,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
 
+    return res;
+}
 
 
 

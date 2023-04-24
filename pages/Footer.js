@@ -16,7 +16,7 @@ import {fw500, pos_center, text_center, text_primary} from "../common/style/AtSt
 import {useNavigationState} from "@react-navigation/native";
 import {get_Member, my_page} from "./UTIL_mem";
 import {getCartList} from "./cart/UTIL_cart";
-import {get_order_list} from "./order/UTIL_order";
+import {get_order_list, get_recent_ord_cnt} from "./order/UTIL_order";
 import {reloadAsync} from "expo-updates";
 
 
@@ -26,16 +26,30 @@ import {reloadAsync} from "expo-updates";
 function Footer({navigation,pages}) {
     const [Member,          setMember]               = useState();
     const [order_list, set_order_list]               = useState([]);  // 발주수량 설정
-    const [cart_list,   set_cart_list]               = useState([]);  // 장바구니 수량 설정
     const [get_mem_info, set_get_mem_info]           = useState(``);  // 회원정보 추출
 
     useEffect(()=>{
         get_Member().then((res)=>{if(res) {setMember(res);} else {
             console.log('실패');
         }});
-        mem_info(Member);
-        get_cart_list(Member);   /**--장바구니 수량 가져오기--**/
-        get_orderlist(Member);   /**--장바구니 수량 가져오기--**/
+
+        my_page(Member).then((res)=>{
+            if(res) {
+                const {result, mem_info} = res.data;
+                if(result === 'OK') {
+                    set_get_mem_info(mem_info.mem_ok_status);
+                }
+            }
+        });
+
+        get_recent_ord_cnt(Member).then((res)=>{
+            if(res) {
+                const {result, recent_ord_cnt} = res.data;
+                if(result === 'OK') {
+                    set_order_list(recent_ord_cnt);
+                }
+            }
+        });
 
     },[Member]);
 
@@ -52,47 +66,12 @@ function Footer({navigation,pages}) {
     }
 
 
-    /**-------------------------장바구니 수량 가져오기--------------------------**/
-    const get_cart_list = async (Member) => {
-        let {data:{result, query, A_order}} = await getCartList(Member);
-        if(result === 'OK') {
-            let res = A_order.map(val=>val.A_goods_list);
-            let temp = res.reduce((val,idx)=>{return val.concat(idx); })
-            return set_cart_list(temp.length);
-        } else {
-            // Alert.alert(``,`${result}`);
-        }
-    }
-    /**-------------------------발주수량 가져오기------------------------------**/
-    const get_orderlist = async (Member) => {
-        let {data:{A_gd_order, result}} = await get_order_list(Member);
-        let cnt = A_gd_order.length
-        console.log(A_gd_order,'[발주확인]');
-        if(result === 'OK') {
-            return  set_order_list(A_gd_order.length);
-        } else {
-            // Alert.alert(``,`${result}`);
-        }
-    }
 
-    const mem_info = async (Member) => {
-        let {data:{result, mem_info}} = await my_page(Member);
-        if(result === 'OK') {
-            return set_get_mem_info(mem_info.mem_ok_status);
-        }
-        console.log(result,'/회원정보');
-    }
 
 
 
     const routes = useNavigationState(state => state.routes)
     const currentRoute = routes[routes.length -1].name
-    // console.log('[푸터페이지]');
-    // console.log(currentRoute);
-    // console.log(order_list,' / 발주수량 설정');
-    // console.log(cart_list,' / 장바구니 수량');
-
-
 
 
     return(
@@ -160,6 +139,11 @@ function Footer({navigation,pages}) {
                 {/**---------------------발주현황--------------------**/}
                 <View style={[styles.Tabs,]}>
                     <TouchableOpacity onPress={()=>{navigation.navigate('발주현황')}}>
+                        {(Number(order_list) > 0) && (
+                            <Text style={[styles.orderCnt]}>
+                                {order_list}
+                            </Text>
+                        )}
                         <View style={styles.SvgIcons}>
                             {(currentRoute === '발주현황' || currentRoute === '결제상태' || currentRoute === '배송상태') ? (
                                 <>
@@ -173,13 +157,15 @@ function Footer({navigation,pages}) {
 
                         </View>
                         <View>
-                            <Text style={[text_center,(currentRoute === '발주현황' || currentRoute === '결제상태' || currentRoute === '배송상태') &&  text_primary,fw500]}>발주현황</Text>
+                            <Text style={[text_center,(currentRoute === '발주현황' || currentRoute === '결제상태' || currentRoute === '배송상태') &&  text_primary,fw500]}>
+                                발주현황
+                            </Text>
                         </View>
                     </TouchableOpacity>
                 </View>
                 {/**---------------------마이페이지--------------------**/}
                 <View style={[styles.Tabs,]}>
-                    <TouchableOpacity onPress={()=>{navigation.replace('마이페이지')}}>
+                    <TouchableOpacity onPress={()=>{navigation.navigate('마이페이지')}}>
                         <View style={styles.SvgIcons}>
                             {(currentRoute === '마이페이지') ? (
                                 <>
@@ -204,6 +190,26 @@ function Footer({navigation,pages}) {
 
 
 const styles = styleSheet.create({
+
+    orderCnt : {
+      width:20,
+      height:20,
+      backgroundColor:"#3D40E0",
+      position:"absolute",
+      right:10,
+      top:-10,
+        zIndex:99,
+        fontSize:10,
+        color:"#fff",
+        lineHeight:20,
+        textAlign:"center",
+        borderTopRightRadius:20,
+        borderTopLeftRadius:20,
+        borderBottomLeftRadius:20,
+        borderBottomRightRadius:20,
+
+    },
+
     FooterWrap : {
         flexDirection:"row",
         backgroundColor:"#fff",

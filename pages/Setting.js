@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import {View,Text,StyleSheet,Image, TouchableOpacity, ScrollView, Switch} from 'react-native'
+import React, {useEffect, useState} from "react";
+import {View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Switch, Alert} from 'react-native'
 import logo from "../assets/img/top_logo.png";
 import Icon from "react-native-vector-icons/AntDesign";
 
@@ -8,6 +8,8 @@ import {container, bg_white, flex, flex_between, switch_bar} from '../common/sty
 import Footer from "./Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {reloadAsync} from "expo-updates";
+import {save_push_id} from "../push/UTIL_push";
+import {get_Member, my_page} from "./UTIL_mem";
 
 export default function Setting({navigation,route}){
 
@@ -15,21 +17,44 @@ export default function Setting({navigation,route}){
     AsyncStorage.getItem('member').then((value)=>{
         console.log(value);
     });
+    const [Member, setMember]           = useState();
+    const [mem_info, set_mem_info]      = useState([]);
+    const [isEnabled, setIsEnabled]     = useState(false);
 
-    const [isEnabled, setIsEnabled] = useState(false);
-    const [isEnabled2, setIsEnable2] = useState(false);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-    const toggleSwitch2 = () => setIsEnable2(previousState => !previousState);
 
-    // 로그아웃 로직
-    let goLogout = () => {
-        AsyncStorage.clear();
-        AsyncStorage.getItem('member').then((value)=>{
-            console.log(value);
+    useEffect(()=>{
+
+        get_Member().then((res)=>{
+            if(res) {setMember(res);} else {
+                // Alert.alert(``,`실패`);
+            }
         });
-        reloadAsync();
-        navigation.replace('로그인');
+
+        my_page(Member).then((res)=>{
+            if(res) {
+                const {result, mem_info} = res.data;
+                if(result === 'OK') {
+                    if(mem_info.push_ad_flag === 'Y') {
+                        setIsEnabled(true);
+                    }
+                    set_mem_info(mem_info);
+                } else {
+                    return Alert.alert(``,`${result}`);
+                }
+            }
+        });
+
+    },[Member]);
+
+
+    const toggleSwitch = () => {
+        if(!isEnabled) {
+            setIsEnabled(!isEnabled);
+        } else {
+            setIsEnabled(!isEnabled);
+        }
     }
+
 
     return(
         <>
@@ -37,7 +62,7 @@ export default function Setting({navigation,route}){
                 <View style={styles.mypageList}>
                     <View style={[flex,styles.mypageListItem]}>
                         <View style={styles.mypageListItemTitle}>
-                            <Text style={styles.mypageList_name}>서비스 현황 알림</Text>
+                            <Text style={styles.mypageList_name}>혜택 정보 알림</Text>
                         </View>
                         <View style={styles.mypageListItemIcon}>
                             <Switch
@@ -50,46 +75,8 @@ export default function Setting({navigation,route}){
                             />
                         </View>
                     </View>
-                    <View style={[flex,styles.mypageListItem]}>
-                        <View style={styles.mypageListItemTitle}>
-                            <Text style={styles.mypageList_name}>혜택 정보 알림</Text>
-                        </View>
-                        <View style={styles.mypageListItemIcon}>
-                            <Switch
-                                trackColor={{ false: "#767577", true: "#4630eb" }}
-                                thumbColor={isEnabled2 ? "#fff" : "#f4f3f4"}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={toggleSwitch2}
-                                value={isEnabled2}
-                                style={[switch_bar]}
-                            />
-                        </View>
-                    </View>
-                    <View style={styles.mypageListItem}>
-                        <View style={styles.mypageListItemTitle}>
-                            <TouchableOpacity onPress={goLogout}>
-                                <Text style={styles.mypageList_name}>
-                                    로그아웃
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.mypageListItemIcon}>
-                            <Text style={styles.mypageList_name}> > </Text>
-                        </View>
-                    </View>
 
-                    <View style={styles.mypageListItem}>
-                        <TouchableOpacity style={styles.mypageListItem_link} onPress={()=>{navigation.navigate('회원탈퇴')}} >
-                            <View style={flex_between}>
-                                <View style={styles.mypageListItemTitle}>
-                                    <Text style={styles.mypageList_name}>회원탈퇴</Text>
-                                </View>
-                                <View style={styles.mypageListItemIcon}>
-                                    <Text style={styles.mypageList_name}> > </Text>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
+
                 </View>
             </ScrollView>
             <Footer navigation={navigation}/>
