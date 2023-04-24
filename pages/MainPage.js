@@ -24,21 +24,14 @@ import Search from '../icons/search.svg';
 import Main_logo from '../icons/main_logo.svg';
 import {ComPhone, FCM} from "../util/util";
 import NotificationIcon from "../icons/Notification_icon.svg";
-import {
-    buildApp,
-    creact_push_id, FCM_Token, order_push,
-    registerForPushNotificationsAsync,
-    requestUserPermission, save_push_id, sendPushApp,
-    sendPushNotification
-} from "../push/UTIL_push";
+import {FCM_Token, save_push_id, sendPushApp,sendPushNotification} from "../push/UTIL_push";
 import messaging from "@react-native-firebase/messaging";
 
 
 
 // 2차 카테고리 설정
 function Cate2nd({uid,navigation,name}) {
-    console.log('카테고리 uid ',uid);
-    console.log('제목 ',name);
+
 
     const [Cate2nd, setCate2nd] = useState([]);
     useEffect(() => {
@@ -370,7 +363,7 @@ export default function MainPage({route,navigation}) {
                             </View>
                             <View style={[flex,justify_content_center]}>
                                 <Text style={styles.main_footer_disc_txt}>
-                                    앱 버전 : 9.3.7
+                                    앱 버전 : 9.3.8
                                 </Text>
                             </View>
                         </View>

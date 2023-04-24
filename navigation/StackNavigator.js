@@ -69,7 +69,7 @@ import {useNavigation} from "@react-navigation/native";
 import Camera from "../pages/cam/CameraModal";
 import messaging, {firebase} from '@react-native-firebase/messaging'
 import notifee, { EventType } from '@notifee/react-native';
-import {FCM_Token} from "../push/UTIL_push";
+import {FCM_Token, LocalPush} from "../push/UTIL_push";
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
 //그래서 이렇게 항상 상단에 선언하고 시작하는게 규칙입니다!
 const Stack = createStackNavigator();
@@ -100,7 +100,7 @@ messaging().setOpenSettingsForNotificationsHandler(async res => {
     console.log(res);
 })
 firebase.messaging().setBackgroundMessageHandler(async message => {
-    console.log(message);
+
 })
 const StackNavigator = () => {
 
@@ -122,86 +122,107 @@ const StackNavigator = () => {
                 setMember(value);
             }
         });
+        /**-----------------------------푸시 뱃지 설정-----------------------------------------**/
+        notifee.setBadgeCount(0).then((res)=>{console.log(res)});
+
+
         /**------------------------------로컬 푸시 설정-----------------------------------**/
 
 
-        firebase.messaging().onMessage((res)=>{
+        const unsubscribe = firebase.messaging().onMessage(async res=>{
             if(res) {
-                // const {data:{push_act_type, push_link_uid}} = res;
-                // /* 안드로이드 설정*/
-                // // return Alert.alert(``,`${JSON.stringify(res)}`);
-
+                await LocalPush(res);
             }
         });
+
+
 
         if(Platform.OS === 'ios') {
-            
-            messaging().onNotificationOpenedApp((res)=>{
-                if(res) {
-                    return Alert.alert(`어플이 열릴시 `, `${JSON.stringify(res)}`);
+            notifee.onForegroundEvent(async ({type,detail})=>{
+                if(type === EventType.PRESS) {
+                    const {push_act_type, push_link_uid} = detail.notification.data;
+                    if(
+                        push_act_type === 'ord_ins'             ||        // 발주요청완료
+                        push_act_type === 'ord_doing'           ||        // 발주검수진행
+                        push_act_type === 'ord_pay_done'        ||        // 결제요청
+                        push_act_type === 'deli_mem_mobile'               // 배차완료
+
+                    ) {
+                        return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
+                    }
+                    /**-------------------------포인트 내역 변경시--------------------------------**/
+                    if(push_act_type === 'mem_point_list') {
+                        return navigation.navigate(`포인트내역`);
+                    }
+                    /**-------------------------취소 신청시--------------------------------**/
+                    if(push_act_type === 'pay_done_gd_cancel') {
+                        return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                    }
+
                 }
             });
-            messaging().getInitialNotification().then((res)=>{
-                if(res) {
-                    return Alert.alert(``,`${JSON.stringify(res)}`);
+            return unsubscribe;
+        } else {
+            messaging().onNotificationOpenedApp(async remoteMessage => {
+                if (remoteMessage) {
+                    const {data:{push_act_type, push_link_uid}} = remoteMessage;
+                    /**-------------------------발주신청시--------------------------------**/
+                    if(
+                        push_act_type === 'ord_ins'             ||        // 발주요청완료
+                        push_act_type === 'ord_doing'           ||        // 발주검수진행
+                        push_act_type === 'ord_pay_done'        ||        // 결제요청
+                        push_act_type === 'deli_mem_mobile'               // 배차완료
+
+                    ) {
+                        return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
+                    }
+                    /**-------------------------포인트 내역 변경시--------------------------------**/
+                    if(push_act_type === 'mem_point_list') {
+                        return navigation.navigate(`포인트내역`);
+                    }
+                    /**-------------------------취소 신청시--------------------------------**/
+                    if(push_act_type === 'pay_done_gd_cancel') {
+                        return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                    }
                 }
             });
 
+            /**-----------------------------백그라운드 상태에서 열릴때---------------------------------**/
+            messaging().getInitialNotification().then(remoteMessage => {
+                if (remoteMessage) {
+                    const {data:{push_act_type, push_link_uid}} = remoteMessage;
+                    /**-------------------------발주신청시--------------------------------**/
+                    if(
+                        push_act_type === 'ord_ins'             ||        // 발주요청완료
+                        push_act_type === 'ord_doing'           ||        // 발주검수진행
+                        push_act_type === 'ord_pay_done'        ||        // 결제요청
+                        push_act_type === 'deli_mem_mobile'               // 배차완료
+
+                    ) {
+                        // Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
+                        return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
+                    }
+                    /**-------------------------포인트 내역 변경시--------------------------------**/
+                    if(push_act_type === 'mem_point_list') {
+                        // Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
+                        return navigation.navigate(`포인트내역`);
+                    }
+                    /**-------------------------취소 신청시--------------------------------**/
+                    if(push_act_type === 'pay_done_gd_cancel') {
+                        // Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
+                        return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                    }
+                }
+            });
+            return unsubscribe;
         }
+
+
+
         /**------------------------------안드로이드 설정------------------------------**/
-        firebase.messaging().onNotificationOpenedApp(async remoteMessage => {
 
-            Alert.alert(``,`${JSON.stringify(remoteMessage)}`);
-            if (remoteMessage) {
-                const {data:{push_act_type, push_link_uid}} = remoteMessage;
-                /**-------------------------발주신청시--------------------------------**/
-                if(
-                    push_act_type === 'ord_ins'             ||        // 발주요청완료
-                    push_act_type === 'ord_doing'           ||        // 발주검수진행
-                    push_act_type === 'ord_pay_done'        ||        // 결제요청
-                    push_act_type === 'deli_mem_mobile'               // 배차완료
 
-                ) {
-                    return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
-                }
-                /**-------------------------포인트 내역 변경시--------------------------------**/
-                if(push_act_type === 'mem_point_list') {
-                    return navigation.navigate(`포인트내역`);
-                }
-                /**-------------------------취소 신청시--------------------------------**/
-                if(push_act_type === 'pay_done_gd_cancel') {
-                    return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
-                }
-            }
-        });
 
-        /**-----------------------------백그라운드 상태에서 열릴때---------------------------------**/
-        firebase.messaging().getInitialNotification().then(remoteMessage => {
-            if (remoteMessage) {
-                const {data:{push_act_type, push_link_uid}} = remoteMessage;
-                /**-------------------------발주신청시--------------------------------**/
-                if(
-                    push_act_type === 'ord_ins'             ||        // 발주요청완료
-                    push_act_type === 'ord_doing'           ||        // 발주검수진행
-                    push_act_type === 'ord_pay_done'        ||        // 결제요청
-                    push_act_type === 'deli_mem_mobile'               // 배차완료
-
-                ) {
-                    // Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
-                    return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
-                }
-                /**-------------------------포인트 내역 변경시--------------------------------**/
-                if(push_act_type === 'mem_point_list') {
-                    // Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
-                    return navigation.navigate(`포인트내역`);
-                }
-                /**-------------------------취소 신청시--------------------------------**/
-                if(push_act_type === 'pay_done_gd_cancel') {
-                    // Alert.alert(`백그라운드 상태에서`,`${JSON.stringify(remoteMessage)}`);
-                    return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
-                }
-            }
-        });
 
 
 

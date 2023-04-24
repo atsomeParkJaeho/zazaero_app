@@ -7,8 +7,8 @@ import {useEffect} from "react";
 import * as Notifications from "expo-notifications";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 import {app_build, app_version, FCM} from "../util/util";
-import {getExpoPushTokenAsync} from "expo-notifications";
 import messaging from "@react-native-firebase/messaging";
+import notifee,{AndroidImportance} from "@notifee/react-native";
 
 // 디바이스 id 만드는 변수
 
@@ -97,5 +97,26 @@ export const FCM_Token = async () => {
     }
 }
 
-/** -------------------------------------------ios 푸시접근 허용-----------------------------------------**/
+/** -------------------------------------------푸시알림창-----------------------------------------**/
 
+export const LocalPush = async (res) => {
+    const channelAnoucement = await notifee.createChannel({
+        id: 'default',
+        name: 'default',
+        importance: AndroidImportance.HIGH,
+    });
+
+    await notifee.displayNotification({
+        title: res.data.title,
+        body: res.data.body,
+        data:{
+          ...res.data
+        },
+        android: {
+            channelId: channelAnoucement,
+        },
+        ios:{
+            sound:"notification.caf",
+        }
+    });
+}
