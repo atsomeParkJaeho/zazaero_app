@@ -435,6 +435,7 @@ export default function OrderDtail({route,navigation}) {
         let {gd_cancel} = (await get_order_cancel_list(Member)).data;
         let cancel_result = gd_cancel.filter(val=>val.gd_order_uid === gd_order_uid);
         console.log(gd_cancel,'/취소 불러오기');
+
         set_mem_info(mem_info.mem_info);
         navigation.setOptions({title:gd_order.ord_status_name+' 상태 입니다.',});
         setBankCode(temp);                      // 은행코드 추가

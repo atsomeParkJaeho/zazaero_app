@@ -68,6 +68,7 @@ export default function CancelDetail({navigation,route}) {
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
                 Alert.alert(``,`로그인 후 확인 가능합니다.`);
+                return navigation.replace(`로그인`);
             }
         });
 

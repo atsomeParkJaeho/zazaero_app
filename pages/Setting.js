@@ -8,8 +8,9 @@ import {container, bg_white, flex, flex_between, switch_bar} from '../common/sty
 import Footer from "./Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {reloadAsync} from "expo-updates";
-import {save_push_id} from "../push/UTIL_push";
+import {FCM_Token, save_push_id} from "../push/UTIL_push";
 import {get_Member, my_page} from "./UTIL_mem";
+import messaging from "@react-native-firebase/messaging";
 
 export default function Setting({navigation,route}){
 
@@ -19,10 +20,17 @@ export default function Setting({navigation,route}){
     });
     const [Member, setMember]           = useState();
     const [mem_info, set_mem_info]      = useState([]);
-    const [isEnabled, setIsEnabled]     = useState(false);
+    const [isEnabled, setIsEnabled]     = useState(true);
 
 
     useEffect(()=>{
+
+
+        AsyncStorage.getItem(`notifee`).then(res=>{
+            if(!JSON.parse(res ?? 'true')) {
+                setIsEnabled(false);
+            }
+        });
 
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
@@ -49,10 +57,17 @@ export default function Setting({navigation,route}){
 
     const toggleSwitch = () => {
         if(!isEnabled) {
-            setIsEnabled(!isEnabled);
+            // Alert.alert(`알림 허용`,`${!isEnabled}`);
+            AsyncStorage.setItem(`notifee`,`true`).then(res=>{
+                FCM_Token();
+            });
         } else {
-            setIsEnabled(!isEnabled);
+            // Alert.alert(`알림 취소`,`${!isEnabled}`);
+            AsyncStorage.setItem(`notifee`,`false`).then(res=>{
+                messaging().deleteToken();
+            });
         }
+        return setIsEnabled(!isEnabled);
     }
 
 

@@ -41,7 +41,7 @@ export default function MyPage({navigation, route}) {
             console.log(value);
         });
         reloadAsync();
-        navigation.replace('로그인');
+        return navigation.replace('로그인');
     }
 
     console.log(mem_info);

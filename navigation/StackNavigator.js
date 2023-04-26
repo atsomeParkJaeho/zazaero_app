@@ -151,14 +151,6 @@ const StackNavigator = () => {
             }
         });
         notifee.onBackgroundEvent(async ({type,detail})=>{
-            if(type === EventType.ACTION_PRESS) {
-                return Alert.alert(`열림1`,`${JSON.stringify(type)} ${JSON.stringify(detail)}`);
-            }
-
-            if (type === EventType.ACTION_PRESS && detail.pressAction.id) {
-                return Alert.alert(`열림2`,`${JSON.stringify(type)} ${JSON.stringify(detail)}`);
-            }
-
             if(type === EventType.PRESS) {
                 const {push_act_type, push_link_uid} = detail.notification.data;
                 if(
@@ -184,9 +176,6 @@ const StackNavigator = () => {
         /**----------------------------------1. aos 푸시알림 설정----------------------------------------------------------**/
 
         messaging().onNotificationOpenedApp(async remoteMessage => {
-            if(Member === '116') {
-                Alert.alert(`어플 켜진상태에서 열릴때`,`${JSON.stringify(remoteMessage)}`);
-            }
             if (remoteMessage) {
                 const {data:{push_act_type, push_link_uid}} = remoteMessage;
                 /**-------------------------발주신청시--------------------------------**/
@@ -233,9 +222,6 @@ const StackNavigator = () => {
                 if(push_act_type === 'pay_done_gd_cancel') {
                     return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
                 }
-                if(Member === '116') {
-                    return Alert.alert(`꺼진상태에서 열릴때`,`${JSON.stringify(remoteMessage)}`);
-                }
             }
         });
         if(Platform.OS === 'android') {
@@ -261,9 +247,6 @@ const StackNavigator = () => {
                     if(push_act_type === 'pay_done_gd_cancel') {
                         return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
                     }
-                    if(Member === '116') {
-                        return Alert.alert(`꺼진상태에서 열릴때`,`${JSON.stringify(remoteMessage)}`);
-                    }
                 }
             });
         }
@@ -275,16 +258,30 @@ const StackNavigator = () => {
                     return await LocalPush(res);
                 } else {
                     /**------------------------------안드로이드 설정(로컬에서는 엑스포 푸시를 받을 예정)-----------------------------------**/
-                    return await Notifications.scheduleNotificationAsync({
-                        content:{
-                            title:res.data.title,
-                            body:res.data.msg,
-                            data:{
-                                ...res.data,
-                            }
-                        },
-                        trigger:null,
-                    });
+
+                    if(last_push) {
+                        return await Notifications.scheduleNotificationAsync({
+                            content:{
+                                title:res.data.title,
+                                body:res.data.msg,
+                                data:{
+                                    ...res.data,
+                                }
+                            },
+                            trigger:null,
+                        });
+                    } else {
+                        return await Notifications.scheduleNotificationAsync({
+                            content:{
+                                title:res.data.title,
+                                body:res.data.msg,
+                                data:{
+                                    ...res.data,
+                                }
+                            },
+                            trigger:null,
+                        });
+                    }
                 }
             }
         });

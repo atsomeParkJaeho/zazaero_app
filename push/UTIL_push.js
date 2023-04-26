@@ -9,6 +9,7 @@ import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncSto
 import {app_build, app_version, FCM} from "../util/util";
 import messaging from "@react-native-firebase/messaging";
 import notifee,{AndroidImportance} from "@notifee/react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // 디바이스 id 만드는 변수
 
@@ -22,9 +23,9 @@ export const FCM_Token = async () => {
         providesAppNotificationSettings     :true,
     });
 
+    const notifeeEnabled = await AsyncStorage.getItem(`notifee`);
     const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED || authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-    if (enabled) {
+    if (enabled && JSON.parse(notifeeEnabled ?? 'true')) {
         if(Platform.OS === 'ios') {
             await messaging().registerDeviceForRemoteMessages();
         }
@@ -95,6 +96,12 @@ export async function registerForPushNotificationsAsync() {
     }
 
     return token;
+}
+
+
+/*푸시허용 여부*/
+export const PushSetting = async () => {
+
 }
 
 
