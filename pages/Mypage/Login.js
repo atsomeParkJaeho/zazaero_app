@@ -34,7 +34,7 @@ import {login} from "../UTIL_mem";
 import inputRef from "react-native/Libraries/Components/DrawerAndroid/DrawerLayoutAndroid";
 import {save_push_id} from "../../push/UTIL_push";
 
-export default function Login({navigation, route}) {
+export default function Login({route, navigation}) {
 
 
     const [Member, setMember] = useState();
@@ -111,15 +111,16 @@ export default function Login({navigation, route}) {
 
     console.log(Platform.OS);
 
-    if (Member === undefined) {
-
+    if(Member) {
+        return navigation.replace('메인페이지');
+    } else {
         return ready ? <Loading/> : (
             <>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <KeyboardAvoidingView style={[styles.avoidingView]} behavior={Platform.select({ios: 'padding'})}>
 
-                            <View style={[sub_page, styles.login]}>
-                                <View style={[container]}>
+                        <View style={[sub_page, styles.login]}>
+                            <View style={[container]}>
                                 {/*자재로 로고*/}
                                 <View style={[flex,justify_content_center,mb5]}>
                                     <Logo width={191} height={51} />
@@ -128,20 +129,20 @@ export default function Login({navigation, route}) {
                                 <View style={styles.formGroup}>
                                     <View style={styles.inputGroup}>
                                         <Text style={styles.inputTopText}>아이디</Text>
-                                            <TextInput style={[input]}
-                                            onChangeText={(mem_id) => goInput("mem_id", mem_id)}
-                                            value={Login.mem_id} placeholder="아이디를 입력해주세요"
-                                           autoCapitalize="none"
-                                            />
+                                        <TextInput style={[input]}
+                                                   onChangeText={(mem_id) => goInput("mem_id", mem_id)}
+                                                   value={Login.mem_id} placeholder="아이디를 입력해주세요"
+                                                   autoCapitalize="none"
+                                        />
                                     </View>
                                 </View>
                                 <View style={styles.formGroup}>
                                     <View style={styles.inputGroup}>
                                         <Text style={styles.inputTopText}>비밀번호</Text>
                                         <TextInput style={[input]} secureTextEntry={true}
-                                         onChangeText={(mem_pw) => goInput("mem_pw", mem_pw)} value={Login.mem_pw}
-                                         placeholder="비밀번호를 입력해주세요."
-                                           autoCapitalize="none"
+                                                   onChangeText={(mem_pw) => goInput("mem_pw", mem_pw)} value={Login.mem_pw}
+                                                   placeholder="비밀번호를 입력해주세요."
+                                                   autoCapitalize="none"
                                         />
                                     </View>
                                 </View>
@@ -177,17 +178,17 @@ export default function Login({navigation, route}) {
                                 </View>
                                 {/*회원가입*/}
                             </View>
-                            </View>
+                        </View>
 
                     </KeyboardAvoidingView>
                 </TouchableWithoutFeedback>
             </>
 
         );
-    } else {
-        navigation.replace('메인페이지');
-
     }
+
+
+
 }
 
 const styles = StyleSheet.create({

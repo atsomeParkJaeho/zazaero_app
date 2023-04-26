@@ -94,7 +94,7 @@ export default function WorkName({navigation,route}) {
     useEffect(()=>{
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
-                // Alert.alert(``,`실패`);
+                // Alert.alert(``,`로그인 후 확인 가능합니다.`);
             }
         });
         get_work_name(Mebmer,``).then((res)=>{
@@ -128,7 +128,6 @@ export default function WorkName({navigation,route}) {
             >
                 <View style={[styles.ConstructionStatus]}>
                     <View style={[styles.ConstructionStatus_list,mt2]}>
-
                         {/**------------------------반복문 구간------------------------**/}
                         {work_name.map((val,idx)=>(
                             <>
@@ -139,7 +138,6 @@ export default function WorkName({navigation,route}) {
                                             <View style={[flex_top]}>
                                                 <View style={[wt7]}>
                                                     <Text style={[h14,]}>공사명</Text>
-                                                    <Text style={[h14,]}>{val.work_uid}</Text>
                                                     <Text style={[h15,,fw500]}>{val.work_name}</Text>
                                                 </View>
                                                 <View style={[wt3]}>

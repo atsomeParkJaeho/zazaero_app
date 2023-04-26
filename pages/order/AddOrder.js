@@ -146,7 +146,7 @@ export default function AddOrder({route,navigation}) {
     useEffect(()=>{
         /**------------------------------회원 값 가져오기-----------------------**/
         get_Member().then((res)=>{if(res) {setMember(res);} else {
-            Alert.alert(``,`실패`);
+            Alert.alert(``,`로그인 후 확인 가능합니다.`);
             return navigation.navigate('로그인');
         }});
         /**------------------------------발주정보 가져오기----------------------------**/

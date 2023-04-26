@@ -91,6 +91,7 @@ import {get_Member, my_page} from "../UTIL_mem";
 import {app_info, donePay, get_order} from "./OrderInfo";
 import Checkbox from "expo-checkbox";
 import {all_cancel_push, part_cancel_push} from "../../push/UTIL_push";
+import {useIsFocused} from "@react-navigation/native";
 
 
 
@@ -110,7 +111,7 @@ export default function OrderDtail({route,navigation}) {
     const [get_gd_cancel,       set_gd_cancel]                  = useState([]);             // 취소 리스트
     //모달창 오픈
     const [isModalVisible2,     setIsModalVisible2]             = useState(false);
-
+    const Update = useIsFocused();
     // 추가발주 창 오픈 상태정의
     const [get_mem_info,        set_mem_info]                   = useState([]);
     const [point_use,           set_point_use]                  = useState(0);
@@ -161,27 +162,7 @@ export default function OrderDtail({route,navigation}) {
         set_all_point_chk(!all_point_chk);
     }
 
-    /**-------------------------추출항목-----------------------**/
-    const get_ready = async (Member, gd_order_uid) => {
-        /**은행코드 추출**/
-        let {A_pay_bank} = await app_info();
-        let temp = A_pay_bank.map(val=>{return {label:val.name, value:val.key,}});
-        /**발주정보 추출**/
-        let {gd_order, cancel_doing_cnt} = await get_order(Member, gd_order_uid); // 발주정보 불러오기
-        let temp2 = gd_order.A_order.map(val =>{return {...val, goods_chk: false, goods_del: false,}});
-        let mem_info = (await my_page(Member)).data;
-        let {gd_cancel} = (await get_order_cancel_list(Member)).data;
-        let cancel_result = gd_cancel.filter(val=>val.gd_order_uid === gd_order_uid);
-        console.log(gd_cancel,'/취소 불러오기');
-        set_mem_info(mem_info.mem_info);
-        navigation.setOptions({title:gd_order.ord_status_name+' 상태 입니다.',});
-        setBankCode(temp);                      // 은행코드 추가
-        set_get_gd_order(gd_order);             // 발주내용 추가
-        set_A_order_list(temp2);                // 발주자재목록 내용 추가
-        set_cancel_doing(cancel_doing_cnt);     // 발주취소상태 내용 추가
-        set_gd_cancel(cancel_result);               // 발주취소 목록 내용 추가
 
-    }
     /**-------------------------발주정보수정하기 페이지 이동---------------------------**/
     const mod_recv_info = () => {
         console.log('수정하기 페이지 이동');
@@ -435,12 +416,34 @@ export default function OrderDtail({route,navigation}) {
     useEffect(()=>{
         /**------------------------------회원 값 가져오기-----------------------**/
         get_Member().then((res)=>{if(res) {setMember(res);} else {
-            Alert.alert(``,`실패`);
+            Alert.alert(``,`로그인 후 확인 가능합니다.`);
             return navigation.navigate('로그인');
         }});
         /**------------------------------발주정보 가져오기----------------------------**/
         get_ready(Member, gd_order_uid);
-    },[Member]);
+    },[Member, Update]);
+
+    /**-------------------------추출항목-----------------------**/
+    const get_ready = async (Member, gd_order_uid) => {
+        /**은행코드 추출**/
+        let {A_pay_bank} = await app_info();
+        let temp = A_pay_bank.map(val=>{return {label:val.name, value:val.key,}});
+        /**발주정보 추출**/
+        let {gd_order, cancel_doing_cnt} = await get_order(Member, gd_order_uid); // 발주정보 불러오기
+        let temp2 = gd_order.A_order.map(val =>{return {...val, goods_chk: false, goods_del: false,}});
+        let mem_info = (await my_page(Member)).data;
+        let {gd_cancel} = (await get_order_cancel_list(Member)).data;
+        let cancel_result = gd_cancel.filter(val=>val.gd_order_uid === gd_order_uid);
+        console.log(gd_cancel,'/취소 불러오기');
+        set_mem_info(mem_info.mem_info);
+        navigation.setOptions({title:gd_order.ord_status_name+' 상태 입니다.',});
+        setBankCode(temp);                      // 은행코드 추가
+        set_get_gd_order(gd_order);             // 발주내용 추가
+        set_A_order_list(temp2);                // 발주자재목록 내용 추가
+        set_cancel_doing(cancel_doing_cnt);     // 발주취소상태 내용 추가
+        set_gd_cancel(cancel_result);               // 발주취소 목록 내용 추가
+    }
+
     let btn = {marginBottom:86}
 
     console.log(get_mem_info.mem_point,'/나의 포인트 정보');

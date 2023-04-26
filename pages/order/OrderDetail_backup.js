@@ -294,7 +294,7 @@ export default function OrderDtail({route,navigation}) {
     useEffect(() => {
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
-                Alert.alert(``,`실패`);
+                Alert.alert(``,`로그인 후 확인 가능합니다.`);
             }
         });
         /**--추가발주 상품 append 하기--**/

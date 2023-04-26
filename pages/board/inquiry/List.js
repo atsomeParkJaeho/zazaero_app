@@ -39,7 +39,7 @@ export default function InquiryList({route, navigation}) {
     useEffect(() => {
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
-                Alert.alert(``,`실패`);
+                Alert.alert(``,`로그인 후 확인 가능합니다.`);
             }
         });
         bd_list(`inquiry`,Member,``).then((res)=>{

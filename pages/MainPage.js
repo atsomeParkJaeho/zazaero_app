@@ -26,6 +26,7 @@ import {ComPhone, FCM} from "../util/util";
 import NotificationIcon from "../icons/Notification_icon.svg";
 import {FCM_Token, save_push_id, sendPushApp,sendPushNotification} from "../push/UTIL_push";
 import messaging from "@react-native-firebase/messaging";
+import Loading from "../components/Loading";
 
 
 
@@ -89,6 +90,7 @@ export default function MainPage({route,navigation}) {
     const [Cate1st, setCate1st] = useState([]);   // 1차 카테고리 설정
     const [PushToken, set_PushToken] = useState(``);
     const [App_PushToken, set_App_PushToken] = useState(``);
+    const [ready, setReady]         = useState(true);    // 로딩 액션
     // 아코디언 설정
     const [expend, setExpend] = useState(`1`);
     const [com_info, set_com_info] = useState([]);
@@ -130,8 +132,10 @@ export default function MainPage({route,navigation}) {
         });
 
         get_Member().then((res)=>{
-            if(res) {setMember(res);} else {
-                // Alert.alert(``,`실패`);
+            if(res) {
+                return setMember(res);
+            } else {
+                return navigation.replace(`로그인`);
             }
         });
         /*--------------------------------푸시알림 셋팅 끝-------------------------------------------------*/
@@ -174,6 +178,9 @@ export default function MainPage({route,navigation}) {
                 }
             }
         });
+        setTimeout(() => {
+            setReady(false);
+        }, 1000);
         /**------------------------푸시알림 체크루틴------------------------**/
         // device_chk();
 
@@ -221,157 +228,167 @@ export default function MainPage({route,navigation}) {
     console.log(A_banner,' / 배너2');
     console.log(com_info.com_name,' / 회사정보');
     console.log(route,' / 링크정보');
-    // let com_phone_val = com_info.com_phone;
-    // let com_phone_ch = com_phone_val.slice(4);
+
+
 
     return (
+
         /*
           return 구문 안에서는 {슬래시 + * 방식으로 주석
         */
         <>
-            {/**----------------------------------------해더----------------------------------------**/}
-            <View style={styles.top_inner}>
-                <View style={[flex_between]}>
-                    <View style="">
-                        <Main_logo width={65} height={20}/>
-                    </View>
-                    <View style={flex}>
-                        {(Member === '105' || Member === '79') && (
-                            <>
-                                <TouchableOpacity style={[styles.link_signUp, {marginRight:10,}]} onPress={() => sendPushNotification(PushToken)}>
-                                    <Text>엑스포</Text>
+            {(ready) ? (
+                <>
+                    <Loading/>
+                </>
+            ):(
+                <>
+                    {/**----------------------------------------해더----------------------------------------**/}
+                    <View style={styles.top_inner}>
+                        <View style={[flex_between]}>
+                            <View style="">
+                                <Main_logo width={65} height={20}/>
+                            </View>
+                            <View style={flex}>
+                                {(Member === '105' || Member === '79') && (
+                                    <>
+                                        <TouchableOpacity style={[styles.link_signUp, {marginRight:10,}]} onPress={() => sendPushNotification(PushToken)}>
+                                            <Text>엑스포</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={styles.link_signUp} onPress={get_push}>
+                                            <Text>apk</Text>
+                                        </TouchableOpacity>
+                                    </>
+                                )}
+                                <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('알림')}}>
+                                    <NotificationIcon width={30} height={21} style={[styles.icon, ms1]}/>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.link_signUp} onPress={get_push}>
-                                    <Text>apk</Text>
+                                <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
+                                    <Search width={30} height={21} style={[styles.icon]}/>
                                 </TouchableOpacity>
-                            </>
-                        )}
-                        <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('알림')}}>
-                            <NotificationIcon width={30} height={21} style={[styles.icon, ms1]}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
-                            <Search width={30} height={21} style={[styles.icon]}/>
-                        </TouchableOpacity>
+                            </View>
+                        </View>
                     </View>
-                </View>
-            </View>
-            {/**----------------------------------------바디----------------------------------------**/}
-            <ScrollView style={[]}>
-                <ImageSlider
-                    data={
-                        A_banner.map(val=>{
-                            return {
-                                img:"http://49.50.162.86:80/"+val.img_url,
-                                cfg_val1:val.cfg_val1,
-                                cfg_val2:val.cfg_val2,
-                                cfg_val3:val.cfg_val3,
-                                cfg_val4:val.cfg_val4,
+                    {/**----------------------------------------바디----------------------------------------**/}
+                    <ScrollView style={[]}>
+                        <ImageSlider
+                            data={
+                                A_banner.map(val=>{
+                                    return {
+                                        img:"http://49.50.162.86:80/"+val.img_url,
+                                        cfg_val1:val.cfg_val1,
+                                        cfg_val2:val.cfg_val2,
+                                        cfg_val3:val.cfg_val3,
+                                        cfg_val4:val.cfg_val4,
+                                    }
+                                })
                             }
-                        })
-                    }
-                    onClick={(data)=>get_link(data.cfg_val1,data.cfg_val2,data.cfg_val3,data.cfg_val4)}
-                    previewImageStyle={false}
-                    caroselImageStyle={{ resizeMode: 'cover', height:180, }}
-                    preview={false}
-                    autoPlay={false}
-                    timer={1000}
-                    indicatorContainerStyle={{top: 0}}
-                />
-                <List.AccordionGroup
-                    onAccordionPress={(id)=>setExpend(id)}
-                    expandedId={expend}
-                    style={styles.Section} >
-                    {/*=================1차 카테고리===============*/}
-                    {Cate1st.map((val, idx) => (
-                        <>
-                            <List.Accordion style={[styles.Accordion_tit]}
-                                            id={`${idx+1}`}
-                                            title={[val.cfg_val1]}
-                                            titleStyle={{font:50}}
-                                            key={val.ind_cfg_uid}
-                            >
-                                {/*=================2차 카테고리===============*/}
-                                <View style={[styles.w3,d_flex,{flexWrap:"wrap"}]}>
-                                    <Cate2nd navigation={navigation}
-                                             name={val.cfg_val1}
-                                             uid={val.ind_cfg_uid}
-                                    />
+                            onClick={(data)=>get_link(data.cfg_val1,data.cfg_val2,data.cfg_val3,data.cfg_val4)}
+                            previewImageStyle={false}
+                            caroselImageStyle={{ resizeMode: 'cover', height:180, }}
+                            preview={false}
+                            autoPlay={false}
+                            timer={1000}
+                            indicatorContainerStyle={{top: 0}}
+                        />
+                        <List.AccordionGroup
+                            onAccordionPress={(id)=>setExpend(id)}
+                            expandedId={expend}
+                            style={styles.Section} >
+                            {/*=================1차 카테고리===============*/}
+                            {Cate1st.map((val, idx) => (
+                                <>
+                                    <List.Accordion style={[styles.Accordion_tit]}
+                                                    id={`${idx+1}`}
+                                                    title={[val.cfg_val1]}
+                                                    titleStyle={{font:50}}
+                                                    key={val.ind_cfg_uid}
+                                    >
+                                        {/*=================2차 카테고리===============*/}
+                                        <View style={[styles.w3,d_flex,{flexWrap:"wrap"}]}>
+                                            <Cate2nd navigation={navigation}
+                                                     name={val.cfg_val1}
+                                                     uid={val.ind_cfg_uid}
+                                            />
+                                        </View>
+                                    </List.Accordion>
+                                </>
+                            ))}
+
+                        </List.AccordionGroup>
+
+
+                        <View style={styles.main_footer}>
+                            <View style={container}>
+                                <View style={styles.main_footer_flex}>
+                                    <View style={styles.main_footer_flex_item}>
+                                        <TouchableOpacity style={styles.main_footer_link} onPress={() => {
+                                            navigation.navigate('약관/개인정보처리방침',{cfg_part2:`access`});
+                                        }}>
+                                            <Text style={styles.main_footer_link_txt}>서비스 이용약관</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.main_footer_flex_item}>
+                                        <TouchableOpacity style={styles.main_footer_link} onPress={() => {
+                                            navigation.navigate('약관/개인정보처리방침',{cfg_part2:`info_mgr`});
+                                        }}>
+                                            <Text style={styles.main_footer_link_txt}>개인정보처리방침</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.main_footer_flex_item}>
+                                        <TouchableOpacity style={styles.main_footer_link} onPress={() => {
+                                            navigation.navigate('약관/개인정보처리방침',{cfg_part2:`ad_acces`});
+                                        }}>
+                                            <Text style={styles.main_footer_link_txt}>홍보 및 마케팅 이용약관</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
-                            </List.Accordion>
-                        </>
-                    ))}
-
-                </List.AccordionGroup>
-
-
-                <View style={styles.main_footer}>
-                    <View style={container}>
-                        <View style={styles.main_footer_flex}>
-                            <View style={styles.main_footer_flex_item}>
-                                <TouchableOpacity style={styles.main_footer_link} onPress={() => {
-                                    navigation.navigate('약관/개인정보처리방침',{cfg_part2:`access`});
-                                }}>
-                                    <Text style={styles.main_footer_link_txt}>서비스 이용약관</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={styles.main_footer_flex_item}>
-                                <TouchableOpacity style={styles.main_footer_link} onPress={() => {
-                                    navigation.navigate('약관/개인정보처리방침',{cfg_part2:`info_mgr`});
-                                }}>
-                                    <Text style={styles.main_footer_link_txt}>개인정보처리방침</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={styles.main_footer_flex_item}>
-                                <TouchableOpacity style={styles.main_footer_link} onPress={() => {
-                                    navigation.navigate('약관/개인정보처리방침',{cfg_part2:`ad_acces`});
-                                }}>
-                                    <Text style={styles.main_footer_link_txt}>홍보 및 마케팅 이용약관</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                        {/*  메인풋터 상단  */}
-                        <View style={[]}>
-                            <View style={[flex,justify_content_center]}>
-                                <Text style={styles.main_footer_disc_txt}>
-                                    {/*상호명 : {com_info.com_name}*/}
-                                    상호명 : ㈜스타키움 자재로
-                                </Text>
-                                <Text style={styles.main_footer_disc_txt}>
-                                    대표자명 : {com_info.ceo_name}
-                                </Text>
-                            </View>
-                            <View style={[flex,justify_content_center]}>
-                                <Text style={styles.main_footer_disc_txt}>
-                                    사업자 번호 : {com_info.biz_no}
-                                </Text>
-                                <Text style={styles.main_footer_disc_txt}>
-                                    통신판매 신고번호 : {com_info.sale_refer_no}
-                                </Text>
-                            </View>
-                            <View style={[flex,justify_content_center]}>
-                                <Text style={styles.main_footer_disc_txt}>
-                                    고객센터 : {ComPhone(com_info.com_phone)}
-                                </Text>
-                                <Text style={styles.main_footer_disc_txt}>
-                                    이메일 : {com_info.com_email}
-                                </Text>
-                            </View>
-                            <View style={[flex,justify_content_center]}>
-                                <Text style={styles.main_footer_disc_txt}>
-                                    사업장 주소 : {com_info.addr1} {com_info.addr2}
-                                </Text>
-                            </View>
-                            <View style={[flex,justify_content_center]}>
-                                <Text style={styles.main_footer_disc_txt}>
-                                    앱 버전 : 9.3.8
-                                </Text>
+                                {/*  메인풋터 상단  */}
+                                <View style={[]}>
+                                    <View style={[flex,justify_content_center]}>
+                                        <Text style={styles.main_footer_disc_txt}>
+                                            {/*상호명 : {com_info.com_name}*/}
+                                            상호명 : ㈜스타키움 자재로
+                                        </Text>
+                                        <Text style={styles.main_footer_disc_txt}>
+                                            대표자명 : {com_info.ceo_name}
+                                        </Text>
+                                    </View>
+                                    <View style={[flex,justify_content_center]}>
+                                        <Text style={styles.main_footer_disc_txt}>
+                                            사업자 번호 : {com_info.biz_no}
+                                        </Text>
+                                        <Text style={styles.main_footer_disc_txt}>
+                                            통신판매 신고번호 : {com_info.sale_refer_no}
+                                        </Text>
+                                    </View>
+                                    <View style={[flex,justify_content_center]}>
+                                        <Text style={styles.main_footer_disc_txt}>
+                                            고객센터 : {ComPhone(com_info.com_phone)}
+                                        </Text>
+                                        <Text style={styles.main_footer_disc_txt}>
+                                            이메일 : {com_info.com_email}
+                                        </Text>
+                                    </View>
+                                    <View style={[flex,justify_content_center]}>
+                                        <Text style={styles.main_footer_disc_txt}>
+                                            사업장 주소 : {com_info.addr1} {com_info.addr2}
+                                        </Text>
+                                    </View>
+                                    <View style={[flex,justify_content_center]}>
+                                        <Text style={styles.main_footer_disc_txt}>
+                                            앱 버전 : 9.3.8
+                                        </Text>
+                                    </View>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                </View>
-            </ScrollView>
-            {/**----------------------------------------푸터----------------------------------------**/}
-            <Footer navigation={navigation}/>
+                    </ScrollView>
+                    {/**----------------------------------------푸터----------------------------------------**/}
+                    <Footer navigation={navigation}/>
+                </>
+            )}
+
         </>
     );
 }

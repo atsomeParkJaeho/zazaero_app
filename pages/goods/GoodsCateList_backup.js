@@ -130,7 +130,7 @@ export default function GoodsCateList({route, navigation}) {
 
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
-                return Alert.alert(``,`실패`);
+                return Alert.alert(``,`로그인 후 확인 가능합니다.`);
             }
         });
 

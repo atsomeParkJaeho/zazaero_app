@@ -13,6 +13,26 @@ import notifee,{AndroidImportance} from "@notifee/react-native";
 // 디바이스 id 만드는 변수
 
 
+/**---------------------------------------------파이어베이스 토큰 가져오기-------------------------------------------**/
+export const FCM_Token = async () => {
+
+    const authStatus = await messaging().requestPermission({
+        sound                               :true,
+        announcement                        :true,
+        providesAppNotificationSettings     :true,
+    });
+
+    const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED || authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+        if(Platform.OS === 'ios') {
+            await messaging().registerDeviceForRemoteMessages();
+        }
+        let res = await messaging().getToken();
+        return res;
+    }
+}
+
 
 export async function sendPushApp(App_PushToken, Member) {
     // Alert.alert(`apk 푸시토큰`,`${App_PushToken}`);
@@ -77,46 +97,51 @@ export async function registerForPushNotificationsAsync() {
     return token;
 }
 
-/**---------------------------------------------파이어베이스 토큰 가져오기-------------------------------------------**/
-export const FCM_Token = async () => {
 
-    const authStatus = await messaging().requestPermission({
-        sound                               :true,
-        announcement                        :true,
-        providesAppNotificationSettings     :true,
-    });
-
-    const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED || authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-    if (enabled) {
-        if(Platform.OS === 'ios') {
-            await messaging().registerDeviceForRemoteMessages();
-        }
-        let res = await messaging().getToken();
-        return res;
-    }
-}
 
 /** -------------------------------------------푸시알림창-----------------------------------------**/
 
 export const LocalPush = async (res) => {
+
     const channelAnoucement = await notifee.createChannel({
-        id: 'default',
-        name: 'default',
+        id: 'zazaero',
+        name: 'zazaero',
+        sound: 'hollow',
         importance: AndroidImportance.HIGH,
     });
 
-    await notifee.displayNotification({
+    return await notifee.displayNotification({
         title: res.data.title,
         body: res.data.body,
         data:{
-          ...res.data
+            ...res.data
         },
-        android: {
-            channelId: channelAnoucement,
+        android:{
+            channelId:channelAnoucement,
+            pressAction:{
+                id:'zazaero_app',
+            },
         },
         ios:{
             sound:"notification.caf",
         }
     });
+}
+
+export const OpenGetPush = async () => {
+    let res = await notifee.getInitialNotification();
+    return res;
+}
+
+
+export const push_list = async (Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
+        act_type        :"",
+        mem_uid         :Member,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
 }

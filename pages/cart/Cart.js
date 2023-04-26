@@ -81,7 +81,7 @@ export default function Cart({route, navigation}) {
     useEffect(() => {
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
-                Alert.alert(``,`실패`);
+                Alert.alert(``,`로그인 후 확인 가능합니다.`);
             }
         });
         // ====================장바구니 목록을 출력=================///

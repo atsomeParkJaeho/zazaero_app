@@ -42,7 +42,7 @@ export default function inquiryView({route, navigation}){
     const updata = useIsFocused();
     useEffect(()=>{
         get_Member().then((res)=>{if(res) {setMember(res);} else {
-            Alert.alert(``,`실패`);
+            Alert.alert(``,`로그인 후 확인 가능합니다.`);
             return navigation.navigate('로그인');
         }});
         get_bd_detail(bd_uid, `inquiry`).then((res)=>{
