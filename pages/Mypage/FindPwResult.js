@@ -57,7 +57,7 @@ export default function FindPw({route,navigation}) {
             return Alert.alert(``,'비밀번호 확인을 입력하세요.',);
         }
         if(8 >= FindPw.mem_pw.length) {             // 비밀번호 최소
-            Alert.alert('',`8자 이상 입력해주세요.`);
+            return Alert.alert('',`8자 이상 입력해주세요.`);
         }
         if(regPw.test(FindPw.mem_pw) === false) {  // 특수문자 입력 필수
             return  Alert.alert('','특수 문자가 포함되어있지 않습니다.');
@@ -78,7 +78,7 @@ export default function FindPw({route,navigation}) {
                             Alert.alert(``,`비밀번호가 변경되었습니다.`,[
                                 {text:'OK',
                                 onPress:()=>{
-                                    return navigation.replace(`로그인`);
+                                    return navigation.navigate(`로그인`);
                                 }
                                 }
                             ]);
@@ -98,25 +98,27 @@ export default function FindPw({route,navigation}) {
         <>
 
             <KeyboardAvoidingView behavior={Platform.select({ios: 'padding'})} style={[styles.subPage,styles.FindId]}>
-                <View style={styles.container}>
-                    <View style={styles.center_middle}>
-                        <Text style={styles.FindId_txt}>
-                            재설정 할 비밀번호를 {'\n'}
-                            입력해주세요
-                        </Text>
-                        <TextInput style={styles.input}
-                                   secureTextEntry={true}
-                                   onFocus={()=>setFocus(true)}
-                                   onChangeText={(mem_pw)=>ChkInput("mem_pw",mem_pw)}
-                                   placeholder="비밀번호를 입력해주세요."
-                                   value={FindPw.mem_pw}/>
-                        <TextInput style={[styles.input,mt2]}
-                                   secureTextEntry={true}
-                                   onChangeText={(mem_pw_ch)=>ChkInput("mem_pw_ch",mem_pw_ch)}
-                                   placeholder="비밀번호를 확인해주세요."
-                                   value={FindPw.mem_pw_ch}/>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={styles.container}>
+                        <View style={styles.center_middle}>
+                            <Text style={styles.FindId_txt}>
+                                재설정 할 비밀번호를 {'\n'}
+                                입력해주세요
+                            </Text>
+                            <TextInput style={styles.input}
+                                       secureTextEntry={true}
+                                       onFocus={()=>setFocus(true)}
+                                       onChangeText={(mem_pw)=>ChkInput("mem_pw",mem_pw)}
+                                       placeholder="비밀번호를 입력해주세요."
+                                       value={FindPw.mem_pw}/>
+                            <TextInput style={[styles.input,mt2]}
+                                       secureTextEntry={true}
+                                       onChangeText={(mem_pw_ch)=>ChkInput("mem_pw_ch",mem_pw_ch)}
+                                       placeholder="비밀번호를 확인해주세요."
+                                       value={FindPw.mem_pw_ch}/>
+                        </View>
                     </View>
-                </View>
+                </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
             <View>
                 <TouchableOpacity style={[styles.btn_color]} onPress={goFindPw}>

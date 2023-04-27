@@ -68,8 +68,8 @@ export default function FindId({route, navigation}) {
                 console.log(res.data,'/ [리턴값]')
                 const {result, alert_msg} = res.data;
                 if (result === 'OK') {
-                    navigation.replace('아이디 찾기결과',{FindId:FindId, mem_info:res.data});
-                    return Alert.alert('','회원님의 연락처로 인증번호가\n전송되었습니다.');
+                    Alert.alert('','회원님의 연락처로 인증번호가\n전송되었습니다.');
+                    return navigation.replace('아이디 찾기결과',{FindId:FindId, mem_info:res.data});
                 } else {
                     return Alert.alert(``,`이름 또는 전화번호가 맞지않습니다,\n다시확인해주세요.`);
                 }

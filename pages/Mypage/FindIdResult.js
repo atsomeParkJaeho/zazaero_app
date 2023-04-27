@@ -57,7 +57,7 @@ export default function FindId({route ,navigation}) {
                         const {result} = res.data;
                         if(result === 'OK') {
                             Alert.alert(``,`등록하신 휴대폰 번호로 아이디가 전송되었습니다.`);
-                            return navigation.replace(`로그인`);
+                            return navigation.navigate(`로그인`);
                         } else {
                             return Alert.alert(``,`${result}`);
                         }

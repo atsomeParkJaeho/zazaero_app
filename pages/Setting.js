@@ -45,9 +45,9 @@ export default function Setting({navigation,route}){
                     if(mem_info.push_ad_flag === 'Y') {
                         setIsEnabled(true);
                     }
-                    set_mem_info(mem_info);
+                    return set_mem_info(mem_info);
                 } else {
-                    return Alert.alert(``,`${result}`);
+                    // return Alert.alert(``,`${result}`);
                 }
             }
         });
@@ -59,7 +59,16 @@ export default function Setting({navigation,route}){
         if(!isEnabled) {
             // Alert.alert(`알림 허용`,`${!isEnabled}`);
             AsyncStorage.setItem(`notifee`,`true`).then(res=>{
-                FCM_Token();
+                FCM_Token().then((rsp)=>{
+                    save_push_id(Member).then((chk)=>{
+                        if(chk) {
+                            const {result} = chk.data;
+                            if(result !== 'OK') {
+                                return Alert.alert(``,`${result}`);
+                            }
+                        }
+                    });
+                });
             });
         } else {
             // Alert.alert(`알림 취소`,`${!isEnabled}`);

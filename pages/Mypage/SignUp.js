@@ -289,8 +289,13 @@ export default function SignUp({route, navigation}) {
                 const {result, err_msg} = res.data;
                 console.log(result);
                 if(result === 'OK') {
-                    Alert.alert('','축하합니다.\n회원가입이 완료되었습니다.\n 로그인 해주세요.');
-                    return navigation.navigate('로그인');
+                    Alert.alert(`회원가입을 하시겠습니까?`,``,[
+                        {text:"취소", onPress:()=>{}},
+                        {text:"확인", onPress:()=>{
+                            Alert.alert('','축하합니다.\n회원가입이 완료되었습니다.\n로그인 해주세요.');
+                            return navigation.replace('로그인');
+                            }}
+                    ]);
                 } else if(result === 'NG_dup_mobile') {
                     return Alert.alert('',`${err_msg}`);
                 } else {
