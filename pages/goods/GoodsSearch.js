@@ -99,6 +99,10 @@ export default function GoodsSearch({route,navigation}) {
     const goSearch = (search) => {
         console.log(search);
 
+        if(!GoodsSearch.search) {
+            return Alert.alert(``,`검색어를 입력해주세요.`);
+        }
+
         // 검색상품으로 이동한다
         axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
             act_type        : "get_goods_list",

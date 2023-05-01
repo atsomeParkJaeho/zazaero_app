@@ -104,7 +104,7 @@ function Payment({ route,navigation }) {
                     Alert.alert('','결제가 완료되었습니다.',[{
                         text:'OK',
                         onPress:()=>{
-                            return settlekind_push(OrderData.mem_uid, OrderData);
+                            // return settlekind_push(OrderData.mem_uid, OrderData);
                         }
                     }]);
                 } else {
@@ -112,9 +112,6 @@ function Payment({ route,navigation }) {
                 }
             }
         });
-
-
-
 
     }
 

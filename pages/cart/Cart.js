@@ -73,10 +73,6 @@ export default function Cart({route, navigation}) {
     const [CartList, setCartList]          = useState([]);           // 장바구니 1차 카테고리 출력
     const [all_status, set_all_status] = useState(false);
     const Update = useIsFocused();
-
-
-
-
     /**---------------------------------페이지 진입시 노출----------------------------------------**/
     useEffect(() => {
         get_Member().then((res)=>{
@@ -99,9 +95,6 @@ export default function Cart({route, navigation}) {
                 }
             }
         });
-
-
-
     }, [Member,Update]);
 
 
@@ -127,7 +120,8 @@ export default function Cart({route, navigation}) {
                                 Alert.alert('','삭제완료하였습니다.');
                                 return navigation.replace('장바구니');
                             } else {
-                                Alert.alert('',`${res.data}`);
+                                Alert.alert('',`삭제완료하였습니다.`);
+                                return navigation.replace('장바구니');
                             }
                         }
                     });
@@ -172,10 +166,17 @@ export default function Cart({route, navigation}) {
                                             }
                                         })}
                                 });
-                                setCartList(temp);
+
+                                let rsp = temp.map(cate=>{
+                                    return {
+                                        ...cate, A_goods_list:cate.A_goods_list.filter((val)=>val.goods_del !== true)
+                                    }
+                                })
+
+                                setCartList(rsp);
                                 return Alert.alert('','상품이 삭제되었습니다.');
                             } else {
-                                Alert.alert('','연결실패');
+                                return Alert.alert('','연결실패');
                             }
                         }
                     });

@@ -338,11 +338,20 @@ export default function ModOrder({route,navigation}) {
         }
     }
     const mod_recv_info = () => {
-
+        
         let chk_result = A_order_list.filter((val)=>val.goods_chk);
         let chk_uid = chk_result.map(val=>val.order_uid);
         console.log(chk_result,'/[필터링]');
         console.log(chk_uid,'/[필터링 uid]');
+        if(Number(chk_result.length) === Number(A_order_list.length)) {
+            return Alert.alert(``,`전체취소를 이용해주세요.`);
+        }
+        if(!get_gd_order.recv_name) {
+            return Alert.alert(``,`현장인도자 성명을 입력해주세요.`);
+        }
+        if(!get_gd_order.recv_mobile) {
+            return Alert.alert(``,`현장인도자 연락처를 입력해주세요.`);
+        }
 
         Alert.alert(``,`발주를 수정하시겠습니까?`,[
             {text:"아니요"},

@@ -609,7 +609,7 @@ export default function OrderDtail({route,navigation}) {
                                             </View>
                                         </View>
                                         <View style={[mt1]}>
-                                            {(item.req_memo) && (
+                                            {(Number(item.opt_price) > 0) && (
                                                 <View style={[]}>
                                                     <Text style={[h13,text_right]}>요청금액 : <Text style={[text_danger]}>{Price(item.opt_price)}원</Text></Text>
                                                 </View>

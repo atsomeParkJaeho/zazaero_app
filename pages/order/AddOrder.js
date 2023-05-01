@@ -380,6 +380,13 @@ export default function AddOrder({route,navigation}) {
         if(add_goods_list.length === 0) {return Alert.alert('','자재를 추가해주세요.');}
         if(chk_result.length > 1) {return Alert.alert('','같은 공정 자재만 발주 가능합니다.');}
 
+        if(!get_gd_order.recv_name) {
+            return Alert.alert(``,`현장인도자 성명을 입력해주세요.`);
+        }
+        if(!get_gd_order.recv_mobile) {
+            return Alert.alert(``,`현장인도자 연락처를 입력해주세요.`);
+        }
+
         Alert.alert('','추가발주를 요청 하시겠습니까?',[
             {text:"취소", onPress:()=>{}},
             {text:"확인",
