@@ -218,7 +218,7 @@ export default function SignUp({route, navigation}) {
 
         if(regPw.test(SignUp.mem_pw) === false) {  // 특수문자 입력 필수
             Alert.alert('','특수 문자가 포함되어있지 않습니다.');
-            return Chkinput.current[2].focus();
+            return Chkinput.current[1].focus();
         }
 
         if(SignUp.mem_pw !== SignUp.mem_pw_chk) {  // 비밀번호 일치
@@ -297,7 +297,8 @@ export default function SignUp({route, navigation}) {
                             }}
                     ]);
                 } else if(result === 'NG_dup_mobile') {
-                    return Alert.alert('',`${err_msg}`);
+                    Alert.alert('',`${err_msg}`); // 중복 전화번호 체크루틴
+                    return Chkinput.current[9].focus();
                 } else {
                     return Alert.alert('',`${err_msg}`);
                 }
