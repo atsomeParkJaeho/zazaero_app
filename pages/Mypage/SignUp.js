@@ -121,6 +121,11 @@ export default function SignUp({route, navigation}) {
     // 3. 아이디 중복확인
     const chkName = () => {
 
+        if(5 >= SignUp.mem_id.length) {
+            Alert.alert('','6자 이상 입력해주세요.');
+            return Chkinput.current[0].focus();
+        }
+
         if(!SignUp.mem_id) {
             Alert.alert('','아이디를 입력해주세요.');
             return Chkinput.current[0].focus();
@@ -190,8 +195,8 @@ export default function SignUp({route, navigation}) {
 
         if(!SignUp.mem_id) {  /*아이디 */Alert.alert('',`아이디를 입력해주세요.`);return Chkinput.current[0].focus();}
 
-        if(Minlangth >= SignUp.mem_id.length) {     // 아이디 최소
-            Alert.alert('',`${Minlangth}자 이상 입력해주세요.`);
+        if(5 >= SignUp.mem_id.length) {
+            Alert.alert('','6자 이상 입력해주세요.');
             return Chkinput.current[0].focus();
         }
 
