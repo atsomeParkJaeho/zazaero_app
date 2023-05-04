@@ -87,6 +87,7 @@ export default function SignUp({route, navigation}) {
         SignUp.privacy_3 &&
         SignUp.privacy_4 &&
         SignUp.mem_pw_chk
+        // SignUp.all_chk
     );
 
 
@@ -120,12 +121,6 @@ export default function SignUp({route, navigation}) {
     // 3. 아이디 중복확인
     const chkName = () => {
 
-
-        if(5 >= SignUp.mem_id.length) {     // 아이디 최소
-            Alert.alert('',`6자 이상 입력해주세요.`);
-            return Chkinput.current[0].focus();
-        }
-
         if(!SignUp.mem_id) {
             Alert.alert('','아이디를 입력해주세요.');
             return Chkinput.current[0].focus();
@@ -147,9 +142,6 @@ export default function SignUp({route, navigation}) {
                             mem_id_chk: 'Y',
                         });
                     }
-
-
-
                     if(result === 'NG_dup') {
                         return Alert.alert('','사용이 불가능한 아이디 입니다.');
                     }
@@ -196,11 +188,10 @@ export default function SignUp({route, navigation}) {
 
         let regPw = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/g;
 
-        if(!SignUp.mem_id) {
-            /*아이디 */Alert.alert('',`아이디를 입력해주세요.`);return Chkinput.current[0].focus();}
+        if(!SignUp.mem_id) {  /*아이디 */Alert.alert('',`아이디를 입력해주세요.`);return Chkinput.current[0].focus();}
 
-        if(5 >= SignUp.mem_id.length) {     // 아이디 최소
-            Alert.alert('',`6자 이상 입력해주세요.`);
+        if(Minlangth >= SignUp.mem_id.length) {     // 아이디 최소
+            Alert.alert('',`${Minlangth}자 이상 입력해주세요.`);
             return Chkinput.current[0].focus();
         }
 
@@ -217,7 +208,7 @@ export default function SignUp({route, navigation}) {
 
         if(8 >= SignUp.mem_pw.length) {             // 비밀번호 최소
             Alert.alert('',`8자 이상 입력해주세요.`);
-            return Chkinput.current[1].focus();
+            return Chkinput.current[2].focus();
         }
 
         if(!SignUp.mem_pw_chk) {  // 비밀번호 확인
@@ -227,12 +218,12 @@ export default function SignUp({route, navigation}) {
 
         if(regPw.test(SignUp.mem_pw) === false) {  // 특수문자 입력 필수
             Alert.alert('','특수 문자가 포함되어있지 않습니다.');
-            return Chkinput.current[1].focus();
+            return Chkinput.current[2].focus();
         }
 
         if(SignUp.mem_pw !== SignUp.mem_pw_chk) {  // 비밀번호 일치
             Alert.alert('','비밀번호가 일치 하지 않습니다.');
-            return Chkinput.current[1].focus();
+            return Chkinput.current[2].focus();
         }
 
         if(!SignUp.road_address) { // 지역코드
