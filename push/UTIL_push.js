@@ -103,9 +103,6 @@ export async function registerForPushNotificationsAsync() {
 export const PushSetting = async () => {
 
 }
-
-
-
 /** -------------------------------------------푸시알림창-----------------------------------------**/
 
 export const LocalPush = async (res) => {
@@ -141,14 +138,41 @@ export const OpenGetPush = async () => {
 }
 
 
-export const push_list = async (Member) => {
+export const push_list = async (Member,page) => {
     let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
-        act_type        :"",
+        act_type        :"get_recv_push_list",
+        mem_uid         :Member,
+        page            :(page) ? page : '',
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}
+
+export const push_read = async (Member, push_msg_uid) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
+        act_type        :"read_push_msg",
+        push_msg_uid    :push_msg_uid,
         mem_uid         :Member,
     },{
         headers: {
             'Content-type': 'multipart/form-data'
         }
     });
+    return res;
+}
+
+export const push_badge = async (Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app.php',{
+        act_type        :"get_new_push_cnt",
+        mem_uid         :Member,
+    },{
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+
     return res;
 }

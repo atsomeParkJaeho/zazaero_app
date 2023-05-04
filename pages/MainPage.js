@@ -24,16 +24,15 @@ import Search from '../icons/search.svg';
 import Main_logo from '../icons/main_logo.svg';
 import {ComPhone, FCM} from "../util/util";
 import NotificationIcon from "../icons/Notification_icon.svg";
-import {FCM_Token, save_push_id, sendPushApp,sendPushNotification} from "../push/UTIL_push";
-import messaging from "@react-native-firebase/messaging";
+import {FCM_Token, push_badge, save_push_id, sendPushApp, sendPushNotification} from "../push/UTIL_push";
 import Loading from "../components/Loading";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import notifee from "@notifee/react-native";
 
 
 
 // 2차 카테고리 설정
 function Cate2nd({uid,navigation,name}) {
-
-
     const [Cate2nd, setCate2nd] = useState([]);
     useEffect(() => {
         /**------상품리스트 가져오기------**/
@@ -48,8 +47,6 @@ function Cate2nd({uid,navigation,name}) {
                 }
             }
         });
-
-
     }, []);
     // console.log(Cate2nd,' / 2차 카테고리2');
     if(Cate2nd !== null) {
@@ -82,23 +79,27 @@ function Cate2nd({uid,navigation,name}) {
 export default function MainPage({route,navigation}) {
     /**---------------------------개인정보-----------------------------------**/
     const [Member, setMember] = useState();
-    // const get_pushk = AsyncStorage.getItem("push_key").then((value) => {setPushToken(value);});
     // 1. member = token 설정
     /**--------------------------------------------------------------**/
     const Update = useIsFocused();
     // 1. 1차 카테고리 추출
-    const [Cate1st, setCate1st] = useState([]);   // 1차 카테고리 설정
-    const [PushToken, set_PushToken] = useState(``);
-    const [App_PushToken, set_App_PushToken] = useState(``);
-    const [ready, setReady]         = useState(true);    // 로딩 액션
+    const [Cate1st, setCate1st]                 = useState([]);   // 1차 카테고리 설정
+    const [PushToken, set_PushToken]            = useState(``);
+    const [ready, setReady]                     = useState(true);    // 로딩 액션
     // 아코디언 설정
-    const [expend, setExpend] = useState(`1`);
-    const [com_info, set_com_info] = useState([]);
+    const [expend, setExpend]                   = useState(`1`);
+    const [com_info, set_com_info]              = useState([]);
     // 2. 배너 담기
-    const [A_banner, set_A_banner] = useState([]);
+    const [A_banner, set_A_banner]              = useState([]);
+    // 3. 읽지 않은 푸시 갯수
+    const [push_cnt, set_push_cnt]              = useState(``);
+
 
     useEffect(() => {
 
+
+
+        /**--------------------메인페이지 진입시 접근허용 여부 설정--------------------------------**/
         FCM_Token().then((res)=>{
             if(res) {
                 set_PushToken(res);
@@ -178,6 +179,16 @@ export default function MainPage({route,navigation}) {
                 }
             }
         });
+
+        push_badge(Member).then((res)=>{
+            if(res) {
+                const {result,new_push_cnt} = res.data;
+                if(result === 'OK') {
+                    set_push_cnt(new_push_cnt);
+                }
+            }
+        });
+
         setTimeout(() => {
             setReady(false);
         }, 1000);
@@ -212,18 +223,6 @@ export default function MainPage({route,navigation}) {
             return navigation.navigate('공지사항상세',{bd_uid:cfg_val1});
         }
     }
-    let get_push = () => {
-        sendPushApp(App_PushToken, Member).then((res) =>{
-            if(res) {
-                const {result} = res.data;
-                if(result === 'OK') {
-                    return Alert.alert(``,`토큰이 저장되었습니다.`);
-                } else {
-                    return Alert.alert(``,`${result}`);
-                }
-            }
-        })
-    }
 
     console.log(A_banner,' / 배너2');
     console.log(com_info.com_name,' / 회사정보');
@@ -250,18 +249,14 @@ export default function MainPage({route,navigation}) {
                                 <Main_logo width={65} height={20}/>
                             </View>
                             <View style={flex}>
-                                {(Member === '105' || Member === '79') && (
-                                    <>
-                                        <TouchableOpacity style={[styles.link_signUp, {marginRight:10,}]} onPress={() => sendPushNotification(PushToken)}>
-                                            <Text>엑스포</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={styles.link_signUp} onPress={get_push}>
-                                            <Text>apk</Text>
-                                        </TouchableOpacity>
-                                    </>
-                                )}
                                 <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('알림')}}>
                                     <NotificationIcon width={30} height={21} style={[styles.icon, ms1]}/>
+                                    {/**---------------------알림리스트---------------------------**/}
+                                    {(push_cnt) && (
+                                        <Text style={[styles.orderCnt]}>
+                                            {push_cnt}
+                                        </Text>
+                                    )}
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.link_signUp} onPress={() => {navigation.navigate('검색')}}>
                                     <Search width={30} height={21} style={[styles.icon]}/>
@@ -395,6 +390,34 @@ export default function MainPage({route,navigation}) {
 
 
 const styles = StyleSheet.create({
+    link_signUp:{
+        position:"relative",
+    },
+    orderCnt : {
+        width:20,
+        height:20,
+        backgroundColor:"#3D40E0",
+        position:"absolute",
+        right:10,
+        top:-10,
+        zIndex:99,
+        fontSize:10,
+        color:"#fff",
+        lineHeight:20,
+        textAlign:"center",
+        borderTopLeftRadius:20,
+        borderTopRightRadius:20,
+        borderBottomLeftRadius:20,
+        borderBottomRightRadius:20,
+        overflow:"hidden",
+        ...Platform.select({
+            ios:{
+                shadowRadius:20,
+                borderRadius:10,
+            }
+        }),
+    },
+
     top_inner: {
         paddingVertical: 20,
         paddingHorizontal: 16,

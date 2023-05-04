@@ -112,9 +112,7 @@ function Payment({ route,navigation }) {
                 }
             }
         });
-
     }
-
     return(
         <>
             <IMP.Payment

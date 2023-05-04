@@ -2,7 +2,7 @@
   "expo": {
     "name": "자재로",
     "slug": "zazaero",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "sdkVersion": "46.0.0",
     "orientation": "portrait",
     "icon": "./assets/zazero_icon.png",
@@ -34,7 +34,7 @@
         ]
       },
 
-      "buildNumber": "17"
+      "buildNumber": "18"
     },
     "android": {
       "adaptiveIcon": {
@@ -44,7 +44,7 @@
       "package": "com.www.zazaero",
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
-      "versionCode": 17
+      "versionCode": 18
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -83,7 +83,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "$(PRODUCT_NAME)이(가) 사용자의 카메라에 사진을 허묭합니다."
+          "cameraPermission": "$(PRODUCT_NAME)이(가) 사용자의 카메라에 사진을 허용합니다."
         }
       ],
       [

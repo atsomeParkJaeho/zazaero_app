@@ -69,7 +69,7 @@ import {useIsFocused, useNavigation} from "@react-navigation/native";
 import Camera from "../pages/cam/CameraModal";
 import messaging, {firebase} from '@react-native-firebase/messaging'
 import notifee, { EventType } from '@notifee/react-native';
-import {FCM_Token, LocalPush, OpenGetPush} from "../push/UTIL_push";
+import {FCM_Token, LocalPush, OpenGetPush, push_list, push_read} from "../push/UTIL_push";
 import {useLastNotificationResponse} from "expo-notifications";
 import {get_Member} from "../pages/UTIL_mem";
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
@@ -98,18 +98,33 @@ Notifications.setNotificationHandler({
 });
 
 
-messaging().setOpenSettingsForNotificationsHandler(async res => {
+messaging().setBackgroundMessageHandler(async res => {
+    if(res) {
+        let Member = await AsyncStorage.getItem('member');
+        const {data:{push_act_type, push_link_uid,push_msg_uid, badge}} = res;
+        if(Member === '116' || Member === '97' || Member === '105') {
+            return Alert.alert(`푸시링크 데이터`,`${JSON.stringify(res)}`);
+        }
+        await notifee.setBadgeCount(Number(badge));
+    }
+});
 
+/**--------------------메인페이지 진입시 뱃지수 조절----------------------------------------**/
+notifee.onBackgroundEvent(async ({ type, detail }) => {
+    if (type === notifee.BackgroundEventType.NOTIFICATION_RECEIVED) {
+        let Member = await AsyncStorage.getItem('member');
+        const {push_act_type, push_link_uid, push_msg_uid, badge} = detail.notification.data;
+        if(Member) {
+            await notifee.setBadgeCount(Number(badge));
+        }
+    }
 });
-messaging().setBackgroundMessageHandler(async message => {
-    // return Alert.alert(`백그라운드 메세지 실행`,`${JSON.stringify(message)}`);
-});
+
+
 const StackNavigator = () => {
-
-
-    let   navigation                        = useNavigation();
-    const [Member, setMember]               = useState();
-    const [route_name, set_route_name]      = useState(`메인페이지`);
+    let   navigation                         = useNavigation();
+    const [Member,      setMember]           = useState();
+    const [route_name,  set_route_name]      = useState(`메인페이지`);
     const last_push = Notifications.useLastNotificationResponse();
     const Update = useIsFocused();
     const forFade = ({ current }) => ({
@@ -119,6 +134,8 @@ const StackNavigator = () => {
     });
 
 
+
+
     useEffect(() => {
         /**-----------------------------푸시 뱃지 설정-----------------------------------------**/
         get_Member().then((res)=>{
@@ -126,139 +143,334 @@ const StackNavigator = () => {
                 return setMember(res);
             }
         });
+        /**----------------------------------ios 푸시 뱃지 설정-------------------------------------------------**/
+        
         /**----------------------------------1. ios 푸시알림 설정(안드로이드는 적용 안됨)----------------------------------------------------------**/
         notifee.onForegroundEvent(async ({type,detail})=>{
+            // 뱃지 설정
+            const {push_act_type, push_link_uid, push_msg_uid,badge} = detail.notification.data;
+
+            if(badge) {
+                await notifee.setBadgeCount(Number(badge));
+            }
+
             if(type === EventType.PRESS) {
-                notifee.setBadgeCount(0).then((res)=>{console.log(res)});
-                const {push_act_type, push_link_uid} = detail.notification.data;
+                if(Member === '116' || Member === '97' || Member === '105') {
+                    Alert.alert(`푸시링크 데이터`,`${JSON.stringify(detail)}`);
+                }
+
                 if(
                     push_act_type === 'ord_ins'             ||        // 발주요청완료
                     push_act_type === 'ord_doing'           ||        // 발주검수진행
                     push_act_type === 'sel_cust'            ||        // 결제요청
-                    push_act_type === 'ord_pay_done'        ||        // 무통장, 카드결제요청
+                    push_act_type === 'ord_pay_done_bank'   ||        // 무통장
+                    push_act_type === 'ord_pay_done_card'   ||        // 무통장, 카드결제요청
                     push_act_type === 'deli_mem_mobile'               // 배차완료
                 ) {
-                    return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
+                    // 1. 읽음 처리
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
+                            }
+                        }
+                    });
                 }
                 /**-------------------------포인트 내역 변경시--------------------------------**/
                 if(push_act_type === 'mem_point_list') {
-                    return navigation.navigate(`포인트내역`);
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`포인트내역`);
+                            }
+                        }
+                    });
+
                 }
                 /**-------------------------취소 신청시--------------------------------**/
-                if(push_act_type === 'pay_done_gd_cancel') {
-                    return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                if(
+                    push_act_type === 'pay_done_gd_cancel_C' ||
+                    push_act_type === 'pay_done_gd_cancel_R' ||
+                    push_act_type === 'refund_done'
+                ) {
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                            }
+                        }
+                    });
                 }
             }
         });
         notifee.onBackgroundEvent(async ({type,detail})=>{
+
+            const {push_act_type, push_link_uid, push_msg_uid,badge} = detail.notification.data;
+
+            if(badge) {
+                await notifee.setBadgeCount(Number(badge));
+            }
+
             if(type === EventType.PRESS) {
-                const {push_act_type, push_link_uid} = detail.notification.data;
+                // 뱃지 설정
+                if(Member === '116' || Member === '97' || Member === '105') {
+                    Alert.alert(`푸시링크 데이터`,`${JSON.stringify(detail)}`);
+                }
                 if(
                     push_act_type === 'ord_ins'             ||        // 발주요청완료
                     push_act_type === 'ord_doing'           ||        // 발주검수진행
                     push_act_type === 'sel_cust'            ||        // 결제요청
-                    push_act_type === 'ord_pay_done'        ||        // 무통장, 카드결제요청
+                    push_act_type === 'ord_pay_done_bank'   ||        // 무통장
+                    push_act_type === 'ord_pay_done_card'   ||        // 무통장, 카드결제요청
                     push_act_type === 'deli_mem_mobile'               // 배차완료
                 ) {
-                    return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
+                            }
+                        }
+                    });
                 }
                 /**-------------------------포인트 내역 변경시--------------------------------**/
                 if(push_act_type === 'mem_point_list') {
-                    return navigation.navigate(`포인트내역`);
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`포인트내역`);
+                            }
+                        }
+                    });
                 }
                 /**-------------------------취소 신청시--------------------------------**/
-                if(push_act_type === 'pay_done_gd_cancel') {
-                    return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                if(
+                    push_act_type === 'pay_done_gd_cancel_C' ||
+                    push_act_type === 'pay_done_gd_cancel_R' ||
+                    push_act_type === 'refund_done'
+                ) {
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                            }
+                        }
+                    });
+
                 }
             }
         });
 
         /**----------------------------------1. aos 푸시알림 설정----------------------------------------------------------**/
-
         messaging().onNotificationOpenedApp(async remoteMessage => {
+            const {data:{push_act_type, push_link_uid,push_msg_uid, badge}} = remoteMessage;
+
+            if(badge) {
+                await notifee.setBadgeCount(Number(badge));
+            }
+
             if (remoteMessage) {
-                const {data:{push_act_type, push_link_uid}} = remoteMessage;
+                // 뱃지 설정const {data:{push_act_type, push_link_uid,push_msg_uid, badge}} = remoteMessage;
+
+                if(Member === '116' || Member === '97' || Member === '105') {
+                    Alert.alert(``,`${JSON.stringify(remoteMessage)}`);
+                }
+
                 /**-------------------------발주신청시--------------------------------**/
                 if(
                     push_act_type === 'ord_ins'             ||        // 발주요청완료
                     push_act_type === 'ord_doing'           ||        // 발주검수진행
                     push_act_type === 'sel_cust'            ||        // 결제요청
-                    push_act_type === 'ord_pay_done'        ||        // 무통장, 카드결제요청
+                    push_act_type === 'ord_pay_done_bank'   ||        // 무통장
+                    push_act_type === 'ord_pay_done_card'   ||        // 카드결제요청
                     push_act_type === 'deli_mem_mobile'               // 배차완료
 
                 ) {
-                    return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
+                            }
+                        }
+                    });
                 }
                 /**-------------------------포인트 내역 변경시--------------------------------**/
                 if(push_act_type === 'mem_point_list') {
-                    return navigation.navigate(`포인트내역`);
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`포인트내역`);
+                            }
+                        }
+                    });
                 }
                 /**-------------------------취소 신청시--------------------------------**/
-                if(push_act_type === 'pay_done_gd_cancel') {
-                    return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                if(
+                    push_act_type === 'pay_done_gd_cancel_C' ||
+                    push_act_type === 'pay_done_gd_cancel_R' ||
+                    push_act_type === 'refund_done'
+                ) {
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                            }
+                        }
+                    });
+
                 }
             }
         });
         /**-----------------------------백그라운드 상태에서 열릴때---------------------------------**/
         messaging().getInitialNotification().then(remoteMessage => {
+            const {data:{push_act_type, push_link_uid,push_msg_uid,badge}} = remoteMessage;
+            if(badge) {
+                notifee.setBadgeCount(Number(badge));
+            }
             if (remoteMessage) {
-                const {data:{push_act_type, push_link_uid}} = remoteMessage;
+                if(Member === '116' || Member === '97' || Member === '105') {
+                    Alert.alert(``,`${JSON.stringify(remoteMessage)}`);
+                }
                 /**-------------------------발주신청시--------------------------------**/
                 if(
                     push_act_type === 'ord_ins'             ||        // 발주요청완료
                     push_act_type === 'ord_doing'           ||        // 발주검수진행
                     push_act_type === 'sel_cust'            ||        // 결제요청
-                    push_act_type === 'ord_pay_done'        ||        // 무통장, 카드결제요청
+                    push_act_type === 'ord_pay_done_bank'   ||        // 무통장
+                    push_act_type === 'ord_pay_done_card'   ||        // 무통장, 카드결제요청
                     push_act_type === 'deli_mem_mobile'               // 배차완료
 
                 ) {
-                    return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
+                            }
+                        }
+                    });
                 }
                 /**-------------------------포인트 내역 변경시--------------------------------**/
                 if(push_act_type === 'mem_point_list') {
-                    return navigation.navigate(`포인트내역`);
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`포인트내역`);
+                            }
+                        }
+                    });
                 }
                 /**-------------------------취소 신청시--------------------------------**/
-                if(push_act_type === 'pay_done_gd_cancel') {
-                    return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                if(
+                    push_act_type === 'pay_done_gd_cancel_C' ||
+                    push_act_type === 'pay_done_gd_cancel_R' ||
+                    push_act_type === 'refund_done'
+                ) {
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                            }
+                        }
+                    });
                 }
             }
         });
         if(Platform.OS === 'android') {
             Notifications.addNotificationResponseReceivedListener(async res=>{
-                // Alert.alert(``,`${JSON.stringify(res.notification)}`);
+                const {push_act_type, push_link_uid,push_msg_uid, badge} = res.notification.request.content.data;
+                if(badge) {
+                    await notifee.setBadgeCount(Number(badge));
+                }
                 if(res) {
-                    const {push_act_type, push_link_uid} = res.notification.request.content.data;
+                    if(Member === '116' || Member === '97' || Member === '105') {
+                        Alert.alert(``,`${JSON.stringify(res.notification.request.content.data)}`);
+                    }
                     if(
                         push_act_type === 'ord_ins'             ||        // 발주요청완료
                         push_act_type === 'ord_doing'           ||        // 발주검수진행
                         push_act_type === 'sel_cust'            ||        // 결제요청
-                        push_act_type === 'ord_pay_done'        ||        // 무통장, 카드결제요청
+                        push_act_type === 'ord_pay_done_bank'   ||        // 무통장
+                        push_act_type === 'ord_pay_done_card'   ||        // 무통장, 카드결제요청
                         push_act_type === 'deli_mem_mobile'               // 배차완료
 
                     ) {
-                        return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
+                        push_read(Member, push_msg_uid).then(res=>{
+                            if(res) {
+                                const {result} = res.data;
+                                if(result === 'OK') {
+                                    // 2. 페이지 이동
+                                    return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
+                                }
+                            }
+                        });
                     }
                     /**-------------------------포인트 내역 변경시--------------------------------**/
                     if(push_act_type === 'mem_point_list') {
-                        return navigation.navigate(`포인트내역`);
+                        push_read(Member, push_msg_uid).then(res=>{
+                            if(res) {
+                                const {result} = res.data;
+                                if(result === 'OK') {
+                                    // 2. 페이지 이동
+                                    return navigation.navigate(`포인트내역`);
+                                }
+                            }
+                        });
                     }
                     /**-------------------------취소 신청시--------------------------------**/
-                    if(push_act_type === 'pay_done_gd_cancel') {
-                        return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                    if(
+                        push_act_type === 'pay_done_gd_cancel_C' ||
+                        push_act_type === 'pay_done_gd_cancel_R' ||
+                        push_act_type === 'refund_done'
+                    ) {
+                        push_read(Member, push_msg_uid).then(res=>{
+                            if(res) {
+                                const {result} = res.data;
+                                if(result === 'OK') {
+                                    // 2. 페이지 이동
+                                    return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                                }
+                            }
+                        });
+
                     }
                 }
             });
         }
         /**------------------------------로컬 푸시 설정-----------------------------------**/
         const unsubscribe = messaging().onMessage(async res=>{
+            const {data:{push_act_type, push_link_uid,push_msg_uid, badge}} = res;
+            if(badge) {
+                await notifee.setBadgeCount(Number(badge));
+            }
             if(res) {
                 if(Platform.OS === 'ios') {
                     /**------------------------------ios 설정-----------------------------------**/
                     return await LocalPush(res);
                 } else {
                     /**------------------------------안드로이드 설정(로컬에서는 엑스포 푸시를 받을 예정)-----------------------------------**/
-
                     if(last_push) {
                         return await Notifications.scheduleNotificationAsync({
                             content:{
@@ -286,13 +498,7 @@ const StackNavigator = () => {
             }
         });
 
-
-
-
         return unsubscribe;
-
-
-
 
         /**------------------------------안드로이드 설정------------------------------**/
     }, [Update,Member,last_push]);

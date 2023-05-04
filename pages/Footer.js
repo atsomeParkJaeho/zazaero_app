@@ -139,11 +139,25 @@ function Footer({navigation,pages}) {
                 {/**---------------------발주현황--------------------**/}
                 <View style={[styles.Tabs,]}>
                     <TouchableOpacity onPress={()=>{navigation.navigate('발주현황')}}>
-                        {(Number(order_list) > 0) && (
-                            <Text style={[styles.orderCnt]}>
-                                {order_list}
-                            </Text>
+
+                        {(Member === '116') ? (
+                            <>
+                                {(Number(order_list) > 0) && (
+                                    <Text style={[styles.orderCnt,{borderWidth:1,}]}>
+                                        {order_list}
+                                    </Text>
+                                )}
+                            </>
+                        ):(
+                            <>
+                                {(Number(order_list) > 0) && (
+                                    <Text style={[styles.orderCnt]}>
+                                        {order_list}
+                                    </Text>
+                                )}
+                            </>
                         )}
+
                         <View style={styles.SvgIcons}>
                             {(currentRoute === '발주현황' || currentRoute === '결제상태' || currentRoute === '배송상태') ? (
                                 <>
@@ -198,16 +212,22 @@ const styles = styleSheet.create({
       position:"absolute",
       right:10,
       top:-10,
-        zIndex:99,
-        fontSize:10,
-        color:"#fff",
-        lineHeight:20,
-        textAlign:"center",
-        borderTopRightRadius:20,
-        borderTopLeftRadius:20,
-        borderBottomLeftRadius:20,
-        borderBottomRightRadius:20,
-
+      zIndex:99,
+      fontSize:10,
+      color:"#fff",
+      lineHeight:20,
+      textAlign:"center",
+      borderTopLeftRadius:20,
+      borderTopRightRadius:20,
+      borderBottomLeftRadius:20,
+      borderBottomRightRadius:20,
+      overflow:"hidden",
+        ...Platform.select({
+            ios:{
+                shadowRadius:20,
+                borderRadius:10,
+            }
+        }),
     },
 
     FooterWrap : {

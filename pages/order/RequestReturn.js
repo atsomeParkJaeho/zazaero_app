@@ -197,7 +197,7 @@ export default function RequestReturn({route, navigation}) {
 
         if(cancel_type === 'all') {
             Alert.alert('','자재를 전부 반품하시겠습니까?',[
-                {text:'반품', onPress:()=>{}},
+                {text:'취소', onPress:()=>{}},
                 {text:'확인',
                     onPress:()=>{
                         // ================1. 결제반품 이벤트 실행====================
