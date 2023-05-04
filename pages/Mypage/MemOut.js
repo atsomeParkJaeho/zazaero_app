@@ -1,56 +1,52 @@
 import React, {useState, useEffect} from 'react';
 import {
     StyleSheet,
-    Button,
-    CheckBox,
     Text,
     TextInput,
     View,
-    Image,
     TouchableOpacity,
     ScrollView,
-    KeyboardAvoidingView,
     Alert
 } from 'react-native';
 
 
 // 공통 CSS 추가
 import {
-    container,
     bg_white,
-    flex_between,
-    input,
     flex,
     pb2,
     pos_center,
     ms2,
-    mb1,
-    h14, justify_content_end, text_gray, select_box, select_icon_box, text_center, h17, mt2
+    h14, select_box, select_icon_box, text_center, mt2
 } from '../../common/style/AtStyle';
-import {mem_out, mem_out_reason_cfg} from "../UTIL_mem";
+import {get_Member, mem_out, mem_out_reason_cfg} from "../UTIL_mem";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {reloadAsync} from "expo-updates";
+import {useIsFocused} from "@react-navigation/native";
 
 
 export default function MemOut({navigation, route}) {
 
 
-    const [Member, setMember] = useState();
-    const mem_uid = AsyncStorage.getItem("member").then((value) => {
-        setMember(value);
-    })
-
+    const [Member, setMember]             = useState();
     const [Mod, setMod]                   = useState(`Select`); // 사유선택, 직접입력 선택 상태 정의
     const [Show, setShow]                 = useState(false);    // 셀렉트창 노출 여부
     const [cfg_list, set_cfg_list]        = useState([]);
-    const [MemOut, setMemOut] = useState({
+    const [MemOut, setMemOut]             = useState({
         mem_out_reason_uid  :'',
         mem_out_reason_memo :'',
         mem_out_pw          :'',
         mem_out_pw_ch       :'',
     });
+    const Update = useIsFocused();
+
 
     useEffect(()=>{
+
+        get_Member().then(res=>{
+            if(res) {setMember(res);}
+        });
+
         /**---------------탈퇴사유 리스트 가져오기---------------**/
         mem_out_reason_cfg().then((res)=>{
             if(res) {
@@ -62,7 +58,7 @@ export default function MemOut({navigation, route}) {
                 }
             }
         });
-    },[Member]);
+    },[Member,Update]);
 
 
     //2. 입력폼 체크루틴
@@ -80,26 +76,14 @@ export default function MemOut({navigation, route}) {
 
     const goMemOut = async () => {
 
-        if(!MemOut.mem_out_reason_memo) {
-            return Alert.alert('','사유선택 또는 직접입력해주세요.',);
-        }
-        if (!MemOut.mem_out_pw) {
-            return Alert.alert('','비밀번호를 입력하세요.',);
-        }
-        if (!MemOut.mem_out_pw_ch) {
-            return Alert.alert('비밀번호확인을 입력해주세요.');
-        }
-        if (MemOut.mem_out_pw !== MemOut.mem_out_pw_ch) {
-            return Alert.alert('비밀번호가 일치하지 않습니다!!');
-        }
+        if(!MemOut.mem_out_reason_memo)                 {return Alert.alert('','사유선택 또는 직접입력해주세요.',);}
+        if (!MemOut.mem_out_pw)                         {return Alert.alert('','비밀번호를 입력하세요.',);}
+        if (!MemOut.mem_out_pw_ch)                      {return Alert.alert('비밀번호확인을 입력해주세요.');}
+        if (MemOut.mem_out_pw !== MemOut.mem_out_pw_ch) {return Alert.alert('비밀번호가 일치하지 않습니다!!');}
 
         Alert.alert('','회원탈퇴 하시겠습니까?',[
-            {
-                text:'취소',
-                onPress:()=>{}
-            },
-            {
-                text:'확인',
+            {text:'취소', onPress:()=>{}},
+            {text:'확인',
                 onPress:()=>{
                     mem_out(Member,MemOut).then((res)=>{
                         if(res) {
@@ -140,7 +124,7 @@ export default function MemOut({navigation, route}) {
             console.log(value);
         });
         reloadAsync();
-        navigation.replace('로그인');
+        return navigation.replace('로그인');
     }
 
     /**--------------------------------------사유선택, 직접입력--------------------------------------------**/

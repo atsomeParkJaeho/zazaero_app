@@ -79,21 +79,17 @@ function Cate2nd({uid,navigation,name}) {
 // 상품출력 페이지
 export default function MainPage({route,navigation}) {
     /**---------------------------개인정보-----------------------------------**/
-    const [Member, setMember] = useState();
-    // 1. member = token 설정
+    const [Member, setMember] = useState(); // 스토리지에 저장한 uid state에 담기
     /**--------------------------------------------------------------**/
     const Update = useIsFocused();
     // 1. 1차 카테고리 추출
-    const [Cate1st, setCate1st]                 = useState([]);   // 1차 카테고리 설정
+    const [Cate1st, setCate1st]                 = useState([]);      // 1차 카테고리 설정
     const [PushToken, set_PushToken]            = useState(``);
     const [ready, setReady]                     = useState(true);    // 로딩 액션
-    // 아코디언 설정
-    const [expend, setExpend]                   = useState(`1`);
-    const [com_info, set_com_info]              = useState([]);
-    // 2. 배너 담기
-    const [A_banner, set_A_banner]              = useState([]);
-    // 3. 읽지 않은 푸시 갯수
-    const [push_cnt, set_push_cnt]              = useState(``);
+    const [expend, setExpend]                   = useState(`1`);     // 아코디언 설정
+    const [com_info, set_com_info]              = useState([]);      // 2. 배너 담기
+    const [A_banner, set_A_banner]              = useState([]);      // 배너 담기
+    const [push_cnt, set_push_cnt]              = useState(``);      // 3. 읽지 않은 푸시 갯수
 
 
     useEffect(() => {
@@ -201,11 +197,6 @@ export default function MainPage({route,navigation}) {
 
 
     let get_link = (link_type, cfg_val1, cfg_val2, cfg_val3, cfg_val4) => {
-        console.log(link_type,'/ 링크 타입');
-        console.log(cfg_val1,'/1차 카테고리 코드');
-        console.log(cfg_val2,'/2차 카테고리 코드');
-        console.log(cfg_val3,'/3차 카테고리 코드');
-        console.log(cfg_val4,'/4차 카테고리 코드');
         if(!link_type) {
             console.log('링크 없음');
         }
@@ -221,13 +212,6 @@ export default function MainPage({route,navigation}) {
             return navigation.navigate('공지사항상세',{bd_uid:cfg_val1});
         }
     }
-
-    console.log(A_banner,' / 배너2');
-    console.log(com_info.com_name,' / 회사정보');
-    console.log(route,' / 링크정보');
-
-
-
     return (
 
         /*

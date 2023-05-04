@@ -1,15 +1,12 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {
     StyleSheet,
-    Button,
     Text,
     TextInput,
     View,
-    Image,
     TouchableOpacity,
     ScrollView,
-    Pressable,
-    Alert, Platform, Modal, KeyboardAvoidingView
+    Alert, Platform, KeyboardAvoidingView
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
 
@@ -20,28 +17,15 @@ import {
     flex,
     input,
     pos_center,
-    pe1,
-    me1,
-    me2,
     pe2,
-    mt2,
     ios_pb,
-    justify_content_end,
-    justify_content_between,
-    d_flex,
     text_center,
-    mb1,
-    flex_between,
-    h14,
-    text_gray,
-    ms2,
-    h15, h18, h17, text_black, bg_primary
+    h17, text_black, bg_primary
 } from '../../common/style/AtStyle';
-import {gray_bar, sub_page} from '../../common/style/SubStyle';
-import {AddrMatch, bizNum, DateChg, Minlangth, OnlyEng, Phone, PwChk, regId, regPW} from "../../util/util";
+import {gray_bar} from '../../common/style/SubStyle';
+import {AddrMatch, bizNum, OnlyEng, Phone} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import {chk_dup_id, Sign_up} from "../UTIL_mem";
-import {buildApp} from "../../push/UTIL_push";
 export default function SignUp({route, navigation}) {
 
 
@@ -70,7 +54,7 @@ export default function SignUp({route, navigation}) {
     });
     const [push_id, set_push_id]        = useState(``);
     //
-    const [Show, setShow]         = useState(false);    // 셀렉트창 노출 여부
+    const [Show, setShow]               = useState(false);    // 셀렉트창 노출 여부
     let act_btn = !!(
         SignUp.mem_id &&
         SignUp.mem_pw &&
@@ -87,7 +71,6 @@ export default function SignUp({route, navigation}) {
         SignUp.privacy_3 &&
         SignUp.privacy_4 &&
         SignUp.mem_pw_chk
-        // SignUp.all_chk
     );
 
 
@@ -99,7 +82,6 @@ export default function SignUp({route, navigation}) {
 
     useEffect(()=>{
         get_app_info();
-
         if(route.params) {
             let {zonecode, addr1} = route.params;
             setSignUp({
@@ -162,11 +144,7 @@ export default function SignUp({route, navigation}) {
     // 약관처리 체크
 
     const privacyChk = (key,value) => {
-        console.log(key);
-        console.log(value);
-
         if(key === 'All') {
-            console.log('전체');
             setSignUp({
                 ...SignUp,
                 privacy_1: value,
@@ -176,7 +154,6 @@ export default function SignUp({route, navigation}) {
                 privacy_5: value,
                 all_chk  : value,
             });
-
         } else {
             setSignUp({
                 ...SignUp,
@@ -320,7 +297,6 @@ export default function SignUp({route, navigation}) {
             road_address: name,
         });
     }
-    // console.log(Selected.select_title);
 
 
     console.log(act_btn,'/ 전체 채우면 true');
@@ -649,9 +625,7 @@ export default function SignUp({route, navigation}) {
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
-
             </KeyboardAvoidingView>
-
         </>
     );
 }
