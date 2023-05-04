@@ -25,6 +25,7 @@ import {push_badge, push_list, push_read} from "../../../push/UTIL_push";
 import {DateChg} from "../../../util/util";
 import {get_goods_list} from "../../goods/UTIL_goods";
 import notifee from "@notifee/react-native";
+import {useIsFocused} from "@react-navigation/native";
 
 
 
@@ -32,7 +33,6 @@ import notifee from "@notifee/react-native";
 export default function NotificationList({route,navigation}){
 
     const NotificationList = [
-
         {
             "user_id": "1",                                  //아이디값
             "title": "1:1문의 알림",                            //제목
@@ -81,15 +81,13 @@ export default function NotificationList({route,navigation}){
             "Notification_val": "y",                     //알림답변등록상태
             "Notification_disc": "요청사항, 배송비가 확인되어 결제가 가능합니다. 결제 후 배송준비가 시작됩니다.",                     //알림답변등록상태
         },
-
     ];
-
-
-    const [Member, setMember]            = useState();
-    const [get_push_list, set_push_list] = useState([]);    // 1. 푸시리스트 출력
-    const [get_page, set_page]                  = useState();               // 전체페이지
-    const [now_page, set_now_page]              = useState();               // 현재페이지
-    const [scrollEndReached, setScrollEndReached] = useState(false);
+    const [Member, setMember]                           = useState();
+    const [get_push_list, set_push_list]                = useState([]);    // 1. 푸시리스트 출력
+    const [get_page, set_page]                          = useState();               // 전체페이지
+    const [now_page, set_now_page]                      = useState();               // 현재페이지
+    const [scrollEndReached, setScrollEndReached]       = useState(false);
+    const Update                                        = useIsFocused();
 
     useEffect(()=>{
         get_Member().then((res)=>{
@@ -114,7 +112,7 @@ export default function NotificationList({route,navigation}){
                 }
             }
         });
-    },[Member]);
+    },[Member,Update]);
 
     const handleScroll = async () => {
         setScrollEndReached(false);

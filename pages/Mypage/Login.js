@@ -19,34 +19,26 @@ import Logo from '../../icons/login_logo.svg';
 // 공통 CSS 추가
 import {
     container,
-    bg_white,
     flex,
-    h14,
     justify_content_center,
-    mb2,
-    mb4,
     mb5,
     input, pos_center, bg_primary,
 } from '../../common/style/AtStyle';
 import {sub_page} from '../../common/style/SubStyle';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {login} from "../UTIL_mem";
-import inputRef from "react-native/Libraries/Components/DrawerAndroid/DrawerLayoutAndroid";
 import {save_push_id} from "../../push/UTIL_push";
 
 export default function Login({route, navigation}) {
-
 
     const [Member, setMember] = useState();
     const inputRef = useRef();
     useEffect(() => {
         AsyncStorage.getItem('member').then((value) => {
-            if (value) {
-                setMember(value);
-            }
+            if (value) {setMember(value);}
         });
     }, []);
-    console.log('회원코드 / ', Member);
+
 
     // 1. data로 넘길 status 셋팅
     const [Login, setLogin] = useState({    // 로그인상태 셋팅
@@ -64,20 +56,11 @@ export default function Login({route, navigation}) {
     //==================로그인 하기=======================//
     const goLogin = () => {
 
-        if (!Login.mem_id) {
-            Alert.alert(
-                '아이디를 입력하세요.',
-            );
-            return;
-        }
-        if (!Login.mem_pw) {
-            Alert.alert('비밀번호를 입력해주세요.');
-            return;
-        }
+        if (!Login.mem_id) {return Alert.alert('',`아이디를 입력하세요.`);}
+        if (!Login.mem_pw) {return Alert.alert(``,'비밀번호를 입력해주세요.');}
         // 포스트시에 header 셋팅 할것
         login(Login).then((res) => {
             if (res) {
-                console.log(res.data);
                 const {result, mem_uid} = res.data;
                 if (result === 'OK') {
                     AsyncStorage.setItem('member', mem_uid);
@@ -91,9 +74,9 @@ export default function Login({route, navigation}) {
                             }
                         }
                     });
-                    navigation.replace('메인페이지');
+                    return navigation.replace('메인페이지');
                 } else {
-                    Alert.alert('',result);
+                    return Alert.alert('',result);
                 }
             }
         }).catch((err) => console.log(err));
@@ -110,6 +93,7 @@ export default function Login({route, navigation}) {
 
 
     console.log(Platform.OS);
+    console.log('회원코드 / ', Member);
 
     if(Member) {
         return navigation.replace('메인페이지');
@@ -186,9 +170,6 @@ export default function Login({route, navigation}) {
 
         );
     }
-
-
-
 }
 
 const styles = StyleSheet.create({

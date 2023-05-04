@@ -34,6 +34,7 @@ import notifee from "@notifee/react-native";
 // 2차 카테고리 설정
 function Cate2nd({uid,navigation,name}) {
     const [Cate2nd, setCate2nd] = useState([]);
+    const Update = useIsFocused();
     useEffect(() => {
         /**------상품리스트 가져오기------**/
         get_cate_list(`2`, uid).then((res) => {
@@ -47,7 +48,7 @@ function Cate2nd({uid,navigation,name}) {
                 }
             }
         });
-    }, []);
+    }, [Update]);
     // console.log(Cate2nd,' / 2차 카테고리2');
     if(Cate2nd !== null) {
         return (
@@ -96,9 +97,6 @@ export default function MainPage({route,navigation}) {
 
 
     useEffect(() => {
-
-
-
         /**--------------------메인페이지 진입시 접근허용 여부 설정--------------------------------**/
         FCM_Token().then((res)=>{
             if(res) {

@@ -148,20 +148,6 @@ export const get_goods_info = async (Member, uid) => {
     return res;
 }
 
-export const get_guide_info = async () => {
-
-    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
-        act_type    :   "get_goods_info",
-        goods_uid   :   uid,
-        mem_uid     :   Member,
-    },{
-        headers: {
-            'Content-type': 'multipart/form-data',
-        }
-    })
-
-    return res;
-}
 
 
 export const save_cart = async (Member, goods_uid) => {
@@ -178,4 +164,56 @@ export const save_cart = async (Member, goods_uid) => {
 
     return res;
 }
-
+/**--------------------------------자재검색-------------------------------**/
+export const goods_search = async (search) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
+        act_type        :"get_goods_list",
+        f_goods_name    :search,
+    }, {
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}
+/**--------------------------------검색어 저장-------------------------------**/
+export const ins_mem_search_log = async (search,Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
+        act_type        :"ins_mem_search_log",
+        login_status    :"Y",
+        find_txt        :search,
+        mem_uid         :Member,
+    }, {
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    })
+    return res;
+}
+/**--------------------------------최근 검색어 삭제-------------------------------**/
+export const del_mem_search_log = async (Member,uid) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
+        act_type                :"del_mem_search_log",
+        login_status            :"Y",
+        mem_uid                 :Member,
+        mem_find_txt_log_uid    :uid
+    }, {
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}
+/**----------------------------------최근 검색어 출력--------------------------------------------**/
+export const get_mem_search_log_list = async (Member) => {
+    let res = await axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
+        act_type        : "get_mem_search_log_list",
+        login_status    : 'Y',
+        mem_uid         :Member,
+    }, {
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    });
+    return res;
+}

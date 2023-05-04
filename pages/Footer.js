@@ -13,7 +13,7 @@ import MypageAt from '../icons/mypage_at.svg';
 import React, {useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {fw500, pos_center, text_center, text_primary} from "../common/style/AtStyle";
-import {useNavigationState} from "@react-navigation/native";
+import {useIsFocused, useNavigationState} from "@react-navigation/native";
 import {get_Member, my_page} from "./UTIL_mem";
 import {getCartList} from "./cart/UTIL_cart";
 import {get_order_list, get_recent_ord_cnt} from "./order/UTIL_order";
@@ -27,6 +27,7 @@ function Footer({navigation,pages}) {
     const [Member,          setMember]               = useState();
     const [order_list, set_order_list]               = useState([]);  // 발주수량 설정
     const [get_mem_info, set_get_mem_info]           = useState(``);  // 회원정보 추출
+    const Update                                     = useIsFocused();
 
     useEffect(()=>{
         get_Member().then((res)=>{if(res) {setMember(res);} else {
@@ -51,7 +52,7 @@ function Footer({navigation,pages}) {
             }
         });
 
-    },[Member]);
+    },[Member,Update]);
 
 
     if(get_mem_info === 'N') {
@@ -65,14 +66,8 @@ function Footer({navigation,pages}) {
         return false;
     }
 
-
-
-
-
-
     const routes = useNavigationState(state => state.routes)
     const currentRoute = routes[routes.length -1].name
-
 
     return(
         <>

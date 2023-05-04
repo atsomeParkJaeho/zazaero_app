@@ -35,6 +35,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useIsFocused} from "@react-navigation/native";
 import {get_Member} from "../UTIL_mem";
+import {del_mem_search_log, get_mem_search_log_list, goods_search, ins_mem_search_log} from "./UTIL_goods";
 
 
 
@@ -60,15 +61,7 @@ export default function GoodsSearch({route,navigation}) {
         });
 
         // 최근검색목록을 불러온다
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
-            act_type        : "get_mem_search_log_list",
-            login_status    : 'Y',
-            mem_uid         :Member,
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        get_mem_search_log_list(Member).then((res) => {
             if (res) {
                 const {result, A_data} = res.data;
                 // console.log(que);
@@ -104,14 +97,7 @@ export default function GoodsSearch({route,navigation}) {
         }
 
         // 검색상품으로 이동한다
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
-            act_type        : "get_goods_list",
-            f_goods_name    :search,
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        goods_search(search).then((res) => {
             if (res) {
                 const {result, A_goods, que} = res.data;
                 console.log(que);
@@ -120,33 +106,21 @@ export default function GoodsSearch({route,navigation}) {
                     if(A_goods.length === 0) {
                         Alert.alert('','검색하신 상품이 없습니다');
                     } else {
-
                         // 검색로그 저장
-                        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
-                            act_type        :"ins_mem_search_log",
-                            login_status    :"Y",
-                            find_txt        :search,
-                            mem_uid         :Member,
-                        }, {
-                            headers: {
-                                'Content-type': 'multipart/form-data'
-                            }
-                        }).then((res) => {
+                        ins_mem_search_log(search,Member).then((res) => {
                             if (res) {
                                 const {result} = res.data;
                                 if (result === 'OK') {
                                     console.log('기록 저장');
-
                                 } else {
                                     console.log('실패');
                                 }
                             }
                         });
-
                         navigation.navigate('검색결과',{search:search});
                     }
                 } else {
-                    console.log('실패');
+                    return Alert.alert(``,`${result}`);
                 }
             }
         });
@@ -156,28 +130,18 @@ export default function GoodsSearch({route,navigation}) {
     // 3. 최근검색어 삭제
     const delLog = (uid) => {
         // 검색상품으로 이동한다
-        axios.post('http://49.50.162.86:80/ajax/UTIL_app_goods.php', {
-            act_type                :"del_mem_search_log",
-            login_status            :"Y",
-            mem_uid                 :Member,
-            mem_find_txt_log_uid    :uid
-        }, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then((res) => {
+        del_mem_search_log(Member,uid).then((res) => {
             if (res) {
                 const {result} = res.data;
                 console.log(result);
-
                 let temp = SearchLog.map(val=>{
                     if(uid=== val.mem_find_txt_log_uid){
                         return {...val, log_show:false}
                     }
                     return val;
-                })
-                setSearchLog(temp);
-
+                });
+                let rsp = temp.filter(val=> val.log_show === false);
+                setSearchLog(rsp);
             }
         });
     }
@@ -263,12 +227,6 @@ export default function GoodsSearch({route,navigation}) {
                     </View>
                 </View>
             </View>
-
-
-
-
-
-
         </>
     );
 }
