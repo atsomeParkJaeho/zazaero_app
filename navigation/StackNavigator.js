@@ -69,7 +69,7 @@ import {useIsFocused, useNavigation} from "@react-navigation/native";
 import Camera from "../pages/cam/CameraModal";
 import messaging, {firebase} from '@react-native-firebase/messaging'
 import notifee, { EventType } from '@notifee/react-native';
-import {FCM_Token, LocalPush, OpenGetPush, push_list, push_read} from "../push/UTIL_push";
+import {FCM_Token, LocalPush, OpenGetPush, push_badge, push_list, push_read} from "../push/UTIL_push";
 import {useLastNotificationResponse} from "expo-notifications";
 import {get_Member} from "../pages/UTIL_mem";
 //스택 네비게이션 라이브러리가 제공해주는 여러 기능이 담겨있는 객체를 사용합니다
@@ -153,12 +153,12 @@ const StackNavigator = () => {
             if(badge) {
                 await notifee.setBadgeCount(Number(badge));
             }
-
+            /**------------------------------2. 알림 메세지 클릭 후 이벤트---------------------------------------------**/
             if(type === EventType.PRESS) {
                 if(Member === '116' || Member === '97' || Member === '105') {
                     Alert.alert(`푸시링크 데이터`,`${JSON.stringify(detail)}`);
                 }
-
+                /**------------------------------2. 알림 메세지 클릭 후 이벤트---------------------------------------------**/
                 if(
                     push_act_type === 'ord_ins'             ||        // 발주요청완료
                     push_act_type === 'ord_doing'           ||        // 발주검수진행
@@ -209,6 +209,7 @@ const StackNavigator = () => {
                 }
             }
         });
+        /**--------------------------------1. ios 백그라운드 상태에서 푸시알림 받을시-------------------------------**/
         notifee.onBackgroundEvent(async ({type,detail})=>{
 
             const {push_act_type, push_link_uid, push_msg_uid,badge} = detail.notification.data;
@@ -216,7 +217,7 @@ const StackNavigator = () => {
             if(badge) {
                 await notifee.setBadgeCount(Number(badge));
             }
-
+            /**------------------------------2. 알림 메세지 클릭 후 이벤트---------------------------------------------**/
             if(type === EventType.PRESS) {
                 // 뱃지 설정
                 if(Member === '116' || Member === '97' || Member === '105') {
@@ -235,6 +236,12 @@ const StackNavigator = () => {
                             const {result} = res.data;
                             if(result === 'OK') {
                                 // 2. 페이지 이동
+                                push_badge(Member).then(rsp=>{
+                                    let {new_push_cnt} = rsp.data
+                                    if(res) {
+                                        notifee.setBadgeCount(Number(new_push_cnt));
+                                    }
+                                });
                                 return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
                             }
                         }
@@ -247,6 +254,12 @@ const StackNavigator = () => {
                             const {result} = res.data;
                             if(result === 'OK') {
                                 // 2. 페이지 이동
+                                push_badge(Member).then(rsp=>{
+                                    let {new_push_cnt} = rsp.data
+                                    if(res) {
+                                        notifee.setBadgeCount(Number(new_push_cnt));
+                                    }
+                                });
                                 return navigation.navigate(`포인트내역`);
                             }
                         }
@@ -263,6 +276,12 @@ const StackNavigator = () => {
                             const {result} = res.data;
                             if(result === 'OK') {
                                 // 2. 페이지 이동
+                                push_badge(Member).then(rsp=>{
+                                    let {new_push_cnt} = rsp.data
+                                    if(res) {
+                                        notifee.setBadgeCount(Number(new_push_cnt));
+                                    }
+                                });
                                 return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
                             }
                         }
@@ -272,7 +291,7 @@ const StackNavigator = () => {
             }
         });
 
-        /**----------------------------------1. aos 푸시알림 설정----------------------------------------------------------**/
+        /**----------------------------------2. aos 푸시알림 설정----------------------------------------------------------**/
         messaging().onNotificationOpenedApp(async remoteMessage => {
             const {data:{push_act_type, push_link_uid,push_msg_uid, badge}} = remoteMessage;
 
@@ -422,6 +441,7 @@ const StackNavigator = () => {
                                 const {result} = res.data;
                                 if(result === 'OK') {
                                     // 2. 페이지 이동
+
                                     return navigation.navigate(`발주상세`,{gd_order_uid:push_link_uid});
                                 }
                             }
