@@ -300,8 +300,7 @@ const StackNavigator = () => {
             }
 
             if (remoteMessage) {
-                // 뱃지 설정const {data:{push_act_type, push_link_uid,push_msg_uid, badge}} = remoteMessage;
-
+                // 뱃지 설정
                 if(Member === '116' || Member === '97' || Member === '105') {
                     Alert.alert(``,`${JSON.stringify(remoteMessage)}`);
                 }

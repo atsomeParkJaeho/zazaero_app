@@ -78,9 +78,9 @@ export default function GoodsCateList({route, navigation}) {
     const [now_page, set_now_page]              = useState();               // 현재페이지
 
 
-    const toastRef = useRef();
-    const update = useIsFocused();
-    const scrollViewRef = useRef();
+    const toastRef                                = useRef();
+    const update                                  = useIsFocused();
+    const scrollViewRef                           = useRef();
     const [scrollEndReached, setScrollEndReached] = useState(false);
 
 

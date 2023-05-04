@@ -101,14 +101,9 @@ export default function NotificationList({route,navigation}){
             if(res) {
                 const {result, now_page, total_page, A_push_msg} = res.data;
                 if(result === 'OK') {
-                    if(Member === '116' || Member === '97' || Member === '105') {
-                        // Alert.alert(`알림리스트`,`${JSON.stringify(res.data)}`);
-                        set_page(total_page);
-                        set_now_page(now_page);
-                        return set_push_list(A_push_msg);
-                    } else {
-                        return set_push_list(A_push_msg);
-                    }
+                    set_page(total_page);
+                    set_now_page(now_page);
+                    set_push_list(A_push_msg);
                 }
             }
         });
@@ -126,14 +121,9 @@ export default function NotificationList({route,navigation}){
                 if(res) {
                     const {result, now_page, total_page, A_push_msg} = res.data;
                     if(result === 'OK') {
-                        if(Member === '116' || Member === '97' || Member === '105') {
-                            Alert.alert(`알림리스트`,`${JSON.stringify(res.data)}`);
-                            set_page(total_page);
-                            set_now_page(now_page);
-                            set_push_list([...get_push_list, ...A_push_msg]);
-                        } else {
-                            return set_push_list(A_push_msg);
-                        }
+                        set_page(total_page);
+                        set_now_page(now_page);
+                        set_push_list([...get_push_list, ...A_push_msg]);
                     }
                 }
             });
