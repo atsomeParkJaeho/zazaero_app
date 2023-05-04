@@ -770,3 +770,18 @@ export const cancelStatus = (type) => {
     }
 }
 
+export const returnType = (type) => {
+    if(type) {
+        if(type === 'part') { return '부분반품'; }
+        if(type === 'all')  { return '전체반품'; }
+    }
+}
+
+export const returnStatus = (type) => {
+    if(type) {
+        if(type === 'ready')    { return '반품대기'; }
+        if(type === 'doing')    { return '반품진행'; }
+        if(type === 'done')     { return '반품완료'; }
+    }
+}
+

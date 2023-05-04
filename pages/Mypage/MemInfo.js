@@ -1,48 +1,36 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {
     StyleSheet,
-    Button,
-    CheckBox,
     Text,
     TextInput,
     View,
     Image,
     TouchableOpacity,
     ScrollView,
-    KeyboardAvoidingView, Pressable, Alert,
+    KeyboardAvoidingView, Alert,
 } from 'react-native';
 
 // 공통 CSS 추가
 import {
-    container,
     bg_white,
-    flex_between,
     flex,
     input,
     pe2,
     pos_center,
-    ios_pb,
-    mt2,
     text_danger,
     text_black,
     text_center,
     h17,
     mb1,
-    d_flex,
     bg_primary,
     text_gray,
     justify_content_between,
-    wt5,
     ms1,
     me1, h13, text_white, wt10
 } from '../../common/style/AtStyle';
-import {AddrMatch, BankCode, bizNum, EmailDomain, Minlangth, Phone, regPW,} from "../../util/util";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {AddrMatch, BankCode} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import {get_mem_info, get_Member, mod_mem_info} from "../UTIL_mem";
-import HomeLogoAt from "../../icons/home_logo_at.svg";
-import HomeLogo from "../../icons/home_logo.svg";
 import Close from "../../icons/close_black.svg";
 import * as ImagePicker from "expo-image-picker";
 
@@ -194,60 +182,46 @@ export default function MemInfo({route, navigation}) {
             //  비밀번호 변경의사 없음
         } else {
             if (!MemInfo.mem_pw && MemInfo.mem_pw_chk) {
-                Alert.alert('', `비밀번호를 입력해주세요.`);
                 return Alert.alert('', `비밀번호를 입력해주세요.`);
             }
 
             if (MemInfo.mem_pw && !MemInfo.mem_pw_chk) {
-                Alert.alert('', `비밀번호 확인을 입력해주세요.`);
                 return Alert.alert('', `비밀번호 확인을 입력해주세요.`);
             }
 
             if (MemInfo.mem_pw !== MemInfo.mem_pw_chk) {  // 비밀번호 일치
-                Alert.alert('', '비밀번호가 일치 하지 않습니다.');
                 return Alert.alert('', `비밀번호가 일치 하지 않습니다.`);
             }
 
             if (8 >= MemInfo.mem_pw.length) {             // 비밀번호 최소
-                Alert.alert('', `8자 이상 입력해주세요.`);
                 return Alert.alert('', `8자 이상 입력해주세요.`);
             }
 
             if (regPw.test(MemInfo.mem_pw) === false) {  // 특수문자 입력 필수
-                Alert.alert('', '특수 문자가 포함되어있지 않습니다.');
                 return Alert.alert('', '특수 문자가 포함되어있지 않습니다.');
             }
         }
 
         if(!MemInfo.road_address) { // 지역코드
-            Alert.alert('','지역을 선택해주세요');
             return Alert.alert('','지역을 선택해주세요');
         }
 
         if(!MemInfo.com_name) {  // 업체명
-            Alert.alert('',`업체명을 입력해주세요.`);
             return Alert.alert('',`업체명을 입력해주세요.`);
         }
         if(!MemInfo.com_biz_no) {  // 사업자 등록증
-            Alert.alert('',`사업자 등록증을 입력해주세요.`);
             return Alert.alert('',`사업자 등록증을 입력해주세요.`);
         }
         if(!MemInfo.zonecode) {  // 우편번호
-            Alert.alert('',`우편번호를 입력해주세요.`);
             return Alert.alert('',`우편번호를 입력해주세요.`);
         }
         if(!MemInfo.addr1) {  // 주소
-            Alert.alert('',`주소를 입력해주세요.`);
             return Alert.alert('',`주소를 입력해주세요.`);
         }
 
         Alert.alert('','정보를 변경하시겠습니까?',[
-            {
-                text:"취소",
-                onPress:()=>{}
-            },
-            {
-                text:"확인",
+            {text:"취소", onPress:()=>{}},
+            {text:"확인",
                 onPress:()=>{
                     console.log(MemInfo,'/전달값')
                     mod_mem_info(Member, MemInfo, mem_biz_paper, mem_bank_paper,A_del_file).then((res)=>{
@@ -265,10 +239,6 @@ export default function MemInfo({route, navigation}) {
                 }
             },
         ])
-
-
-
-
     }
 
     console.log(MemInfo,'/[들어간 값]');
@@ -464,17 +434,7 @@ export default function MemInfo({route, navigation}) {
                                     </View>
                                 </View>
                             </View>
-                            {/*============ 업태/종목 ============ */}
-                            {/*<View style={styles.formGroup}>*/}
-                            {/*    <View style={styles.inputGroup}>*/}
-                            {/*        <Text style={styles.inputTopText}>상호명</Text>*/}
-                            {/*        <TextInput style={[input]}*/}
-                            {/*                   onChangeText={(com_biz_name) => goInput("com_biz_name", com_biz_name)}*/}
-                            {/*                   ref={val=>(goInput2.current[11] = val)}*/}
-                            {/*                   placeholder=""*/}
-                            {/*                   value={MemInfo.com_biz_name}/>*/}
-                            {/*    </View>*/}
-                            {/*</View>*/}
+
                             {/*============ 상호명 ============ */}
 
                             <View style={styles.formGroup}>

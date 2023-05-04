@@ -267,7 +267,7 @@ export default function GoodsDetail({route,navigation}) {
                                         <Text style={[styles.GoodsDetail_info_txt,{textAlign: "left"}]}>자재안내</Text>
                                     </View>
                                     <View style={[styles.wt75]}>
-                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val]}>
+                                        <Text style={[styles.GoodsDetail_info_txt_val,styles.GoodsDetail_price_val, text_primary]}>
                                             {GoodsDetail.goods_guide_name}
                                         </Text>
                                     </View>
@@ -424,6 +424,7 @@ const styles = StyleSheet.create({
         fontWeight:"500",
         color:"#333",
         lineHeight:28,
+        lineBreakMode:"break-word",
     },
     wt25: {
         width: "25%",

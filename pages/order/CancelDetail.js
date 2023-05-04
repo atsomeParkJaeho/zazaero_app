@@ -188,7 +188,7 @@ export default function CancelDetail({navigation,route}) {
                                                 <Text style={[h13]}>
                                                     취소금액
                                                 </Text>
-                                                <Text style={[h16]}>{Price(val.refund_goods_price * val.cancel_cnt)} 원</Text>
+                                                <Text style={[h16]}>{Price(val.price * val.cancel_cnt)} 원</Text>
                                                 {/*총금액*/}
 
                                                 {(Number(val.refound_opt_price) > 0) && (

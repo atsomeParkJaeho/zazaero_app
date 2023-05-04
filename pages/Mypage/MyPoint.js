@@ -16,6 +16,7 @@ import {get_Member} from "../UTIL_mem";
 import {get_my_point_log} from "../UTIL_mem";
 import {DateChg, Price} from "../../util/util";
 import Spinner from "../board/inquiry/spiner";
+import {useIsFocused} from "@react-navigation/native";
 
 
 export default function MyPoint({route, navigation,enableSomeButton}) {
@@ -23,6 +24,7 @@ export default function MyPoint({route, navigation,enableSomeButton}) {
     const [my_point_log, set_my_point_log]  = useState([]);   // 회원정보 셋팅
     const [get_page, set_page]              = useState();           // 전체 페이지
     const [now_page, set_now_page]          = useState();           // 현재 페이지
+    const Update = useIsFocused();
 
     /**--------------------스크롤 설정----------------------**/
     const scrollViewRef = useRef();
@@ -31,9 +33,7 @@ export default function MyPoint({route, navigation,enableSomeButton}) {
     const handleScroll = (event) => {
         const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
         const paddingToBottom = 10; // adjust the value as needed
-
         const isEndReached = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
-
         if (isEndReached && !scrollEndReached) {
             setScrollEndReached(true);
             // Alert.alert(``,`스크롤 끝`);
@@ -66,13 +66,11 @@ export default function MyPoint({route, navigation,enableSomeButton}) {
     };
 
     useEffect(()=>{
-
         get_Member().then((res)=>{
             if(res) {setMember(res);} else {
                 // Alert.alert(``,`로그인 후 확인 가능합니다.`);
             }
         });
-
         get_my_point_log(Member).then((res)=>{
             if(res) {
                 console.log(res.data,'/[데이터 로그]');
@@ -89,15 +87,8 @@ export default function MyPoint({route, navigation,enableSomeButton}) {
         // page(get_page);
 
 
-    },[Member]);
-
-
+    },[Member, Update]);
     /**------------------------------스크롤 끝에서 페이징 처리하기----------------------------**/
-
-    // console.log(my_point_log,'/[나의 포인트 내역]');
-    console.log(get_page,'/[전체 페이지]');
-    console.log(now_page,'/[현재 페이지]');
-
     return(
         <>
 

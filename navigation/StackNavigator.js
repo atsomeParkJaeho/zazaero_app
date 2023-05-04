@@ -294,11 +294,9 @@ const StackNavigator = () => {
         /**----------------------------------2. aos 푸시알림 설정----------------------------------------------------------**/
         messaging().onNotificationOpenedApp(async remoteMessage => {
             const {data:{push_act_type, push_link_uid,push_msg_uid, badge}} = remoteMessage;
-
             if(badge) {
                 await notifee.setBadgeCount(Number(badge));
             }
-
             if (remoteMessage) {
                 // 뱃지 설정
                 if(Member === '116' || Member === '97' || Member === '105') {

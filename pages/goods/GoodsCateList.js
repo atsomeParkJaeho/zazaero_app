@@ -29,7 +29,7 @@ import {
     btn_circle, btn_outline_primary, btn_primary,
     container, count_btn, count_btn_txt, countinput,
     d_flex, flex, flex_around, flex_between, flex_between_top,
-    flex_top, h13,
+    flex_top, h13, h14,
     h18, h20,
     justify_content_center, justify_content_end, mb1, mb2, me1,
     min_height, ms1, mt1, mt3, mt5, pb2, pos_center,
@@ -53,6 +53,7 @@ import {get_Member, get_my_point_log} from "../UTIL_mem";
 import {getCartList} from "../cart/UTIL_cart";
 import Toast from 'react-native-easy-toast';
 import Spinner from "../board/inquiry/spiner";
+import WrappedText from "react-native-wrapped-text";
 
 
 
@@ -82,7 +83,7 @@ export default function GoodsCateList({route, navigation}) {
     const update                                  = useIsFocused();
     const scrollViewRef                           = useRef();
     const [scrollEndReached, setScrollEndReached] = useState(false);
-
+    const flatListRef = useRef();
 
     const handleScroll = async () => {
         setScrollEndReached(false);
@@ -104,6 +105,12 @@ export default function GoodsCateList({route, navigation}) {
             });
         }
     };
+
+
+    // 스크롤 top으로 이동시키기
+    const toTop = () => {
+        flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+    }
 
     // 우측 메뉴 설정
     const headerRight = () => {
@@ -153,6 +160,7 @@ export default function GoodsCateList({route, navigation}) {
             if (res) {
                 const {result, A_cate_2nd} = res.data;
                 if (result === 'OK') {
+                    toTop();
                     setCate2List(A_cate_2nd);
                 } else {
                     Alert.alert('','실패');
@@ -164,6 +172,7 @@ export default function GoodsCateList({route, navigation}) {
             if (res) {
                 const {result, A_cate} = res.data;
                 if (result === 'OK') {
+                    toTop();
                     setCate3rd(A_cate);
                 } else {
                     Alert.alert('','실패');
@@ -196,6 +205,7 @@ export default function GoodsCateList({route, navigation}) {
                 const {result, A_goods, now_page, total_page} = res.data;
                 if (result === 'OK') {
                     console.log('확인');
+                    toTop();
                     set_now_page(now_page);
                     set_page(total_page);
                     setGoodsList(A_goods);
@@ -230,6 +240,7 @@ export default function GoodsCateList({route, navigation}) {
                 const {result, A_goods, now_page, total_page} = res.data;
                 if (result === 'OK') {
                     console.log('확인');
+                    toTop();
                     set_now_page(now_page);
                     set_page(total_page);
                     setGoodsList(A_goods);
@@ -444,13 +455,10 @@ export default function GoodsCateList({route, navigation}) {
                                 </View>
                                 <View style={[styles.flex_item, styles.flex_item2]}>
                                     <View style={[flex_between, align_items_center, pb2]}>
-                                        <View style={[wt8]}>
-
+                                        <View style={[wt8, styles.goodsTitle]}>
                                             {/*========상품명========*/}
-                                            <Text
-                                                style={[styles.cate_2st_btn_txt, (item.goods_wish_chk) ? {color: "red"} : {color: "#000"}]}
+                                            <Text ellipsizeMode={'middle'} style={[styles.cate_2st_btn_txt, (item.goods_wish_chk) ? {color: "red"} : {color: "#000"}]}
                                                 numberOfLines={2}>{item.goods_name}</Text>
-
                                         </View>
                                         {/**----------------------장바구니------------------------------**/}
                                         <View style={[wt2, d_flex, justify_content_end]}>
@@ -587,6 +595,7 @@ export default function GoodsCateList({route, navigation}) {
                 style={[bg_white]}
                 data={GoodsList}
                 renderItem={goodsLlist}
+                ref={flatListRef}
                 keyExtractor={(item)=>item.id}
                 onEndReachedThreshold={1}
                 windowSize={3}
@@ -627,9 +636,11 @@ export default function GoodsCateList({route, navigation}) {
                             </View>
                             {/*상품이미지*/}
                             <View style={[styles.GoodsDetail_info]}>
-                                <Text Style={[styles.GoodsDetail_title]}>
-                                    {goods_detail.goods_name}
-                                </Text>
+                                <View>
+                                    <Text style={[styles.GoodsDetail_title, h14]}>
+                                        {goods_detail.goods_name}
+                                    </Text>
+                                </View>
                                 {/*상품명*/}
                                 <View style={[flex,mt1]}>
                                     <View style={[styles.wt25]}>
@@ -789,6 +800,12 @@ const styles = StyleSheet.create({
     toast:{
         backgroundColor:'rgba(33, 87, 243, 0.5)',
     },
+    goodsTitle:{
+        flexShrink:1,
+        flexGrow:1,
+        flexBasis:"100%",
+        whiteSpace:'nowrap',
+    },
     cart_btn:{
         paddingBottom:38,
         paddingTop:33,
@@ -841,6 +858,8 @@ const styles = StyleSheet.create({
     },
     cate_2st_btn_txt: {
         fontSize: Platform.OS === 'ios' ? 14 : 13,
+        whiteSpace: 'normal',
+
     },
     btn_cart: {
         width: 37,
@@ -945,6 +964,10 @@ const styles = StyleSheet.create({
         fontWeight:"500",
         color:"#333",
         lineHeight:28,
+        flexShrink:1,
+        flexGrow:1,
+        flexBasis:"100%",
+        whiteSpace:'nowrap',
     },
     wt25: {
         width: "25%",

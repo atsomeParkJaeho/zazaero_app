@@ -453,7 +453,7 @@ export default function Wishlist({route,navigation}) {
                                                                                         <View style={styles.flex_bottom}>
                                                                                             <View style="">
                                                                                                 <Text
-                                                                                                    style={[styles.cate_list_disc,h13]}>
+                                                                                                    style={[styles.cate_list_disc,h13,text_primary]}>
                                                                                                     {(val.goods_guide_name) && val.goods_guide_name}
                                                                                                 </Text>
                                                                                                 {(val.disable_cancel === 'Y') && (

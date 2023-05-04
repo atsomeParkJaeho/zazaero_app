@@ -484,9 +484,9 @@ export default function Cart({route, navigation}) {
                                                                         {/*숨김처리*/}
                                                                         <Checkbox onValueChange={() => goFormChk(val.goods_uid, cate.cate_1st_uid)} value={val.goods_chk} style={styles.all_check} color={"#4630eb"}/>
                                                                         <Checkbox onValueChange={() => goFormChk(val.goods_uid, cate.cate_1st_uid)} value={val.goods_chk} style={styles.chk_view} color={"#4630eb"}/>
-                                                                        <Text numberOfLines={2} style={[styles.all_check_txt,h12]}>
+                                                                        <WrappedText numberOfLines={2} style={[styles.all_check_txt,h12]}>
                                                                             {val.goods_name}
-                                                                        </Text>
+                                                                        </WrappedText>
                                                                     </View>
                                                                     {/*=============삭제버튼============*/}
                                                                     <TouchableOpacity onPress={() => delCart(val.order_uid, val.goods_uid)}>

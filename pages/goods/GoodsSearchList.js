@@ -48,6 +48,7 @@ import {get_goods_search, go_goods_cate3rd_list, ins_cart, save_cart, save_wish}
 import {get_Member, get_my_point_log} from "../UTIL_mem";
 import {getCartList} from "../cart/UTIL_cart";
 import Toast from "react-native-easy-toast";
+import WrappedText from "react-native-wrapped-text";
 
 
 export default function GoodsSearchList({route,navigation}) {
@@ -369,7 +370,7 @@ export default function GoodsSearchList({route,navigation}) {
                                     </View>
                                     <View style={styles.flex_bottom}>
                                         <View style="">
-                                            <Text style={[styles.cate_list_disc, h13]} numberOfLines={1}>
+                                            <Text style={[styles.cate_list_disc, h13,text_primary]} numberOfLines={1}>
                                                 {val.goods_guide_name}
                                             </Text>
                                             {(val.disable_cancel === 'Y') && (
@@ -503,6 +504,7 @@ const styles = StyleSheet.create({
     },
     cate_2st_btn_txt: {
         fontSize: 14,
+        lineBreakMode:'break-word',
     },
     cate_goods_list_item: {
         paddingVertical: 26,

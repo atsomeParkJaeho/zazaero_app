@@ -31,7 +31,7 @@ import {gray_bar, sub_page} from '../../common/style/SubStyle';
 import Footer from "../Footer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {get_order_cancel_list} from "./UTIL_order";
-import {cancelType, DateChg, Price, refundStatus} from "../../util/util";
+import {cancelType, DateChg, Price, refundStatus, returnStatus, returnType} from "../../util/util";
 import {get_Member} from "../UTIL_mem";
 import Spinner from "../board/inquiry/spiner";
 
@@ -200,16 +200,7 @@ export default function Return({route, navigation}) {
                                         </View>
                                         <View style="">
                                             <View style={[flex, styles.justify_content_end]}>
-                                                {(val.refund_status === 'done') ? (
-                                                    <>
-                                                        <Text>처리완료</Text>
-                                                    </>
-                                                ):(
-                                                    <>
-                                                        <Text>{cancelType(val.cancel_type)}</Text>
-                                                    </>
-                                                )}
-
+                                                <Text>{returnStatus(val.refund_status)}</Text>
                                             </View>
                                             <View style="">
                                                 <View style={flex}>

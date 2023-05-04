@@ -14,6 +14,7 @@ import {
 import {get_Member, get_my_point_log, get_my_refund_log} from "../UTIL_mem";
 import {DateChg, Price} from "../../util/util";
 import Spinner from "../board/inquiry/spiner";
+import {useIsFocused} from "@react-navigation/native";
 
 
 export default function MyRefund({route, navigation}) {
@@ -21,7 +22,7 @@ export default function MyRefund({route, navigation}) {
     const [my_refund_log, set_my_refund_log]    = useState([]);
     const [get_page, set_page]                  = useState();           // 전체 페이지
     const [now_page, set_now_page]              = useState();           // 현재 페이지
-
+    const Update = useIsFocused();
     /**--------------------스크롤 설정----------------------**/
     const scrollViewRef = useRef();
     const [scrollEndReached, setScrollEndReached] = useState(false);
@@ -29,9 +30,7 @@ export default function MyRefund({route, navigation}) {
     const handleScroll = (event) => {
         const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
         const paddingToBottom = 10; // adjust the value as needed
-
         const isEndReached = layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
-
         if (isEndReached && !scrollEndReached) {
             setScrollEndReached(true);
             // Alert.alert(``,`스크롤 끝`);
@@ -56,8 +55,6 @@ export default function MyRefund({route, navigation}) {
                     }
                 });
             }
-
-
         } else if (!isEndReached && scrollEndReached) {
             setScrollEndReached(false);
         }
@@ -84,7 +81,7 @@ export default function MyRefund({route, navigation}) {
                 }
             }
         });
-    },[Member]);
+    },[Member,Update]);
 
     console.log(my_refund_log,'/[나의 환불내역]');
     console.log(get_page,'/[전체 페이지]');
@@ -102,7 +99,6 @@ export default function MyRefund({route, navigation}) {
                             {my_refund_log.map((val,ide)=>
                                 <View style={[styles.MyPoint_list_item,flex_between]}>
                                     <View style={styles.item}>
-                                        {/*<Text style={styles.MyPoint_title}>{val.refund_bank_name} {val.refund_bank_no} {val.refund_bank_owner}</Text>*/}
                                         <Text style={styles.MyPoint_title}>{val.refund_memo}</Text>
                                         <Text style={styles.MyPoint_date}>{DateChg(val.reg_date)} {val.reg_time}</Text>
                                     </View>

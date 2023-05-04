@@ -63,14 +63,10 @@ import {FormStyle} from "./FormStyle";
 import CalendarStrip from 'react-native-calendar-strip';
 import 'moment';
 import 'moment/locale/ko';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {AddrMatch, Phone, Price, Time, Time1, Time2, cancel_List, cancel_d_List, DateChg, DateChg2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import {del_deli_addr, get_deli_addr_list, get_order_ready, InsOrder, SaveDeliAddr, setDeliList} from "./UTIL_order";
-import HomeLogoAt from "../../icons/home_logo_at.svg";
-import HomeLogo from "../../icons/home_logo.svg";
 import {get_Member} from "../UTIL_mem";
-import {order_push, send_pus, send_push} from "../../push/UTIL_push";
 
 
 
@@ -354,15 +350,15 @@ export default function OrderForm({route,navigation}) {
                                 <CalendarStrip
                                     scrollable
                                     onDateSelected={(Date) => {
-                                        setOrderDate({
+                                        return setOrderDate({
                                             ...OrderData,
                                             hope_deli_date: String(Date.format('YYYY-MM-DD')),
                                         });
                                     }
                                     }
                                     startingDate={`${today}`}
-                                    minDate={`${today}`}
-                                    maxDate={`2024-12-31`}
+                                    minDate={`2010-12-31`}
+                                    maxDate={`2030-12-31`}
                                     style={{height: 150, paddingTop: 20, paddingBottom: 10}}
                                     daySelectionAnimation={{
                                         type: "background",
@@ -765,6 +761,11 @@ export default function OrderForm({route,navigation}) {
             if(!order_data.hope_deli_date) {
                 Alert.alert('','희망배송일을 선택해주세요.');
                 return InputFocus.current[3].focus();;
+            }
+
+            if(today > new Date(order_data.hope_deli_date) ) {
+                Alert.alert('','이전 날짜는 선택불가능합니다.');
+                return InputFocus.current[3].focus();
             }
 
             /**6. ------희망배송 시간을 선택 ----**/

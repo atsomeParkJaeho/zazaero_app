@@ -59,17 +59,15 @@ import {
     pb2, ms2, mb2, text_gray, wt5, btn_outline_primary, wt10, mb5, wt4, me1
 } from '../../common/style/AtStyle';
 
-import CameraIcon from '../../icons/camera_icon.svg';
 import {get_Member} from "../UTIL_mem";
-import {get_deli_addr_list, getOrderInfo, img_upload_test, order_cancel} from "./UTIL_order";
+import {img_upload_test, order_cancel} from "./UTIL_order";
 import {app_info, get_order} from "./OrderInfo";
 import Close from "../../icons/close_black.svg";
 import {FormStyle} from "./FormStyle";
 import {borderBottom1} from "../../common/style/SubStyle";
 import {Phone, Price} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
-import {image_upload} from "../board/UTIL_bd";
-import {Camera} from "expo-camera";
+
 
 
 
@@ -79,18 +77,12 @@ export default function RequestReturn({route, navigation}) {
 
     const [Member, setMember] = useState(``);                   // 회원 uid 가져오기
     const [get_gd_order, set_get_gd_order] = useState([]);      // 발주현황 가져오기
-    const [modAddr, setmodAddr]           = useState(`add`); // 신규수거지, 기존 배송지 선택 상태 정의
-    const [DeliList, setDeliList] = useState([]);
     const [ret_order, set_ret_order] = useState({
         zonecode            :'',
         addr1               :'',
         addr2               :'',
         return_mem_mobile   :'',
     });            // 반품신청 내역 작성
-    const [Selected, setSelected] = useState({
-        zonecode        :'',
-        addr1           :'',
-    });
     const [A_order_list, set_A_order_list] = useState([]);      // 발주자재 내역 리스트 가져오기
     const [cancel_doing, set_cancel_doing] = useState([]);      // 발주자재 내역 리스트 가져오기
     const [selectedImages, setSelectedImages] = useState([]);   // 첨부이미지
@@ -123,32 +115,12 @@ export default function RequestReturn({route, navigation}) {
                 }
             }
         })();
-        get_deli_addr_list(Member).then((res)=>{
-            if (res) {
-                console.log(res.data,'/[최근 공사명 리스트 출력]');
-                const {result, A_deli_info} = res.data;
-                if (result === 'OK') {
-                    let temp = A_deli_info.sort((a,b)=>{
-                        return new Date(b.gmd_sno) - new Date(a.gmd_sno);
-                    });
-                    setDeliList(temp);
-                } else {
-                    console.log('실패');
-                }
-            }
-        });
+
 
     },[Member,Update]);
 
 
-    const select_addr = (type) => {
-        if(type === 'add') {
-            setmodAddr(type);
-        }
-        if(type === 'mod') {
-            setmodAddr(type);
-        }
-    }
+
     const get_ready = async (Member, gd_order_uid) => {
         /**은행코드 추출**/
         let {A_pay_bank} = await app_info();
@@ -299,7 +271,7 @@ export default function RequestReturn({route, navigation}) {
             zonecode:zonecode,
             save_pic_list:save_pic_list,
         }
-       navigation.navigate(`카메라`,data);
+       return navigation.navigate(`카메라`,data);
     };
 
     const pickImage = async () => {
@@ -325,18 +297,6 @@ export default function RequestReturn({route, navigation}) {
         setSelectedImages(images);
     };
 
-    const upload_test = () => {
-        img_upload_test(selectedImages).then((res)=>{
-            if(res) {
-                const {result} = res.data;
-                if(result === 'OK') {
-                    return Alert.alert(``,`성공`);
-                } else {
-                    return Alert.alert(``,`${result}`);
-                }
-            }
-        });
-    }
     console.log(Member,'/[회원uid]');
     console.log(get_gd_order,'/[발주현황]');
     console.log(ret_order,'/[반품신청]');
@@ -428,13 +388,7 @@ export default function RequestReturn({route, navigation}) {
                                         <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
                                     </TouchableOpacity>
                                 </View>
-                                {/*<View  style={[wt5]} >*/}
-                                {/*    <TouchableOpacity onPress={pickImage} style={[styles.button,bg_primary,ms1,me1]}>*/}
-                                {/*        <Text style={[h13,text_center,text_white]}>사진 업로드 테스트</Text>*/}
-                                {/*    </TouchableOpacity>*/}
-                                {/*</View>*/}
                             </View>
-
                             {(selectedImages !== undefined) && (
                                 <>
                                     <View style={[styles.imagesContainer]}>
@@ -451,10 +405,6 @@ export default function RequestReturn({route, navigation}) {
                                     </View>
                                 </>
                             )}
-
-                            {/*<TouchableOpacity onPress={upload_test} style={[styles.button,bg_primary]}>*/}
-                            {/*    <Text style={[h13,text_center,text_white]}>이미지 업로드 테스트</Text>*/}
-                            {/*</TouchableOpacity>*/}
                         </View>
                         {/*==============반품사진 등록==============*/}
                     </View>
