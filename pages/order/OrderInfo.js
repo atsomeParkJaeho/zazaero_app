@@ -11,9 +11,9 @@ export const app_info = async () => {
 
 }
 export const get_order = async (Member, gd_order_uid) => {
-    let {data:{result,gd_order,cancel_doing_cnt}} = await getOrderInfo(gd_order_uid,Member);
+    let {data:{result,gd_order,cancel_doing_cnt,A_deli_time}} = await getOrderInfo(gd_order_uid,Member);
     if(result === 'OK') {
-        return {gd_order, cancel_doing_cnt}
+        return {gd_order, cancel_doing_cnt,A_deli_time}
     }
 }
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Alert, Platform} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Alert, Platform, Linking} from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
 import {List} from 'react-native-paper';
 //이미지 슬라이드
@@ -9,7 +9,7 @@ import {
     container,
     flex,
     flex_between,
-    d_flex, pt2, ms1, justify_content_center
+    d_flex, pt2, ms1, justify_content_center, mb3, mb1
 } from '../common/style/AtStyle';
 
 import Footer from "./Footer";
@@ -191,6 +191,15 @@ export default function MainPage({route,navigation}) {
 
     }, [Member, Update]);
 
+
+    /* 카카오톡 링크 */
+    const goKakao = () => {
+        return Linking.openURL(`http://pf.kakao.com/_xnqkVxj`);
+    }
+    const goContact = () => {
+        return Linking.openURL(`tel:${ComPhone(com_info.com_phone)}`);
+    }
+
     // ============================2023-03-22================================//
     /*----------------------------------------------------------------------*/
     // ============================푸시알림창=================================//
@@ -362,6 +371,23 @@ export default function MainPage({route,navigation}) {
                         </View>
                     </ScrollView>
                     {/**----------------------------------------푸터----------------------------------------**/}
+                    {/**----------------------------------퀵메뉴---------------------------------------------**/}
+                    {(Member === '116' || Member === '97' || Member === '105') && (
+                        <>
+                            <View style={[styles.quickMenu]}>
+                                <View style={[styles.quickBtn, mb1]}>
+                                    <TouchableOpacity onPress={goContact}>
+                                        <Image style={[styles.iconBtn]} source={{uri:`http://www.zazaero.com/img/contact.jpg`}}/>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={[styles.quickBtn]}>
+                                    <TouchableOpacity onPress={goKakao}>
+                                        <Image style={[styles.iconBtn]} source={{uri:`http://www.zazaero.com/img/kakao.jpg`}}/>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </>
+                    )}
                     <Footer navigation={navigation}/>
                 </>
             )}
@@ -372,6 +398,41 @@ export default function MainPage({route,navigation}) {
 
 
 const styles = StyleSheet.create({
+    iconBtn     :{
+      width     :35,
+      height    :35,
+    },
+    quickBtn    :{
+        width       :35,
+        height      :35,
+        backgroundColor  :"#fff",
+        overflow    :"hidden",
+        borderTopLeftRadius:35,
+        borderTopRightRadius:35,
+        borderBottomLeftRadius:35,
+        borderBottomRightRadius:35,
+        ...Platform.select({
+            ios:{
+                borderRadius:35,
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 35,
+                    height: 35,
+                },
+                shadowOpacity: 0.5,
+                shadowRadius: 35,
+            },
+            android : {
+                elevation: 35,
+            }
+        }),
+    },
+    quickMenu:{
+        position    :"absolute",
+        zIndex      :99,
+        right       :15,
+        bottom      :120,
+    },
     link_signUp:{
         position:"relative",
     },

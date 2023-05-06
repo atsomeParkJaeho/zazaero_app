@@ -63,7 +63,7 @@ import {FormStyle} from "./FormStyle";
 import CalendarStrip from 'react-native-calendar-strip';
 import 'moment';
 import 'moment/locale/ko';
-import {AddrMatch, Phone, Price, Time, Time1, Time2, cancel_List, cancel_d_List, DateChg, DateChg2} from "../../util/util";
+import {AddrMatch, Phone, Price, Time, Time1, cancel_List, cancel_d_List, DateChg, DateChg2} from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import {del_deli_addr, get_deli_addr_list, get_order_ready, InsOrder, SaveDeliAddr, setDeliList} from "./UTIL_order";
 import {get_Member} from "../UTIL_mem";
@@ -78,10 +78,11 @@ export default function OrderForm({route,navigation}) {
     console.log(goods_cate1_uid,'/ 1차 카테고리');
     let order_result_uid = order_uid.map(val=>Number(val.order_uid));
 
-    const [Member, setMember]          = useState();
-    const InputFocus = useRef([]);
+    const [Member, setMember]             = useState();
+    const InputFocus                      = useRef([]);
+    const [Time2, setTime2]               = useState([]);
 
-    const [Show, setShow]         = useState(false);    // 셀렉트창 노출 여부
+    const [Show, setShow]                 = useState(false);    // 셀렉트창 노출 여부
     /**--------------------------------------상태값 셋팅--------------------------------------------------**/
     const [CartList, setCartList]         = useState([]);      // 장바구니 상태 정의
     const [modAddr, setmodAddr]           = useState(`add`); // 신규, 기존 배송지 선택 상태 정의
@@ -149,7 +150,7 @@ export default function OrderForm({route,navigation}) {
         let order_result_uid = order_uid.map(val=>Number(val.order_uid));
         get_order_ready(Member, order_result_uid).then((res) => {
             if (res) {
-                const {result, A_order} = res.data;
+                const {result, A_order, A_deli_time} = res.data;
                 if (result === 'OK') {
                     setCartList(A_order);
                     let total_price_arr = A_order.map(cate=>cate.sum_order_price);
@@ -157,8 +158,17 @@ export default function OrderForm({route,navigation}) {
                     for (let i = 0; i < total_price_arr.length; i++) {
                         goods_total_price += total_price_arr[i];
                     }
-                    setOrderDate({...OrderData,settleprice:goods_total_price,tot_order_price:goods_total_price,})
-
+                    if(Member === '116') {
+                        Alert.alert(`희망배송시간`,`${JSON.stringify(A_deli_time)}`);
+                    }
+                    let time2 = A_deli_time.map(val=>{
+                        return {
+                            label:val,
+                            value:val,
+                        }
+                    });
+                    setTime2(time2); // 시간 넣기
+                    setOrderDate({...OrderData,settleprice:goods_total_price,tot_order_price:goods_total_price,});
                 } else {
                     console.log('실패2');
                 }

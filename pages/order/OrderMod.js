@@ -94,8 +94,7 @@ import {
     Phone,
     Price,
     settleKind,
-    Time1,
-    Time2
+    Time1
 } from "../../util/util";
 import {useIsFocused} from "@react-navigation/native";
 import CalendarStrip from "react-native-calendar-strip";
@@ -133,12 +132,13 @@ export default function ModOrder({route,navigation}) {
         zonecode:'',
         addr1:''
     });
+    const [Time2, setTime2]                                 = useState([]);
     const [cancel_doing,    set_cancel_doing]               = useState(0);
     // 추가발주 창 오픈 상태정의
     const [add_goods_list,  set_add_goods_list]             = useState([]);
     const [Show_1, setShow_1]                               = useState(false);
     const [Show_2, setShow_2]                               = useState(false);    // 셀렉트창 노출 여부
-    // const [A_goods,         set_A_goods]                    = useState([]);
+    // const [A_goods,         set_A_goods]                 = useState([]);
     const InputFocus = useRef([]);
     const Update    = useIsFocused();
 
@@ -165,13 +165,23 @@ export default function ModOrder({route,navigation}) {
         let {A_pay_bank} = await app_info();
         let temp = A_pay_bank.map(val=>{return {label:val.name, value:val.key,}});
         /**발주정보 추출**/
-        let {gd_order, cancel_doing_cnt} = await get_order(Member, gd_order_uid);
+        let {gd_order, cancel_doing_cnt, A_deli_time} = await get_order(Member, gd_order_uid);
         let temp2 = gd_order.A_order.map(val =>{return {...val, goods_chk: false, goods_del: false,}});
         navigation.setOptions({title:'발주내용을 수정중입니다.',});
         setBankCode(temp);
         set_get_gd_order(gd_order);
         set_A_order_list(temp2);
         set_cancel_doing(cancel_doing_cnt);
+        let time2 = A_deli_time.map(val=>{
+            return {
+                label:val,
+                value:val,
+            }
+        });
+        if(Member === '116') {
+            Alert.alert(`희망배송시간`,`${JSON.stringify(A_deli_time)}`);
+        }
+        setTime2(time2);
         if(addr1 || zonecode) {
             set_get_gd_order({
                 ...get_gd_order,

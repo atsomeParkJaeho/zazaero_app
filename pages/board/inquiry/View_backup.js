@@ -37,7 +37,7 @@ export default function inquiryView({route, navigation}){
     const [Member,  setMember]          = useState(``);
     const [get_bd_data, set_bd_data]    = useState([]);
     const [get_image, set_image]        = useState([]);
-    
+
     const [modalVisible, setModalVisible] = useState(false);
     const updata = useIsFocused();
     useEffect(()=>{
@@ -156,6 +156,13 @@ export default function inquiryView({route, navigation}){
                     </View>
                 </View>
             </ScrollView>
+            <TouchableOpacity style={[bg_primary,styles.btn_default]} onPress={form_mod}>
+                <View style={[d_flex, justify_content_center, align_items_center]}>
+                    <Text style={[text_white,h18]}>
+                        수정하기
+                    </Text>
+                </View>
+            </TouchableOpacity>
         </>
     )
 }

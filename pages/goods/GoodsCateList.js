@@ -636,7 +636,7 @@ export default function GoodsCateList({route, navigation}) {
                             </View>
                             {/*상품이미지*/}
                             <View style={[styles.GoodsDetail_info]}>
-                                <View>
+                                <View style={{flex:1,}}>
                                     <Text style={[styles.GoodsDetail_title, h14]}>
                                         {goods_detail.goods_name}
                                     </Text>
@@ -964,10 +964,6 @@ const styles = StyleSheet.create({
         fontWeight:"500",
         color:"#333",
         lineHeight:28,
-        flexShrink:1,
-        flexGrow:1,
-        flexBasis:"100%",
-        whiteSpace:'nowrap',
     },
     wt25: {
         width: "25%",

@@ -207,6 +207,18 @@ const StackNavigator = () => {
                         }
                     });
                 }
+                /**------------------------1:1문의 등록 및 답변시--------------------------------**/
+                if(push_act_type === 'inquiry_reply_done') {
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`1:1문의상세`,{bd_uid:push_link_uid});
+                            }
+                        }
+                    });
+                }
             }
         });
         /**--------------------------------1. ios 백그라운드 상태에서 푸시알림 받을시-------------------------------**/
@@ -286,7 +298,18 @@ const StackNavigator = () => {
                             }
                         }
                     });
-
+                }
+                /**------------------------1:1문의 등록 및 답변시--------------------------------**/
+                if(push_act_type === 'inquiry_reply_done') {
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`1:1문의상세`,{bd_uid:push_link_uid});
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -350,7 +373,18 @@ const StackNavigator = () => {
                             }
                         }
                     });
-
+                }
+                /**------------------------1:1문의 등록 및 답변시--------------------------------**/
+                if(push_act_type === 'inquiry_reply_done') {
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`1:1문의상세`,{bd_uid:push_link_uid});
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -408,6 +442,18 @@ const StackNavigator = () => {
                             if(result === 'OK') {
                                 // 2. 페이지 이동
                                 return navigation.navigate(`취소내역상세`,{gd_cancel_uid:push_link_uid});
+                            }
+                        }
+                    });
+                }
+                /**------------------------1:1문의 등록 및 답변시--------------------------------**/
+                if(push_act_type === 'inquiry_reply_done') {
+                    push_read(Member, push_msg_uid).then(res=>{
+                        if(res) {
+                            const {result} = res.data;
+                            if(result === 'OK') {
+                                // 2. 페이지 이동
+                                return navigation.navigate(`1:1문의상세`,{bd_uid:push_link_uid});
                             }
                         }
                     });
@@ -471,7 +517,18 @@ const StackNavigator = () => {
                                 }
                             }
                         });
-
+                    }
+                    /**------------------------1:1문의 등록 및 답변시--------------------------------**/
+                    if(push_act_type === 'inquiry_reply_done') {
+                        push_read(Member, push_msg_uid).then(res=>{
+                            if(res) {
+                                const {result} = res.data;
+                                if(result === 'OK') {
+                                    // 2. 페이지 이동
+                                    return navigation.navigate(`1:1문의상세`,{bd_uid:push_link_uid});
+                                }
+                            }
+                        });
                     }
                 }
             });

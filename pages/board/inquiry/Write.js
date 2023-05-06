@@ -22,7 +22,7 @@ import {
     input,
     textarea,
     mt2,
-    justify_content_between, wt5, bg_primary, ms1, me1, h13, text_center, text_white, wt10
+    justify_content_between, wt5, bg_primary, ms1, me1, h13, text_center, text_white, wt10, mb2
 } from '../../../common/style/AtStyle';
 import {sub_page} from '../../../common/style/SubStyle';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -98,10 +98,19 @@ export default function Inquirybd_data({route, navigation}) {
                 set_bd_file1(result);
             }
             if(type === 'bd_file2') {
-                set_bd_file1(result);
+                set_bd_file2(result);
             }
         }
     };
+
+    const takePicture = async (bd_file) => {
+        let data = {
+            page:'1:1문의작성',
+            bd_file:bd_file,
+        }
+        return navigation.navigate(`카메라`,data);
+    };
+
     const removeImage = (type,uid) => {
         if(type === 'get_bd_file1') {
             set_bd_file1([]);
@@ -122,10 +131,17 @@ export default function Inquirybd_data({route, navigation}) {
             return navigation.navigate('로그인');
         }});
         if(route.params) {
-            let {
-                get_bd_data,
-                A_file,
-            } = route.params;
+            let {get_bd_data, A_file, bd_file, save_pic_list} = route.params;
+
+            if(save_pic_list) {
+                if(bd_file === 'bd_file1') {
+                    set_bd_file1(save_pic_list);
+                } else if(bd_file === 'bd_file2') {
+                    set_bd_file2(save_pic_list);
+                }
+            }
+
+
             if(get_bd_data) {
                 set_Write(get_bd_data);
                 get_bd_detail(get_bd_data.bd_uid, get_bd_data.bd_type).then((res)=>{
@@ -195,8 +211,9 @@ export default function Inquirybd_data({route, navigation}) {
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputTopText}>첨부파일</Text>
                                 {/**/}
-                                <View  style={[]} >
+                                <View>
                                     {/**등록시 노출**/}
+
                                     {(get_bd_file1.uri) ? (
                                         <>
                                             <View style={[styles.imagesContainer]}>
@@ -216,10 +233,15 @@ export default function Inquirybd_data({route, navigation}) {
                                         </>
                                     ) : (
                                         <>
-                                            <View  style={[flex,justify_content_between]} >
-                                                <View  style={[wt10]} >
+                                            <View  style={[flex,justify_content_between, mb2]} >
+                                                <View  style={[wt5]} >
+                                                    <TouchableOpacity onPress={()=>takePicture(`bd_file1`)} style={[styles.button,bg_primary,ms1,me1]}>
+                                                        <Text style={[h13,text_center,text_white]}>사진 촬영#1</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <View  style={[wt5]} >
                                                     <TouchableOpacity onPress={()=>pickImage(`bd_file1`)} style={[styles.button,bg_primary,ms1,me1]}>
-                                                        <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
+                                                        <Text style={[h13,text_center,text_white]}>사진 업로드#1</Text>
                                                     </TouchableOpacity>
                                                 </View>
                                             </View>
@@ -244,10 +266,15 @@ export default function Inquirybd_data({route, navigation}) {
                                         </>
                                     ) : (
                                         <>
-                                            <View  style={[flex,justify_content_between]} >
-                                                <View  style={[wt10]} >
+                                            <View  style={[flex,justify_content_between,mb2]} >
+                                                <View  style={[wt5]} >
+                                                    <TouchableOpacity onPress={()=>takePicture(`bd_file2`)} style={[styles.button,bg_primary,ms1,me1]}>
+                                                        <Text style={[h13,text_center,text_white]}>사진 촬영#2</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <View  style={[wt5]} >
                                                     <TouchableOpacity onPress={()=>pickImage(`bd_file2`)} style={[styles.button,bg_primary,ms1,me1]}>
-                                                        <Text style={[h13,text_center,text_white]}>사진 업로드</Text>
+                                                        <Text style={[h13,text_center,text_white]}>사진 업로드#2</Text>
                                                     </TouchableOpacity>
                                                 </View>
                                             </View>

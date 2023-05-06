@@ -104,6 +104,7 @@ export default function NotificationList({route,navigation}){
                     set_page(total_page);
                     set_now_page(now_page);
                     set_push_list(A_push_msg);
+                    // Alert.alert(`알림리스트`,`${JSON.stringify(A_push_msg)}`);
                 }
             }
         });
@@ -130,8 +131,10 @@ export default function NotificationList({route,navigation}){
         }
     };
     // 2. 클릭시 페이지 링크 이동
-    const goLink = (gd_type, gd_order_uid, gd_cancel_uid, push_msg_uid) => {
+    const goLink = (gd_type, gd_order_uid, gd_cancel_uid, push_msg_uid, msg_type, msg_link_uid) => {
         console.log('페이지 이동');
+
+
         if(gd_type === 'order') {
             // 1. 읽은 처리
             push_read(Member,push_msg_uid).then((res)=>{
@@ -170,13 +173,67 @@ export default function NotificationList({route,navigation}){
                     }
                 }
             });
+        } else if(msg_type === 'inquiry_reply_done') {
+            push_read(Member,push_msg_uid).then((res)=>{
+                if(res) {
+                    const {result} = res.data;
+                    if(result === 'OK') {
+                        // 2. 페이지 이동
+                        if(Member === '116' || Member === '97' || Member === '105') {
+                            Alert.alert(``,`${JSON.stringify(res.data)}`);
+                        }
+                        push_badge(Member).then((res)=>{
+                            if(res) { notifee.setBadgeCount(Number(res.data.new_push_cnt)) }
+                        });
+                        return navigation.navigate(`1:1문의상세`,{bd_uid:msg_link_uid});
+                    } else {
+                        // return Alert.alert(``,`${result}`);
+                    }
+                }
+            });
+        } else if(msg_type === 'mem_point_list' && gd_type === 'order') {
+            push_read(Member,push_msg_uid).then((res)=>{
+                if(res) {
+                    const {result} = res.data;
+                    if(result === 'OK') {
+                        // 2. 페이지 이동
+                        if(Member === '116' || Member === '97' || Member === '105') {
+                            Alert.alert(``,`${JSON.stringify(res.data)}`);
+                        }
+                        push_badge(Member).then((res)=>{
+                            if(res) { notifee.setBadgeCount(Number(res.data.new_push_cnt)) }
+                        });
+                        return navigation.navigate(`포인트내역`);
+                    } else {
+                        // return Alert.alert(``,`${result}`);
+                    }
+                }
+            });
+        } else if(msg_type === 'mem_point_list' && gd_type === 'cancel') {
+            push_read(Member,push_msg_uid).then((res)=>{
+                if(res) {
+                    const {result} = res.data;
+                    if(result === 'OK') {
+                        // 2. 페이지 이동
+                        if(Member === '116' || Member === '97' || Member === '105') {
+                            Alert.alert(``,`${JSON.stringify(res.data)}`);
+                        }
+                        push_badge(Member).then((res)=>{
+                            if(res) { notifee.setBadgeCount(Number(res.data.new_push_cnt)) }
+                        });
+                        return navigation.navigate(`포인트내역`);
+                    } else {
+                        // return Alert.alert(``,`${result}`);
+                    }
+                }
+            });
         }
     }
 
     function PushList({item}) {
         return (
             <>
-                <TouchableOpacity onPress={()=>goLink(item.gd_type, item.gd_order_uid, item.gd_cancel_uid, item.push_msg_uid)}>
+                <TouchableOpacity onPress={()=>goLink(item.gd_type, item.gd_order_uid, item.gd_cancel_uid, item.push_msg_uid, item.msg_type, item.msg_link_uid)}>
                     <View style={styles.NotificationListItem}>
                         <View style={[flex_between,mb2]}>
                             <View style={[flex,{position:"relative"}]}>

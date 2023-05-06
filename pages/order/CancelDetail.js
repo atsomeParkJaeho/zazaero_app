@@ -214,7 +214,7 @@ export default function CancelDetail({navigation,route}) {
 
                     <View style="">
                         <View style={container}>
-                            <Text style={[h18]}>결제 정보</Text>
+                            <Text style={[h18]}>환불 정보</Text>
                         </View>
                         <View style={[flex,mt1]}>
                             {/**----------------------발주신청일--------------------------**/}

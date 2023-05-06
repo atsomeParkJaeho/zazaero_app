@@ -21,7 +21,7 @@ import {
     mt3,
     text_primary,
     text_center,
-    pt1, pb1, h20, mt2, pt3, pb3, text_white
+    pt1, pb1, h20, mt2, pt3, pb3, text_white, bg_primary
 } from '../../common/style/AtStyle';
 import {reset_pw} from "../UTIL_mem";
 
@@ -38,6 +38,10 @@ export default function FindPw({route,navigation}) {
         mem_pw_ch               :"",   // 비밀번호 확인
     })
 
+    let act_btn = !!(
+        FindPw.mem_pw &&
+        FindPw.mem_pw_ch
+    );
 
     //2. 입력폼 체크루틴
     const ChkInput = (keyValue, text)   =>{
@@ -121,7 +125,7 @@ export default function FindPw({route,navigation}) {
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
             <View>
-                <TouchableOpacity style={[styles.btn_color]} onPress={goFindPw}>
+                <TouchableOpacity style={[styles.btn_color,(act_btn) && bg_primary]} onPress={goFindPw}>
                     <Text style={[text_center,pt3,pb3,text_white]}>비밀번호 변경</Text>
                 </TouchableOpacity>
             </View>
