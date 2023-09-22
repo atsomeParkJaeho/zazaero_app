@@ -436,7 +436,7 @@ export default function GoodsCateList({route, navigation}) {
                             <View style={[flex_top]}>
                                 <View style={[styles.flex_item, styles.flex_item1]}>
                                     <View style={[styles.cate_list_Thumbnail_box]}>
-                                        <Image style={styles.cate_list_Thumbnail} source={{uri: 'http://www.zazaero.com' + item.list_img_url}}/>
+                                        <Image style={styles.cate_list_Thumbnail} source={{uri: 'http://49.50.162.86:80' + item.list_img_url}}/>
                                         <View style={styles.goods_like}>
                                             {/*=============찜하기=================*/}
                                             <TouchableOpacity onPress={() => goWish(item.goods_uid)}>
@@ -632,7 +632,7 @@ export default function GoodsCateList({route, navigation}) {
                     <View style={[styles.GoodsDetail]}>
                         <View style={[container]}>
                             <View style={[styles.goods_iamge_box]}>
-                                <Image style={styles.goods_image} source={{uri:`http://www.zazaero.com${goods_detail.list_img_url}`}}/>
+                                <Image style={styles.goods_image} source={{uri:`http://49.50.162.86:80${goods_detail.list_img_url}`}}/>
                             </View>
                             {/*상품이미지*/}
                             <View style={[styles.GoodsDetail_info]}>

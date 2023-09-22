@@ -658,7 +658,7 @@ export default function OrderForm({route,navigation}) {
                                                     <>
                                                         <View style={[flex_between_bottom]}>
                                                             <View style={[flex_end]}>
-                                                                <Image style={[styles.goods_thum]} source={{uri: 'http://www.zazaero.com' + img_src}}/>
+                                                                <Image style={[styles.goods_thum]} source={{uri: 'http://49.50.162.86:80' + img_src}}/>
                                                                 <View style={ms2}>
                                                                     <Text style={[h14,fw500]}>수량</Text>
                                                                     <Text style={[h14]}>{items.option_cnt} 개</Text>

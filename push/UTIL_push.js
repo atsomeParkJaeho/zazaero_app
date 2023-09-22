@@ -21,6 +21,7 @@ export const FCM_Token = async () => {
         sound                               :true,
         announcement                        :true,
         providesAppNotificationSettings     :true,
+        criticalAlert                       :true,
     });
 
     const notifeeEnabled = await AsyncStorage.getItem(`notifee`);
@@ -127,6 +128,7 @@ export const LocalPush = async (res) => {
             },
         },
         ios:{
+            critical:true,
             sound:"notification.caf",
         }
     });

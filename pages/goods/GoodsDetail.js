@@ -231,7 +231,7 @@ export default function GoodsDetail({route,navigation}) {
                     <View style={[styles.GoodsDetail]}>
                         <View style={[container]}>
                             <View style={[styles.goods_iamge_box]}>
-                                <Image style={styles.goods_image} source={{uri:"http://www.zazaero.com"+GoodsDetail.list_img_url}}/>
+                                <Image style={styles.goods_image} source={{uri:"http://www.zazaero.com/"+GoodsDetail.list_img_url}}/>
                             </View>
                             {/*상품이미지*/}
                             <View style={[styles.GoodsDetail_info]}>

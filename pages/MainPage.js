@@ -54,7 +54,7 @@ function Cate2nd({uid,navigation,name}) {
         return (
             <>
                 {Cate2nd.map((val, idx) => {
-                    let img_src = 'http://zazaero.com'+val.cate_img;
+                    let img_src = 'http://49.50.162.86:80/'+val.cate_img;
                     return(
                         <>
 
@@ -372,22 +372,18 @@ export default function MainPage({route,navigation}) {
                     </ScrollView>
                     {/**----------------------------------------푸터----------------------------------------**/}
                     {/**----------------------------------퀵메뉴---------------------------------------------**/}
-                    {(Member === '116' || Member === '97' || Member === '105') && (
-                        <>
-                            <View style={[styles.quickMenu]}>
-                                <View style={[styles.quickBtn, mb1]}>
-                                    <TouchableOpacity onPress={goContact}>
-                                        <Image style={[styles.iconBtn]} source={{uri:`http://www.zazaero.com/img/contact.jpg`}}/>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={[styles.quickBtn]}>
-                                    <TouchableOpacity onPress={goKakao}>
-                                        <Image style={[styles.iconBtn]} source={{uri:`http://www.zazaero.com/img/kakao.jpg`}}/>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </>
-                    )}
+                    <View style={[styles.quickMenu]}>
+                        <View style={[styles.quickBtn, mb1]}>
+                            <TouchableOpacity onPress={goContact}>
+                                <Image style={[styles.iconBtn]} source={{uri:`http://49.50.162.86:80/img/contact.jpg`}}/>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={[styles.quickBtn]}>
+                            <TouchableOpacity onPress={goKakao}>
+                                <Image style={[styles.iconBtn]} source={{uri:`http://49.50.162.86:80/img/kakao.jpg`}}/>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                     <Footer navigation={navigation}/>
                 </>
             )}

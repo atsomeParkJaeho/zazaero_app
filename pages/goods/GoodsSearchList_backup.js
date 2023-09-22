@@ -247,7 +247,7 @@ export default function GoodsSearchList({route,navigation}) {
                             <View style={[flex_top]}>
                                 <View style={[styles.flex_item, styles.flex_item1]}>
                                     <View style={[styles.cate_list_Thumbnail_box]}>
-                                        <Image style={styles.cate_list_Thumbnail} source={{uri:'http://www.zazaero.com'+val.list_img_url}}/>
+                                        <Image style={styles.cate_list_Thumbnail} source={{uri:'http://49.50.162.86:80'+val.list_img_url}}/>
                                         <View style={styles.goods_like}>
                                             {/*=============찜하기=================*/}
                                             {/*<TouchableOpacity onPress={()=>goWish(val.goods_uid)}>*/}

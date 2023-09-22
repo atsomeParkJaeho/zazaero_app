@@ -164,6 +164,12 @@ export default function MemOut({navigation, route}) {
                                     </View>
                                 }
                             </View>
+                            {/**--------------------추가 변경----------------------**/}
+                            {(Member === '116' || Member === '97' || Member === '105') && (
+                                <>
+                                    <Text>테스트 시공업체만 보입니다.</Text>
+                                </>
+                            )}
                             <Text style={[styles.Chk, {paddingLeft: 5}]}>사유선택</Text>
                         </View>
                     </TouchableOpacity>

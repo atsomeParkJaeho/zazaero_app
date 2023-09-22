@@ -999,7 +999,7 @@ export default function OrderDtail({route,navigation}) {
                                                             <View style={[flex_end]}>
                                                                 <View>
                                                                     <Checkbox style={[styles.AllGoodsChk]} color={"#4630eb"} value={val.goods_chk} onValueChange={()=>modChk(val.goods_uid)}/>
-                                                                    <Image style={[styles.goods_thum]} source={{uri: 'http://www.zazaero.com' + img_src}}/>
+                                                                    <Image style={[styles.goods_thum]} source={{uri: 'http://49.50.162.86:80' + img_src}}/>
                                                                 </View>
                                                                 {/**-------------------수량조절---------------**/}
                                                                 {(Mod) ? (
@@ -1128,7 +1128,7 @@ export default function OrderDtail({route,navigation}) {
                                                 <View style={[flex_between_bottom]}>
                                                     <View style={[flex_end]}>
                                                         <View>
-                                                            <Image style={[styles.goods_thum]} source={{uri:`http://www.zazaero.com${val.list_img}`}} />
+                                                            <Image style={[styles.goods_thum]} source={{uri:`http://49.50.162.86:80${val.list_img}`}} />
                                                         </View>
                                                         {/**-------------------수량조절---------------**/}
                                                         <View style={ms2}>
@@ -1234,7 +1234,7 @@ export default function OrderDtail({route,navigation}) {
                                                     <View style={[flex_between_bottom]}>
                                                         <View style={[flex_end]}>
                                                             <View>
-                                                                <Image style={[styles.goods_thum]} source={{uri:`http://www.zazaero.com${val.list_img}`}} />
+                                                                <Image style={[styles.goods_thum]} source={{uri:`http://49.50.162.86:80${val.list_img}`}} />
                                                             </View>
                                                             {/**-------------------수량조절---------------**/}
                                                             <View style={ms2}>
@@ -1465,7 +1465,7 @@ export default function OrderDtail({route,navigation}) {
 
                                         <View style={[d_flex, align_items_center, mb1]}>
                                             <View style={[me2]}>
-                                                <Image style={[styles.goods_thum]} source={{uri: `http://www.zazaero.com${val.list_img_url}`}}/>
+                                                <Image style={[styles.goods_thum]} source={{uri: `http://49.50.162.86:80${val.list_img_url}`}}/>
                                             </View>
                                             <View style={[wt7,flex_between,align_items_end]}>
                                                 {(val.A_sel_option.map((item,idx)=>(

@@ -135,27 +135,57 @@ export default function NotificationList({route,navigation}){
         console.log('페이지 이동');
 
 
-        if(gd_type === 'order') {
-            // 1. 읽은 처리
-            push_read(Member,push_msg_uid).then((res)=>{
-                if(res) {
-                    const {result} = res.data;
-                    if(result === 'OK') {
-                        // 2. 페이지 이동
-                        if(Member === '116' || Member === '97' || Member === '105') {
-                            Alert.alert(``,`${JSON.stringify(res.data)}`);
+        if(
+            msg_type === 'ord_ins'             ||        // 발주요청완료
+            msg_type === 'ord_doing'           ||        // 발주검수진행
+            msg_type === 'sel_cust'            ||        // 결제요청
+            msg_type === 'ord_pay_done_bank'   ||        // 무통장
+            msg_type === 'ord_pay_done_card'   ||        // 무통장, 카드결제요청
+            msg_type === 'deli_mem_mobile'     ||          // 배차완료
+            msg_type === 'pay_done_gd_cancel_C' ||
+            msg_type === 'pay_done_gd_cancel_R' ||
+            msg_type === 'refund_done'
+        ) {
+            if(gd_type === 'order') {
+                // 1. 읽은 처리
+                push_read(Member,push_msg_uid).then((res)=>{
+                    if(res) {
+                        const {result} = res.data;
+                        if(result === 'OK') {
+                            // 2. 페이지 이동
+                            if(Member === '116' || Member === '97' || Member === '105') {
+                                Alert.alert(``,`${JSON.stringify(res.data)}`);
+                            }
+                            push_badge(Member).then((res)=>{
+                                if(res) { notifee.setBadgeCount(Number(res.data.new_push_cnt)) }
+                            });
+                            return navigation.navigate(`발주상세`,{gd_order_uid:gd_order_uid});
+                        } else {
+                            // return Alert.alert(``,`${result}`);
                         }
-                        push_badge(Member).then((res)=>{
-                            if(res) { notifee.setBadgeCount(Number(res.data.new_push_cnt)) }
-                        });
-                        return navigation.navigate(`발주상세`,{gd_order_uid:gd_order_uid});
-                    } else {
-                        // return Alert.alert(``,`${result}`);
                     }
-                }
-            });
-        } else if(gd_type === 'cancel') {
-            // 1. 읽은 처리
+                });
+            } else if(gd_type === 'cancel') {
+                // 1. 읽은 처리
+                push_read(Member,push_msg_uid).then((res)=>{
+                    if(res) {
+                        const {result} = res.data;
+                        if(result === 'OK') {
+                            // 2. 페이지 이동
+                            if(Member === '116' || Member === '97' || Member === '105') {
+                                Alert.alert(``,`${JSON.stringify(res.data)}`);
+                            }
+                            push_badge(Member).then((res)=>{
+                                if(res) { notifee.setBadgeCount(Number(res.data.new_push_cnt)) }
+                            });
+                            return navigation.navigate(`취소내역상세`,{gd_cancel_uid:gd_cancel_uid});
+                        } else {
+                            // return Alert.alert(``,`${result}`);
+                        }
+                    }
+                });
+            }
+        } else if(msg_type === 'mem_point_list') {
             push_read(Member,push_msg_uid).then((res)=>{
                 if(res) {
                     const {result} = res.data;
@@ -167,7 +197,7 @@ export default function NotificationList({route,navigation}){
                         push_badge(Member).then((res)=>{
                             if(res) { notifee.setBadgeCount(Number(res.data.new_push_cnt)) }
                         });
-                        return navigation.navigate(`취소내역상세`,{gd_cancel_uid:gd_cancel_uid});
+                        return navigation.navigate(`포인트내역`);
                     } else {
                         // return Alert.alert(``,`${result}`);
                     }
@@ -186,42 +216,6 @@ export default function NotificationList({route,navigation}){
                             if(res) { notifee.setBadgeCount(Number(res.data.new_push_cnt)) }
                         });
                         return navigation.navigate(`1:1문의상세`,{bd_uid:msg_link_uid});
-                    } else {
-                        // return Alert.alert(``,`${result}`);
-                    }
-                }
-            });
-        } else if(msg_type === 'mem_point_list' && gd_type === 'order') {
-            push_read(Member,push_msg_uid).then((res)=>{
-                if(res) {
-                    const {result} = res.data;
-                    if(result === 'OK') {
-                        // 2. 페이지 이동
-                        if(Member === '116' || Member === '97' || Member === '105') {
-                            Alert.alert(``,`${JSON.stringify(res.data)}`);
-                        }
-                        push_badge(Member).then((res)=>{
-                            if(res) { notifee.setBadgeCount(Number(res.data.new_push_cnt)) }
-                        });
-                        return navigation.navigate(`포인트내역`);
-                    } else {
-                        // return Alert.alert(``,`${result}`);
-                    }
-                }
-            });
-        } else if(msg_type === 'mem_point_list' && gd_type === 'cancel') {
-            push_read(Member,push_msg_uid).then((res)=>{
-                if(res) {
-                    const {result} = res.data;
-                    if(result === 'OK') {
-                        // 2. 페이지 이동
-                        if(Member === '116' || Member === '97' || Member === '105') {
-                            Alert.alert(``,`${JSON.stringify(res.data)}`);
-                        }
-                        push_badge(Member).then((res)=>{
-                            if(res) { notifee.setBadgeCount(Number(res.data.new_push_cnt)) }
-                        });
-                        return navigation.navigate(`포인트내역`);
                     } else {
                         // return Alert.alert(``,`${result}`);
                     }

@@ -9,6 +9,7 @@ import {get_Member, my_page} from "./UTIL_mem";
 
 // 공통 CSS 추가
 import {container, bg_white, h20, h16, flex_around, wt1, wt5} from '../common/style/AtStyle';
+import {Price} from "../util/util";
 
 export default function MyPage({navigation, route}) {
     const [Member, setMember]                  = useState();
@@ -59,7 +60,7 @@ export default function MyPage({navigation, route}) {
                             <Text style={[styles.user_name,h16]}>
                                 {mem_info.mem_name} ({mem_info.mem_mobile})
                             </Text>
-                            <Text style={styles.user_point}>보유포인트:<Text style={styles.user_point_score}>{mem_info.mem_point}P</Text></Text>
+                            <Text style={styles.user_point}>보유포인트:<Text style={styles.user_point_score}>{Price(mem_info.mem_point)}P</Text></Text>
                             <View style={[flex_around]}>
                                 <TouchableOpacity style={[styles.user_point_link,wt5]} onPress={() => {navigation.navigate(`포인트내역`)}}>
                                     <Text style={[styles.user_point_link_txt]}>나의 포인트 내역</Text>

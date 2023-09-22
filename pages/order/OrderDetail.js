@@ -586,7 +586,7 @@ export default function OrderDtail({route,navigation}) {
                                             <View style={[flex_end]}>
                                                 {/**==================이미지===============**/}
                                                 <View>
-                                                    <Image style={[styles.goods_thum]} source={{uri: 'http://www.zazaero.com' + val.list_img_url}}/>
+                                                    <Image style={[styles.goods_thum]} source={{uri: 'http://49.50.162.86:80' + val.list_img_url}}/>
                                                 </View>
                                                 {/**==================수량===============**/}
                                                 <View style={ms2}>
@@ -913,7 +913,7 @@ export default function OrderDtail({route,navigation}) {
 
                                             <View style={[d_flex, align_items_center, mb1]}>
                                                 <View style={[me2]}>
-                                                    <Image style={[styles.goods_thum]} source={{uri: `http://www.zazaero.com${val.list_img_url}`}}/>
+                                                    <Image style={[styles.goods_thum]} source={{uri: `http://49.50.162.86:80${val.list_img_url}`}}/>
                                                 </View>
                                                 <View style={[wt7,flex_between,align_items_end]}>
                                                     {(val.A_sel_option.map((item,idx)=>(

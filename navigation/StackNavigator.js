@@ -158,7 +158,6 @@ const StackNavigator = () => {
                 if(Member === '116' || Member === '97' || Member === '105') {
                     Alert.alert(`푸시링크 데이터`,`${JSON.stringify(detail)}`);
                 }
-                /**------------------------------2. 알림 메세지 클릭 후 이벤트---------------------------------------------**/
                 if(
                     push_act_type === 'ord_ins'             ||        // 발주요청완료
                     push_act_type === 'ord_doing'           ||        // 발주검수진행
@@ -315,6 +314,7 @@ const StackNavigator = () => {
         });
 
         /**----------------------------------2. aos 푸시알림 설정----------------------------------------------------------**/
+        /**-----------------------------앱 종료상태에서 푸시알림 클릭시-----------------------------------**/
         messaging().onNotificationOpenedApp(async remoteMessage => {
             const {data:{push_act_type, push_link_uid,push_msg_uid, badge}} = remoteMessage;
             if(badge) {
@@ -388,7 +388,7 @@ const StackNavigator = () => {
                 }
             }
         });
-        /**-----------------------------백그라운드 상태에서 열릴때---------------------------------**/
+        /**-----------------------------백그라운드 상태에서 푸시알림 클릭시---------------------------------**/
         messaging().getInitialNotification().then(remoteMessage => {
             const {data:{push_act_type, push_link_uid,push_msg_uid,badge}} = remoteMessage;
             if(badge) {

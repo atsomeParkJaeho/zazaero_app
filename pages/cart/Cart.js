@@ -201,18 +201,48 @@ export default function Cart({route, navigation}) {
     /**---------------------------------체크시 배송정보 등록이동창 활성화----------------------------------------**/
     const goFormChk = (uid, cate, price) => {
 
-        if(cate) {setCartUid(cate); // 카테고리 넣기
-        } else if(!cate) {setCartUid('');}  // 카테고리 넣기
+        // if(Member === '116' || Member === '97' || Member === '105') {
+        //     Alert.alert(``,`${JSON.stringify(CartList)}`);
+        // }
+
+        if(cate) {
+            setCartUid(cate); // 카테고리 넣기
+        } else if(!cate) {
+            setCartUid('');
+        }  // 카테고리 넣기
         setCart1stUid(cate);
-        setCartList(CartList.map((cate) => {
-            return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
-                    if(val.goods_uid === uid) {
-                        return {...val, goods_chk:!val.goods_chk}
-                    } else {
-                        return val;
-                    }
-                })}
-        }));
+        let temp = CartList.map((val1)=>{
+            if(val1.cate_1st_uid === cate){
+                return {
+                    ...val1, A_goods_list:val1.A_goods_list.map((val2)=>{
+                      if(val2.goods_uid === uid) {
+                          return {...val2, goods_chk:!val2.goods_chk}
+                      } else {
+                          return val2;
+                      }
+                    })
+                }
+            } else {
+                return {
+                    ...val1, A_goods_list:val1.A_goods_list.map(val2=>{
+                        return {
+                            ...val2, goods_chk:false,
+                        }
+                    })
+                }
+            }
+        });
+        setCartList(temp);
+
+        // setCartList(CartList.map((cate) => {
+        //     return {...cate, A_goods_list:cate.A_goods_list.map((val)=>{
+        //             if(val.goods_uid === uid) {
+        //                 return {...val, goods_chk:!val.goods_chk}
+        //             } else {
+        //                 return val;
+        //             }
+        //         })}
+        // }));
 
         console.log(uid,'/ 상품 uuid');
         console.log(cate,'/ 카테 uid');
@@ -346,24 +376,21 @@ export default function Cart({route, navigation}) {
     }
     /**---------------------------------클릭시 배송정보 입력창으로 이동----------------------------------------**/
     const goOrderForm = () => {
-
         // 중복상품 제어용 카테고리 cateUid
         let temp    = CartList.map(cate=>cate.A_goods_list.filter(val=>(val.goods_chk === true)));
         let total   = temp.reduce((val,idx)=>{return val.concat(idx);});
         let result  = total.map(val=>val.cate_1st_uid);
         let chk     = total.map(val=>String(val.A_sel_option.map(item=>item.option_cnt)));
         let find    = result.indexOf(Cart1stUid);
-
         if(chk.includes('0')) {
             console.log(chk.includes('0'));
             return Alert.alert('',`수량을 입력해주세요.`);
         }
-
         console.log(Cart1stUid,'/ [지정 카테고리]');
         console.log(result,'/ [필터링한 카테고리]');
         console.log(find,'/ [수량]');
 
-        if(1 > find) {
+        if(1 >= find) {
             return navigation.navigate('배송정보등록',{order_uid:total,goods_cate1_uid:Cart1stUid});;
         } else {
             Alert.alert('','동일 공정의 자재만 발주 가능합니다');
@@ -420,7 +447,9 @@ export default function Cart({route, navigation}) {
                         return {...val, goods_chk:!all_status}
                     })}
             } else {
-                return item;
+                return {...item, A_goods_list:item.A_goods_list.map((val)=>{
+                        return {...val, goods_chk:false}
+                    })};
             }
         }));
     }

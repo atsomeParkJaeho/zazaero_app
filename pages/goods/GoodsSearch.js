@@ -91,7 +91,7 @@ export default function GoodsSearch({route,navigation}) {
     // 2. 검색상품 불러오기
     const goSearch = (search) => {
         console.log(search);
-        if(!GoodsSearch.search) {return Alert.alert(``,`검색어를 입력해주세요.`);}
+        // if(!GoodsSearch.search) {return Alert.alert(``,`검색어를 입력해주세요.`);}
         // 검색상품으로 이동한다
         goods_search(search).then((res) => {
             if (res) {
